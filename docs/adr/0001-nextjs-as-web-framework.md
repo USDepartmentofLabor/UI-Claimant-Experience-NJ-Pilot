@@ -1,4 +1,4 @@
-# CHANGE THIS TITLE AND THE FILENAME WHEN A DECISION IS REACHED
+# Use Next.js as the web development framework
 
 - Status: In progress
 - Deciders: Kim Allen, Isaac Garfinkle, Brandon Lenz
@@ -9,9 +9,6 @@ on which the application will be built. The framework should be flexible, custom
 and scalable.
 
 ## Assumptions
-
-
-## Constraints
 
 
 ## Considered Alternatives
@@ -40,8 +37,14 @@ configuration could be effortlessly ported over
 
 - `+` Would unify our code in one language/framework
 - `-` Django may not be appropriate for some of our more complex interactions,
-such as autosaving, validation
+such as autosaving, validation.
+- `-` Would not allow us to easily copy work from base year app.
 
-## Decision Outcome
+## Decision Outcome: Use React with Next.js
 
-Describe what the decision is and some high level information about why it was chosen without rehashing all pros/cons.
+Next.js is a growing industry standard for building web applications,
+as it combines the familiarity of React development with the flexibility
+of server-side rendering and static site generation, leading to faster 
+build and run times. We expect that much of the frontend code for this
+project will be copied from the ARPAUI pilot application, and Next.js 
+keeps this sufficiently straightforward, since it is built on top of React.
