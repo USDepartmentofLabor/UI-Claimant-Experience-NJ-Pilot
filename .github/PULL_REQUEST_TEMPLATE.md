@@ -1,6 +1,6 @@
 # Issue #00
 
-[Acceptance flow diagram](https://github.com/USDOLEnterprise/ARPAUI/blob/main/docs/development-acceptance-flow.drawio.svg)
+Acceptance flow diagram [link tbd](link-tbd)
 
 <!--
     If applicable, insert the Jira story number in the markdown header above.
@@ -33,7 +33,8 @@
     ```
 --->
 
-## [Code Review](team-norms-on-code-review-tbd) Verification Steps
+## Code Review Verification Steps
+[link to team norms when determined](team-norms-on-code-review-tbd)
 
 ### As the original developer, I have
 
