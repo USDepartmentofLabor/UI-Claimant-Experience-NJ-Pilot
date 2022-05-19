@@ -1,4 +1,4 @@
-# Use Next.js as the web development framework
+# Use Next.js as the front end development framework
 
 - Status: In progress
 - Deciders: Kim Allen, Isaac Garfinkle, Brandon Lenz
