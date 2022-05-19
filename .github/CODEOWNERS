@@ -1,0 +1,6 @@
+# CODEOWNERS
+# If you would like to be a code owner of any/all files in particular, please add yourself below.
+# For more information see: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for all files
+@brandonlenz @kimallen @Igarfinkle @jsclarridge @jimmy-dehart

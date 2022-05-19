@@ -1,0 +1,32 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.2.0
+    hooks:
+      - id: check-json
+      - id: check-symlinks
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: pretty-format-json
+        args:
+          - --autofix
+      - id: trailing-whitespace
+# TODO: Add python specific checks alongside python code.
+#       (fix-encoding-pragma, debug-statements, requirements-txt-fixer, check-ast)
+#       Check ARPAUI for parity (https://github.com/USDOLEnterprise/ARPAUI/blob/main/.pre-commit-config.yaml)
+
+  - repo: https://github.com/trussworks/pre-commit-hooks
+    rev: v1.1.1
+    hooks:
+      - id: gen-docs
+        args: [ "docs/adr" ]
+
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.14
+    hooks:
+      - id: mdformat
+        additional_dependencies:
+          - mdformat-gfm
+          - mdformat-toc
