@@ -1,8 +1,8 @@
 # Use Next.js as the web development framework
 
 - Status: In progress
-- Deciders: Kim Allen, Isaac Garfinkle, Brandon Lenz
-- Date: 05/28/2022
+- Deciders: @kimallen, @Igarfinkle, @brandonlenz
+- Date: 05/19/2022
 
 Before beginning work on a front-end application, we need to choose a framework
 on which the application will be built. The framework should be flexible, customizable, 
@@ -10,6 +10,7 @@ and scalable.
 
 ## Assumptions
 
+ - Using Next.js still allows us to reuse React code from ARPA-UI Pilot app.
 
 ## Considered Alternatives
 
@@ -40,7 +41,7 @@ configuration could be effortlessly ported over
 such as autosaving, validation.
 - `-` Would not allow us to easily copy work from base year app.
 
-## Decision Outcome: Use React with Next.js
+## Decision Outcome: Use React with Next.js AND do not use Django templating at all
 
 Next.js is a growing industry standard for building web applications,
 as it combines the familiarity of React development with the flexibility
@@ -48,3 +49,5 @@ of server-side rendering and static site generation, leading to faster
 build and run times. We expect that much of the frontend code for this
 project will be copied from the ARPAUI pilot application, and Next.js 
 keeps this sufficiently straightforward, since it is built on top of React.
+Since Next.js provides options for server-side rendering, we will not
+use Django templating for server-side rendered pages. 
