@@ -26,6 +26,7 @@ and scalable.
 - `+` Next.js offers options for server-side rendering, client-side rendering, 
 and static site generation, allowing increased flexibility for making the app
 faster to load.
+- `+` Next.js offers extensive documentation for migration from Create React App. 
 - `-` Requires configuring a new framework
 - `-` Inevitably some overhead to understand how to configure the new framework,
 and additional learning time to understand how and when to use server-side rendering, etc.
