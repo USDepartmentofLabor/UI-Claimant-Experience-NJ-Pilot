@@ -1,10 +1,10 @@
 # Repository Structure <!-- The title should reflect the decision outcome -->
 
 - Status: In progress
-- Deciders: [Names of deciders]
+- Deciders: @kimallen, @Igarfinkle, @brandonlenz
 - Date created: 05/17/2022
 
-Description and background on decision to be made
+## Description and background on decision to be made
 This application will be built to support New Jersey DOL while serving as a learning model for other state workforce agencies.
 An initial MVP was built under USDOL as a centralized system, and this code is being ported over to a NJ-specific repository. 
 The centralized USDOL project lives in a Django project with multiple apps side-by-side, including `claimant` app as the React frontend app, 
@@ -38,14 +38,17 @@ This ADR does not cover decisions on stack or tools
 - `-` Code management can be difficult. We wouldn't always know which repo in which to create an issue if there is a bug.
 - `-` Writing backend to frontend verticals means working within two repositories and multiple PRs
 - `-` Requires onboarding to two repos rather than one
+- `-` End to end and integration tests would be difficult- changes in one repo could break things in the other
 
-### Option 2: Keep frontend and backend code in the same repository
+### Option 2: Keep client-side and server-side code in the same repository
 
+- `+` To set up the application, only one repository needs to be cloned and managed
 - `+` We tend to work full stack and in feature verticals, so it would be easy to move around the code in one repo
 - `+` Application-wide refactors are easier
 - `+` Debugging can be easier when looking at one repo
 - `+` Only one repo to manage and documentation can be in one place
 - `+` Since we are using Github Issues for task management, it's easier to have it in one repo
+- `+` End to end and integration tests are easier when code is in the same repo
 - `-` The division frontend and backend code would be less distinct and potentially less modular/reuseable by states
 
 #### Option 2A: maintain the same structure as we have in the USDOL-ARPA-UI project
@@ -60,7 +63,7 @@ This ADR does not cover decisions on stack or tools
 
 ## Decision Outcome
 
-**Option 2B: Split the code into FE and BE apps within one repo and create sub-apps within them**
+**Option 2B: Split the code into client-side and server-side apps within one repo and create sub-apps within them**
 
 Many of the benefits of using two repositories apply to a larger codebase and larger teams than is relevant to this project,
 so splitting it out seems like unnecessary overhead. While we are porting over the re-useable code from the USDOL repo to the NJ repo, 
