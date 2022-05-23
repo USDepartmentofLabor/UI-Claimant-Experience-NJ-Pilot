@@ -1,6 +1,6 @@
-# Repository Structure <!-- The title should reflect the decision outcome -->
+# Split Client and Server Code within One Repository
 
-- Status: In progress
+- Status: Approved
 - Deciders: @kimallen, @Igarfinkle, @brandonlenz
 - Date created: 05/17/2022
 
