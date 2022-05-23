@@ -27,12 +27,15 @@ and scalable.
 and static site generation, allowing increased flexibility for making the app
 faster to load.
 - `-` Requires configuring a new framework
+- `-` Inevitably some overhead to understand how to configure the new framework,
+and additional learning time to understand how and when to use server-side rendering, etc.
 
 ### Use React without Next.js
 
 - `+` The app from the ARPA-UI Pilot already uses Create React App, and 
 configuration could be effortlessly ported over
 - `-` CRA is, at this point, poorly maintained
+- `-` Offers only client-side rendering.
 
 ### Render the application server-side with Django
 
