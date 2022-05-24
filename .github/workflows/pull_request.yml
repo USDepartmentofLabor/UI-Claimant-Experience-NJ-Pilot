@@ -20,7 +20,5 @@ jobs:
         python-version: [3.9]
         node-version: [14.18]
     steps:
-      - uses: actions/cache@v2
-        with:
-          key: pre-commit-dot-cache-${{ hashFiles('.pre-commit-config.yaml') }}
-          path: ~/.cache/pre-commit
+      - name: Lint
+        run: make lint
