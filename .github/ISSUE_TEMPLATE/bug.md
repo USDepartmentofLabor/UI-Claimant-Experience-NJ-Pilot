@@ -1,6 +1,6 @@
-______________________________________________________________________
-
-## name: Bug report about: Something isn't quite right, create a bug report! title: '\[bug\]: ' labels: \['type: bug', 'priority: low'\] assignees: ''
+| name       | about                                             | title       | labels                           | assignees |
+| ---------- | ------------------------------------------------- | ----------- | -------------------------------- | --------- |
+| Bug report | Something isn't quite right, create a bug report! | '\[bug\]: ' | \['type: bug', 'priority: low'\] | ''        |
 
 **Describe the bug**
 
