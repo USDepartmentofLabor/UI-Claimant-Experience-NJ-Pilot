@@ -20,5 +20,7 @@ jobs:
         python-version: [3.9]
         node-version: [14.18]
     steps:
+      - name: Install Dev Dependencies
+        run: make dev-deps
       - name: Lint
         run: make lint
