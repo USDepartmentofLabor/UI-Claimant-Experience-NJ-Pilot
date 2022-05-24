@@ -1,0 +1,26 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+# Cancel redundant builds on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Pre-commit hooks
+jobs:
+  lint:
+    name: Pre-commit hooks
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.9]
+        node-version: [14.18]
+    steps:
+      - uses: actions/cache@v2
+        with:
+          key: pre-commit-dot-cache-${{ hashFiles('.pre-commit-config.yaml') }}
+          path: ~/.cache/pre-commit
