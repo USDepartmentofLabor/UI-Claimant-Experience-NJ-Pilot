@@ -5,9 +5,10 @@
 - Date created: 05/17/2022
 
 ## Description and background on decision to be made
+
 This application will be built to support New Jersey DOL while serving as a learning model for other state workforce agencies.
-An initial MVP was built under USDOL as a centralized system, and this code is being ported over to a NJ-specific repository. 
-The centralized USDOL project lives in a Django project with multiple apps side-by-side, including `claimant` app as the React frontend app, 
+An initial MVP was built under USDOL as a centralized system, and this code is being ported over to a NJ-specific repository.
+The centralized USDOL project lives in a Django project with multiple apps side-by-side, including `claimant` app as the React frontend app,
 `api` and `swa` apps as the backend-focused apps, and `home` that holds the server-rendered user-facing templates.
 
 ## Assumptions
@@ -52,10 +53,12 @@ This ADR does not cover decisions on stack or tools
 - `-` The division frontend and backend code would be less distinct and potentially less modular/reuseable by states
 
 #### Option 2A: maintain the same structure as we have in the USDOL-ARPA-UI project
+
 - `+` Time/energy are not expended to restructure
 - `-` Developers found the structure somewhat confusing and unintuitive
 
 #### Option 2B: Split the code into frontend and backend apps within one repo and create sub-apps within them
+
 - `+` The directory structure will be easier to follow
 - `+` It will be easier for newcomers to onboard and understand the code and easier
 - `+` When publicly available, the code will be easier for other states to follow
@@ -66,7 +69,7 @@ This ADR does not cover decisions on stack or tools
 **Option 2B: Split the code into client-side and server-side apps within one repo and create sub-apps within them**
 
 Many of the benefits of using two repositories apply to a larger codebase and larger teams than is relevant to this project,
-so splitting it out seems like unnecessary overhead. While we are porting over the re-useable code from the USDOL repo to the NJ repo, 
+so splitting it out seems like unnecessary overhead. While we are porting over the re-useable code from the USDOL repo to the NJ repo,
 there is minimal overhead in restructuring the repository into clearly defined backend and frontend apps.
 
 ## Resources

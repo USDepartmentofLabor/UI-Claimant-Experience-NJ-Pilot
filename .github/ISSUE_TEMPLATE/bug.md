@@ -1,10 +1,6 @@
----
-name: Bug report
-about: Something isn't quite right, create a bug report!
-title: '[bug]: '
-labels: ['type: bug', 'priority: low']
-assignees: ''
----
+______________________________________________________________________
+
+## name: Bug report about: Something isn't quite right, create a bug report! title: '\[bug\]: ' labels: \['type: bug', 'priority: low'\] assignees: ''
 
 **Describe the bug**
 
@@ -14,9 +10,9 @@ assignees: ''
 Steps to reproduce the behavior:
 
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. Click on '....'
+1. Scroll down to '....'
+1. See error
 
 **Expected behavior**
 
@@ -32,6 +28,6 @@ Steps to reproduce the behavior:
 
 **Device and Browser Information if relevant:**
 
- <!-- - OS: [e.g. iOS]
+<!-- - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari]
  - Version [e.g. 22] -->

@@ -34,6 +34,7 @@ Acceptance flow diagram [link tbd](link-tbd)
 --->
 
 ## Code Review Verification Steps
+
 [link to team norms when determined](team-norms-on-code-review-tbd)
 
 ### As the original developer, I have
