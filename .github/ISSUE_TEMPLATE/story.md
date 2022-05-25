@@ -1,31 +1,35 @@
-______________________________________________________________________
-
-## name: User Story about: As a \_\_\_, I want \_\_\_, so that \_\_\_ title: '\[story\]: ' labels: \['type: story'\] assignees: ''
+---
+name: User Story
+about: As a ___, I want ___, so that ___
+title: '[story]: '
+labels: ['type: story']
+assignees: ''
+---
 
 ### Summary
 
-\[briefly, what’s this all about?\]
+[briefly, what’s this all about?]
 
 ### Story
 
-**_as a_** \[user concerned by the story\]
+**_as a_** [user concerned by the story]
 
-**_i want_** \[goal of the story\]
+**_i want_** [goal of the story]
 
-**_so that_** \[reason for the story\]
+**_so that_** [reason for the story]
 
 ### Description
 
-\[detail/context/elaboration that could not be relayed in the summary or story.\]
+[detail/context/elaboration that could not be relayed in the summary or story.]
 
 ### Acceptance Criteria
 
-1. \[this needs to be testable\]
-1. \[because if it ain’t testable it ain’t an AC\]
+1. [this needs to be testable]
+1. [because if it ain’t testable it ain’t an AC]
 
 ### Constraints
 
-\[if any...\]
+[if any...]
 
 ### Subtasks
 
@@ -35,7 +39,7 @@ ______________________________________________________________________
 
 ### Estimated Effort (Story Points) <!-- TODO: Remove this section if projects beta story pointing works for the team -->
 
-\[1 / 2 / 3 / 5\]
+[1 / 2 / 3 / 5]
 
 ### Resources
 
@@ -55,8 +59,7 @@ ______________________________________________________________________
   - :arrow_right: #0000
   - :arrow_right: #0000
   - :arrow_right: #0000
-
-- :twisted_rightwards_arrows: split from #0000
+  - :twisted_rightwards_arrows: split from #0000
 
 ### Other Notes & Et Cetera
 
