@@ -1,6 +1,6 @@
 # Issue #00
 
-Acceptance flow diagram [link tbd](link-tbd)
+[Acceptance flow diagram](https://github.com/newjersey/dol-ui-claimant-intake/tree/main/docs/development-acceptance-flow-drawio.svg)
 
 <!--
     If applicable, insert the Jira story number in the markdown header above.
