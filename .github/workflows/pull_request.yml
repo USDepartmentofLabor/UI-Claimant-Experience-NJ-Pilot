@@ -14,11 +14,6 @@ jobs:
   lint:
     name: Pre-commit hooks
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.9]
-        node-version: [14.18]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
