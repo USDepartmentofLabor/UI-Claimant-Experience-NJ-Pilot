@@ -33,9 +33,9 @@ assignees: ''
 
 ### Subtasks
 
-* we need to do this
-* and this
-* and this :tada:
+- we need to do this
+- and this
+- and this :tada:
 
 ### Estimated Effort (Story Points) <!-- TODO: Remove this section if projects beta story pointing works for the team -->
 
@@ -43,25 +43,25 @@ assignees: ''
 
 ### Resources
 
-* [Mockup](link/to/figma)
-* [Documentation](link/to/relevant/documentation)
+- [Mockup](link/to/figma)
+- [Documentation](link/to/relevant/documentation)
 
 ### Linked Issues
 
-* :construction: blocks #0000
+- :construction: blocks #0000
 
-* :stop_sign: blocked by #0000
+- :stop_sign: blocked by #0000
 
-* :arrows_clockwise: related to #0000
+- :arrows_clockwise: related to #0000
 
-* :arrow_lower_right: splits to
-  * :arrow_right: #0000
-  * :arrow_right: #0000
-  * :arrow_right: #0000
+- :arrow_lower_right: splits to
 
-* :twisted_rightwards_arrows: split from #0000
+  - :arrow_right: #0000
+  - :arrow_right: #0000
+  - :arrow_right: #0000
+  - :twisted_rightwards_arrows: split from #0000
 
 ### Other Notes & Et Cetera
 
-* > a quote from your favorite poet
-* additional useful information…
+- > a quote from your favorite poet
+- additional useful information…
