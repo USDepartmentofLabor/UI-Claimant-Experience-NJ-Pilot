@@ -1,8 +1,8 @@
 # Title of ADR <!-- The title should reflect the decision outcome -->
 
-- Status: [In progress or Decided]
-- Deciders: [Names of deciders]
-- Date: [Date created]
+- Status: \[In progress or Decided\]
+- Deciders: \[Names of deciders\]
+- Date: \[Date created\]
 
 Description and background on decision to be made
 

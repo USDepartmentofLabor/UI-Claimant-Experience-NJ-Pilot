@@ -30,3 +30,7 @@ repos:
         additional_dependencies:
           - mdformat-gfm
           - mdformat-toc
+        exclude: >
+          (?x)^(
+            .github/ISSUE_TEMPLATE|
+          )
