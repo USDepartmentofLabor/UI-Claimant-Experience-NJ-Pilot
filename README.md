@@ -9,3 +9,6 @@ The following should install everything you need on macOS:
 ```sh
 make dev-deps
 ```
+## Web Client Setup
+
+To set up and run the web client application, please see the corresponding [README](./client/README.md)
