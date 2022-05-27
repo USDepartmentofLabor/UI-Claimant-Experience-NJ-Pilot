@@ -1,14 +1,17 @@
 ---
 name: User Story
 about: As a ___, I want ___, so that ___
-title: '[story]: '
-labels: ['type: story']
+title: "[story]: "
+labels: 'type: story'
 assignees: ''
+
 ---
 
 ### Summary
 
 [briefly, what’s this all about?]
+
+[detail/context/elaboration as needed.]
 
 ### Story
 
@@ -17,10 +20,6 @@ assignees: ''
 **_i want_** [goal of the story]
 
 **_so that_** [reason for the story]
-
-### Description
-
-[detail/context/elaboration that could not be relayed in the summary or story.]
 
 ### Acceptance Criteria
 
@@ -36,10 +35,6 @@ assignees: ''
 - we need to do this
 - and this
 - and this :tada:
-
-### Estimated Effort (Story Points) <!-- TODO: Remove this section if projects beta story pointing works for the team -->
-
-[1 / 2 / 3 / 5]
 
 ### Resources
 
