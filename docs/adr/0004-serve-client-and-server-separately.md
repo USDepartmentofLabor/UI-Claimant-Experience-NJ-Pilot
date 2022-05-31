@@ -5,8 +5,8 @@
 - Date: 05/31/22
 
 In the base year, we served the client within the Django app, and served them both in the same Docker container
-(see [Serving Static Assets ADR](https://github.com/USDOLEnterprise/ARPAUI/blob/main/docs/adr/0004-serving-static-assets.md)).
-In the option year, we are working within different constraints, and can consider serving each separately.
+(see [Serving Static Assets ADR](https://github.com/USDOLEnterprise/ARPAUI/blob/main/docs/adr/0004-serving-static-assets.md)). We used Create React App (CRA).
+In the option year, we are using NextJS instead of CRA, we are working within different deployment constraints, and have the option to serve them separately.
 
 ## Assumptions
 
@@ -21,14 +21,14 @@ We will be using Docker regardless. There is not significant additional cost to 
 
 ### Option 1
 
-- `+` We can do server-side rendering through Nextjs if desired
+- `+` We can easily do server-side rendering out-of-the-box through Nextjs if desired
 - `+` Separation of concerns is cleaner and less confusing, supporting current and future developers and interested SWAs
 - `+` Separating them is more modular than if not
 - `+` We can do caching
-- `±` We'd need to set up two servers instead of one, though it's relatively easy with Docker
+- `±` More infrastructure to manage, but we have existing patterns for managing the infrastructure
 - `-` There are two servers to maintain and vulnerabilities to manage
 - `-` We'd need to figure out how to distinguish domain names
-- `-` There is some effort to figure out how to set up React env variables (these were previously managed from server side)
+- `-` There is some effort to figure out how to manage env variables in the server-side of NextJS (these were previously managed from Django side)
 
 ### Option 2
 
@@ -36,6 +36,7 @@ We will be using Docker regardless. There is not significant additional cost to 
 - `+` We can do caching
 - `-` Less clean, more confusing
 - `-` Less modular
+- `-` Since we switched to using NextJS instead of CRA, we'd need to figure out how to deal with any differences between usingDjango to serve a static CRA app vs. a NextJS app.
 
 ## Decision Outcome
 
