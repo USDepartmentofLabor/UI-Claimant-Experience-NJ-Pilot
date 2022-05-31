@@ -32,5 +32,5 @@ repos:
           - mdformat-toc
         exclude: >
           (?x)^(
-            .github/ISSUE_TEMPLATE|
-          )
+            .github/ISSUE_TEMPLATE/.*.md|
+          )$
