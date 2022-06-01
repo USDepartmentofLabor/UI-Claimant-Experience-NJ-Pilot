@@ -1,5 +1,3 @@
-<!-- prettier-ignore -->
-
 # Accessibility Testing Process
 
 The below steps are specifically the accessibility testing part of the overall acceptance flow process.
