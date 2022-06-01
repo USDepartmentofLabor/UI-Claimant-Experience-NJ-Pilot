@@ -1,7 +1,7 @@
 # Serve client and server separately <!-- The title should reflect the decision outcome -->
 
-- Status: In progress
-- Deciders: \[Names of deciders\]
+- Status: Approved
+- Deciders: @kimallen, @brandonlenz, @jsclarridge
 - Date: 05/31/22
 
 In the base year, we served the client within the Django app, and served them both in the same Docker container
