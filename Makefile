@@ -16,3 +16,9 @@ dev-down: ## Shut down all local docker services
 
 dev-logs: ## View the local docker service logs
 	docker compose logs -f
+
+client-test: ## run Jest unit/integration tests
+	cd client && yarn test
+
+watch-client-test: ## run Jest unit/integration tests and watch
+	cd client && yarn test --watchAll
