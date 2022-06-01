@@ -7,3 +7,12 @@ dev-deps: ## Install local development environment dependencies
 
 lint: ## Run lint check
 	pre-commit run --all-files
+
+dev-up: ## Run all docker services locally
+	docker compose up --build --force-recreate
+
+dev-down: ## Shut down all local docker services
+	docker compose down
+
+dev-logs: ## View the local docker service logs
+	docker compose logs -f

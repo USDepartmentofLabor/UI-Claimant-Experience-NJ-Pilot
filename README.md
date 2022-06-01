@@ -14,6 +14,20 @@ make dev-deps
 
 To set up and run the web client application, please see the corresponding [README](./client/README.md)
 
+## Docker Setup
+
+To run the application locally in docker, use:
+
+```sh
+make localdev-system-up
+```
+
+To shut the docker services down, use:
+
+```sh
+make localdev-system-down
+```
+
 ## Makefile
 
 Run `make` or `make help` to see the available `make` commands we use with this
