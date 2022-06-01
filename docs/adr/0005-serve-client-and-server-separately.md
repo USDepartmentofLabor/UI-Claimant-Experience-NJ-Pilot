@@ -36,7 +36,7 @@ We will be using Docker regardless. There is not significant additional cost to 
 - `+` We can do caching
 - `-` Less clean, more confusing
 - `-` Less modular
-- `-` Since we switched to using NextJS instead of CRA, we'd need to figure out how to deal with any differences between usingDjango to serve a static CRA app vs. a NextJS app.
+- `-` Since we switched to using NextJS instead of CRA, we'd need to figure out how to deal with any differences between using Django to serve a static CRA app vs. a NextJS app.
 
 ## Decision Outcome
 
