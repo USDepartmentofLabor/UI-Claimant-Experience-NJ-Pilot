@@ -19,13 +19,13 @@ To set up and run the web client application, please see the corresponding [READ
 To run the application locally in docker, use:
 
 ```sh
-make localdev-system-up
+make dev-up
 ```
 
 To shut the docker services down, use:
 
 ```sh
-make localdev-system-down
+make dev-down
 ```
 
 ## Makefile
