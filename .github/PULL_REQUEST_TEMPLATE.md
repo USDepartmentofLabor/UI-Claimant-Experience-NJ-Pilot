@@ -1,4 +1,4 @@
-# Issue #00
+# Resolves #00
 
 [Acceptance flow diagram](https://github.com/newjersey/dol-ui-claimant-intake/tree/main/docs/development-acceptance-flow-drawio.svg)
 
