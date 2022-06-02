@@ -1,6 +1,6 @@
 # Resolves #00
 
-[Acceptance flow diagram](https://github.com/newjersey/dol-ui-claimant-intake/tree/main/docs/development-acceptance-flow-drawio.svg)
+[Acceptance flow diagram](https://github.com/newjersey/dol-ui-claimant-intake/blob/main/docs/development-acceptance-flow.drawio.svg)
 
 <!--
     If applicable, insert the Jira story number in the markdown header above.
