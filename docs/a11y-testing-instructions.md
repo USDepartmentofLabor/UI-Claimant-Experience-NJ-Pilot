@@ -2,7 +2,7 @@
 
 The below steps are specifically the accessibility testing part of the overall acceptance flow process.
 
-The code submitter, code reviewer, and design reviewer should go through each of the steps below for any user interface changes. Although there are several steps, if we keep up and do them with each PR, it will be a light lift, and will avoid any a11y debt. Ideally we are testing in different browsers. Given that we must use a VPN on a GFE to access a deployed environment, only whitelisted IP addresses will be able to test on actual mobile devices.
+The code submitter, code reviewer, and design reviewer should go through each of the steps below for any user interface changes. Although there are several steps, if we keep up and do them with each PR, it will be a light lift, and will avoid any a11y debt. Ideally we are testing in different browsers and on phones when the app can be accessed.
 
 ## For each user interface PR:
 
