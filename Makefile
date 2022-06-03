@@ -22,3 +22,6 @@ client-test: ## run Jest unit/integration tests
 
 watch-client-test: ## run Jest unit/integration tests and watch
 	cd client && yarn test --watchAll
+
+client-deps: ## run dependencies for client
+	cd client && yarn install
