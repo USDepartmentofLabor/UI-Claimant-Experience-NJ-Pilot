@@ -23,5 +23,14 @@ client-test: ## run Jest unit/integration tests
 watch-client-test: ## run Jest unit/integration tests and watch
 	cd client && yarn test --watchAll
 
-client-deps: ## run dependencies for client
+client-deps: ## install client app dependencies
 	cd client && yarn install
+
+client-deps-ci: ## install client app dependencies for continuous integration
+	cd client && yarn install --frozen-lockfile
+
+client-compile: ## compile client typescript
+	cd client && yarn tsc
+
+client-compile-check: ## check client for typescript compilation
+	cd client && yarn tsc --noEmit

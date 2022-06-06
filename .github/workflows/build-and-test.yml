@@ -11,24 +11,36 @@ concurrency:
 
 name: Test and Lint
 jobs:
-  lint:
-    name: Pre-commit hooks
+  lint-build-and-test:
+    name: Lint, build, and test
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/cache@v3
         with:
           key: v1-pre-commit-dot-cache-${{ hashFiles('.pre-commit-config.yaml') }}
           path: ~/.cache/pre-commit
+
       - name: Install pre-commit
         run: pip install pre-commit
+
       - name: Lint
         run: make lint
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 18.2.0
           cache: "yarn"
           cache-dependency-path: "client/yarn.lock"
+
+      - name: Install dependencies
+        run: make client-deps-ci
+
+      - name: Check Typescript compilation
+        run: make client-compile-check
+
       - name: Run Jest tests
-        run: make client-deps client-test
+        run: make client-test
