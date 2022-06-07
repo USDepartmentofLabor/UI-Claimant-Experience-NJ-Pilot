@@ -2,7 +2,7 @@ help: ## Print the help documentation
 	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 dev-deps: ## Install local development environment dependencies
-	brew install pre-commit # TODO: Use PIP if/when python is introduced
+	pip install pre-commit
 	pre-commit install --install-hooks
 
 lint: ## Run lint check
@@ -24,9 +24,6 @@ watch-client-test: ## run Jest unit/integration tests and watch
 	cd client && yarn test --watchAll
 
 client-deps: ## install client app dependencies
-	cd client && yarn install
-
-client-deps-ci: ## install client app dependencies for continuous integration
 	cd client && yarn install --frozen-lockfile
 
 client-compile: ## compile client typescript

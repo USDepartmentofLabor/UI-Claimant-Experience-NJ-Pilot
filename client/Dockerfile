@@ -22,7 +22,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN yarn build
 
 # Production image, copy all the files and run next
-FROM gcr.io/distroless/nodejs:18 AS runner
+FROM gcr.io/distroless/nodejs:16 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
