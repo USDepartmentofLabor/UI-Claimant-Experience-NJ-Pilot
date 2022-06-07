@@ -37,7 +37,7 @@ jobs:
           cache-dependency-path: "client/yarn.lock"
 
       - name: Install dependencies
-        run: make client-deps-ci
+        run: make client-deps
 
       - name: Check Typescript compilation
         run: make client-compile-check
