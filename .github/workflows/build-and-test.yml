@@ -47,6 +47,7 @@ jobs:
 
   docker-build:
     name: Docker build
+    needs: lint-build-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -71,8 +72,8 @@ jobs:
 
   docker-push:
     name: Docker push
-    runs-on: ubuntu-latest
     needs: docker-build
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -86,9 +87,7 @@ jobs:
           path: /tmp
 
       - name: Load image
-        run: |
-          docker image load --input /tmp/client-image.tar
-          docker image ls --digests
+        run: docker image load --input /tmp/client-image.tar
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
