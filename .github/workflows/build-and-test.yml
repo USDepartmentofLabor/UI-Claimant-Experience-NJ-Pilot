@@ -88,4 +88,4 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: dol-ui-claimant-intake-client
           cluster: dol-ui-claimant-intake-dev
-          wait-for-service-stability: true
+          wait-for-service-stability: false
