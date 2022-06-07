@@ -1,12 +1,12 @@
 # Install dependencies only when needed
-FROM node:18.2.0-bullseye-slim AS deps
+FROM node:16.15.1-bullseye-slim AS deps
 WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # Rebuild the source code only when needed
-FROM node:18.2.0-bullseye-slim AS builder
+FROM node:16.15.1-bullseye-slim AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY .eslintrc.json .
