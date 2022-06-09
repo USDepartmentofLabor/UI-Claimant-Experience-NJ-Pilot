@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/client"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # The USWDS version should be managed manually
+      # and coordinated with the ReactUSWDS version.
+      - dependency-name: "uswds"
