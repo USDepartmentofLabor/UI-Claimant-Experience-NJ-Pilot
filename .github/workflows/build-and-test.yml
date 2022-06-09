@@ -1,3 +1,5 @@
+name: Test and Lint
+
 on:
   pull_request:
   push:
@@ -9,7 +11,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Test and Lint
 jobs:
   lint-build-and-test:
     name: Lint, build, and test
