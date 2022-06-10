@@ -23,8 +23,23 @@ client-test: ## run Jest unit/integration tests
 watch-client-test: ## run Jest unit/integration tests and watch
 	cd client && yarn test --watchAll
 
-client-deps: ## install client app dependencies
+e2e-deps: ## installs dependencies for client
+	cd e2e && yarn install
+
+e2e-test: ## runs Cypress tests in browser
+	cd e2e && yarn run cypress open
+
+client-deps: ## installs dependencies for client
 	cd client && yarn install --frozen-lockfile
+
+client-build: client-deps ## Build the client
+	cd client && yarn build
+
+client-dev: ## Runs the Next/React development server (with automatic reloading)
+	cd client && yarn dev
+
+client-prod-start: client-build ## Installs dependencies, builds, and starts the Next/React dev server (production mode)
+	cd client && yarn start
 
 client-compile: ## compile client typescript
 	cd client && yarn tsc

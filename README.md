@@ -34,13 +34,27 @@ and other development commands.
 
 The following should install everything you need on macOS:
 
+Sets up pre-commits:
+
 ```sh
 make dev-deps
 ```
 
-## Web Client Setup
+Sets up client app in `/clent`:
 
-To set up and run the web client application, please see the corresponding [README](./client/README.md)
+```
+make client-deps
+```
+
+Sets up Cypress dependencies:
+
+```
+make e2e-deps
+```
+
+## Web Client
+
+For more information about the web client (located in `/client`), please see the corresponding [README](./client/README.md)
 
 ## Docker Setup
 
@@ -60,3 +74,25 @@ make dev-down
 
 Run `make` or `make help` to see the available `make` commands we use with this
 repository.
+
+## Testing
+
+### Client tests
+
+To run the Jest unit tests:
+
+```
+make client-test
+```
+
+To run Jest unit tests that will run with every change:
+
+```
+make watch-client-test
+```
+
+To run Cypress (e2e) tests:
+
+```
+make e2e-test
+```

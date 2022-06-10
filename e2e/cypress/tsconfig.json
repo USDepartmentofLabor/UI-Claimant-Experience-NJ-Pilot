@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "noEmit": true,
+    "types": ["cypress", "node"]
+  },
+  "include": ["../node_modules/cypress", "./**/*.cy.ts"]
+}
