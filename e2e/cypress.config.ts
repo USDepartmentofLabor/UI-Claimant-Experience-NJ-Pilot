@@ -1,6 +1,5 @@
 import { defineConfig } from "cypress";
-// @ts-ignore todo: figure out how to not have to do this
-import { lighthouse, pa11y, prepareAudit } from "cypress-audit";
+const { pa11y, prepareAudit } = require("@cypress-audit/pa11y");
 
 export default defineConfig({
   e2e: {
@@ -27,9 +26,6 @@ export default defineConfig({
       );
 
       on("task", {
-        lighthouse: lighthouse((lighthouseReport: any) => {
-          console.log(lighthouseReport); // raw lighthouse report
-        }),
         pa11y: pa11y((pa11yReport: any) => {
           console.log(pa11yReport); // raw pa11y report
         }),

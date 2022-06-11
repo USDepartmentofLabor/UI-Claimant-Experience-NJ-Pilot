@@ -36,7 +36,7 @@
 //   }
 // }
 
-import 'cypress-audit/commands'
+import '@cypress-audit/pa11y/commands'
 
 Cypress.Commands.add('check_a11y', () => {
   // @ts-ignore - todo: figure out how to not have to do this
