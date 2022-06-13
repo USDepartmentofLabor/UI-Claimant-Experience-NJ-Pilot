@@ -30,8 +30,16 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: dol-ui-claimant-intake-client-dev
-          IMAGE_TAG: ${{ github.sha }}
+          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_COMMIT: ${{ github.sha }}
         run: |
+          BRANCH_PREFIX="$GIT_BRANCH"
+          # use a generic prefix for all non-main branches
+          if [[ "$BRANCH_PREFIX" != "main" ]]; then
+            BRANCH_PREFIX="branch"
+          fi
+          BUILD_TIME=$(date '+%Y%m%d%H%M%S')
+          IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
           docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" client
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
