@@ -13,9 +13,11 @@ COPY .eslintrc.json .
 COPY tsconfig.json .
 COPY next.config.js .
 COPY package.json .
-COPY src/pages ./pages
+COPY i18n.ts .
+COPY i18n ./i18n
 COPY public ./public
-COPY src/styles ./styles
+COPY src/pages ./src/pages
+COPY src/styles ./src/styles
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
