@@ -3,8 +3,10 @@
 [Acceptance flow diagram](https://github.com/newjersey/dol-ui-claimant-intake/blob/main/docs/development-acceptance-flow.drawio.svg)
 
 <!--
-    If applicable, insert the Jira story number in the markdown header above.
-    The hyperlink will be filled in by GitHub magic (autolink references)
+    If applicable, insert the GH issue number in the markdown header above.
+    The hyperlink will be filled in by GitHub magic.
+    The key word "Resolves" before the issue number will mark the issue as done when merged.
+    Insert a non-keyword if you don't want the issue marked done upon merge)
 --->
 
 ## Changes proposed in this pull request
