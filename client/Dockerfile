@@ -13,9 +13,8 @@ COPY .eslintrc.json .
 COPY tsconfig.json .
 COPY next.config.js .
 COPY package.json .
-COPY i18n.ts .
-COPY i18n ./i18n
 COPY public ./public
+COPY src/i18n ./src/i18n
 COPY src/pages ./src/pages
 COPY src/styles ./src/styles
 
