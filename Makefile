@@ -29,6 +29,9 @@ e2e-deps: ## installs dependencies for client
 e2e-test: ## runs Cypress tests in browser
 	cd e2e && yarn run cypress open
 
+e2e-compile-check: ## check e2e for typescript compilation
+	cd e2e && yarn tsc --noEmit
+
 client-deps: ## installs dependencies for client
 	cd client && yarn install --frozen-lockfile
 

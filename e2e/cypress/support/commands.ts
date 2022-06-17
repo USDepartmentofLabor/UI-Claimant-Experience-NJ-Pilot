@@ -7,6 +7,7 @@
 // For more comprehensive examples of custom
 // commands please read more here:
 // https://on.cypress.io/custom-commands
+// https://docs.cypress.io/guides/tooling/typescript-support#Types-for-Custom-Commands
 // ***********************************************
 //
 //
@@ -39,7 +40,6 @@
 import '@cypress-audit/pa11y/commands'
 
 Cypress.Commands.add('check_a11y', () => {
-  // @ts-ignore - todo: figure out how to not have to do this
   cy.pa11y({
     runners: ['htmlcs'],
     standard: 'WCAG2AA',

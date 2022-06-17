@@ -5,6 +5,6 @@ describe('The Home Page', () => {
     cy.visit('/home')
     cy.get('h1').contains('Apply for unemployment insurance')
     // @ts-ignore
-    cy.check_a11y() // todo: get configs working to run this
+    cy.check_a11y()
   })
 })
