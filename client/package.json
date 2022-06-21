@@ -15,7 +15,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@swc/core": "^1.2.196",
+    "@swc/core": "^1.2.204",
     "@swc/jest": "^0.2.21",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.4",
