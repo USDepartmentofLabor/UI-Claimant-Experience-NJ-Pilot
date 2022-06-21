@@ -17,6 +17,12 @@ dev-down: ## Shut down all local docker services
 dev-logs: ## View the local docker service logs
 	docker compose logs -f
 
+ci-up: ## Run docker services through continuous integration
+	docker compose up -d
+
+ci-down: ## Shut down docker services running through continuous integration
+	docker compose down
+
 client-test: ## run Jest unit/integration tests
 	cd client && yarn test
 
@@ -28,6 +34,9 @@ e2e-deps: ## installs dependencies for client
 
 e2e-test: ## runs Cypress tests in browser
 	cd e2e && yarn run cypress open
+
+e2e-ci-test: ## runs Cypress tests on the command line
+	cd e2e && yarn cypress run --headless --browser chrome
 
 e2e-compile-check: ## check e2e for typescript compilation
 	cd e2e && yarn tsc --noEmit
