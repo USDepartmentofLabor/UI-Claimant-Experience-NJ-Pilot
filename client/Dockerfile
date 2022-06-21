@@ -14,9 +14,7 @@ COPY tsconfig.json .
 COPY next.config.js .
 COPY package.json .
 COPY public ./public
-COPY src/i18n ./src/i18n
-COPY src/pages ./src/pages
-COPY src/styles ./src/styles
+COPY src ./src
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
