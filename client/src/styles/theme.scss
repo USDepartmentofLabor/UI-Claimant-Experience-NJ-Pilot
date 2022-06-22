@@ -4,7 +4,6 @@
 
 // USWDS standard theme settings and utilities
 @import 'node_modules/uswds/src/stylesheets/theme/_uswds-theme-general.scss';
-$theme-show-notifications: false;
 @import 'node_modules/uswds/src/stylesheets/theme/_uswds-theme-typography.scss';
 @import 'node_modules/uswds/src/stylesheets/theme/_uswds-theme-spacing.scss';
 @import 'node_modules/uswds/src/stylesheets/theme/_uswds-theme-color.scss';
@@ -15,6 +14,7 @@ $theme-show-notifications: false;
 // App customizations and overrides
 
 /* GENERAL */
+$theme-show-notifications: false;
 $theme-image-path: '../../../img';
 
 /* TYPOGRAPHY */

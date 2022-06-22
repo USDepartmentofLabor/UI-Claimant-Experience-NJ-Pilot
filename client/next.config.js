@@ -1,3 +1,5 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -6,6 +8,7 @@ const nextConfig = {
     defaultLocale: 'en',
     // TODO: set up domain locales if/when we have domain routing
   },
+  localePath: path.resolve('./src/i18n'),
 }
 
 module.exports = nextConfig

@@ -1,20 +1,30 @@
 {
   "dependencies": {
-    "i18next": "^21.8.10",
-    "i18next-browser-languagedetector": "^6.1.4",
     "@trussworks/react-uswds": "^3.0.2",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.3",
     "formik": "^2.2.9",
+    "i18next": "^21.8.10",
+    "i18next-browser-languagedetector": "^6.1.4",
     "next": "12.1.6",
+    "next-i18next": "^11.0.0",
     "react": "18.2.0",
     "react-dom": "18.1.0",
-    "react-i18next": "^11.17.0",
     "sass": "^1.52.2",
     "uswds": "2.11.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.5",
+    "@storybook/addon-a11y": "^6.5.9",
+    "@storybook/addon-actions": "^6.5.9",
+    "@storybook/addon-essentials": "^6.5.9",
+    "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-links": "^6.5.9",
+    "@storybook/builder-webpack5": "^6.5.9",
+    "@storybook/manager-webpack5": "^6.5.9",
+    "@storybook/react": "^6.5.9",
+    "@storybook/testing-library": "^0.0.13",
     "@swc/core": "^1.2.204",
     "@swc/jest": "^0.2.21",
     "@testing-library/dom": "^8.13.0",
@@ -27,9 +37,11 @@
     "@types/react-dom": "18.0.5",
     "eslint": "8.18.0",
     "eslint-config-next": "12.1.6",
+    "eslint-plugin-storybook": "^0.5.12",
     "jest": "^28.1.1",
     "jest-environment-jsdom": "^28.1.0",
     "prettier": "^2.6.2",
+    "storybook-addon-next": "^1.6.6",
     "typescript": "4.7.3"
   },
   "engines": {
@@ -42,7 +54,9 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "version": "0.1.0"
 }

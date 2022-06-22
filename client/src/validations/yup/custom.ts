@@ -6,6 +6,7 @@ import {
   ISO_8601_DATE,
   USER_FACING_DATE_INPUT_FORMAT,
 } from 'constants/date/format'
+import { CENTS_REGEX } from 'constants/currency/format'
 
 export const yupDate = (t: TFunction<'claimForm'>, fieldName: string) =>
   yup
@@ -23,3 +24,7 @@ export const yupDate = (t: TFunction<'claimForm'>, fieldName: string) =>
       })
     )
     .required(t('date.required', { fieldName }))
+
+export const yupCurrency = (errorMsg = '') => {
+  return yup.string().matches(CENTS_REGEX, errorMsg)
+}

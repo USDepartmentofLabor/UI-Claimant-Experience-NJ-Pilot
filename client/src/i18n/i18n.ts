@@ -11,7 +11,7 @@ export const resources = {
   es,
 } as const
 
-const namespaces = ['home'] as const
+const namespaces = ['home', 'common', 'claimForm'] as const
 
 i18n.use(LanguageDetector).use(initReactI18next).init({
   lng: 'en',
