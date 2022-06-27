@@ -13,3 +13,6 @@ export const raceOptions = [
   'opt_out',
 ] as const
 export type RaceOptionType = typeof raceOptions[number]
+
+export const typeOfPhoneOptions = ['home', 'work', 'mobile'] as const
+export type TypeOfPhoneType = typeof typeOfPhoneOptions[number]
