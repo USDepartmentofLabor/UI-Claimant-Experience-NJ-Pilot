@@ -16,3 +16,9 @@ export type RaceOptionType = typeof raceOptions[number]
 
 export const typeOfPhoneOptions = ['home', 'work', 'mobile'] as const
 export type TypeOfPhoneType = typeof typeOfPhoneOptions[number]
+
+export const paymentMethodOptions = ['debit', 'direct_deposit'] as const
+export type PaymentMethodType = typeof paymentMethodOptions[number]
+
+export const accountTypeOptions = ['checking', 'savings'] as const
+export type AccountType = typeof accountTypeOptions[number]
