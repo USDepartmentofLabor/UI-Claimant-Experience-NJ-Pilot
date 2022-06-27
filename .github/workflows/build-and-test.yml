@@ -44,7 +44,7 @@ jobs:
         run: make client-compile-check
 
       - name: Run Jest tests
-        run: make client-test
+        run: make client-test-coverage
 
       - name: Set up e2e Node.js
         uses: actions/setup-node@v2

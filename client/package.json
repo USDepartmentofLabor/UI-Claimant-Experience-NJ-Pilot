@@ -55,6 +55,7 @@
     "lint": "next lint",
     "start": "next start",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

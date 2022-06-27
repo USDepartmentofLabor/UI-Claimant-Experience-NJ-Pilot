@@ -13,6 +13,15 @@ const customJestConfig = {
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest',
   },
+  coverageThreshold: {
+    global: {
+      statements: 90,
+      branches: 90,
+      functions: 90,
+      lines: 90,
+    },
+  },
+  coverageDirectory: 'coverage/jest',
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

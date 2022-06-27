@@ -1,9 +1,11 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik } from 'formik'
 
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import { noop } from 'helpers/noop/noop'
+import * as yup from 'yup'
+import React from 'react'
 
 const radioOptions = [
   {
@@ -22,15 +24,15 @@ const radioOptions = [
 
 describe('RadioField component', () => {
   it('renders the elements that make up a field', () => {
-    const { getByLabelText } = render(
+    render(
       <Formik initialValues={{ radioField: undefined }} onSubmit={noop}>
         <RadioField name="radioField" options={radioOptions} />
       </Formik>
     )
 
-    const firstOption = getByLabelText('First')
-    const secondOption = getByLabelText('Second')
-    const thirdOption = getByLabelText('Third')
+    const firstOption = screen.getByLabelText('First')
+    const secondOption = screen.getByLabelText('Second')
+    const thirdOption = screen.getByLabelText('Third')
 
     expect(firstOption).toBeInstanceOf(HTMLInputElement)
     expect(firstOption).toHaveAttribute('id', 'radioField.first')
@@ -50,15 +52,15 @@ describe('RadioField component', () => {
 
   describe('uses initial values', () => {
     it('uses the initial value that is passed', () => {
-      const { getByLabelText } = render(
+      render(
         <Formik initialValues={{ radioField: 'second' }} onSubmit={noop}>
           <RadioField name="radioField" options={radioOptions} />
         </Formik>
       )
 
-      const firstOption = getByLabelText('First')
-      const secondOption = getByLabelText('Second')
-      const thirdOption = getByLabelText('Third')
+      const firstOption = screen.getByLabelText('First')
+      const secondOption = screen.getByLabelText('Second')
+      const thirdOption = screen.getByLabelText('Third')
 
       expect(firstOption).not.toBeChecked()
       expect(secondOption).toBeChecked()
@@ -68,15 +70,15 @@ describe('RadioField component', () => {
 
   describe('disabled', () => {
     it('disables the RadioField when it is disabled', () => {
-      const { queryAllByRole } = render(
+      render(
         <Formik initialValues={{ radioField: 'second' }} onSubmit={noop}>
           <RadioField name="radioField" options={radioOptions} disabled />
         </Formik>
       )
 
-      queryAllByRole('radio').map((radioOption) =>
-        expect(radioOption).toBeDisabled()
-      )
+      screen
+        .queryAllByRole('radio')
+        .map((radioOption) => expect(radioOption).toBeDisabled())
     })
 
     /**
@@ -91,15 +93,15 @@ describe('RadioField component', () => {
 
   describe('user interaction', () => {
     it('allows the user to make a single selection', async () => {
-      const { getByLabelText } = render(
+      render(
         <Formik initialValues={{ radioField: undefined }} onSubmit={noop}>
           <RadioField name="radioField" options={radioOptions} />
         </Formik>
       )
 
-      const firstOption = getByLabelText('First')
-      const secondOption = getByLabelText('Second')
-      const thirdOption = getByLabelText('Third')
+      const firstOption = screen.getByLabelText('First')
+      const secondOption = screen.getByLabelText('Second')
+      const thirdOption = screen.getByLabelText('Third')
 
       // Initially undefined, no radio should be selected
       expect(firstOption).not.toBeChecked()
@@ -121,6 +123,67 @@ describe('RadioField component', () => {
       expect(firstOption).toBeChecked()
       expect(secondOption).not.toBeChecked()
       expect(thirdOption).not.toBeChecked()
+    })
+
+    it('fires custom onChange', async () => {
+      const onChange = jest.fn()
+      render(
+        <Formik initialValues={{ radioField: undefined }} onSubmit={noop}>
+          <RadioField
+            name="radioField"
+            options={radioOptions}
+            onChange={onChange}
+          />
+        </Formik>
+      )
+
+      const firstOption = screen.getByLabelText('First')
+      const thirdOption = screen.getByLabelText('Third')
+
+      // Select an option
+      await userEvent.click(thirdOption)
+
+      // onChange should file
+      expect(thirdOption).toBeChecked()
+      expect(onChange).toHaveBeenCalledTimes(1)
+
+      // Select a different option
+      await userEvent.click(firstOption)
+
+      // onChange should be called a second time
+      expect(firstOption).toBeChecked()
+      expect(onChange).toHaveBeenCalledTimes(2)
+    })
+
+    it('Displays an error', async () => {
+      render(
+        <Formik
+          initialValues={{ radioField: '' }}
+          validationSchema={yup.object().shape({
+            radioField: yup.boolean().required('You must select an option'),
+          })}
+          onSubmit={noop}
+        >
+          {({ submitForm }) => {
+            return (
+              <>
+                <RadioField name="radioField" options={radioOptions} />
+                <button type="submit" onClick={submitForm}>
+                  Submit
+                </button>
+              </>
+            )
+          }}
+        </Formik>
+      )
+      const submitButton = screen.getByRole('button', { name: 'Submit' })
+
+      await userEvent.click(submitButton)
+
+      const errorAlert = await screen.findByRole('alert')
+
+      expect(errorAlert).toBeInTheDocument()
+      expect(errorAlert).toHaveTextContent('You must select an option')
     })
   })
 })

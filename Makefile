@@ -23,12 +23,6 @@ ci-up: ## Run docker services through continuous integration
 ci-down: ## Shut down docker services running through continuous integration
 	docker compose down
 
-client-test: ## run Jest unit/integration tests
-	cd client && yarn test
-
-watch-client-test: ## run Jest unit/integration tests and watch
-	cd client && yarn test --watchAll
-
 e2e-deps: ## installs dependencies for client
 	cd e2e && yarn install
 
@@ -43,6 +37,15 @@ e2e-compile-check: ## check e2e for typescript compilation
 
 client-deps: ## installs dependencies for client
 	cd client && yarn install --frozen-lockfile
+
+client-test: ## run Jest unit/integration tests
+	cd client && yarn test
+
+client-test-coverage: ## run Jest unit/integration tests
+	cd client && yarn test:coverage
+
+client-test-watch: ## run Jest unit/integration tests and watch
+	cd client && yarn test --watchAll
 
 client-build: client-deps ## Build the client
 	cd client && yarn build

@@ -113,37 +113,16 @@ describe('DateInputField Component', () => {
     expect(yearField).toHaveValue('1885')
   })
 
-  it('Displays an error when the field is touched and blurred', async () => {
-    const { getByLabelText, queryByRole } = render(submittableDateInputField)
+  it('Displays an error', async () => {
+    const { getByLabelText, findByRole } = render(submittableDateInputField)
 
     const monthField = getByLabelText('date.month.label')
     const dayField = getByLabelText('date.day.label')
     const yearField = getByLabelText('date.year.label')
 
-    // Focus the month input
-    await userEvent.click(monthField)
-    expect(monthField).toHaveFocus()
-    expect(queryByRole('alert')).not.toBeInTheDocument()
-
-    // Tab to the day input of the field
-    await userEvent.tab()
-    expect(dayField).toHaveFocus()
-    expect(queryByRole('alert')).not.toBeInTheDocument()
-
-    // Tab to the year input of the field
-    await userEvent.tab()
-    expect(yearField).toHaveFocus()
-    expect(queryByRole('alert')).not.toBeInTheDocument()
-
-    await userEvent.click(screen.getByRole('button'))
-    // Tab away from the year field, blurs the entire field and triggers validation as a result
-    expect(monthField).not.toHaveFocus()
-    expect(dayField).not.toHaveFocus()
-    expect(yearField).not.toHaveFocus()
-
     // validate the form
     await userEvent.click(screen.getByRole('button'))
-    expect(queryByRole('alert')).toBeInTheDocument()
+    expect(await findByRole('alert')).toBeInTheDocument()
   })
 
   it('Allows the user to enter a date', async () => {

@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory, Meta, Story } from '@storybook/react'
+import { ComponentStory, Meta, Story } from '@storybook/react'
 import { Form, Formik } from 'formik'
 import { Label } from '@trussworks/react-uswds'
 import * as yup from 'yup'
