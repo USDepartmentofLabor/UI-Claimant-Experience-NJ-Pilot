@@ -1,8 +1,8 @@
 ---
-name: User Story
-about: As a ___, I want ___, so that ___
-title: "[story]: "
-labels: 'type: story'
+name: Chore
+about: Something needs to be done, but it might not be core-team user story territory
+title: "[chore]: "
+labels: 'type: chore'
 assignees: ''
 
 ---

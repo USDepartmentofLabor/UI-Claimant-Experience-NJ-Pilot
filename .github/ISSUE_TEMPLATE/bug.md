@@ -2,8 +2,9 @@
 name: Bug report
 about: Something isn't quite right, create a bug report!
 title: "[bug]: "
-labels: "priority: low, type: bug"
-assignees: ""
+labels: 'priority: low, type: bug'
+assignees: ''
+
 ---
 
 **Describe the bug**

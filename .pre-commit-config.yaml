@@ -41,3 +41,7 @@ repos:
     rev: v2.6.2
     hooks:
       - id: prettier
+        exclude: >
+          (?x)^(
+            .github/ISSUE_TEMPLATE/.*.md|
+          )$
