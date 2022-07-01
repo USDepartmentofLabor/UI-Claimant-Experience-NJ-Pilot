@@ -13,6 +13,11 @@ const customJestConfig = {
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest',
   },
+  collectCoverageFrom: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    '!./src/i18n/**',
+    '!**/*.stories.*',
+  ],
   coverageThreshold: {
     global: {
       statements: 90,
