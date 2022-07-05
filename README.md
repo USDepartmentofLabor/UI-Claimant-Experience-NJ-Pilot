@@ -40,7 +40,7 @@ Sets up pre-commits:
 make dev-deps
 ```
 
-Sets up client app in `/clent`:
+Sets up client app in `/client`:
 
 ```
 make client-deps
@@ -52,9 +52,19 @@ Sets up Cypress dependencies:
 make e2e-deps
 ```
 
+OR run all of the above dependencies:
+
+```
+make all-deps
+```
+
 ## Web Client
 
-For more information about the web client (located in `/client`), please see the corresponding [README](./client/README.md)
+To run the client server locally:
+
+```
+make client-dev
+```
 
 ## Docker Setup
 
@@ -88,7 +98,7 @@ make client-test
 To run Jest unit tests that will run with every change:
 
 ```
-make watch-client-test
+make client-test-watch
 ```
 
 To run Cypress (e2e) tests:

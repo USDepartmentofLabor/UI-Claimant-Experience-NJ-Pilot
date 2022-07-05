@@ -1,7 +1,7 @@
 help: ## Print the help documentation
 	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-dev-deps: ## Install local development environment dependencies
+dev-deps: ## Install local development environment dependencies (depending on your setup, you may have to run pip3)
 	pip install pre-commit
 	pre-commit install --install-hooks
 
@@ -64,3 +64,5 @@ client-compile-check: ## check client for typescript compilation
 
 client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
+
+all-deps: dev-deps client-deps e2e-deps ## Runs all required dependencies for running the application
