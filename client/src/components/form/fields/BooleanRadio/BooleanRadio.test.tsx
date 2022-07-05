@@ -1,5 +1,5 @@
 import { Formik } from 'formik'
-import { act, render } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import { BooleanRadio } from './BooleanRadio'
 import userEvent from '@testing-library/user-event'

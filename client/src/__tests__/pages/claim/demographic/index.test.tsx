@@ -5,7 +5,6 @@ import userEvent from '@testing-library/user-event'
 
 import Demographic from 'pages/claim/demographic'
 import { noop } from 'helpers/noop/noop'
-import { useTranslation } from 'react-i18next'
 // import {
 //   getInvalidClaimFormFixtures,
 //   getValidClaimFormFixtures,

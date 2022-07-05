@@ -1,4 +1,4 @@
-import { screen, act, render, waitFor, within } from '@testing-library/react'
+import { screen, render, within } from '@testing-library/react'
 import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import ContactInformation from 'pages/claim/contact'
@@ -83,7 +83,7 @@ describe('ContactInformation component', () => {
 
     await user.click(morePhones)
 
-    const [phone1, phone2] = getAllByRole('textbox', {
+    const [phone1] = getAllByRole('textbox', {
       name: 'phone.number.label',
     })
     expect(phone1).toHaveAttribute('id', 'phones[0].number')
@@ -102,7 +102,7 @@ describe('ContactInformation component', () => {
 
   it('conditionally displays preferred language', async () => {
     const user = userEvent.setup()
-    const { getByRole, getByLabelText, queryByLabelText } = render(
+    const { getByRole, getByLabelText } = render(
       <Formik initialValues={initialValues} onSubmit={noop}>
         <ContactInformation />
       </Formik>

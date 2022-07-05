@@ -45,3 +45,18 @@ repos:
           (?x)^(
             .github/ISSUE_TEMPLATE/.*.md|
           )$
+
+  - repo: local
+    hooks:
+      - id: eslint-client
+        name: eslint-client
+        entry: yarn --cwd client lint
+        language: node
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: false
+      - id: eslint-e2e
+        name: eslint-e2e
+        entry: yarn --cwd e2e lint
+        language: node
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: false

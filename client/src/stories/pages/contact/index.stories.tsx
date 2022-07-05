@@ -1,7 +1,4 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
-import { Formik, Form } from 'formik'
-import { useTranslation } from 'react-i18next'
-import { noop } from 'helpers/noop/noop'
 import ContactInformation from 'pages/claim/contact'
 
 export default {
@@ -10,7 +7,7 @@ export default {
 } as ComponentMeta<typeof ContactInformation>
 
 const Template: ComponentStory<typeof ContactInformation> = () => {
-  const { t } = useTranslation('claimForm')
+  // const { t } = useTranslation('claimForm')
   // const validationSchema = ContactInformationPage.pageSchema(t);
   // const initialValues = {
   //   phones: [{ number: '555-543-7643' }],

@@ -3,9 +3,9 @@ import { Form, Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { Button, Fieldset } from '@trussworks/react-uswds'
 import { PhoneNumberField } from './PhoneNumberField'
-import { yupPhone } from 'validations/yup/custom'
 import * as yup from 'yup'
 import { noop } from 'helpers/noop/noop'
+import { yupPhone } from 'validations/yup/custom'
 
 export default {
   title: 'Components/Form/PhoneNumberField',
@@ -28,7 +28,7 @@ const Template: ComponentStory<typeof PhoneNumberField> = (args) => {
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={validationSchema}
+      validationSchema={validationSchema}
       onSubmit={noop}
     >
       <Form>

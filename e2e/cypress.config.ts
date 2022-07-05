@@ -1,13 +1,15 @@
 import { defineConfig } from 'cypress'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { pa11y, prepareAudit } = require('@cypress-audit/pa11y')
 
 export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
-    setupNodeEvents(on, config) {
+    setupNodeEvents(on) {
       on(
         'before:browser:launch',
         (
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           browser = {
             name: '',
             family: 'chromium',

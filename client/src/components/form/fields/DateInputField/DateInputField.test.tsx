@@ -114,11 +114,7 @@ describe('DateInputField Component', () => {
   })
 
   it('Displays an error', async () => {
-    const { getByLabelText, findByRole } = render(submittableDateInputField)
-
-    const monthField = getByLabelText('date.month.label')
-    const dayField = getByLabelText('date.day.label')
-    const yearField = getByLabelText('date.year.label')
+    const { findByRole } = render(submittableDateInputField)
 
     // validate the form
     await userEvent.click(screen.getByRole('button'))

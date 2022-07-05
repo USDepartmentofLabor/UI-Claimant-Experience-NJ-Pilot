@@ -9,7 +9,7 @@ RUN yarn install --frozen-lockfile
 FROM node:16.15.1-bullseye-slim AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY .eslintrc.json .
+COPY .eslintrc.yml .
 COPY tsconfig.json .
 COPY next.config.js .
 COPY package.json .

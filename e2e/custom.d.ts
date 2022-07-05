@@ -26,6 +26,7 @@ declare namespace Cypress {
     wait?: number
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     /**
      * Runs a pa11y audit

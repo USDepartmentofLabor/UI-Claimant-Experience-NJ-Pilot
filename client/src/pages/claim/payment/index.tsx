@@ -1,9 +1,7 @@
 import { NextPage } from 'next'
 
-import { useEffect } from 'react'
-import { TFunction, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Fieldset } from '@trussworks/react-uswds'
-import * as yup from 'yup'
 
 import { RadioField } from '../../../components/form/fields/RadioField/RadioField'
 import { TextField } from '../../../components/form/fields/TextField/TextField'

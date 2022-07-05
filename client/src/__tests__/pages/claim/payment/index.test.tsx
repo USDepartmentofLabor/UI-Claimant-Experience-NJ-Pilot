@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import PaymentInformation from 'pages/claim/payment'
 import { Formik } from 'formik'

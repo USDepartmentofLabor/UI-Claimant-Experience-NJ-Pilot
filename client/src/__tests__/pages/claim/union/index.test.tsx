@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 import { Union } from 'pages/claim/union'
 import { noop } from 'helpers/noop/noop'

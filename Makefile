@@ -24,7 +24,7 @@ ci-down: ## Shut down docker services running through continuous integration
 	docker compose down
 
 e2e-deps: ## installs dependencies for client
-	cd e2e && yarn install
+	cd e2e && yarn install --frozen-lockfile
 
 e2e-test: ## runs Cypress tests in browser
 	cd e2e && yarn run cypress open

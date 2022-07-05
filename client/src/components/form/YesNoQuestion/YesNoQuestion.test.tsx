@@ -1,5 +1,5 @@
 import { Formik } from 'formik'
-import { act, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import { YesNoQuestion } from './YesNoQuestion'
 import userEvent from '@testing-library/user-event'

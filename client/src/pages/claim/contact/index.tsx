@@ -1,6 +1,4 @@
-import { NextPage } from 'next'
-
-import { TFunction, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { FieldArray, Formik } from 'formik'
 import { TextField } from '../../../components/form/fields/TextField/TextField'
 // import { IPageDefinition } from "../../PageDefinitions";
@@ -57,7 +55,9 @@ const ContactInformation = () => {
         {/*<VerifiedFields fields={['email', 'phone']} /> implement when designed and hooked up to api */}
         <FieldArray
           name="phones"
-          render={(arrayHelpers) => (
+          render={(
+            arrayHelpers // eslint-disable-line @typescript-eslint/no-unused-vars
+          ) => (
             <>
               <PhoneNumberField name="phones[0]" showSMS={false} />
               <CheckboxField

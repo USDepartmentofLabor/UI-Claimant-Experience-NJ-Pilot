@@ -5,6 +5,7 @@ import {
   TypeOfPhoneType,
 } from 'constants/formOptions'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ClaimantInput = DemographicInformationType & ContactType
 
 type DemographicInformationType = {

@@ -27,34 +27,27 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
-      - name: Lint
-        run: make lint
-
-      - name: Set up client Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 16.15.1
           cache: "yarn"
-          cache-dependency-path: "client/yarn.lock"
+          cache-dependency-path: "**/yarn.lock"
 
       - name: Install client dependencies
         run: make client-deps
+
+      - name: Install e2e dependencies
+        run: make e2e-deps
+
+      - name: Lint
+        run: make lint
 
       - name: Check client Typescript compilation
         run: make client-compile-check
 
       - name: Run Jest tests
         run: make client-test-coverage
-
-      - name: Set up e2e Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16.15.1
-          cache: "yarn"
-          cache-dependency-path: "e2e/yarn.lock"
-
-      - name: Install e2e dependencies
-        run: make e2e-deps
 
       - name: Check e2e Typescript compilation
         run: make e2e-compile-check
