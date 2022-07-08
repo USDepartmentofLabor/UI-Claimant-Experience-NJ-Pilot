@@ -37,7 +37,7 @@
 
 ## Code Review Verification Steps
 
-[link to team norms when determined](team-norms-on-code-review-tbd)
+[How we work](https://github.com/newjersey/dol-ui-claimant-intake/blob/main/docs/CONTRIBUTING.md)
 
 ### As the original developer, I have
 
