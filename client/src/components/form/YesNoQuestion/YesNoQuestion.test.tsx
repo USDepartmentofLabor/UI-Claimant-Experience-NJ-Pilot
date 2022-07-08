@@ -1,21 +1,14 @@
 import { Formik } from 'formik'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { YesNoQuestion } from './YesNoQuestion'
 import userEvent from '@testing-library/user-event'
 import { noop } from 'helpers/noop/noop'
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
+import { boolean, object } from 'yup'
 
 describe('YesNoQuestion Component', () => {
   it('renders properly', () => {
-    const { getByLabelText } = render(
+    render(
       <Formik
         initialValues={{
           my_yes_no_button: undefined,
@@ -26,8 +19,8 @@ describe('YesNoQuestion Component', () => {
       </Formik>
     )
 
-    const yes = getByLabelText('yes')
-    const no = getByLabelText('no')
+    const yes = screen.getByLabelText('yes')
+    const no = screen.getByLabelText('no')
 
     expect(yes).not.toBeChecked()
     expect(yes.parentElement).toHaveClass('inline')
@@ -37,7 +30,7 @@ describe('YesNoQuestion Component', () => {
 
   it('Only Yes or No may be selected at a time', async () => {
     const user = userEvent.setup()
-    const { getByLabelText } = render(
+    render(
       <Formik
         initialValues={{
           my_yes_no_button: undefined,
@@ -48,8 +41,8 @@ describe('YesNoQuestion Component', () => {
       </Formik>
     )
 
-    const yes = getByLabelText('yes')
-    const no = getByLabelText('no')
+    const yes = screen.getByLabelText('yes')
+    const no = screen.getByLabelText('no')
 
     expect(yes).not.toBeChecked()
     expect(no).not.toBeChecked()
@@ -66,7 +59,7 @@ describe('YesNoQuestion Component', () => {
   })
 
   it('Accepts a default value', () => {
-    const { getByLabelText } = render(
+    render(
       <Formik
         initialValues={{
           my_yes_no_button: true,
@@ -77,8 +70,8 @@ describe('YesNoQuestion Component', () => {
       </Formik>
     )
 
-    const yes = getByLabelText('yes')
-    const no = getByLabelText('no')
+    const yes = screen.getByLabelText('yes')
+    const no = screen.getByLabelText('no')
 
     expect(yes).toBeChecked()
     expect(no).not.toBeChecked()
@@ -88,7 +81,7 @@ describe('YesNoQuestion Component', () => {
     const user = userEvent.setup()
     const onChange = jest.fn()
 
-    const { getByLabelText } = render(
+    render(
       <Formik
         initialValues={{
           my_yes_no_button: true,
@@ -103,8 +96,8 @@ describe('YesNoQuestion Component', () => {
       </Formik>
     )
 
-    const yes = getByLabelText('yes')
-    const no = getByLabelText('no')
+    const yes = screen.getByLabelText('yes')
+    const no = screen.getByLabelText('no')
 
     expect(yes).toBeChecked()
     expect(no).not.toBeChecked()
@@ -114,5 +107,36 @@ describe('YesNoQuestion Component', () => {
     expect(yes).not.toBeChecked()
     expect(no).toBeChecked()
     expect(onChange).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows errors', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <Formik
+        initialValues={{
+          my_yes_no_button: undefined,
+        }}
+        validationSchema={object().shape({
+          my_yes_no_button: boolean().required(),
+        })}
+        onSubmit={noop}
+      >
+        {({ submitForm }) => (
+          <>
+            <YesNoQuestion question="yes or no?" name="my_yes_no_button" />
+            <button type="submit" onClick={submitForm}>
+              Submit
+            </button>
+          </>
+        )}
+      </Formik>
+    )
+
+    const submitButton = screen.getByRole('button')
+
+    await user.click(submitButton)
+
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
 })

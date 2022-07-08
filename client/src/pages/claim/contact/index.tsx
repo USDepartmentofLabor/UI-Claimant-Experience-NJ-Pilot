@@ -1,121 +1,105 @@
+import { NextPage } from 'next'
 import { useTranslation } from 'react-i18next'
-import { FieldArray, Formik } from 'formik'
-import { TextField } from '../../../components/form/fields/TextField/TextField'
-// import { IPageDefinition } from "../../PageDefinitions";
-import { YesNoQuestion } from '../../../components/form/YesNoQuestion/YesNoQuestion'
-import { CheckboxField } from '../../../components/form/fields/CheckboxField/CheckboxField'
+import { FieldArray, useFormikContext } from 'formik'
+import { TextField } from 'components/form/fields/TextField/TextField'
+import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
+import { CheckboxField } from 'components/form/fields/CheckboxField/CheckboxField'
 import { PhoneNumberField } from 'components/form/PhoneNumberField/PhoneNumberField'
-// import { yupPhone } from '../../../common/YupBuilder'
-// import * as yup from 'yup'
-// import { useClearFields } from "hooks/useClearFields";
-// import { PHONE_SKELETON } from "../../../utils/claim_form";
-// import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
-import { noop } from 'helpers/noop/noop'
+import { ClaimantInput } from 'types/claimantInput'
+import { PHONE_SKELETON } from 'constants/initialValues'
+import { useClearFields } from 'hooks/useClearFields'
+import { PageDefinition } from 'constants/pages/pageDefinitions'
+import { i18n_claimForm } from 'i18n/i18n'
+import { Routes } from 'constants/routes'
+import { array, boolean, object, string } from 'yup'
+import { yupPhone } from 'validations/yup/custom'
 
-// TODO: uncomment comments when implementing Formik and validations
-// const pageSchema = (t: TFunction<'claimForm'>) =>
-//   yup.object().shape({
-//     // email is not editable, so omit required() but include the schema def just in case.
-//     email: yup.string().email(),
-//     phones: yup.array().when('LOCAL_more_phones', {
-//       is: true,
-//       then: yup.array().of(yupPhone(t)).min(2).required(),
-//       otherwise: yup.array().of(yupPhone(t)).min(1).required(),
-//     }),
-//     interpreter_required: yup
-//       .boolean()
-//       .required(t('contact_information.interpreter_required.required')),
-//     preferred_language: yup.string().when('interpreter_required', {
-//       is: true,
-//       then: yup
-//         .string()
-//         .required(t('contact_information.preferred_language.required')),
-//     }),
-//   })
-
-const ContactInformation = () => {
+const Contact: NextPage = () => {
   const { t } = useTranslation('claimForm', {
-    keyPrefix: 'contact_information',
+    keyPrefix: 'contact',
   })
-  // const { values } = useFormikContext<ClaimantInput>();
+  const { values } = useFormikContext<ClaimantInput>()
 
-  // Remove phones[1] if unchecked
-  // useClearFields(
-  //   !values.LOCAL_more_phones && values.phones && values.phones.length > 1,
-  //   {
-  //     fieldName: "phones",
-  //     value: [values.phones?.[0]],
-  //   }
-  // );
+  useClearFields(values.interpreter_required === false, 'preferred_language')
 
   return (
-    // temp use of Formik until we implement the formik wrapper
-    <Formik initialValues={{}} onSubmit={noop}>
-      <>
-        {/*<VerifiedFields fields={['email', 'phone']} /> implement when designed and hooked up to api */}
-        <FieldArray
-          name="phones"
-          render={(
-            arrayHelpers // eslint-disable-line @typescript-eslint/no-unused-vars
-          ) => (
-            <>
-              <PhoneNumberField name="phones[0]" showSMS={false} />
-              <CheckboxField
-                name="LOCAL_more_phones"
-                data-testid="LOCAL_more_phones"
-                label={t('more_phones')}
-                // onChange={(e) => {
-                //   if (e.target.checked) {
-                //     values.phones?.length === 1 &&
-                //       arrayHelpers.push({ ...PHONE_SKELETON })
-                //   } else {
-                //     ;(values.phones?.length || 0) >= 2 && arrayHelpers.remove(1)
-                //   }
-                // }}
-              />
-              {/*{values.LOCAL_more_phones && (*/}
-              {/*  <PhoneNumberField name="phones[1]" showSMS={false} />*/}
-              {/*)}*/}
-            </>
-          )}
-        />
-
-        <TextField
-          name="email"
-          type="text"
-          label={t('email')}
-          disabled
-          readOnly
-        />
-        <YesNoQuestion
-          question={t('interpreter_required.label')}
-          name="interpreter_required"
-        />
-        {/*{values.interpreter_required && (*/}
+    <>
+      {/*<VerifiedFields fields={['email', 'phone']} /> implement when designed and hooked up to api */}
+      <FieldArray
+        name="phones"
+        render={(arrayHelpers) => (
+          <>
+            <PhoneNumberField name="phones[0]" showSMS={false} />
+            <CheckboxField
+              name="LOCAL_more_phones"
+              data-testid="LOCAL_more_phones"
+              label={t('more_phones')}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  values.phones?.length === 1 &&
+                    arrayHelpers.push({ ...PHONE_SKELETON })
+                } else {
+                  const shouldRemoveSecondPhone =
+                    (values.phones?.length || 0) >= 2
+                  shouldRemoveSecondPhone && arrayHelpers.remove(1)
+                }
+              }}
+            />
+            {values.LOCAL_more_phones && (
+              <PhoneNumberField name="phones[1]" showSMS={false} />
+            )}
+          </>
+        )}
+      />
+      <TextField
+        name="email"
+        type="text"
+        label={t('email')}
+        disabled
+        readOnly
+      />
+      <YesNoQuestion
+        question={t('interpreter_required.label')}
+        name="interpreter_required"
+      />
+      {values.interpreter_required && (
         <TextField
           label={t('preferred_language.label')}
           name="preferred_language"
           type="text"
         />
-        {/*)}*/}
-      </>
-    </Formik>
+      )}
+    </>
   )
 }
 
-export default ContactInformation
+export const ContactPageDefinition: PageDefinition = {
+  heading: i18n_claimForm.t('contact.heading'),
+  path: Routes.CLAIM.CONTACT,
+  initialValues: {
+    email: undefined,
+    phones: [{ ...PHONE_SKELETON }],
+    LOCAL_more_phones: undefined,
+    interpreter_required: undefined,
+  },
+  validationSchema: object().shape({
+    // email is not editable, so omit required() but include the schema def just in case.
+    email: string().email(),
+    phones: array().when('LOCAL_more_phones', {
+      is: true,
+      then: array().of(yupPhone).min(2).required(),
+      otherwise: array().of(yupPhone).min(1).required(),
+    }),
+    interpreter_required: boolean().required(
+      i18n_claimForm.t('contact.interpreter_required.required')
+    ),
+    preferred_language: string().when('interpreter_required', {
+      is: true,
+      then: string().required(
+        i18n_claimForm.t('contact.preferred_language.required')
+      ),
+    }),
+  }),
+}
 
-// TODO: add PageDefinition
-// export const ContactInformationPage: IPageDefinition = {
-//   path: "contact",
-//   heading: "contact",
-//   initialValues: {
-//     email: undefined,
-//     phones: [{ ...PHONE_SKELETON }],
-//     LOCAL_more_phones: undefined,
-//     interpreter_required: undefined,
-//     preferred_language: "",
-//   },
-//   Component: ContactInformation,
-//   pageSchema,
-// };
+export default Contact

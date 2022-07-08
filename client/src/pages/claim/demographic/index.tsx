@@ -1,5 +1,3 @@
-import { NextPage } from 'next'
-import { Formik } from 'formik'
 import { Alert, Fieldset } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 
@@ -7,70 +5,98 @@ import {
   ethnicityOptions,
   sexOptions,
   raceOptions,
+  RaceOption,
 } from 'constants/formOptions'
-import { noop } from 'helpers/noop/noop'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import { CheckboxGroupField } from 'components/form/fields/CheckboxGroupField/CheckboxGroupField'
 
 import formStyles from 'components/form/form.module.scss'
-
-// TODO: add pageSchema for yup validations
+import { ClaimantInput } from 'types/claimantInput'
+import { useFormikContext } from 'formik'
+import { NextPage } from 'next'
+import { PageDefinition } from 'constants/pages/pageDefinitions'
+import { i18n_claimForm } from 'i18n/i18n'
+import { Routes } from 'constants/routes'
+import { array, mixed, object } from 'yup'
 
 const Demographic: NextPage = () => {
   const { t } = useTranslation('claimForm')
-  // const { values, setFieldValue } = useFormikContext<ClaimantInput>() todo: uncomment when formik page wrapper is in place
+  const { values, setFieldValue } = useFormikContext<ClaimantInput>()
   return (
     // temporarily wrap in Formik until we have the page wrapper build
-    <Formik initialValues={{}} values setFieldValue onSubmit={noop}>
-      <>
-        <Alert type="info" headingLevel="h4">
-          {t('demographic_information.info_alert')}
-        </Alert>
-        <Fieldset legend={t('sex.label')} className={formStyles.field}>
-          <RadioField
-            name="sex"
-            options={sexOptions.map((option) => {
-              return {
-                label: t(`sex.options.${option}`),
-                value: option,
-              }
-            })}
-          />
-        </Fieldset>
-        <Fieldset legend={t('ethnicity.label')} className={formStyles.field}>
-          <RadioField
-            name="ethnicity"
-            options={ethnicityOptions.map((option) => {
-              return {
-                label: t(`ethnicity.options.${option}`),
-                value: option,
-              }
-            })}
-          />
-        </Fieldset>
-        <Fieldset legend={t('race.label')} className={formStyles.field}>
-          <CheckboxGroupField
-            name="race"
-            options={raceOptions.map((raceOption) => ({
-              label: t(`race.options.${raceOption}`),
-              value: raceOption,
-              // checkboxProps: {
-              //   onChange: (e) => {
-              //     if (e.target.value === 'opt_out' && e.target.checked) {
-              //       setFieldValue('race', ['opt_out'], true)
-              //     }
-              //   },
-              //   disabled:
-              //     values.race?.includes('opt_out') && raceOption !== 'opt_out',
-              // },
-            }))}
-          />
-        </Fieldset>
-      </>
-    </Formik>
+    <>
+      <Alert type="info" headingLevel="h4">
+        {t('demographic.info_alert')}
+      </Alert>
+      <Fieldset legend={t('sex.label')} className={formStyles.field}>
+        <RadioField
+          name="sex"
+          options={sexOptions.map((option) => {
+            return {
+              label: t(`sex.options.${option}`),
+              value: option,
+            }
+          })}
+        />
+      </Fieldset>
+      <Fieldset legend={t('ethnicity.label')} className={formStyles.field}>
+        <RadioField
+          name="ethnicity"
+          options={ethnicityOptions.map((option) => {
+            return {
+              label: t(`ethnicity.options.${option}`),
+              value: option,
+            }
+          })}
+        />
+      </Fieldset>
+      <Fieldset legend={t('race.label')} className={formStyles.field}>
+        <CheckboxGroupField
+          name="race"
+          options={raceOptions.map((raceOption) => ({
+            label: t(`race.options.${raceOption}`),
+            value: raceOption,
+            checkboxProps: {
+              onChange: (e) => {
+                if (e.target.value === 'opt_out' && e.target.checked) {
+                  setFieldValue('race', ['opt_out'], true)
+                }
+              },
+              disabled:
+                values.race?.includes('opt_out') && raceOption !== 'opt_out',
+            },
+          }))}
+        />
+      </Fieldset>
+    </>
   )
 }
 
-export default Demographic
+export const DemographicPageDefinition: PageDefinition = {
+  heading: i18n_claimForm.t('demographic.heading'),
+  path: Routes.CLAIM.DEMOGRAPHIC,
+  initialValues: {
+    sex: undefined,
+    ethnicity: undefined,
+    race: [],
+  },
+  validationSchema: object().shape({
+    sex: mixed()
+      .oneOf([...sexOptions])
+      .required(i18n_claimForm.t('sex.errors.required')),
+    race: array()
+      .of(mixed().oneOf([...raceOptions]))
+      .when({
+        is: (raceValue: RaceOption[] | undefined) =>
+          raceValue?.includes('opt_out'),
+        then: array().max(1, i18n_claimForm.t('race.errors.opt_out_only')),
+        otherwise: array().min(1, i18n_claimForm.t('race.errors.required')),
+      })
+      .required(i18n_claimForm.t('race.errors.required')),
+    ethnicity: mixed()
+      .oneOf([...ethnicityOptions])
+      .required(i18n_claimForm.t('ethnicity.errors.required')),
+  }),
+}
 
-// TODO: add PageDefinition
+export default Demographic

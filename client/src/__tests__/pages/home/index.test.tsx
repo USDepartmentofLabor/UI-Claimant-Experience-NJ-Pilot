@@ -2,15 +2,6 @@ import { render, screen } from '@testing-library/react'
 
 import Home from 'pages/home'
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-  Trans: ({ i18nKey }: { i18nKey: string }) => i18nKey,
-}))
-
 describe('home page', () => {
   it('renders without error', () => {
     render(<Home />)

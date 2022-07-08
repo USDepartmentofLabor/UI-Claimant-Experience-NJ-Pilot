@@ -3,15 +3,6 @@ import { Formik } from 'formik'
 
 import { PhoneNumberField } from './PhoneNumberField'
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-  Trans: ({ i18nKey }: { i18nKey: string }) => i18nKey,
-}))
-
 describe('Phone number component', () => {
   it('renders inputs for phone number', () => {
     const basename = 'test-phone'

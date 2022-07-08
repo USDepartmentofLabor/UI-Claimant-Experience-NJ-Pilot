@@ -5,14 +5,6 @@ import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import { accountTypeOptions, paymentMethodOptions } from 'constants/formOptions'
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
-
 describe('PaymentInformation page', () => {
   it('renders as expected', () => {
     const initialValues = {

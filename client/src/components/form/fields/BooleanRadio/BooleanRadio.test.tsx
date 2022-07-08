@@ -5,14 +5,6 @@ import { BooleanRadio } from './BooleanRadio'
 import userEvent from '@testing-library/user-event'
 import { noop } from 'helpers/noop/noop'
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
-
 describe('BooleanRadio Component', () => {
   it('renders properly', () => {
     const { getByLabelText } = render(

@@ -20,3 +20,13 @@ i18n.use(LanguageDetector).use(initReactI18next).init({
   defaultNS,
   resources,
 })
+
+export const i18n_home = i18n
+
+export const i18n_common = i18n.cloneInstance({
+  defaultNS: 'common',
+})
+
+export const i18n_claimForm = i18n.cloneInstance({
+  defaultNS: 'claimForm',
+})

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { useField, useFormikContext } from 'formik' // package will be auto mocked
 import userEvent from '@testing-library/user-event'
 
@@ -37,14 +37,53 @@ describe('TextField component', () => {
 
     mockUseField.mockReturnValue([mockField, mockMeta])
 
-    const { queryByText, queryByLabelText } = render(
-      <TextField name="firstName" label="First Name" type="text" />
-    )
+    render(<TextField name="firstName" label="First Name" type="text" />)
 
-    expect(queryByText('First Name')).toBeInstanceOf(HTMLLabelElement)
-    expect(queryByLabelText('First Name')).toBeInstanceOf(HTMLInputElement)
-    expect(queryByLabelText('First Name')).toHaveAttribute('name', 'firstName')
-    expect(queryByLabelText('First Name')).toHaveAttribute('id', 'firstName')
+    expect(screen.queryByText('First Name')).toBeInstanceOf(HTMLLabelElement)
+    expect(screen.queryByLabelText('First Name')).toBeInstanceOf(
+      HTMLInputElement
+    )
+    expect(screen.queryByLabelText('First Name')).toHaveAttribute(
+      'name',
+      'firstName'
+    )
+    expect(screen.queryByLabelText('First Name')).toHaveAttribute(
+      'id',
+      'firstName'
+    )
+  })
+
+  it('calls a custom onBlur function passed in', async () => {
+    const user = userEvent.setup()
+    const onBlur = jest.fn()
+    const mockMeta = {
+      touched: false,
+      error: '',
+      initialError: '',
+      initialTouched: false,
+      initialValue: '',
+      value: '',
+    }
+    const mockField = {
+      value: '',
+      checked: false,
+      onChange: jest.fn(),
+      onBlur: onBlur,
+      multiple: undefined,
+      name: 'firstName',
+    }
+
+    mockUseField.mockReturnValue([mockField, mockMeta])
+
+    render(<TextField name="firstName" label="First Name" type="text" />)
+
+    const textField = screen.getByLabelText('First Name')
+
+    // Focus then blur the text field
+    await user.click(textField)
+    fireEvent.blur(textField)
+
+    expect(onBlur).toHaveBeenCalledTimes(1)
   })
 
   it('passes a custom className prop to the input element', () => {
@@ -66,7 +105,7 @@ describe('TextField component', () => {
     }
     mockUseField.mockReturnValue([mockField, mockMeta])
 
-    const { queryByLabelText } = render(
+    render(
       <TextField
         name="firstName"
         className="myCustomInputClass"
@@ -75,7 +114,9 @@ describe('TextField component', () => {
       />
     )
 
-    expect(queryByLabelText('First Name')).toHaveClass('myCustomInputClass')
+    expect(screen.queryByLabelText('First Name')).toHaveClass(
+      'myCustomInputClass'
+    )
   })
 
   describe('with an error message', () => {
@@ -100,11 +141,14 @@ describe('TextField component', () => {
 
       mockUseField.mockReturnValue([mockField, mockMeta])
 
-      const { queryByText } = render(
-        <TextField name="firstName" label="First Name" type="text" />
+      render(<TextField name="firstName" label="First Name" type="text" />)
+
+      expect(screen.queryByText('First Name')).not.toHaveClass(
+        'usa-label--error'
       )
-      expect(queryByText('First Name')).not.toHaveClass('usa-label--error')
-      expect(queryByText('This field is required')).not.toBeInTheDocument()
+      expect(
+        screen.queryByText('This field is required')
+      ).not.toBeInTheDocument()
     })
 
     it('shows the error message if the form is submitted', () => {
@@ -129,12 +173,10 @@ describe('TextField component', () => {
       mockUseFormikContext.mockReturnValue({ submitCount: 1 })
       mockUseField.mockReturnValue([mockField, mockMeta])
 
-      const { queryByText } = render(
-        <TextField name="firstName" label="First Name" type="text" />
-      )
+      render(<TextField name="firstName" label="First Name" type="text" />)
 
-      expect(queryByText('First Name')).toHaveClass('usa-label--error')
-      expect(queryByText('This field is required')).toBeInTheDocument()
+      expect(screen.queryByText('First Name')).toHaveClass('usa-label--error')
+      expect(screen.queryByText('This field is required')).toBeInTheDocument()
     })
   })
 
@@ -144,6 +186,7 @@ describe('TextField component', () => {
     })
     describe('without prefix or suffix', () => {
       it('shows appropriate error styling', async () => {
+        const user = userEvent.setup()
         const mockMeta = {
           touched: true,
           error: "There's an error!",
@@ -162,21 +205,20 @@ describe('TextField component', () => {
         }
         mockUseField.mockReturnValue([mockField, mockMeta])
 
-        const { getByLabelText } = render(
-          <TextField name="firstName" label="First Name" type="text" />
-        )
+        render(<TextField name="firstName" label="First Name" type="text" />)
 
-        const textField = getByLabelText('First Name')
+        const textField = screen.getByLabelText('First Name')
 
         expect(textField).toHaveClass('usa-input--error')
 
-        await userEvent.click(textField)
+        await user.click(textField)
         expect(textField).toHaveFocus()
         expect(textField).not.toHaveClass('usa-input--error')
       })
     })
     describe('with prefix or suffix', () => {
       it('shows appropriate error styling', async () => {
+        const user = userEvent.setup()
         const mockMeta = {
           touched: true,
           error: "There's an error!",
@@ -195,7 +237,7 @@ describe('TextField component', () => {
         }
         mockUseField.mockReturnValue([mockField, mockMeta])
 
-        const { getByTestId, getByLabelText } = render(
+        render(
           <TextField
             name="firstName"
             label="First Name"
@@ -204,12 +246,12 @@ describe('TextField component', () => {
           />
         )
 
-        const inputGroup = getByTestId('firstName-input-group')
-        const textField = getByLabelText('First Name')
+        const inputGroup = screen.getByTestId('firstName-input-group')
+        const textField = screen.getByLabelText('First Name')
 
         expect(inputGroup).toHaveClass('usa-input-group--error')
 
-        await userEvent.click(textField)
+        await user.click(textField)
         expect(textField).toHaveFocus()
         expect(inputGroup).not.toHaveClass('usa-input-group--error')
         expect(inputGroup).toHaveClass('is-focused')

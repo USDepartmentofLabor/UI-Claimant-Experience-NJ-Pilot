@@ -2,7 +2,7 @@ import TextField from '../fields/TextField/TextField'
 import { Trans, useTranslation } from 'react-i18next'
 import DropdownField from '../fields/DropdownField/DropdownField'
 import CheckboxField from '../fields/CheckboxField/CheckboxField'
-import { typeOfPhoneOptions } from 'constants/formOptions'
+import { phoneTypeOptions } from 'constants/formOptions'
 
 type PhoneNumberFieldProps = {
   id?: string
@@ -36,7 +36,7 @@ export const PhoneNumberField = ({
           </Trans>
         }
         startEmpty
-        options={typeOfPhoneOptions.map((option) => ({
+        options={phoneTypeOptions.map((option) => ({
           value: option,
           label: t(`phone.type.${option}`),
         }))}

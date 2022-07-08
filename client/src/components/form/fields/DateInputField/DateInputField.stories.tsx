@@ -3,7 +3,6 @@ import { Form, Formik } from 'formik'
 import { Label } from '@trussworks/react-uswds'
 import * as yup from 'yup'
 import { DateInputField } from './DateInputField'
-import { useTranslation } from 'react-i18next'
 import { noop } from 'helpers/noop/noop'
 import { yupDate } from 'validations/yup/custom'
 import { ComponentProps } from 'react'
@@ -55,10 +54,9 @@ const WithFormikValueTemplate: ComponentStory<typeof DateInputField> = (
   const initialValues = {
     [args.name]: '',
   }
-  const { t } = useTranslation('home')
 
   const validationSchema = yup.object().shape({
-    [args.name]: yupDate(t, String(args.legend)),
+    [args.name]: yupDate(String(args.legend)),
   })
 
   return (

@@ -1,17 +1,8 @@
 import { screen, render, within } from '@testing-library/react'
 import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
-import ContactInformation from 'pages/claim/contact'
+import Contact from 'pages/claim/contact'
 import userEvent from '@testing-library/user-event'
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-  Trans: ({ i18nKey }: { i18nKey: string }) => i18nKey,
-}))
 
 describe('ContactInformation component', () => {
   const initialValues = {
@@ -25,7 +16,7 @@ describe('ContactInformation component', () => {
   it('renders properly', () => {
     render(
       <Formik initialValues={initialValues} onSubmit={noop}>
-        <ContactInformation />
+        <Contact />
       </Formik>
     )
 
@@ -73,56 +64,58 @@ describe('ContactInformation component', () => {
 
   it('displays alternate phone fields', async () => {
     const user = userEvent.setup()
-    const { getAllByRole, getByRole } = render(
+    render(
       <Formik initialValues={initialValues} onSubmit={noop}>
-        <ContactInformation />
+        <Contact />
       </Formik>
     )
-    const morePhones = getByRole('checkbox', { name: 'more_phones' })
+    const morePhones = screen.getByRole('checkbox', { name: 'more_phones' })
     expect(morePhones).not.toBeChecked()
 
     await user.click(morePhones)
 
-    const [phone1] = getAllByRole('textbox', {
+    const [phone1, phone2] = screen.getAllByRole('textbox', {
       name: 'phone.number.label',
     })
     expect(phone1).toHaveAttribute('id', 'phones[0].number')
-    // expect(phone2).toHaveAttribute('id', 'phones[1].number') todo: uncomment when formik values are working
+    expect(phone2).toHaveAttribute('id', 'phones[1].number')
 
     expect(phone1).toHaveValue('')
     expect(phone1).toHaveAttribute('name', `phones[0].number`)
 
-    // expect(phone2).toHaveValue('')
-    // expect(phone2).toHaveAttribute('name', `phones[1].number`)
+    expect(phone2).toHaveValue('')
+    expect(phone2).toHaveAttribute('name', `phones[1].number`)
 
     await user.click(morePhones)
 
-    // expect(phone2).not.toBeInTheDocument() todo: uncomment when conditional working
+    expect(phone2).not.toBeInTheDocument()
   })
 
   it('conditionally displays preferred language', async () => {
     const user = userEvent.setup()
-    const { getByRole, getByLabelText } = render(
+    render(
       <Formik initialValues={initialValues} onSubmit={noop}>
-        <ContactInformation />
+        <Contact />
       </Formik>
     )
 
-    const interpreterField = getByRole('group', {
+    const interpreterField = screen.getByRole('group', {
       name: 'interpreter_required.label',
     })
     const interpreterYes = within(interpreterField).getByLabelText('yes')
     const interpreterNo = within(interpreterField).getByLabelText('no')
     expect(interpreterYes).toHaveAttribute('id', 'interpreter_required.yes')
     expect(interpreterNo).toHaveAttribute('id', 'interpreter_required.no')
-    // expect(queryByLabelText('preferred_language.label')).toBeNull() todo: uncomment when values available for conditional
+    expect(screen.queryByLabelText('preferred_language.label')).toBeNull()
 
     await user.click(interpreterYes)
 
-    expect(getByLabelText('preferred_language.label')).toBeInTheDocument()
+    expect(
+      screen.getByLabelText('preferred_language.label')
+    ).toBeInTheDocument()
 
     await user.click(interpreterNo)
 
-    // expect(queryByLabelText('preferred_language.label')).toBeNull() todo: uncomment when conditional is available
+    expect(screen.queryByLabelText('preferred_language.label')).toBeNull()
   })
 })

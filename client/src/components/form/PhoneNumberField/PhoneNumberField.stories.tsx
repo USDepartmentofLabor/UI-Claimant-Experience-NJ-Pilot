@@ -1,6 +1,5 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { Form, Formik } from 'formik'
-import { useTranslation } from 'react-i18next'
 import { Button, Fieldset } from '@trussworks/react-uswds'
 import { PhoneNumberField } from './PhoneNumberField'
 import * as yup from 'yup'
@@ -13,8 +12,6 @@ export default {
 } as ComponentMeta<typeof PhoneNumberField>
 
 const Template: ComponentStory<typeof PhoneNumberField> = (args) => {
-  const { t } = useTranslation('common')
-
   const initialValues = {
     [args.name]: {
       type: '',
@@ -23,7 +20,7 @@ const Template: ComponentStory<typeof PhoneNumberField> = (args) => {
     },
   }
 
-  const validationSchema = yup.object().shape({ [args.name]: yupPhone(t) })
+  const validationSchema = yup.object().shape({ [args.name]: yupPhone })
 
   return (
     <Formik

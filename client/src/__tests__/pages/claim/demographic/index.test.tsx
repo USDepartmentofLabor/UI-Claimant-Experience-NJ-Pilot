@@ -15,14 +15,6 @@ import {
   sexOptions,
 } from 'constants/formOptions'
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
-
 describe('Demographic component', () => {
   const initialValues = {
     sex: undefined,

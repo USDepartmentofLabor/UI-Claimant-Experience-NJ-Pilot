@@ -1,27 +1,17 @@
 import { render, within, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { useTranslation } from 'react-i18next'
 import userEvent from '@testing-library/user-event'
 import { yupDate } from 'validations/yup/custom'
 import { noop } from 'helpers/noop/noop'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
-
 describe('DateInputField Component', () => {
-  const { t } = useTranslation('claimForm')
   const submittableDateInputField = (
     <Formik
       initialValues={{ dateInputField: '' }}
       validationSchema={yup.object().shape({
-        dateInputField: yupDate(t, 'a test date'),
+        dateInputField: yupDate('a test date'),
       })}
       onSubmit={noop}
     >
@@ -114,14 +104,16 @@ describe('DateInputField Component', () => {
   })
 
   it('Displays an error', async () => {
+    const user = userEvent.setup()
     const { findByRole } = render(submittableDateInputField)
 
     // validate the form
-    await userEvent.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button'))
     expect(await findByRole('alert')).toBeInTheDocument()
   })
 
   it('Allows the user to enter a date', async () => {
+    const user = userEvent.setup()
     const { getByLabelText, queryByRole } = render(submittableDateInputField)
 
     const monthField = getByLabelText('date.month.label')
@@ -129,33 +121,33 @@ describe('DateInputField Component', () => {
     const yearField = getByLabelText('date.year.label')
 
     // Focus the month input and type a month
-    await userEvent.type(monthField, '01')
+    await user.type(monthField, '01')
     expect(monthField).toHaveFocus()
     expect(monthField).toHaveValue('01')
     expect(queryByRole('alert')).not.toBeInTheDocument()
 
     // tab to day field
-    await userEvent.tab()
+    await user.tab()
     expect(dayField).toHaveFocus()
 
     // Continue typing a day since the day input has focus
-    await userEvent.keyboard('02')
+    await user.keyboard('02')
     expect(dayField).toHaveFocus()
     expect(dayField).toHaveValue('02')
     expect(queryByRole('alert')).not.toBeInTheDocument()
 
     // tab to year field
-    await userEvent.tab()
+    await user.tab()
     expect(yearField).toHaveFocus()
 
     // continue typing a year since the year field has focus
-    await userEvent.keyboard('2000')
+    await user.keyboard('2000')
     expect(yearField).toHaveFocus()
     expect(yearField).toHaveValue('2000')
     expect(queryByRole('alert')).not.toBeInTheDocument()
 
     // Tab away from the year field, blurs the entire field.
-    await userEvent.tab()
+    await user.tab()
 
     expect(monthField).not.toHaveFocus()
     expect(dayField).not.toHaveFocus()
@@ -166,11 +158,79 @@ describe('DateInputField Component', () => {
     expect(yearField).toHaveValue('2000')
 
     // validate the form, no errors should be present
-    await userEvent.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button'))
     expect(queryByRole('alert')).not.toBeInTheDocument()
   })
 
+  it('Passes through custom onChange handlers for each input', async () => {
+    const user = userEvent.setup()
+
+    const monthOnChange = jest.fn()
+    const dayOnChange = jest.fn()
+    const yearOnChange = jest.fn()
+
+    render(
+      <Formik initialValues={{ dateInputField: '' }} onSubmit={noop}>
+        <DateInputField
+          name="dateInputField"
+          monthProps={{ onChange: monthOnChange }}
+          dayProps={{ onChange: dayOnChange }}
+          yearProps={{ onChange: yearOnChange }}
+        />
+      </Formik>
+    )
+
+    const monthField = screen.getByLabelText('date.month.label')
+    const dayField = screen.getByLabelText('date.day.label')
+    const yearField = screen.getByLabelText('date.year.label')
+
+    await user.type(monthField, '1')
+    expect(monthOnChange).toHaveBeenCalledTimes(1)
+
+    await user.type(dayField, '1')
+    expect(dayOnChange).toHaveBeenCalledTimes(1)
+
+    await user.type(yearField, '1')
+    expect(yearOnChange).toHaveBeenCalledTimes(1)
+  })
+
+  it('Prevents non-numeric inputs', async () => {
+    const user = userEvent.setup()
+
+    const monthOnChange = jest.fn()
+    const dayOnChange = jest.fn()
+    const yearOnChange = jest.fn()
+
+    render(
+      <Formik initialValues={{ dateInputField: '' }} onSubmit={noop}>
+        <DateInputField
+          name="dateInputField"
+          monthProps={{ onChange: monthOnChange }}
+          dayProps={{ onChange: dayOnChange }}
+          yearProps={{ onChange: yearOnChange }}
+        />
+      </Formik>
+    )
+
+    const monthField = screen.getByLabelText('date.month.label')
+    const dayField = screen.getByLabelText('date.day.label')
+    const yearField = screen.getByLabelText('date.year.label')
+
+    await user.type(monthField, 'a')
+    expect(monthField).toHaveValue('')
+    expect(monthOnChange).toHaveBeenCalledTimes(0)
+
+    await user.type(dayField, 'b')
+    expect(dayField).toHaveValue('')
+    expect(dayOnChange).toHaveBeenCalledTimes(0)
+
+    await user.type(yearField, 'c')
+    expect(dayField).toHaveValue('')
+    expect(yearOnChange).toHaveBeenCalledTimes(0)
+  })
+
   it('Allows the user to enter a date with single digit month and day', async () => {
+    const user = userEvent.setup()
     const { getByLabelText, queryByRole } = render(submittableDateInputField)
 
     const monthField = getByLabelText('date.month.label')
@@ -178,38 +238,38 @@ describe('DateInputField Component', () => {
     const yearField = getByLabelText('date.year.label')
 
     // Focus the month input and type a month
-    await userEvent.type(monthField, '1')
+    await user.type(monthField, '1')
 
     expect(monthField).toHaveFocus()
     expect(monthField).toHaveValue('1')
     expect(queryByRole('alert')).not.toBeInTheDocument()
 
     // tab to day field
-    await userEvent.tab()
+    await user.tab()
 
     expect(dayField).toHaveFocus()
 
     // Continue typing a day since the day input has focus
-    await userEvent.keyboard('2')
+    await user.keyboard('2')
 
     expect(dayField).toHaveFocus()
     expect(dayField).toHaveValue('2')
     expect(queryByRole('alert')).not.toBeInTheDocument()
 
     // tab to year field
-    await userEvent.tab()
+    await user.tab()
 
     expect(yearField).toHaveFocus()
 
     // continue typing a year since the year field has focus
-    await userEvent.keyboard('2000')
+    await user.keyboard('2000')
 
     expect(yearField).toHaveFocus()
     expect(yearField).toHaveValue('2000')
     expect(queryByRole('alert')).not.toBeInTheDocument()
 
     // Tab away from the year field, blurs the entire field. No Error should be present
-    await userEvent.tab()
+    await user.tab()
 
     expect(monthField).not.toHaveFocus()
     expect(dayField).not.toHaveFocus()
@@ -220,12 +280,13 @@ describe('DateInputField Component', () => {
     expect(yearField).toHaveValue('2000')
 
     // validate the form, no errors should be present
-    await userEvent.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button'))
 
     expect(queryByRole('alert')).not.toBeInTheDocument()
   })
 
   it('Allows the user erase a date', async () => {
+    const user = userEvent.setup()
     const { getByLabelText } = render(
       <Formik
         initialValues={{ dateInputField: '' }}
@@ -243,9 +304,9 @@ describe('DateInputField Component', () => {
     const yearField = getByLabelText('date.year.label')
 
     // Enter a date by typing in the field:
-    await userEvent.type(monthField, '01')
-    await userEvent.type(dayField, '02')
-    await userEvent.type(yearField, '2000')
+    await user.type(monthField, '01')
+    await user.type(dayField, '02')
+    await user.type(yearField, '2000')
 
     expect(yearField).toHaveFocus()
     expect(monthField).toHaveValue('01')
@@ -253,27 +314,27 @@ describe('DateInputField Component', () => {
     expect(yearField).toHaveValue('2000')
 
     // Erase the year
-    await userEvent.keyboard('{Backspace}{Backspace}{Backspace}{Backspace}')
+    await user.keyboard('{Backspace}{Backspace}{Backspace}{Backspace}')
     expect(yearField).toHaveFocus()
     expect(yearField).toHaveValue('')
 
     // Shift tab to move backwards to the day field
-    await userEvent.tab({ shift: true })
+    await user.tab({ shift: true })
     expect(dayField).toHaveFocus()
     expect(dayField).toHaveValue('02')
 
     // Erase the day field
-    await userEvent.keyboard('{Backspace}{Backspace}')
+    await user.keyboard('{Backspace}{Backspace}')
     expect(dayField).toHaveFocus()
     expect(dayField).toHaveValue('')
 
     // Shift tab to move backwards to the month field
-    await userEvent.tab({ shift: true })
+    await user.tab({ shift: true })
     expect(monthField).toHaveFocus()
     expect(monthField).toHaveValue('01')
 
     // Erase the rest of the month field, leaving the entire date erased
-    await userEvent.keyboard('{Backspace}{Backspace}')
+    await user.keyboard('{Backspace}{Backspace}')
     expect(monthField).toHaveFocus()
     expect(monthField).toHaveValue('')
     expect(dayField).toHaveValue('')

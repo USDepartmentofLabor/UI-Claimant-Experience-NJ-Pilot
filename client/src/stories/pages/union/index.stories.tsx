@@ -1,4 +1,4 @@
-import { Union } from 'pages/claim/union'
+import { Union, UnionPageDefinition } from 'pages/claim/union'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { Form, Formik } from 'formik'
 
@@ -9,16 +9,13 @@ export default {
 const noop = () => undefined
 
 const Template: ComponentStory<typeof Union> = () => {
-  // const { t } = useTranslation('claimForm')
-  // const validationSchema = UnionPage.pageSchema(t);
-  const initialValues = {
-    union: {},
-  }
+  const validationSchema = UnionPageDefinition.validationSchema
+  const initialValues = UnionPageDefinition.initialValues
 
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={validationSchema}
+      validationSchema={validationSchema}
       onSubmit={noop}
     >
       <Form>

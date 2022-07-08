@@ -5,14 +5,6 @@ import { Formik } from 'formik'
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import { noop } from 'helpers/noop/noop'
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
-
 describe('dropdownField component', () => {
   it('renders the elements that make up a field', () => {
     const { getByText, getByLabelText } = render(

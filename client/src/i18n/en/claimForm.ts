@@ -1,6 +1,14 @@
 const claimForm = {
   step_progress: 'step {{step}} of {{totalSteps}}',
-  demographic_information: {
+  pagination: {
+    previous: 'Back',
+    next: 'Next',
+    next_step: 'Next: {{stepName}}',
+    save_and_exit: 'Save and exit',
+    complete: 'Complete',
+  },
+  demographic: {
+    heading: 'Demographic',
     info_alert:
       "We ask for your demographic information only for our reporting requirements. Your responses to these questions won't affect your application or potential payment amount.",
   },
@@ -27,7 +35,9 @@ const claimForm = {
       male: 'Male',
       x: 'X',
     },
-    required: 'Sex is a required field',
+    errors: {
+      required: 'Sex is a required field',
+    },
   },
   race: {
     label: 'What race(s) are you? (Check all that apply)',
@@ -51,7 +61,9 @@ const claimForm = {
       not_hispanic: 'No',
       opt_out: 'Choose not to answer',
     },
-    required: 'Ethnicity is a required field',
+    errors: {
+      required: 'Ethnicity is a required field',
+    },
   },
   education_level: {
     label: 'What is the highest level of education you have completed?',
@@ -415,21 +427,29 @@ const claimForm = {
     heading: 'Union membership',
     is_union_member: {
       label: 'Are you a member of a union?',
-      required: 'You must indicate whether you are a member of a union',
+      errors: {
+        required: 'You must indicate whether you are a member of a union',
+      },
     },
     union_name: {
       label: 'Name of your union',
-      required: 'You must indicate the name of your union',
+      errors: {
+        required: 'You must indicate the name of your union',
+      },
     },
     union_local_number: {
       label: 'Union local number',
-      required: 'You must indicate your union local number',
+      errors: {
+        required: 'You must indicate your union local number',
+      },
     },
     required_to_seek_work_through_hiring_hall: {
       label:
         'Are you required to seek work through a union hiring hall (a job placement office operated by your union)?',
-      required:
-        'You must indicate whether you are required to seek work through a union hiring hall',
+      errors: {
+        required:
+          'You must indicate whether you are required to seek work through a union hiring hall',
+      },
     },
   },
   availability: {
@@ -460,7 +480,8 @@ const claimForm = {
       required: 'A reason you cannot accept full-time work is required',
     },
   },
-  contact_information: {
+  contact: {
+    heading: 'Contact',
     more_phones: 'Add another phone number',
     email: 'Email address', // no label, not editable
     interpreter_required: {
@@ -481,18 +502,6 @@ const claimForm = {
       format: 'ZIP Code must be five digits',
     },
   },
-  phone: {
-    number: {
-      required: 'Phone number is required',
-      matches: 'Please enter a phone number like (555) 555-1234',
-    },
-    type: { required: 'Phone type is required' },
-  },
-  date: {
-    typeError:
-      '{{ fieldName}} must be a valid date with format {{ dateFormat }}',
-    required: '{{ fieldName }} is required',
-  },
   name: {
     legal_name: 'What is your legal name?',
     alternate_name: 'Additional name',
@@ -507,6 +516,7 @@ const claimForm = {
     },
   },
   payment: {
+    heading: 'Payment',
     federal_income_tax_withheld: {
       label:
         'Would you like to have 10% federal income tax withheld from your benefits payments?',

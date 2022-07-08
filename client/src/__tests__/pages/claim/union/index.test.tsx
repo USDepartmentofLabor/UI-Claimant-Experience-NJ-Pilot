@@ -1,16 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { Formik } from 'formik'
 import { Union } from 'pages/claim/union'
 import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
 
 describe('UnionProfile', () => {
   beforeEach(() => {
@@ -20,24 +12,44 @@ describe('UnionProfile', () => {
       </Formik>
     )
   })
+
   it('renders', async () => {
     expect(await screen.findByText('is_union_member.label')).toBeInTheDocument()
   })
-  it('shows fields conditionally', async () => {
+
+  it('toggles fields conditionally', async () => {
     const user = userEvent.setup()
-    const yesButtons = screen.getAllByLabelText('yes')
-    const getUnionName = () =>
+
+    const isUnionMember = screen.getByRole('group', {
+      name: 'is_union_member.label',
+    })
+    const yesMemberOfUnion = within(isUnionMember).getByRole('radio', {
+      name: 'yes',
+    })
+    const noMemberOfUnion = within(isUnionMember).getByRole('radio', {
+      name: 'no',
+    })
+
+    const queryForUnionName = () =>
       screen.queryByLabelText('union_name.label', {
         exact: false,
       })
-    const getUnionLocalNumber = () =>
+    const queryForUnionLocalNumber = () =>
       screen.queryByLabelText('union_local_number.label', {
         exact: false,
       })
-    // expect(getUnionName()).not.toBeInTheDocument()
-    // expect(getUnionLocalNumber()).not.toBeInTheDocument() TODO: uncomment when claim wrapper done
-    await user.click(yesButtons[0])
-    expect(getUnionName()).toBeInTheDocument()
-    expect(getUnionLocalNumber()).toBeInTheDocument()
+
+    expect(queryForUnionName()).not.toBeInTheDocument()
+    expect(queryForUnionLocalNumber()).not.toBeInTheDocument()
+
+    await user.click(yesMemberOfUnion)
+
+    expect(queryForUnionName()).toBeInTheDocument()
+    expect(queryForUnionLocalNumber()).toBeInTheDocument()
+
+    await user.click(noMemberOfUnion)
+
+    expect(queryForUnionName()).not.toBeInTheDocument()
+    expect(queryForUnionLocalNumber()).not.toBeInTheDocument()
   })
 })

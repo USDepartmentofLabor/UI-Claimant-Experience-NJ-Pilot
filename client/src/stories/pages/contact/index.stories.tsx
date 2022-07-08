@@ -1,22 +1,27 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
-import ContactInformation from 'pages/claim/contact'
+import { Formik, Form } from 'formik'
+import Contact, { ContactPageDefinition } from 'pages/claim/contact'
+import { noop } from 'helpers/noop/noop'
 
 export default {
   title: 'Pages/Form/Contact Information',
-  component: ContactInformation,
-} as ComponentMeta<typeof ContactInformation>
+  component: Contact,
+} as ComponentMeta<typeof Contact>
 
-const Template: ComponentStory<typeof ContactInformation> = () => {
-  // const { t } = useTranslation('claimForm')
-  // const validationSchema = ContactInformationPage.pageSchema(t);
-  // const initialValues = {
-  //   phones: [{ number: '555-543-7643' }],
-  //   email_address: 'user@claimant.com',
-  //   interpreter_required: undefined,
-  //   preferred_language: '',
-  // }
-
-  return <ContactInformation />
+const Template: ComponentStory<typeof Contact> = () => {
+  const initialValues = ContactPageDefinition.initialValues
+  const validationSchema = ContactPageDefinition.validationSchema
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={noop}
+    >
+      <Form>
+        <Contact />
+      </Form>
+    </Formik>
+  )
 }
 
 export const Default = Template.bind({})
