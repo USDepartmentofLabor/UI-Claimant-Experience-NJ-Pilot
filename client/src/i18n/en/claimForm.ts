@@ -493,15 +493,6 @@ const claimForm = {
       required: 'Please indicate the language you speak',
     },
   },
-  address: {
-    address1: { required: 'Address is required' },
-    city: { required: 'City is required' },
-    state: { required: 'State is required' },
-    zipcode: {
-      required: 'ZIP Code is required',
-      format: 'ZIP Code must be five digits',
-    },
-  },
   name: {
     legal_name: 'What is your legal name?',
     alternate_name: 'Additional name',

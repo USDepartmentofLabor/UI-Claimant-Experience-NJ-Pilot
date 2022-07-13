@@ -1,4 +1,3 @@
-import * as yup from 'yup'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import {
@@ -6,8 +5,25 @@ import {
   USER_FACING_DATE_INPUT_FORMAT,
 } from 'constants/date/format'
 import { CENTS_REGEX } from 'constants/currency/format'
-import { i18n_common } from 'i18n/i18n'
-import { boolean, date, string } from 'yup'
+import { i18n_claimForm, i18n_common } from 'i18n/i18n'
+import { boolean, date, object, string } from 'yup'
+import * as states from 'fixtures/states.json'
+
+export const yupAddress = () =>
+  object().shape({
+    address1: string()
+      .max(64)
+      .required(i18n_common.t('address.address1.required')),
+    address2: string().max(64),
+    city: string().max(64).required(i18n_common.t('address.city.required')),
+    state: string()
+      .oneOf(Object.keys(states))
+      .required(i18n_common.t('address.state.required')),
+    zipcode: string()
+      // eslint-disable-next-line security/detect-unsafe-regex
+      .matches(/^\d{5}(-\d{4})?$/, i18n_common.t('address.zipcode.format'))
+      .required(i18n_common.t('address.zipcode.required')),
+  })
 
 export const yupDate = (fieldName: string) =>
   date()
@@ -29,7 +45,19 @@ export const yupCurrency = (errorMsg = '') => {
   return string().matches(CENTS_REGEX, errorMsg)
 }
 
-export const yupPhone = yup.object().shape({
+export const yupName = object().shape({
+  first_name: string()
+    .nullable()
+    .max(36)
+    .required(i18n_claimForm.t('name.first_name.required')),
+  last_name: string()
+    .nullable()
+    .max(36)
+    .required(i18n_claimForm.t('name.last_name.required')),
+  middle_name: string().nullable().max(36),
+})
+
+export const yupPhone = object().shape({
   number: string()
     .matches(
       /[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}/,

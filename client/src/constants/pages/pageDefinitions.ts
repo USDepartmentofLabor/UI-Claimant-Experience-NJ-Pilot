@@ -4,6 +4,7 @@ import { ContactPageDefinition } from 'pages/claim/contact'
 import { DemographicPageDefinition } from 'pages/claim/demographic'
 import { PaymentPageDefinition } from 'pages/claim/payment'
 import { UnionPageDefinition } from 'pages/claim/union'
+import { PersonalPageDefinition } from 'pages/claim/personal'
 
 export type PageDefinition = {
   heading: string
@@ -13,7 +14,7 @@ export type PageDefinition = {
 }
 
 export const pageDefinitions: PageDefinition[] = [
-  // PersonalPageDefinition,
+  PersonalPageDefinition,
   ContactPageDefinition,
   DemographicPageDefinition,
   // IdentityPageDefinition,

@@ -8,21 +8,20 @@ import {
 } from 'constants/formOptions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type ClaimantInput =
-  // PersonalInput &
+export type ClaimantInput = PersonalInput &
   ContactInput &
-    DemographicInput &
-    // IdentityInput &
-    // EmployerInput &
-    // EmployerReviewInput &
-    // SelfEmploymentInput &
-    // OtherPayInput &
-    // OccupationInput &
-    // EducationVocationalRehabInput &
-    UnionInput &
-    // DisabilityInput &
-    // AvailabilityInput &
-    PaymentInput
+  DemographicInput &
+  // IdentityInput &
+  // EmployerInput &
+  // EmployerReviewInput &
+  // SelfEmploymentInput &
+  // OtherPayInput &
+  // OccupationInput &
+  // EducationVocationalRehabInput &
+  UnionInput &
+  // DisabilityInput &
+  // AvailabilityInput &
+  PaymentInput
 // & ReviewInput
 
 type DemographicInput = {
@@ -64,4 +63,32 @@ type PaymentInput = {
     account_number?: string
     LOCAL_re_enter_account_number?: string
   }
+}
+
+type PersonalInput = ClaimantNameInput & ClaimantAddressInput
+
+export type PersonNameInput = {
+  first_name: string
+  middle_name?: string
+  last_name: string
+}
+
+export type AddressInput = {
+  address1: string
+  address2?: string
+  city: string
+  state: string
+  zipcode: string
+}
+
+type ClaimantAddressInput = {
+  residence_address?: AddressInput
+  mailing_address?: AddressInput
+  LOCAL_mailing_address_same?: boolean
+}
+
+export type ClaimantNameInput = {
+  claimant_name?: PersonNameInput
+  LOCAL_claimant_has_alternate_names?: boolean
+  alternate_names?: PersonNameInput[]
 }
