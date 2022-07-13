@@ -1,5 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const nextJest = require('next/jest')
+import nextJest from 'next/jest'
+import { Config } from '@jest/types'
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
@@ -7,7 +7,8 @@ const createJestConfig = nextJest({
 })
 
 // Add any custom config to be passed to Jest
-const customJestConfig = {
+const customJestConfig: Config.InitialOptions = {
+  preset: 'ts-jest',
   setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
   moduleDirectories: ['node_modules', 'src/'],
   testEnvironment: 'jest-environment-jsdom',

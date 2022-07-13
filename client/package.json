@@ -51,6 +51,8 @@
     "jest-environment-jsdom": "^28.1.0",
     "prettier": "^2.7.1",
     "storybook-addon-next": "^1.6.6",
+    "ts-jest": "^28.0.5",
+    "ts-node": "^10.8.2",
     "typescript": "4.7.4"
   },
   "engines": {

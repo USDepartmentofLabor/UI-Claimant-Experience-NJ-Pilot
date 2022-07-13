@@ -119,16 +119,14 @@ describe('Demographic component', () => {
 
       await user.click(optOut)
       expect(optOut).toBeChecked()
-
-      // TODO: uncomment these asserts when formik is hooked up
-      // expect(asian).not.toBeChecked()
-      // expect(asian).toBeDisabled()
-      // expect(hawaiianPI).not.toBeChecked()
-      // expect(hawaiianPI).toBeDisabled()
-      // expect(black).not.toBeChecked()
-      // expect(black).toBeDisabled()
-      // expect(white).not.toBeChecked()
-      // expect(white).toBeDisabled()
+      expect(asian).not.toBeChecked()
+      expect(asian).toBeDisabled()
+      expect(hawaiianPI).not.toBeChecked()
+      expect(hawaiianPI).toBeDisabled()
+      expect(black).not.toBeChecked()
+      expect(black).toBeDisabled()
+      expect(white).not.toBeChecked()
+      expect(white).toBeDisabled()
     })
   })
 
