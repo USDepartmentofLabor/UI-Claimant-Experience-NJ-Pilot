@@ -5,13 +5,14 @@ import {
   PhoneTypeOption,
   PaymentMethodOption,
   AccountTypeOption,
+  AuthorizationTypeOption,
 } from 'constants/formOptions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type ClaimantInput = PersonalInput &
   ContactInput &
   DemographicInput &
-  // IdentityInput &
+  IdentityInput &
   // EmployerInput &
   // EmployerReviewInput &
   // SelfEmploymentInput &
@@ -91,4 +92,19 @@ export type ClaimantNameInput = {
   claimant_name?: PersonNameInput
   LOCAL_claimant_has_alternate_names?: boolean
   alternate_names?: PersonNameInput[]
+}
+
+type IdentityInput = {
+  birthdate?: string
+  ssn?: string
+  work_authorization?: {
+    authorized_to_work?: boolean
+    not_authorized_to_work_explanation?: string
+    authorization_type?: AuthorizationTypeOption
+    alien_registration_number?: string
+  }
+  state_credential?: {
+    drivers_license_or_state_id_number?: string
+    issuer?: string
+  }
 }

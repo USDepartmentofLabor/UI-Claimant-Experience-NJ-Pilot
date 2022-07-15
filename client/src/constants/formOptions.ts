@@ -22,3 +22,10 @@ export type PaymentMethodOption = typeof paymentMethodOptions[number]
 
 export const accountTypeOptions = ['checking', 'savings'] as const
 export type AccountTypeOption = typeof accountTypeOptions[number]
+
+export const authorizationTypeOptions = [
+  'US_citizen_or_national',
+  'permanent_resident',
+  'temporary_legal_worker',
+] as const
+export type AuthorizationTypeOption = typeof authorizationTypeOptions[number]

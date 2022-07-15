@@ -1,16 +1,8 @@
 import { render, screen, within } from '@testing-library/react'
-import states from '../../../fixtures/states.json'
+import states from 'fixtures/states.json'
 import { StateAbbrev, StatesDropdown } from './StatesDropdown'
 import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-    }
-  },
-}))
 
 describe('StatesDropdown Component', () => {
   it('renders properly', () => {

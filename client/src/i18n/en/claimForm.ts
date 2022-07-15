@@ -12,6 +12,9 @@ const claimForm = {
     info_alert:
       "We ask for your demographic information only for our reporting requirements. Your responses to these questions won't affect your application or potential payment amount.",
   },
+  identity: {
+    heading: 'Identity',
+  },
   ssn: {
     label: 'Social Security number',
     hint: 'Use format 000-00-0000',
@@ -83,12 +86,16 @@ const claimForm = {
   work_authorization: {
     authorized_to_work: {
       label: 'Are you legally allowed to work in the United States?',
-      required: 'Please indicate whether you are authorized to work',
+      errors: {
+        required: 'Please indicate whether you are authorized to work',
+      },
     },
     not_authorized_to_work_explanation: {
       label: 'Please share more about why you can’t work in the United States:',
-      required:
-        'Please share more about why you can’t work in the United States',
+      errors: {
+        required:
+          'Please share more about why you can’t work in the United States',
+      },
     },
     authorization_type: {
       label: 'Select your authorization:',
@@ -97,23 +104,31 @@ const claimForm = {
         permanent_resident: 'Permanent resident',
         temporary_legal_worker: 'Temporary legal worker',
       },
-      required: 'You must select an authorization status',
+      errors: {
+        required: 'You must select an authorization status',
+      },
     },
     alien_registration_number: {
       label: 'Alien registration number',
-      required: 'Alien registration number is required',
-      format:
-        'Please enter a valid Alien registration number with format 123-456-789',
+      errors: {
+        format:
+          'Please enter a valid Alien registration number with format 123-456-789',
+        required: 'Alien registration number is required',
+      },
     },
   },
   state_credential: {
     drivers_license_or_state_id_number: {
       label: 'Driver’s license or state ID number',
-      required: 'Driver’s license or state ID number is required',
+      errors: {
+        required: 'Driver’s license or state ID number is required',
+      },
     },
     issuer: {
       label: 'State that issued your license/ID',
-      required: 'Please select the state that issued your license or ID',
+      errors: {
+        required: 'Please select the state that issued your license or ID',
+      },
     },
   },
   employers: {
