@@ -368,10 +368,12 @@ const claimForm = {
     has_collected_disability: {
       label:
         "Since your last day worked, have you received disability or workers' compensation payments?",
-      required:
-        "You must indicate whether you have received disability or workers' compensation",
       help_text:
         'Pandemic Unemployment Assistance (PUA) and Social Security (SSI/SSDI) payments are not included. Choose “No” if you received payments from these programs.',
+      errors: {
+        required:
+          "You must indicate whether you have received disability or workers' compensation",
+      },
     },
     disabled_immediately_before: {
       label:

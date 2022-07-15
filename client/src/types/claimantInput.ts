@@ -5,6 +5,7 @@ import {
   PhoneTypeOption,
   PaymentMethodOption,
   AccountTypeOption,
+  DisabilityTypeOption,
   AuthorizationTypeOption,
 } from 'constants/formOptions'
 
@@ -20,7 +21,7 @@ export type ClaimantInput = PersonalInput &
   // OccupationInput &
   // EducationVocationalRehabInput &
   UnionInput &
-  // DisabilityInput &
+  DisabilityStatusInput &
   // AvailabilityInput &
   PaymentInput
 // & ReviewInput
@@ -51,6 +52,17 @@ type UnionInput = {
     union_name?: string
     union_local_number?: string
     required_to_seek_work_through_hiring_hall?: boolean
+  }
+}
+
+type DisabilityStatusInput = {
+  disability?: {
+    has_collected_disability?: boolean
+    disabled_immediately_before?: boolean
+    type_of_disability?: DisabilityTypeOption
+    date_disability_began?: string
+    recovery_date?: string
+    contacted_last_employer_after_recovery?: boolean
   }
 }
 

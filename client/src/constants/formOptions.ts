@@ -29,3 +29,10 @@ export const authorizationTypeOptions = [
   'temporary_legal_worker',
 ] as const
 export type AuthorizationTypeOption = typeof authorizationTypeOptions[number]
+
+export const disabilityTypeOptions = [
+  'state_plan',
+  'private_plan',
+  'workers_compensation',
+] as const
+export type DisabilityTypeOption = typeof disabilityTypeOptions[number]

@@ -32,7 +32,7 @@ describe('StatesDropdown Component', () => {
 
     const statesDropdown = screen.getByLabelText('test-label')
     expect(statesDropdown.children.length).toBe(stateSlice.length + 1)
-    expect(within(statesDropdown).getByText('Georgia'))
-    expect(within(statesDropdown).getByText('California'))
+    expect(within(statesDropdown).queryByText('Georgia')).toBeInTheDocument()
+    expect(within(statesDropdown).queryByText('California')).toBeInTheDocument()
   })
 })

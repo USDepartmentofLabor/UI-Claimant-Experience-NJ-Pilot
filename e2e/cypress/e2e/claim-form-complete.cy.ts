@@ -2,6 +2,7 @@ import fillDemographicFields from './formPageFilling/demographic'
 import fillContactFields from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
+import fillDisabilityStatusFields from './formPageFilling/disabilityStatus'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -41,6 +42,18 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
         authorized_to_work: true,
         authorization_type: 'US_citizen_or_national',
       },
+    })
+    // cy.check_a11y() TODO: uncomment when page has wrapper with heading
+
+    cy.visit('/claim/disability')
+
+    fillDisabilityStatusFields({
+      has_collected_disability: 'yes',
+      disabled_immediately_before: 'no',
+      type_of_disability: 'State Plan',
+      date_disability_began: '01/01/2020',
+      recovery_date: '05/02/2020',
+      contacted_last_employer_after_recovery: 'yes',
     })
     // cy.check_a11y() TODO: uncomment when page has wrapper with heading
   })

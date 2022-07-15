@@ -1,11 +1,12 @@
 import { AnySchema } from 'yup'
 import { ClaimantInput } from 'types/claimantInput'
+import { PersonalPageDefinition } from 'pages/claim/personal'
 import { ContactPageDefinition } from 'pages/claim/contact'
 import { DemographicPageDefinition } from 'pages/claim/demographic'
-import { PaymentPageDefinition } from 'pages/claim/payment'
-import { UnionPageDefinition } from 'pages/claim/union'
-import { PersonalPageDefinition } from 'pages/claim/personal'
 import { IdentityPageDefinition } from 'pages/claim/identity'
+import { UnionPageDefinition } from 'pages/claim/union'
+import { DisabilityPageDefinition } from 'pages/claim/disability'
+import { PaymentPageDefinition } from 'pages/claim/payment'
 
 export type PageDefinition = {
   heading: string
@@ -26,7 +27,7 @@ export const pageDefinitions: PageDefinition[] = [
   // OccupationPageDefinition,
   // EducationVocationalRehabPageDefinition,
   UnionPageDefinition,
-  // DisabilityPageDefinition,
+  DisabilityPageDefinition,
   // AvailabilityPageDefinition,
   PaymentPageDefinition,
   // ReviewPageDefinition,
