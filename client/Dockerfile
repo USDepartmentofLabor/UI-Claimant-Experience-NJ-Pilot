@@ -1,5 +1,6 @@
 # Install dependencies only when needed
-FROM node:16.15.1-bullseye-slim AS deps
+# Pin sha version of node:16.16.0-bullseye-slim
+FROM node@sha256:a2aad04a24d2bd4d798fe59b8dafbe6c5e3ecf143d63b8c3bc9ba194e700e130 AS deps
 WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
@@ -21,7 +22,8 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN yarn build
 
 # Production image, copy all the files and run next
-FROM gcr.io/distroless/nodejs:16 AS runner
+# Pin sha version of gcr.io/distroless/nodejs-debian11:16
+FROM gcr.io/distroless/nodejs@sha256:f70e2ad790cd0df303c315c83fcb26dbd940f0ff50b9a9a84a3150eec8c7f6f6 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
