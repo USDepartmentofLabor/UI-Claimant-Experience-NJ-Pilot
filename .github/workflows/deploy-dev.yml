@@ -2,6 +2,13 @@ name: Deploy Dev
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Test and Lint
+    types:
+      - completed
+    branches:
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -9,6 +16,7 @@ concurrency:
 
 jobs:
   docker-build-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
