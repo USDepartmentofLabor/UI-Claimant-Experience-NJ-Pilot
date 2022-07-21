@@ -7,13 +7,16 @@ const claimForm = {
     save_and_exit: 'Save and exit',
     complete: 'Complete',
   },
-  demographic: {
-    heading: 'Demographic',
+  personal: {
+    heading: 'Personal Information',
+  },
+  demographics: {
+    heading: 'Demographics',
     info_alert:
       "We ask for your demographic information only for our reporting requirements. Your responses to these questions won't affect your application or potential payment amount.",
   },
   identity: {
-    heading: 'Identity',
+    heading: 'Identity Information',
   },
   ssn: {
     label: 'Social Security number',
@@ -498,7 +501,7 @@ const claimForm = {
     },
   },
   contact: {
-    heading: 'Contact',
+    heading: 'Contact Information',
     more_phones: 'Add another phone number',
     email: 'Email address', // no label, not editable
     interpreter_required: {
@@ -524,7 +527,7 @@ const claimForm = {
     },
   },
   payment: {
-    heading: 'Payment',
+    heading: 'Payment Information',
     federal_income_tax_withheld: {
       label:
         'Would you like to have 10% federal income tax withheld from your benefits payments?',

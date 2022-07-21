@@ -25,8 +25,8 @@ const Demographic: NextPage = () => {
   return (
     // temporarily wrap in Formik until we have the page wrapper build
     <>
-      <Alert type="info" headingLevel="h4">
-        {t('demographic.info_alert')}
+      <Alert type="info" headingLevel="h4" noIcon>
+        {t('demographics.info_alert')}
       </Alert>
       <Fieldset legend={t('sex.label')} className={formStyles.field}>
         <RadioField
@@ -73,7 +73,7 @@ const Demographic: NextPage = () => {
 }
 
 export const DemographicPageDefinition: PageDefinition = {
-  heading: i18n_claimForm.t('demographic.heading'),
+  heading: i18n_claimForm.t('demographics.heading'),
   path: Routes.CLAIM.DEMOGRAPHIC,
   initialValues: {
     sex: undefined,

@@ -1,6 +1,5 @@
 import { NextPage } from 'next'
 import { boolean, date, mixed, object, ref } from 'yup'
-import { Fieldset } from '@trussworks/react-uswds'
 import { useFormikContext } from 'formik'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -45,7 +44,7 @@ export const Disability: NextPage = () => {
   }, [values])
 
   return (
-    <Fieldset legend={t('disability.heading')}>
+    <>
       <YesNoQuestion
         question={t('disability.has_collected_disability.label')}
         name="disability.has_collected_disability"
@@ -109,7 +108,7 @@ export const Disability: NextPage = () => {
           )}
         </>
       )}
-    </Fieldset>
+    </>
   )
 }
 
@@ -148,7 +147,7 @@ const validationSchema = object().shape({
 })
 
 export const DisabilityPageDefinition: PageDefinition = {
-  heading: 'disability',
+  heading: i18n_claimForm.t('disability.heading'),
   path: Routes.CLAIM.DISABILITY,
   initialValues: { disability: {} },
   validationSchema,

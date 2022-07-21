@@ -10,6 +10,7 @@ import { Routes } from 'constants/routes'
 import { SubmitButton } from 'components/layouts/ClaimForm/SubmitButton/SubmitButton'
 import { PreviousPageButton } from 'components/layouts/ClaimForm/PreviousPageButton/PreviousPageButton'
 import { SaveAndExitLink } from 'components/layouts/ClaimForm/SaveAndExitLink/SaveAndExitLink'
+import { ClaimFormPageHeading } from './ClaimFormHeading/ClaimFormPageHeading'
 
 // import claimFormStyles from './ClaimForm.module.scss' // TODO styles
 
@@ -46,6 +47,9 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const nextPageDefinition = pageDefinitions.at(nextPageIndex)
   const isComplete = false // TODO register when claim is completed
   const isLoading = false // TODO From useSubmitClaim.isLoading
+
+  const step = currentPageIndex + 1
+  const totalSteps = pageDefinitions.length
 
   const initialValues = useMemo(
     // TODO merge with previously saved values for all pages (When API and persistence are added)
@@ -159,47 +163,56 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         }
 
         return (
-          <Form>
-            {showErrors && (
-              <FormErrorSummary key={submitCount} errors={errors} />
-            )}
-            {children}
-            {/*<div className={claimFormStyles.pagination}> TODO fix styles*/}
-            <div>
-              {/* TODO ClaimFormPagination Component? */}
-              <FormGroup>
-                {nextPageDefinition && (
-                  <div className="text-center text-italic margin-bottom-2">
-                    {t('pagination.next_step', {
-                      stepName: nextPageDefinition.heading,
-                    })}
-                  </div>
-                )}
-                <div className="text-center">
-                  {previousPageDefinition && (
-                    <PreviousPageButton onClick={handleClickPrevious} />
+          <>
+            <ClaimFormPageHeading
+              pageHeading={currentPageDefinition.heading}
+              step={step}
+              totalSteps={totalSteps}
+            />
+            <Form>
+              {showErrors && (
+                <FormErrorSummary key={submitCount} errors={errors} />
+              )}
+              {children}
+              {/*<div className={claimFormStyles.pagination}> TODO fix styles*/}
+              <div>
+                {/* TODO ClaimFormPagination Component? */}
+                <FormGroup>
+                  {nextPageDefinition && (
+                    <div className="text-center text-italic margin-bottom-2">
+                      {t('pagination.next_step', {
+                        stepName: nextPageDefinition.heading,
+                      })}
+                    </div>
                   )}
-                  <SubmitButton
-                    disabled={isLoading}
-                    onClick={
-                      nextPageDefinition ? handleClickNext : handleClickComplete
-                    }
-                  >
-                    {nextPageDefinition
-                      ? t('pagination.next')
-                      : t('pagination.complete')}
-                  </SubmitButton>
-                  <div className="margin-top-1">
-                    {!isComplete && (
-                      <SaveAndExitLink
-                        onClick={() => handleSaveAndExit(values)}
-                      />
+                  <div className="text-center">
+                    {previousPageDefinition && (
+                      <PreviousPageButton onClick={handleClickPrevious} />
                     )}
+                    <SubmitButton
+                      disabled={isLoading}
+                      onClick={
+                        nextPageDefinition
+                          ? handleClickNext
+                          : handleClickComplete
+                      }
+                    >
+                      {nextPageDefinition
+                        ? t('pagination.next')
+                        : t('pagination.complete')}
+                    </SubmitButton>
+                    <div className="margin-top-1">
+                      {!isComplete && (
+                        <SaveAndExitLink
+                          onClick={() => handleSaveAndExit(values)}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              </FormGroup>
-            </div>
-          </Form>
+                </FormGroup>
+              </div>
+            </Form>
+          </>
         )
       }}
     </Formik>

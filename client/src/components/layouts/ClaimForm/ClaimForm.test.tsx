@@ -30,10 +30,12 @@ describe('ClaimForm Layout', () => {
       const previousPageButton = screen.queryByText('pagination.previous')
       const nextButton = screen.queryByText('pagination.next')
       const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
+      const claimFormPageHeading = screen.queryByText('First page')
 
       expect(previousPageButton).not.toBeInTheDocument()
       expect(nextButton).toBeInTheDocument()
       expect(saveAndExitLink).toBeInTheDocument()
+      expect(claimFormPageHeading).toBeInTheDocument()
     })
 
     it('clicking next navigates to the next page', async () => {
@@ -82,10 +84,12 @@ describe('ClaimForm Layout', () => {
       const previousButton = screen.queryByText('pagination.previous')
       const nextButton = screen.queryByText('pagination.next')
       const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
+      const claimFormPageHeading = screen.queryByText('Middle page')
 
       expect(previousButton).toBeInTheDocument()
       expect(nextButton).toBeInTheDocument()
       expect(saveAndExitLink).toBeInTheDocument()
+      expect(claimFormPageHeading).toBeInTheDocument()
     })
 
     it('clicking previous navigates to the previous page', async () => {
@@ -135,11 +139,13 @@ describe('ClaimForm Layout', () => {
       const nextButton = screen.queryByText('pagination.next')
       const completeButton = screen.queryByText('pagination.complete')
       const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
+      const claimFormPageHeading = screen.queryByText('Last page')
 
       expect(previousButton).toBeInTheDocument()
       expect(nextButton).not.toBeInTheDocument()
       expect(completeButton).toBeInTheDocument()
       expect(saveAndExitLink).toBeInTheDocument()
+      expect(claimFormPageHeading).toBeInTheDocument()
     })
 
     it('clicking submit navigates home', async () => {
