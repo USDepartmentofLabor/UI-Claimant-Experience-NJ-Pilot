@@ -1,5 +1,8 @@
 # Unemployment Insurance Claimant Intake
 
+![Test and Lint](https://github.com/newjersey/dol-ui-claimant-intake/actions/workflows/build-and-test.yml/badge.svg)
+![Deploy Dev](https://github.com/newjersey/dol-ui-claimant-intake/actions/workflows/deploy-dev.yml/badge.svg)
+
 Modern Unemployment Insurance (UI) intake application for the state of New Jersey Department of Labor.
 
 ## Set up
