@@ -1,180 +1,152 @@
-import { render, waitFor } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { Formik } from 'formik'
 
 import { ClaimantNames } from './ClaimantNames'
 import userEvent from '@testing-library/user-event'
 import { noop } from 'helpers/noop/noop'
-import { PERSON_NAME_SKELETON } from 'constants/initialValues'
 import { LiveAnnouncer } from 'react-aria-live'
+import { PersonalPageDefinition } from 'pages/claim/personal'
+
+const CLAIMANT_NAME = 'claimant_name'
+const ALTERNATE_NAMES = 'alternate_names'
 
 describe('ClaimantNames component', () => {
-  it('renders properly', () => {
-    const claimantName = 'claimant_name'
-    const alternateNames = 'alternate_names'
-    const initialValues = {
-      [claimantName]: {
-        ...PERSON_NAME_SKELETON,
-      },
-      [alternateNames]: [],
-    }
+  const initialValues = PersonalPageDefinition.initialValues
 
-    const { getByLabelText } = render(
+  // re-useable queries
+  const queryForAlternateNameFieldset = () =>
+    screen.queryByRole('group', {
+      name: 'alternate_name',
+    })
+
+  // re-useable getters
+  const getClaimantNameFieldset = () =>
+    screen.getByRole('group', {
+      name: 'legal_name',
+    })
+  const getAlternateNameFieldset = () =>
+    screen.getByRole('group', {
+      name: 'alternate_name',
+    })
+  const getFirstNameField = (fieldset: HTMLElement) =>
+    within(fieldset).getByLabelText('name.first_name.label')
+  const getMiddleNameField = (fieldset: HTMLElement) =>
+    within(fieldset).getByLabelText('name.middle_name.label')
+  const getLastNameField = (fieldset: HTMLElement) =>
+    within(fieldset).getByLabelText('name.last_name.label')
+  const getAlternateNamesQuestion = () =>
+    screen.getByRole('group', {
+      name: 'claimant_has_alternate_names.label',
+    })
+  const getYesAnswer = (radioGroup: HTMLElement) =>
+    within(radioGroup).getByRole('radio', { name: 'yes' })
+  const getNoAnswer = (radioGroup: HTMLElement) =>
+    within(radioGroup).getByRole('radio', { name: 'no' })
+
+  it('renders properly', () => {
+    render(
       <LiveAnnouncer>
         <Formik initialValues={initialValues} onSubmit={noop}>
           <ClaimantNames />
         </Formik>
       </LiveAnnouncer>
     )
+    const claimantName = getClaimantNameFieldset()
+    const firstNameField = getFirstNameField(claimantName)
+    const middleNameField = getMiddleNameField(claimantName)
+    const lastNameField = getLastNameField(claimantName)
 
-    const claimantFirstNameField = getByLabelText('name.first_name.label')
-    const claimantMiddleNameField = getByLabelText('name.middle_name.label')
-    const claimantLastNameField = getByLabelText('name.last_name.label')
+    const alternateName = queryForAlternateNameFieldset()
 
-    expect(claimantFirstNameField).toHaveValue('')
-    expect(claimantFirstNameField).toHaveAttribute(
-      'id',
-      `${claimantName}.first_name`
-    )
-    expect(claimantFirstNameField).toHaveAttribute(
+    expect(firstNameField).toHaveValue('')
+    expect(firstNameField).toHaveAttribute('id', `${CLAIMANT_NAME}.first_name`)
+    expect(firstNameField).toHaveAttribute(
       'name',
-      `${claimantName}.first_name`
+      `${CLAIMANT_NAME}.first_name`
     )
 
-    expect(claimantMiddleNameField).toHaveValue('')
-    expect(claimantMiddleNameField).toHaveAttribute(
+    expect(middleNameField).toHaveValue('')
+    expect(middleNameField).toHaveAttribute(
       'id',
-      `${claimantName}.middle_name`
+      `${CLAIMANT_NAME}.middle_name`
     )
-    expect(claimantMiddleNameField).toHaveAttribute(
+    expect(middleNameField).toHaveAttribute(
       'name',
-      `${claimantName}.middle_name`
+      `${CLAIMANT_NAME}.middle_name`
     )
 
-    expect(claimantLastNameField).toHaveValue('')
-    expect(claimantLastNameField).toHaveAttribute(
-      'id',
-      `${claimantName}.last_name`
-    )
-    expect(claimantLastNameField).toHaveAttribute(
-      'name',
-      `${claimantName}.last_name`
-    )
+    expect(lastNameField).toHaveValue('')
+    expect(lastNameField).toHaveAttribute('id', `${CLAIMANT_NAME}.last_name`)
+    expect(lastNameField).toHaveAttribute('name', `${CLAIMANT_NAME}.last_name`)
+
+    expect(alternateName).not.toBeInTheDocument()
   })
 
   describe('alternate names', () => {
-    const user = userEvent.setup()
     it('fields are toggled via radio button control', async () => {
-      const claimantName = 'claimant_name'
-      const alternateNames = 'alternate_names'
-      const initialValues = {
-        [claimantName]: {
-          ...PERSON_NAME_SKELETON,
-        },
-        [alternateNames]: [],
-      }
-
-      const { getByRole, getAllByLabelText } = render(
+      const user = userEvent.setup()
+      render(
         <LiveAnnouncer>
           <Formik initialValues={initialValues} onSubmit={noop}>
             <ClaimantNames />
           </Formik>
         </LiveAnnouncer>
       )
+      const hasAlternateNamesQuestion = getAlternateNamesQuestion()
+      const yesAlternateNames = getYesAnswer(hasAlternateNamesQuestion)
+      const noAlternateNames = getNoAnswer(hasAlternateNamesQuestion)
+      const alternateNameBeforeClick = queryForAlternateNameFieldset()
 
-      const yesAlternateNames = getByRole('radio', { name: 'yes' })
-      const noAlternateNames = getByRole('radio', { name: 'no' })
+      expect(alternateNameBeforeClick).not.toBeInTheDocument()
 
       await user.click(yesAlternateNames)
 
-      const [claimantFirstNameField, claimantAlternateFirstNameField] =
-        getAllByLabelText('name.first_name.label')
-      const [claimantMiddleNameField, claimantAlternateMiddleNameField] =
-        getAllByLabelText('name.middle_name.label')
-      const [claimantLastNameField, claimantAlternateLastNameField] =
-        getAllByLabelText('name.last_name.label')
+      const alternateName = getAlternateNameFieldset()
+      const alternateFirstNameField = getFirstNameField(alternateName)
+      const alternateMiddleNameField = getMiddleNameField(alternateName)
+      const alternateLastNameField = getLastNameField(alternateName)
 
-      await waitFor(() => {
-        expect(claimantFirstNameField).toHaveValue('')
-        expect(claimantFirstNameField).toHaveAttribute(
-          'id',
-          `${claimantName}.first_name`
-        )
-        expect(claimantFirstNameField).toHaveAttribute(
-          'name',
-          `${claimantName}.first_name`
-        )
+      expect(alternateFirstNameField).toHaveValue('')
+      expect(alternateFirstNameField).toHaveAttribute(
+        'id',
+        `${ALTERNATE_NAMES}.0.first_name`
+      )
+      expect(alternateFirstNameField).toHaveAttribute(
+        'name',
+        `${ALTERNATE_NAMES}.0.first_name`
+      )
 
-        expect(claimantMiddleNameField).toHaveValue('')
-        expect(claimantMiddleNameField).toHaveAttribute(
-          'id',
-          `${claimantName}.middle_name`
-        )
-        expect(claimantMiddleNameField).toHaveAttribute(
-          'name',
-          `${claimantName}.middle_name`
-        )
+      expect(alternateMiddleNameField).toHaveValue('')
+      expect(alternateMiddleNameField).toHaveAttribute(
+        'id',
+        `${ALTERNATE_NAMES}.0.middle_name`
+      )
+      expect(alternateMiddleNameField).toHaveAttribute(
+        'name',
+        `${ALTERNATE_NAMES}.0.middle_name`
+      )
 
-        expect(claimantLastNameField).toHaveValue('')
-        expect(claimantLastNameField).toHaveAttribute(
-          'id',
-          `${claimantName}.last_name`
-        )
-        expect(claimantLastNameField).toHaveAttribute(
-          'name',
-          `${claimantName}.last_name`
-        )
-
-        expect(claimantAlternateFirstNameField).toHaveValue('')
-        expect(claimantAlternateFirstNameField).toHaveAttribute(
-          'id',
-          `${alternateNames}.0.first_name`
-        )
-        expect(claimantAlternateFirstNameField).toHaveAttribute(
-          'name',
-          `${alternateNames}.0.first_name`
-        )
-
-        expect(claimantAlternateMiddleNameField).toHaveValue('')
-        expect(claimantAlternateMiddleNameField).toHaveAttribute(
-          'id',
-          `${alternateNames}.0.middle_name`
-        )
-        expect(claimantAlternateMiddleNameField).toHaveAttribute(
-          'name',
-          `${alternateNames}.0.middle_name`
-        )
-
-        expect(claimantAlternateLastNameField).toHaveValue('')
-        expect(claimantAlternateLastNameField).toHaveAttribute(
-          'id',
-          `${alternateNames}.0.last_name`
-        )
-        expect(claimantAlternateLastNameField).toHaveAttribute(
-          'name',
-          `${alternateNames}.0.last_name`
-        )
-      })
+      expect(alternateLastNameField).toHaveValue('')
+      expect(alternateLastNameField).toHaveAttribute(
+        'id',
+        `${ALTERNATE_NAMES}.0.last_name`
+      )
+      expect(alternateLastNameField).toHaveAttribute(
+        'name',
+        `${ALTERNATE_NAMES}.0.last_name`
+      )
 
       await user.click(noAlternateNames)
 
-      expect(claimantAlternateFirstNameField).not.toBeInTheDocument()
-      expect(claimantAlternateMiddleNameField).not.toBeInTheDocument()
-      expect(claimantAlternateLastNameField).not.toBeInTheDocument()
+      expect(alternateName).not.toBeInTheDocument()
+      expect(alternateFirstNameField).not.toBeInTheDocument()
+      expect(alternateMiddleNameField).not.toBeInTheDocument()
+      expect(alternateLastNameField).not.toBeInTheDocument()
     })
 
-    // TODO: fix useClearFields to allow alternate names to have [] instead of undefined
     it('fields are cleared when toggled', async () => {
       const user = userEvent.setup()
-      const claimantName = 'claimant_name'
-      const alternateNames = 'alternate_names'
-      const initialValues = {
-        [claimantName]: {
-          ...PERSON_NAME_SKELETON,
-        },
-        [alternateNames]: [],
-      }
-
-      const { getByRole, queryAllByLabelText } = render(
+      render(
         <LiveAnnouncer>
           <Formik initialValues={initialValues} onSubmit={noop}>
             <ClaimantNames />
@@ -182,61 +154,50 @@ describe('ClaimantNames component', () => {
         </LiveAnnouncer>
       )
 
-      const yesAlternateNames = getByRole('radio', { name: 'yes' })
-      const noAlternateNames = getByRole('radio', { name: 'no' })
+      const hasAlternateNamesQuestion = getAlternateNamesQuestion()
+      const yesAlternateNames = getYesAnswer(hasAlternateNamesQuestion)
+      const noAlternateNames = getNoAnswer(hasAlternateNamesQuestion)
 
       // Toggle on
       await user.click(yesAlternateNames)
 
-      const claimantsAlternateFirstNameField = queryAllByLabelText(
-        'name.first_name.label'
-      )[1]
-      const claimantsAlternateMiddleNameField = queryAllByLabelText(
-        'name.middle_name.label'
-      )[1]
-      const claimantsAlternateLastNameField = queryAllByLabelText(
-        'name.last_name.label'
-      )[1]
+      const alternateName = getAlternateNameFieldset()
+      const alternateFirstNameField = getFirstNameField(alternateName)
+      const alternateMiddleNameField = getMiddleNameField(alternateName)
+      const alternateLastNameField = getLastNameField(alternateName)
 
-      expect(claimantsAlternateFirstNameField).toBeInTheDocument()
-      expect(claimantsAlternateMiddleNameField).toBeInTheDocument()
-      expect(claimantsAlternateLastNameField).toBeInTheDocument()
+      await user.type(alternateFirstNameField, 'This')
+      await user.type(alternateMiddleNameField, 'Should')
+      await user.type(alternateLastNameField, 'Clear')
 
-      await user.type(claimantsAlternateFirstNameField, 'This')
-      await user.type(claimantsAlternateMiddleNameField, 'Should')
-      await user.type(claimantsAlternateLastNameField, 'Clear')
-
-      expect(claimantsAlternateFirstNameField).toHaveValue('This')
-      expect(claimantsAlternateMiddleNameField).toHaveValue('Should')
-      expect(claimantsAlternateLastNameField).toHaveValue('Clear')
+      expect(alternateFirstNameField).toHaveValue('This')
+      expect(alternateMiddleNameField).toHaveValue('Should')
+      expect(alternateLastNameField).toHaveValue('Clear')
 
       // Toggle off
       await user.click(noAlternateNames)
 
-      expect(claimantsAlternateFirstNameField).not.toBeInTheDocument()
-      expect(claimantsAlternateMiddleNameField).not.toBeInTheDocument()
-      expect(claimantsAlternateLastNameField).not.toBeInTheDocument()
+      expect(alternateFirstNameField).not.toBeInTheDocument()
+      expect(alternateMiddleNameField).not.toBeInTheDocument()
+      expect(alternateLastNameField).not.toBeInTheDocument()
 
       // Toggle back on
       await user.click(yesAlternateNames)
 
-      const claimantAlternateFirstNameField = queryAllByLabelText(
-        'name.first_name.label'
-      )[1]
-      const claimantAlternateMiddleNameField = queryAllByLabelText(
-        'name.middle_name.label'
-      )[1]
-      const claimantAlternateLastNameField = queryAllByLabelText(
-        'name.last_name.label'
-      )[1]
+      const alternateNameReappeared = getAlternateNameFieldset()
+      const alternateFirstNameFieldReappeared = getFirstNameField(
+        alternateNameReappeared
+      )
+      const alternateMiddleNameFieldReappeared = getMiddleNameField(
+        alternateNameReappeared
+      )
+      const alternateLastNameFieldReappeared = getLastNameField(
+        alternateNameReappeared
+      )
 
-      expect(claimantAlternateFirstNameField).toBeInTheDocument()
-      expect(claimantAlternateMiddleNameField).toBeInTheDocument()
-      expect(claimantAlternateLastNameField).toBeInTheDocument()
-
-      expect(claimantAlternateFirstNameField).toHaveValue('')
-      expect(claimantAlternateMiddleNameField).toHaveValue('')
-      expect(claimantAlternateLastNameField).toHaveValue('')
+      expect(alternateFirstNameFieldReappeared).toHaveValue('')
+      expect(alternateMiddleNameFieldReappeared).toHaveValue('')
+      expect(alternateLastNameFieldReappeared).toHaveValue('')
     })
   })
 })
