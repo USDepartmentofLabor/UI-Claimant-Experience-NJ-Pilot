@@ -12,7 +12,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type ClaimantInput = PersonalInput &
   ContactInput &
-  DemographicInput &
+  DemographicsInput &
   IdentityInput &
   // EmployerInput &
   // EmployerReviewInput &
@@ -26,7 +26,7 @@ export type ClaimantInput = PersonalInput &
   PaymentInput
 // & ReviewInput
 
-type DemographicInput = {
+type DemographicsInput = {
   sex?: SexOption
   ethnicity?: EthnicityOption
   race?: RaceOption[]

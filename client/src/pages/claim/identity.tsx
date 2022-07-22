@@ -16,10 +16,11 @@ import { i18n_claimForm } from 'i18n/i18n'
 import states from 'fixtures/states.json'
 import { authorizationTypeOptions } from 'constants/formOptions'
 import { useFormikContext } from 'formik'
-import styles from './index.module.scss'
-import { Routes } from '../../../constants/routes'
+import { Routes } from 'constants/routes'
 import { NextPage } from 'next'
 import { ClaimantInput } from 'types/claimantInput'
+
+import styles from 'styles/pages/claim/identity.module.scss'
 
 export const Identity: NextPage = () => {
   const { t } = useTranslation('claimForm')

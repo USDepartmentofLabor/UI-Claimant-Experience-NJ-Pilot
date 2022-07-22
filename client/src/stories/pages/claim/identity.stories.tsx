@@ -4,7 +4,7 @@ import { Identity, IdentityPageDefinition } from 'pages/claim/identity'
 import { noop } from 'helpers/noop/noop'
 
 export default {
-  title: 'Pages/Form/Identity',
+  title: 'Pages/Claim Form/Identity',
   component: Identity,
 } as ComponentMeta<typeof Identity>
 

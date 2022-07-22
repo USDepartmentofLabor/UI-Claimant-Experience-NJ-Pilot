@@ -3,7 +3,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { Form, Formik } from 'formik'
 
 export default {
-  title: 'Pages/Form/Union',
+  title: 'Pages/Claim Form/Union',
   component: Union,
 } as ComponentMeta<typeof Union>
 const noop = () => undefined

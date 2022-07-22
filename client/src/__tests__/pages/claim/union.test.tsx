@@ -4,7 +4,7 @@ import { Union } from 'pages/claim/union'
 import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
 
-describe('UnionProfile', () => {
+describe('Union page', () => {
   beforeEach(() => {
     render(
       <Formik initialValues={{}} onSubmit={noop}>

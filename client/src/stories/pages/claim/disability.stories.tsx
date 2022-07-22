@@ -4,7 +4,7 @@ import { noop } from 'helpers/noop/noop'
 import { Disability, DisabilityPageDefinition } from 'pages/claim/disability'
 
 export default {
-  title: 'Pages/Form/Disability Status',
+  title: 'Pages/Claim Form/Disability Status',
   component: Disability,
 } as ComponentMeta<typeof Disability>
 

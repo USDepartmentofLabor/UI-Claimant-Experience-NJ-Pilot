@@ -1,4 +1,4 @@
-import { Identity, IdentityPageDefinition } from 'pages/claim/identity/'
+import { Identity, IdentityPageDefinition } from 'pages/claim/identity'
 import { screen, render, waitFor, within } from '@testing-library/react'
 import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'

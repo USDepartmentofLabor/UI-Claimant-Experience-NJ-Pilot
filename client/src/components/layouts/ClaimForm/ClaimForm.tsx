@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useMemo } from 'react'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { Alert, FormGroup } from '@trussworks/react-uswds'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { ClaimantInput } from 'types/claimantInput'

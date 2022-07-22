@@ -5,7 +5,7 @@ import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import { accountTypeOptions, paymentMethodOptions } from 'constants/formOptions'
 
-describe('PaymentInformation page', () => {
+describe('Payment page', () => {
   it('renders as expected', () => {
     const initialValues = {
       payment_method: {},

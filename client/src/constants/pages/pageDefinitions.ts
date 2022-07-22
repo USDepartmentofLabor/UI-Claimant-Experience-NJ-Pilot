@@ -2,7 +2,7 @@ import { AnySchema } from 'yup'
 import { ClaimantInput } from 'types/claimantInput'
 import { PersonalPageDefinition } from 'pages/claim/personal'
 import { ContactPageDefinition } from 'pages/claim/contact'
-import { DemographicPageDefinition } from 'pages/claim/demographic'
+import { DemographicsPageDefinition } from 'pages/claim/demographics'
 import { IdentityPageDefinition } from 'pages/claim/identity'
 import { UnionPageDefinition } from 'pages/claim/union'
 import { DisabilityPageDefinition } from 'pages/claim/disability'
@@ -18,7 +18,7 @@ export type PageDefinition = {
 export const pageDefinitions: PageDefinition[] = [
   PersonalPageDefinition,
   ContactPageDefinition,
-  DemographicPageDefinition,
+  DemographicsPageDefinition,
   IdentityPageDefinition,
   // EmployerPageDefinition,
   // EmployerReviewPageDefinition,

@@ -3,7 +3,7 @@ import { Formik } from 'formik'
 import { screen } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 
-import Demographic from 'pages/claim/demographic'
+import Demographics from 'pages/claim/demographics'
 import { noop } from 'helpers/noop/noop'
 // import {
 //   getInvalidClaimFormFixtures,
@@ -15,7 +15,7 @@ import {
   sexOptions,
 } from 'constants/formOptions'
 
-describe('Demographic component', () => {
+describe('Demographics page', () => {
   const initialValues = {
     sex: undefined,
     race: [],
@@ -26,7 +26,7 @@ describe('Demographic component', () => {
   it('renders properly', () => {
     const { getByLabelText } = render(
       <Formik initialValues={initialValues} onSubmit={noop}>
-        <Demographic />
+        <Demographics />
       </Formik>
     )
 
@@ -57,7 +57,7 @@ describe('Demographic component', () => {
       const user = userEvent.setup()
       render(
         <Formik initialValues={initialValues} onSubmit={noop}>
-          <Demographic />
+          <Demographics />
         </Formik>
       )
       const radio1 = screen.getByLabelText('sex.options.female')
@@ -85,7 +85,7 @@ describe('Demographic component', () => {
       const user = userEvent.setup()
       const { getByLabelText } = render(
         <Formik initialValues={initialValues} onSubmit={noop}>
-          <Demographic />
+          <Demographics />
         </Formik>
       )
 
@@ -135,7 +135,7 @@ describe('Demographic component', () => {
       const user = userEvent.setup()
       render(
         <Formik initialValues={initialValues} onSubmit={noop}>
-          <Demographic />
+          <Demographics />
         </Formik>
       )
 

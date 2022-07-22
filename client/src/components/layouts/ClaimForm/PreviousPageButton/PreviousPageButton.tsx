@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react'
 import { Button } from '@trussworks/react-uswds'
-import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'react-i18next'
 
 type PreviousPageButtonProps = {
   onClick: ComponentProps<typeof Button>['onClick']

@@ -19,11 +19,10 @@ import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
 import { array, mixed, object } from 'yup'
 
-const Demographic: NextPage = () => {
+const Demographics: NextPage = () => {
   const { t } = useTranslation('claimForm')
   const { values, setFieldValue } = useFormikContext<ClaimantInput>()
   return (
-    // temporarily wrap in Formik until we have the page wrapper build
     <>
       <Alert type="info" headingLevel="h4" noIcon>
         {t('demographics.info_alert')}
@@ -72,9 +71,9 @@ const Demographic: NextPage = () => {
   )
 }
 
-export const DemographicPageDefinition: PageDefinition = {
+export const DemographicsPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('demographics.heading'),
-  path: Routes.CLAIM.DEMOGRAPHIC,
+  path: Routes.CLAIM.DEMOGRAPHICS,
   initialValues: {
     sex: undefined,
     ethnicity: undefined,
@@ -99,4 +98,4 @@ export const DemographicPageDefinition: PageDefinition = {
   }),
 }
 
-export default Demographic
+export default Demographics

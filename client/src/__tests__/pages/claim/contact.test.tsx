@@ -4,7 +4,7 @@ import { noop } from 'helpers/noop/noop'
 import Contact from 'pages/claim/contact'
 import userEvent from '@testing-library/user-event'
 
-describe('ContactInformation component', () => {
+describe('Contact page', () => {
   const initialValues = {
     email: undefined,
     phones: [],

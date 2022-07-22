@@ -1,4 +1,4 @@
-import fillDemographicFields from './formPageFilling/demographic'
+import fillDemographicsFields from './formPageFilling/demographics'
 import fillContactFields from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
@@ -6,8 +6,8 @@ import fillDisabilityStatusFields from './formPageFilling/disabilityStatus'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
-    cy.visit('/claim/demographic')
-    fillDemographicFields({
+    cy.visit('/claim/demographics')
+    fillDemographicsFields({
       sex: 'female',
       ethnicity: 'not_hispanic',
       races: ['asian', 'hawaiian_or_pacific_islander'],

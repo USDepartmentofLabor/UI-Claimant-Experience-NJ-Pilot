@@ -4,7 +4,7 @@ import Contact, { ContactPageDefinition } from 'pages/claim/contact'
 import { noop } from 'helpers/noop/noop'
 
 export default {
-  title: 'Pages/Form/Contact Information',
+  title: 'Pages/Claim Form/Contact Information',
   component: Contact,
 } as ComponentMeta<typeof Contact>
 
