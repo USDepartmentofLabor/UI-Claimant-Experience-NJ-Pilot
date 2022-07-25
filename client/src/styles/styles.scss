@@ -1,11 +1,13 @@
-// NOTE: Project-wide USWDS configuration only!
-// Component styles go in a .module.scss file.
-// Global theme settings go in the theme.scss file.
+// -------------------------------------
+// ReactUSWDS CSS modules
+@import '@trussworks/react-uswds/lib/index.css';
 
-@import './theme';
+// -------------------------------------
+// USWDS settings and utilities
+@import 'uswds';
 
-// Import specific packages for components being used to avoid CSS bloat.
-
+// -------------------------------------
+// USWDS SCSS - Individual Imports
 @import 'node_modules/uswds/src/stylesheets/packages/global';
 
 @import 'node_modules/uswds/src/stylesheets/packages/form-controls';
@@ -48,6 +50,7 @@
 // @import 'packages/usa-tag';
 @import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
 
+// -------------------------------------
 // global style overrides
 
 .usa-fieldset {

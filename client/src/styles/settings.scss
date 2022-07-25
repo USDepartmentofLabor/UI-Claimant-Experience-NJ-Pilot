@@ -1,0 +1,24 @@
+// Configuration and theme settings
+// No actual CSS rules should be here, just settings.
+
+/* Asset path from node_modules/uswds/dist/core/ */
+$uswds-asset-path: '../../../../src';
+
+/* GENERAL */
+$theme-show-notifications: false;
+$theme-image-path: '#{$uswds-asset-path}/img';
+
+/* TYPOGRAPHY */
+$theme-respect-user-font-size: false;
+$theme-root-font-size: 14px;
+$theme-font-path: '#{$uswds-asset-path}/fonts';
+$theme-font-type-sans: 'public-sans';
+$theme-style-body-element: true;
+
+/* SPACING */
+$theme-grid-container-max-width: 'desktop';
+
+/* COLOR */
+
+/* COMPONENTS */
+$theme-hero-image: '#{$theme-image-path}/hero.png';

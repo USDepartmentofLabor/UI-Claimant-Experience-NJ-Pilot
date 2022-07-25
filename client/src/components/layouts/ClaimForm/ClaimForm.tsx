@@ -12,7 +12,7 @@ import { PreviousPageButton } from 'components/layouts/ClaimForm/PreviousPageBut
 import { SaveAndExitLink } from 'components/layouts/ClaimForm/SaveAndExitLink/SaveAndExitLink'
 import { ClaimFormPageHeading } from './ClaimFormHeading/ClaimFormPageHeading'
 
-// import claimFormStyles from './ClaimForm.module.scss' // TODO styles
+import styles from './ClaimForm.module.scss'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -169,13 +169,12 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
               step={step}
               totalSteps={totalSteps}
             />
-            <Form>
+            <Form className={styles.claimForm}>
               {showErrors && (
                 <FormErrorSummary key={submitCount} errors={errors} />
               )}
               {children}
-              {/*<div className={claimFormStyles.pagination}> TODO fix styles*/}
-              <div>
+              <div className={styles.pagination}>
                 {/* TODO ClaimFormPagination Component? */}
                 <FormGroup>
                   {nextPageDefinition && (
