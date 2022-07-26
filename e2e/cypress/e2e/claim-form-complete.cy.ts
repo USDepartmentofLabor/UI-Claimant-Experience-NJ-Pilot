@@ -1,33 +1,46 @@
+import fillPersonalFields from './formPageFilling/personal'
 import fillDemographicsFields from './formPageFilling/demographics'
 import fillContactFields from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
 import fillDisabilityStatusFields from './formPageFilling/disabilityStatus'
+import fillPaymentFields from './formPageFilling/payment'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
-    cy.visit('/claim/demographics')
+    // PersonalPage
+    cy.visit('/claim/personal')
+    fillPersonalFields(
+      {
+        first_name: 'Dave',
+        middle_name: 'Rupert',
+        last_name: 'Smith',
+        alternate_names: [{ first_name: 'Tasha', last_name: 'McGee' }],
+      },
+      {
+        residence_address: {
+          address1: '1 Street',
+          address2: 'Apartment 12345',
+          city: 'City',
+          state: 'CA',
+          zipcode: '00000',
+        },
+      }
+    )
+    cy.checkA11y()
+    cy.clickNext()
+
+    fillContactFields()
+    cy.checkA11y()
+    cy.clickNext()
+
     fillDemographicsFields({
       sex: 'female',
       ethnicity: 'not_hispanic',
       races: ['asian', 'hawaiian_or_pacific_islander'],
     })
-    // cy.check_a11y() TODO: uncomment when page has wrapper with heading
-
-    cy.visit('/claim/contact')
-    fillContactFields()
-    // cy.check_a11y() TODO: uncomment when page has wrapper with heading
-
-    cy.visit('/claim/union')
-
-    fillUnionFields({
-      is_union_member: true,
-      required_to_seek_work_through_hiring_hall: true,
-      union_name: 'United ACME',
-      union_local_number: '12345',
-    })
-
-    cy.visit('/claim/identity')
+    cy.checkA11y()
+    cy.clickNext()
 
     fillIdentityFields({
       ssn: '111111111',
@@ -43,9 +56,17 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
         authorization_type: 'US_citizen_or_national',
       },
     })
-    // cy.check_a11y() TODO: uncomment when page has wrapper with heading
+    cy.checkA11y()
+    cy.clickNext()
 
-    cy.visit('/claim/disability')
+    fillUnionFields({
+      is_union_member: true,
+      required_to_seek_work_through_hiring_hall: true,
+      union_name: 'United ACME',
+      union_local_number: '12345',
+    })
+    cy.checkA11y()
+    cy.clickNext()
 
     fillDisabilityStatusFields({
       has_collected_disability: 'yes',
@@ -55,6 +76,16 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       recovery_date: '05/02/2020',
       contacted_last_employer_after_recovery: 'yes',
     })
-    // cy.check_a11y() TODO: uncomment when page has wrapper with heading
+    cy.checkA11y()
+    cy.clickNext()
+
+    // PaymentPage
+    fillPaymentFields({
+      federal_income_tax_withheld: 'no',
+      payment_method: 'direct_deposit',
+      account_type: 'checking',
+      routing_number: '12345',
+      account_number: 'abcdefg',
+    })
   })
 })

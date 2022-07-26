@@ -13,6 +13,7 @@ import { SaveAndExitLink } from 'components/layouts/ClaimForm/SaveAndExitLink/Sa
 import { ClaimFormPageHeading } from './ClaimFormHeading/ClaimFormPageHeading'
 
 import styles from './ClaimForm.module.scss'
+import Head from 'next/head'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -164,6 +165,9 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
         return (
           <>
+            <Head>
+              <title>{currentPageDefinition.heading}</title>
+            </Head>
             <ClaimFormPageHeading
               pageHeading={currentPageDefinition.heading}
               step={step}

@@ -39,9 +39,17 @@
 
 import '@cypress-audit/pa11y/commands'
 
-Cypress.Commands.add('check_a11y', () => {
+Cypress.Commands.add('checkA11y', () => {
   cy.pa11y({
     runners: ['htmlcs'],
     standard: 'WCAG2AA',
   })
+})
+
+Cypress.Commands.add('clickNext', () => {
+  cy.get("button[type='submit']")
+    .contains('Next')
+    .scrollIntoView()
+    .should('be.visible')
+    .click()
 })
