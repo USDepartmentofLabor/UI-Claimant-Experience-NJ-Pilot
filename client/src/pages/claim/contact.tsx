@@ -19,8 +19,13 @@ const Contact: NextPage = () => {
     keyPrefix: 'contact',
   })
   const { values } = useFormikContext<ClaimantInput>()
+  const { clearField } = useClearFields()
 
-  useClearFields(values.interpreter_required === false, 'preferred_language')
+  const handleInterpreterRequiredChange = () => {
+    if (values.interpreter_required === false) {
+      clearField('preferred_language')
+    }
+  }
 
   return (
     <>
@@ -61,6 +66,7 @@ const Contact: NextPage = () => {
       <YesNoQuestion
         question={t('interpreter_required.label')}
         name="interpreter_required"
+        onChange={handleInterpreterRequiredChange}
       />
       {values.interpreter_required && (
         <TextField

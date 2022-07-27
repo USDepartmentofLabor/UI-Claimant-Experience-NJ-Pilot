@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useFormikContext } from 'formik'
 import isEqual from 'lodash/isEqual'
 import { ClaimantInput } from 'types/claimantInput'
@@ -19,58 +19,39 @@ const isFieldWithConfiguredClear = (
 ): field is FieldWithConfiguredClear =>
   (field as FieldWithConfiguredClear).fieldName !== undefined
 
-export const useClearFields = (
-  shouldClear: boolean | undefined,
-  fields: Field | Field[]
-) => {
-  const {
-    getFieldMeta,
-    setFieldValue,
-    setFieldTouched,
-    isValidating,
-    isSubmitting,
-  } = useFormikContext<ClaimantInput>()
+export const useClearFields = () => {
+  const { getFieldMeta, setFieldValue, setFieldTouched } =
+    useFormikContext<ClaimantInput>()
 
-  const clearField = useCallback(
-    (field: Field) => {
-      const clear = (fieldName: string, value: unknown, touched: boolean) => {
-        const meta = getFieldMeta(fieldName)
-        if (!isEqual(meta.value, value)) {
-          setFieldValue(fieldName, value)
-        }
-        if (!isEqual(meta.touched, touched)) {
-          setFieldTouched(fieldName, touched)
-        }
+  const clear = useCallback(
+    (fieldName: string, value: unknown, touched: boolean) => {
+      const meta = getFieldMeta(fieldName)
+      if (!isEqual(meta.value, value)) {
+        setFieldValue(fieldName, value)
       }
-
-      if (isFieldWithConfiguredClear(field)) {
-        const value = field.value || DEFAULT_VALUE
-        const touched = field.touched || DEFAULT_TOUCHED
-        clear(field.fieldName, value, touched)
-      } else {
-        clear(field, DEFAULT_VALUE, DEFAULT_TOUCHED)
+      if (!isEqual(meta.touched, touched)) {
+        setFieldTouched(fieldName, touched)
       }
     },
     [getFieldMeta, setFieldValue, setFieldTouched]
   )
 
-  useEffect(() => {
-    if (shouldClear && !isValidating && !isSubmitting) {
-      if (Array.isArray(fields)) {
-        fields.forEach((field) => clearField(field))
-      } else {
-        clearField(fields)
-      }
+  const clearField = (field: Field) => {
+    if (isFieldWithConfiguredClear(field)) {
+      const value = field.value || DEFAULT_VALUE
+      const touched = field.touched || DEFAULT_TOUCHED
+      clear(field.fieldName, value, touched)
+    } else {
+      clear(field, DEFAULT_VALUE, DEFAULT_TOUCHED)
     }
-  }, [
-    shouldClear,
+  }
+
+  const clearFields = (fields: Field[]) => {
+    fields.forEach((field) => clearField(field))
+  }
+
+  return {
     clearField,
-    isValidating,
-    isSubmitting,
-    JSON.stringify(fields),
-  ])
-  // Note: If this does not satisfy ESLint (exhaustive-deps), the convenience
-  //       of useClearFields should be reevaluated.
-  //       In fact, if you find yourself here debugging infinite loops or race
-  //       conditions, talk to Brandon and he'll help us delete this file.
+    clearFields,
+  }
 }

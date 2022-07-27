@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { ChangeEvent, useRef } from 'react'
 import { useField } from 'formik'
 import {
   FormGroup,
@@ -46,6 +46,7 @@ const DropdownField = ({
   labelHint,
   options,
   startEmpty,
+  onChange,
   ...inputProps
 }: IDropdownFieldProps & JSX.IntrinsicElements['select']) => {
   const { t } = useTranslation('common')
@@ -57,6 +58,13 @@ const DropdownField = ({
 
   if (startEmpty && options[0].value !== EMPTY_OPTION_VALUE) {
     options.unshift({ value: EMPTY_OPTION_VALUE, label: t('select_one') })
+  }
+
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    fieldProps.onChange(e)
+    if (onChange) {
+      onChange(e)
+    }
   }
 
   const id = idProp || name
@@ -77,6 +85,7 @@ const DropdownField = ({
         id={id}
         data-testid={id}
         {...fieldProps}
+        onChange={handleChange}
         {...inputProps}
         inputRef={selectRef}
       >

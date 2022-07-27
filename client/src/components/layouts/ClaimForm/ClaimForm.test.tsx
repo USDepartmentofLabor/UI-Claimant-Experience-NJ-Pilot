@@ -63,8 +63,11 @@ describe('ClaimForm Layout', () => {
 
       await user.click(nextButton)
 
+      const claimFormPageHeading = screen.getByTestId('claim-form-page-heading')
+
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith(middlePageRoute)
+      expect(claimFormPageHeading).toHaveFocus()
     })
   })
 
@@ -117,8 +120,11 @@ describe('ClaimForm Layout', () => {
 
       await user.click(previousButton)
 
+      const claimFormPageHeading = screen.getByTestId('claim-form-page-heading')
+
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith(firstPageRoute)
+      expect(claimFormPageHeading).toHaveFocus()
     })
   })
 

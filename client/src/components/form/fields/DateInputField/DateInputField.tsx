@@ -74,21 +74,18 @@ export const DateInputField = ({
     string | undefined
   >(name)
 
-  const parsedInitialValue = useMemo(() => {
-    if (
-      metaProps.initialValue &&
-      INPUT_VALUE_REGEXP.test(metaProps.initialValue)
-    ) {
-      const parts = metaProps.initialValue.split('-')
+  const parsedValue = useMemo(() => {
+    if (metaProps.value && INPUT_VALUE_REGEXP.test(metaProps.value)) {
+      const parts = metaProps.value.split('-')
       return { month: parts[1], day: parts[2], year: parts[0] }
     } else {
       return { month: '', day: '', year: '' }
     }
-  }, [metaProps.initialValue])
+  }, [])
 
-  const [month, setMonth] = useState<string>(() => parsedInitialValue.month)
-  const [day, setDay] = useState<string>(() => parsedInitialValue.day)
-  const [year, setYear] = useState<string>(() => parsedInitialValue.year)
+  const [month, setMonth] = useState<string>(() => parsedValue.month)
+  const [day, setDay] = useState<string>(() => parsedValue.day)
+  const [year, setYear] = useState<string>(() => parsedValue.year)
 
   const isMounted = useRef(false)
   const dateDivRef = useRef<HTMLDivElement>(null)

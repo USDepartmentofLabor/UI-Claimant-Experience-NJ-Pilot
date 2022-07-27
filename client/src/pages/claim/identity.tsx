@@ -25,34 +25,40 @@ import styles from 'styles/pages/claim/identity.module.scss'
 export const Identity: NextPage = () => {
   const { t } = useTranslation('claimForm')
   const { values } = useFormikContext<ClaimantInput>()
+  const { clearField, clearFields } = useClearFields()
   const [showSsn, setShowSsn] = useState(false)
+
   const showWorkAuthorizationFields =
     values.work_authorization?.authorized_to_work
-
-  const showNotAllowedToWorkInUSExplanation =
-    values.work_authorization?.authorized_to_work === false
 
   const showAlienRegistrationNumber =
     values.work_authorization?.authorization_type &&
     values.work_authorization.authorization_type !== 'US_citizen_or_national'
 
+  const showNotAllowedToWorkInUSExplanation =
+    values.work_authorization?.authorized_to_work === false
+
   const handleShowSsn = () => {
     setShowSsn(!showSsn)
   }
-  useClearFields(!showWorkAuthorizationFields, [
-    'work_authorization.authorization_type',
-    'work_authorization.alien_registration_number',
-  ])
 
-  useClearFields(
-    !showNotAllowedToWorkInUSExplanation,
-    'work_authorization.not_authorized_to_work_explanation'
-  )
+  const handleAuthorizedToWorkChange = () => {
+    if (!showWorkAuthorizationFields) {
+      clearFields([
+        'work_authorization.authorization_type',
+        'work_authorization.alien_registration_number',
+      ])
+    }
+    if (!showNotAllowedToWorkInUSExplanation) {
+      clearField('work_authorization.not_authorized_to_work_explanation')
+    }
+  }
 
-  useClearFields(
-    !showAlienRegistrationNumber,
-    'work_authorization.alien_registration_number'
-  )
+  const handleAuthorizationTypeChange = () => {
+    if (!showAlienRegistrationNumber) {
+      clearField('work_authorization.alien_registration_number')
+    }
+  }
 
   return (
     <>
@@ -69,7 +75,7 @@ export const Identity: NextPage = () => {
               label={t('ssn.showSsnLabel')}
               checked={showSsn}
               onChange={handleShowSsn}
-              tile={true}
+              tile
               className={styles.showSsn}
             />
           }
@@ -89,6 +95,7 @@ export const Identity: NextPage = () => {
       <YesNoQuestion
         question={t('work_authorization.authorized_to_work.label')}
         name="work_authorization.authorized_to_work"
+        onChange={handleAuthorizedToWorkChange}
       />
       {showNotAllowedToWorkInUSExplanation && (
         <TextAreaField
@@ -110,6 +117,7 @@ export const Identity: NextPage = () => {
               ),
               value: option,
             }))}
+            onChange={handleAuthorizationTypeChange}
           />
           {showAlienRegistrationNumber && (
             <TextField

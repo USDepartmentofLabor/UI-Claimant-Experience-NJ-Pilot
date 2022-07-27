@@ -14,19 +14,25 @@ import { Routes } from 'constants/routes'
 export const Union: NextPage = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'union' })
   const { values } = useFormikContext<ClaimantInput>()
+  const { clearFields } = useClearFields()
 
-  // Remove conditional data if previous answer is changed
-  useClearFields(values.union?.is_union_member === false, [
-    'union.union_name',
-    'union.union_local_number',
-    'union.required_to_seek_work_through_hiring_hall',
-  ])
+  const handleIsUnionMemberChange = () => {
+    // Remove conditional data if previous answer is changed
+    if (values.union?.is_union_member === false) {
+      clearFields([
+        'union.union_name',
+        'union.union_local_number',
+        'union.required_to_seek_work_through_hiring_hall',
+      ])
+    }
+  }
 
   return (
     <>
       <YesNoQuestion
         question={t('is_union_member.label')}
         name="union.is_union_member"
+        onChange={handleIsUnionMemberChange}
       />
       {values.union?.is_union_member === true && (
         <>

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo } from 'react'
+import { MouseEventHandler, ReactNode, useEffect, useMemo, useRef } from 'react'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { Alert, FormGroup } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +22,7 @@ type ClaimFormProps = {
 export const ClaimForm = ({ children }: ClaimFormProps) => {
   const router = useRouter()
   const { t } = useTranslation('claimForm')
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
   const currentPath = router.pathname
   const currentPageDefinition = pageDefinitions.find(
@@ -66,23 +67,26 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
   const validationSchema = currentPageDefinition.validationSchema
 
+  const focusHeading = () => {
+    headingRef.current && headingRef.current.focus()
+  }
+
   const saveFormValues = (values: ClaimantInput) => {
     // TODO: The following simulates a save. Replace with API save
     console.log('saving...', values)
-    return new Promise((resolve) =>
+    new Promise<ClaimantInput>((resolve) =>
       setTimeout(() => {
-        console.log('...saved!', { status: 200, ...values })
         resolve(values)
       }, 1000)
-    )
+    ).then((savedValues) => {
+      // TODO: Let the user know, the claim was saved
+      //       Note: This may finish after the redirect})
+      console.log('...saved!', { status: 200, ...savedValues })
+    })
   }
 
   const handleSaveAndExit = async (values: ClaimantInput) => {
-    // TODO: Actually save and exit
-    saveFormValues(values).then(() => {
-      // TODO: Let the user know, the claim was saved
-      //       Note: This may finish after the redirect})
-    })
+    saveFormValues(values)
     await router.push(Routes.HOME)
   }
 
@@ -90,10 +94,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
     values: ClaimantInput,
     helpers: FormikHelpers<ClaimantInput>
   ) => {
-    saveFormValues(values).then(() => {
-      // TODO: Let the user know, the claim was saved
-      //       Note: This may finish after a redirect
-    })
+    saveFormValues(values)
     helpers.setSubmitting(false)
   }
 
@@ -113,9 +114,9 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         validateForm,
         isValid,
         submitForm,
-        resetForm,
+        setFormikState,
       }) => {
-        const showErrors =
+        const showErrorSummary =
           submitCount > 0 &&
           Object.keys(touched).length > 0 &&
           Object.keys(errors).length > 0
@@ -128,38 +129,50 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
           validateForm().then((validationErrors) => setErrors(validationErrors))
         }, [validationSchema])
 
-        const handleClickPrevious = async () => {
-          saveFormValues(values).then(() => {
-            // TODO: Let the user know, the claim was saved
-            //       Note: This may finish after the redirect
-          })
+        const handleClickPrevious: MouseEventHandler<
+          HTMLButtonElement
+        > = async () => {
+          saveFormValues(values)
           if (previousPageDefinition) {
-            await router.push(previousPageDefinition.path)
+            router.push(previousPageDefinition.path).then(() => {
+              setFormikState((previousState) => ({
+                ...previousState,
+                submitCount: 0,
+              }))
+              focusHeading()
+            })
           }
         }
 
-        const handleClickNext = () => {
-          submitForm().then(async () => {
-            if (isValid && nextPageDefinition) {
-              await router.push(nextPageDefinition.path)
-              resetForm({
-                values,
+        const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
+          if (isValid && nextPageDefinition) {
+            router.push(nextPageDefinition.path).then(() => {
+              setFormikState((previousState) => ({
+                ...previousState,
                 submitCount: 0,
-                touched: {},
-              })
-            }
-          })
-        }
-
-        const handleClickComplete = () => {
-          if (!isValid) {
-            resetForm({
-              submitCount: submitCount + 1,
+              }))
+              focusHeading()
             })
           } else {
+            setFormikState((previousState) => ({
+              ...previousState,
+              submitCount: submitCount + 1,
+            }))
+          }
+        }
+
+        const handleClickComplete: MouseEventHandler<
+          HTMLButtonElement
+        > = () => {
+          if (isValid) {
             submitForm().then(async () => {
               await router.push(Routes.HOME)
             })
+          } else {
+            setFormikState((previousState) => ({
+              ...previousState,
+              submitCount: submitCount + 1,
+            }))
           }
         }
 
@@ -172,9 +185,10 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
               pageHeading={currentPageDefinition.heading}
               step={step}
               totalSteps={totalSteps}
+              ref={headingRef}
             />
             <Form className={styles.claimForm}>
-              {showErrors && (
+              {showErrorSummary && (
                 <FormErrorSummary key={submitCount} errors={errors} />
               )}
               {children}
