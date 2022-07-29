@@ -1,3 +1,7 @@
+ifeq ($(OS), Windows_NT)
+SHELL := pwsh.exe
+endif
+
 help: ## Print the help documentation
 	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
@@ -65,4 +69,19 @@ client-compile-check: ## check client for typescript compilation
 client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
 
-all-deps: dev-deps client-deps e2e-deps ## Runs all required dependencies for running the application
+server-gradle-tasks: ## list the gradle tasks that can be run when invoking ./gradlew from the /server directory
+	cd server && ./gradlew tasks
+
+server-deps: ## installs dependencies for server
+	cd server && ./gradlew assemble
+
+server-build: ## installs dependencies and runs tests for server
+	cd server && ./gradlew build
+
+server-bootRun: ## Runs the SpringBoot development server
+	cd server && ./gradlew bootRun
+
+server-test: ## run server unit tests
+	cd server && ./gradlew test
+
+all-deps: dev-deps client-deps e2e-deps server-deps ## Runs all required dependencies for running the application

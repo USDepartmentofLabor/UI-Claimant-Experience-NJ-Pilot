@@ -26,12 +26,60 @@ and other development commands.
 
 - [Python (with PIP)](https://www.python.org/downloads/)
   - PIP is used to install [pre-commit](https://pre-commit.com/)
+
+#### Client and Cypress (e2e)
+
 - [Node](https://nodejs.org/en/download/)
   - This project's required Node version can be found in [.node-version](./client/.node-version).
   - Since [Node versions](https://nodejs.org/en/about/releases/) enter and exit active LTS status regularly, using a
     Node version manager like [n](https://www.npmjs.com/package/n) or, for Windows environments,
     [nvm-windows](https://github.com/coreybutler/nvm-windows) is highly encouraged.
 - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
+
+#### Server
+
+- [Java](https://adoptium.net/temurin/releases)
+  - The above link is directed to the Eclipse Temurin SDK. The Eclipse foundation has taken over AdoptOpenJDK as of 2021
+    which is still the best choice for free OpenJDK builds. You can either download and manually install the binaries
+    from Adoptium, or use an SDK manager, as outlined below.
+  - This project uses the current LTS version of Java, specified in [.tool-versions](./.tool-versions).
+  - Since [Java versions](https://www.oracle.com/java/technologies/java-se-support-roadmap.html) now enter and exit
+    active LTS on a much faster cadence than in its early days, using a version manager like [asdf](https://asdf-vm.com/)
+    is highly encouraged. While asdf is only supported on UNIX-like platforms. WSL is the recommended way to use asdf on
+    Windows.
+  - With asdf [installed](https://asdf-vm.com/guide/getting-started.html), proceed with installing Java:
+    - Add the asdf java plugin
+      ```
+      asdf plugin-add java
+      ```
+    - List all available version
+      ```
+      asdf list-all java
+      ```
+    - Select and install the java version you would like to use
+      ```
+      asdf install java {java-release-candidate}
+      ```
+      Where {java-release-candidate} is the name of the release you would like to use, for example `temurin-17.0.3+7`.
+      The `temurin-` prefixed candidates are from the AdoptOpenJDK/Adoptium vendor. Make sure _not_ to accidentally
+      select the candidates prefixed with `{vendor}-jre-`, as that is just the JRE. Developers will want the JDK.
+    - Set the installed version as your global default
+      ```
+      asdf global java {java-release-candidate}
+      ```
+    - Set `JAVA_HOME` by adding the relevant initialization script to your shell's initialization file, e.g. for zsh
+      shell, add the following to your `~/.zshrc`
+      ```
+      . ~/.asdf/plugins/java/set-java-home.zsh
+      ```
+    - Verify the installation of Java
+      ```
+      java --version
+      ```
+    - Verify `JAVA_HOME` is set correctly
+      ```
+      echo $JAVA_HOME
+      ```
 
 ## Dependencies
 
@@ -49,7 +97,13 @@ Sets up client app in `/client`:
 make client-deps
 ```
 
-Sets up Cypress dependencies:
+Sets up server app in `/server`:
+
+```
+make server-deps
+```
+
+Sets up Cypress for end-to-end testing in `/e2e`:
 
 ```
 make e2e-deps

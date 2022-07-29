@@ -1,0 +1,5 @@
+# Project build files
+/build
+
+# Cached gradle install from using the gradle wrapper
+.gradle

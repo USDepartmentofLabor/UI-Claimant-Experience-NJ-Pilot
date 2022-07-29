@@ -1,6 +1,9 @@
 # IDE
 .idea
+*.iml
 
 # Yarn - Accidentally running `yarn` in the repo root creates files we do not want to add to the repo
 /node_modules
 /yarn.lock
+
+.DS_Store
