@@ -5,7 +5,7 @@ import { ContactPageDefinition } from 'pages/claim/contact'
 import { DemographicsPageDefinition } from 'pages/claim/demographics'
 import { IdentityPageDefinition } from 'pages/claim/identity'
 import { UnionPageDefinition } from 'pages/claim/union'
-import { DisabilityPageDefinition } from 'pages/claim/disability'
+import { AbleAndAvailablePageDefinition } from 'pages/claim/able-and-available'
 import { PaymentPageDefinition } from 'pages/claim/payment'
 
 export type PageDefinition = {
@@ -27,7 +27,7 @@ export const pageDefinitions: PageDefinition[] = [
   // OccupationPageDefinition,
   // EducationVocationalRehabPageDefinition,
   UnionPageDefinition,
-  DisabilityPageDefinition,
+  AbleAndAvailablePageDefinition,
   // AvailabilityPageDefinition,
   PaymentPageDefinition,
   // ReviewPageDefinition,

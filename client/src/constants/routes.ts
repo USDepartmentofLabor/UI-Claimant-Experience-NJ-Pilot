@@ -20,7 +20,7 @@ export const Routes = {
       'education-vocational-rehab'
     ),
     UNION: makeClaimFormRoute('union'),
-    DISABILITY: makeClaimFormRoute('disability'),
+    ABLE_AND_AVAILABLE: makeClaimFormRoute('able-and-available'),
     AVAILABILITY: makeClaimFormRoute('availability'),
     PAYMENT: makeClaimFormRoute('payment'),
     REVIEW: makeClaimFormRoute('review'),

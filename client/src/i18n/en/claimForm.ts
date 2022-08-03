@@ -366,35 +366,82 @@ const claimForm = {
     },
     no_results: 'No results. Try another search.',
   },
-  disability: {
-    heading: 'Disability',
-    has_collected_disability: {
-      label:
-        "Since your last day worked, have you received disability or workers' compensation payments?",
-      help_text:
-        'Pandemic Unemployment Assistance (PUA) and Social Security (SSI/SSDI) payments are not included. Choose “No” if you received payments from these programs.',
+  able_and_available: {
+    heading: 'Able and available',
+    info_alert: {
+      title:
+        'The following also qualify as "disability" for unemployment insurance',
+      items: {
+        fli: 'Family leave (FLI)',
+        leave: 'Medical leave',
+        tdi: 'Temporary disability (TDI)',
+        workers_comp: "Worker's compensation",
+        doctor_cert:
+          'If a doctor has certified some other reason for disability',
+      },
+    },
+    can_begin_work_immediately: {
+      label: 'Can you begin full-time work immediately?',
       errors: {
         required:
-          "You must indicate whether you have received disability or workers' compensation",
+          'You must indicate whether you can begin full-time work immediately',
+      },
+    },
+    has_collected_disability: {
+      label:
+        'Since your last day worked, have you received disability payments?',
+      help_text:
+        'Choose "No" if you received payments from Social Security (SSI/SSDI).',
+      errors: {
+        required:
+          'You must indicate whether you have received disability payments',
       },
     },
     disabled_immediately_before: {
       label:
         'Were you disabled in the last 4 weeks before filling out this application?',
+      errors: {
+        required:
+          'You must indicate whether you were disabled in the last 4 weeks',
+      },
     },
     type_of_disability: {
       label: 'What plan do you get your payment from?',
       options: {
-        state_plan: 'State Plan',
-        private_plan: 'Private Plan',
-        workers_compensation: "Worker's Compensation",
+        state_plan: 'State insurance plan (NJ TDI/FLI)',
+        private_plan: 'Private insurance plan provided by your job',
+        workers_compensation:
+          "Worker's compensation due to being injured on the job",
+      },
+      errors: {
+        required:
+          'You must indicate from which plan you get your disability payment',
       },
     },
-    date_disability_began: { label: 'Date disability began' },
-    recovery_date: { label: 'Recovery date (optional)' },
-    contact_employer_after_recovering: {
+    date_disability_began: {
+      label: 'Date disability began',
+      errors: {
+        required: 'You must indicate the date disability began',
+        maxDate: "Date disability began cannot be after today's date",
+      },
+    },
+    recovery_date: {
+      label: 'Recovery/release date',
+      help_text:
+        'If you have not recovered, type the current date below and we will request more information from you at a later date by email.',
+      errors: {
+        required: 'You must indicate a recovery date',
+        minDate: 'Recovery date has to be after the date of disability',
+        maxDate: "Recovery date cannot be after today's date",
+      },
+    },
+    contacted_last_employer_after_recovery: {
       label:
         'After recovering, did you contact your last employer for more work?',
+      errors: {
+        required:
+          'You must indicate if you contacted your employer after recovering',
+      },
     },
   },
   education_vocational_rehab: {
@@ -527,7 +574,7 @@ const claimForm = {
     },
   },
   payment: {
-    heading: 'Payment Information',
+    heading: 'Payment information',
     federal_income_tax_withheld: {
       label:
         'Would you like to have 10% federal income tax withheld from your benefits payments?',

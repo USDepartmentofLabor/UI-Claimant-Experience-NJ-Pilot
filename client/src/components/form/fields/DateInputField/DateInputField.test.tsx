@@ -11,7 +11,7 @@ describe('DateInputField Component', () => {
     <Formik
       initialValues={{ dateInputField: '' }}
       validationSchema={yup.object().shape({
-        dateInputField: yupDate('a test date'),
+        dateInputField: yupDate('a test date').required('Date is required'),
       })}
       onSubmit={noop}
     >

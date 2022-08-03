@@ -37,9 +37,9 @@ export const yupDate = (fieldName: string) =>
       i18n_common.t('date.errors.format', {
         fieldName,
         dateFormat: USER_FACING_DATE_INPUT_FORMAT,
+        interpolation: { escapeValue: false }, // allows a slash character
       })
     )
-    .required(i18n_common.t('date.errors.required', { fieldName }))
 
 export const yupCurrency = (errorMsg = '') => {
   return string().matches(CENTS_REGEX, errorMsg)

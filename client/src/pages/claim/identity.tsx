@@ -138,10 +138,9 @@ const pageSchema = object().shape({
   ssn: string()
     .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, t('ssn.errors.badFormat'))
     .required(t('ssn.errors.required')),
-  birthdate: yupDate(t('birthdate.label')).max(
-    dayjs(new Date()).format('YYYY-MM-DD'),
-    t('birthdate.errors.maxDate')
-  ),
+  birthdate: yupDate(t('birthdate.label'))
+    .max(dayjs(new Date()).format('YYYY-MM-DD'), t('birthdate.errors.maxDate'))
+    .required(t('birthdate.errors.required')),
   state_credential: object().shape({
     drivers_license_or_state_id_number: string().required(
       t('state_credential.drivers_license_or_state_id_number.errors.required')

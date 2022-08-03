@@ -3,12 +3,12 @@ import fillDemographicsFields from './formPageFilling/demographics'
 import fillContactFields from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
-import fillDisabilityStatusFields from './formPageFilling/disabilityStatus'
+import fillAbleAndAvailableFields from './formPageFilling/able_and_available'
 import fillPaymentFields from './formPageFilling/payment'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
-    // PersonalPage
+    // Personal page
     cy.visit('/claim/personal')
     fillPersonalFields(
       {
@@ -30,10 +30,12 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.checkA11y()
     cy.clickNext()
 
+    // Contact page
     fillContactFields()
     cy.checkA11y()
     cy.clickNext()
 
+    // Demographics page
     fillDemographicsFields({
       sex: 'female',
       ethnicity: 'not_hispanic',
@@ -59,6 +61,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.checkA11y()
     cy.clickNext()
 
+    // Union page
     fillUnionFields({
       is_union_member: true,
       required_to_seek_work_through_hiring_hall: true,
@@ -68,18 +71,20 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.checkA11y()
     cy.clickNext()
 
-    fillDisabilityStatusFields({
+    // Able and available page
+    fillAbleAndAvailableFields({
+      can_begin_work_immediately: 'yes',
       has_collected_disability: 'yes',
       disabled_immediately_before: 'no',
-      type_of_disability: 'State Plan',
-      date_disability_began: '01/01/2020',
-      recovery_date: '05/02/2020',
+      type_of_disability: 'state_plan',
+      date_disability_began: { mo: '01', day: '05', yr: '2020' },
+      recovery_date: { mo: '05', day: '02', yr: '2020' },
       contacted_last_employer_after_recovery: 'yes',
     })
     cy.checkA11y()
     cy.clickNext()
 
-    // PaymentPage
+    // Payment page
     fillPaymentFields({
       federal_income_tax_withheld: 'no',
       payment_method: 'direct_deposit',

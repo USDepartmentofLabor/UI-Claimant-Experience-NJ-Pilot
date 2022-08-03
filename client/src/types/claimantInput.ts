@@ -21,7 +21,7 @@ export type ClaimantInput = PersonalInput &
   // OccupationInput &
   // EducationVocationalRehabInput &
   UnionInput &
-  DisabilityStatusInput &
+  AbleAndAvailableStatusInput &
   // AvailabilityInput &
   PaymentInput
 // & ReviewInput
@@ -55,8 +55,8 @@ type UnionInput = {
   }
 }
 
-type DisabilityStatusInput = {
-  disability?: {
+type AbleAndAvailableStatusInput = {
+  able_and_available?: {
     has_collected_disability?: boolean
     disabled_immediately_before?: boolean
     type_of_disability?: DisabilityTypeOption

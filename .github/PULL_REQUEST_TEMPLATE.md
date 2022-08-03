@@ -47,7 +47,7 @@
   - [ ] Checked responsiveness in mobile, tablet, and desktop
   - [ ] Checked keyboard navigability
   - [ ] Tested with [VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) in Safari
-  - [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/blob/master/README.md#how-to-use-the-rotor-menu) for landmarks, page heading structure and links
+  - [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/wiki/How-to-use-the-rotor-menu-in-VoiceOver) for landmarks, page heading structure and links
   - [ ] Used a browser a11y tool to check for issues (WAVE, axe, or Accessibility addon tab for Storybook)
 - [ ] Requested a design review for user-facing changes
 - For any new migrations/schema changes:
@@ -64,7 +64,7 @@
   - [ ] Checked responsiveness in mobile, tablet, and desktop
   - [ ] Checked keyboard navigability
   - [ ] Tested with [VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) in Safari
-  - [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/blob/master/README.md#how-to-use-the-rotor-menu) for landmarks, page heading structure and links
+  - [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/wiki/How-to-use-the-rotor-menu-in-VoiceOver) for landmarks, page heading structure and links
   - [ ] Used a browser a11y tool to check for issues (WAVE, axe or Accessibility addon tab for Storybook)
 
 ### As a designer reviewer, I have
@@ -78,7 +78,7 @@
   - [ ] Checked responsiveness in mobile, tablet, and desktop
   - [ ] Checked keyboard navigability
   - [ ] Tested with [VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) in Safari
-  - [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/blob/master/README.md#how-to-use-the-rotor-menu) for landmarks, page heading structure and links
+  - [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/wiki/How-to-use-the-rotor-menu-in-VoiceOver) for landmarks, page heading structure and links
   - [ ] Used a browser a11y tool to check for issues (WAVE, axe or Accessibility addon tab for Storybook)
 
 ## Screenshots
