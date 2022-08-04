@@ -1,5 +1,4 @@
-# Pin sha version of node:16.16.0-bullseye-slim
-FROM node@sha256:a2aad04a24d2bd4d798fe59b8dafbe6c5e3ecf143d63b8c3bc9ba194e700e130 AS builder
+FROM node:16.16.0-bullseye-slim AS builder
 WORKDIR /app
 
 COPY package.json .

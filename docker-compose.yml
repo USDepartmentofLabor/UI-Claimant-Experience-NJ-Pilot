@@ -8,3 +8,11 @@ services:
     read_only: true
     ports:
       - "3000:3000"
+  server:
+    build:
+      context: server
+    image: dol-ui-server:latest
+    read_only: true
+    tmpfs: /tmp
+    ports:
+      - "8080:8080"
