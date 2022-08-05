@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { makeClaimFormRoute, Routes } from 'constants/routes'
 import userEvent from '@testing-library/user-event'
@@ -13,6 +13,9 @@ describe('ClaimForm Layout', () => {
   const FirstPage = () => <div>First Page!</div>
   const MiddlePage = () => <div>Middle Page!</div>
   const LastPage = () => <div>Last Page!</div>
+
+  const currentIndicatorStyle = 'usa-step-indicator__segment--current'
+  const completeIndicatorStyle = 'usa-step-indicator__segment--complete'
 
   describe('first page', () => {
     it('renders properly with next page button', async () => {
@@ -30,12 +33,27 @@ describe('ClaimForm Layout', () => {
       const previousPageButton = screen.queryByText('pagination.previous')
       const nextButton = screen.queryByText('pagination.next')
       const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
-      const claimFormPageHeading = screen.queryByText('First page')
+      const claimFormPageHeading = screen.queryByText('First page', {
+        selector: 'h1',
+      })
 
       expect(previousPageButton).not.toBeInTheDocument()
       expect(nextButton).toBeInTheDocument()
       expect(saveAndExitLink).toBeInTheDocument()
       expect(claimFormPageHeading).toBeInTheDocument()
+
+      const steps = within(screen.getByTestId('step-indicator')).getAllByRole(
+        'listitem'
+      )
+      steps.forEach((step) => {
+        if (step.textContent?.includes('First page'))
+          expect(step.classList.contains(currentIndicatorStyle)).toBe(true)
+        else
+          expect(
+            step.classList.contains(currentIndicatorStyle) ||
+              step.classList.contains(completeIndicatorStyle)
+          ).toBe(false)
+      })
     })
 
     it('clicking next navigates to the next page', async () => {
@@ -87,12 +105,29 @@ describe('ClaimForm Layout', () => {
       const previousButton = screen.queryByText('pagination.previous')
       const nextButton = screen.queryByText('pagination.next')
       const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
-      const claimFormPageHeading = screen.queryByText('Middle page')
+      const claimFormPageHeading = screen.queryByText('Middle page', {
+        selector: 'h1',
+      })
 
       expect(previousButton).toBeInTheDocument()
       expect(nextButton).toBeInTheDocument()
       expect(saveAndExitLink).toBeInTheDocument()
       expect(claimFormPageHeading).toBeInTheDocument()
+
+      const steps = within(screen.getByTestId('step-indicator')).getAllByRole(
+        'listitem'
+      )
+      steps.forEach((step) => {
+        if (step.textContent?.includes('Middle page'))
+          expect(step.classList.contains(currentIndicatorStyle)).toBe(true)
+        else if (step.textContent?.includes('First page'))
+          expect(step.classList.contains(completeIndicatorStyle)).toBe(true)
+        else
+          expect(
+            step.classList.contains(currentIndicatorStyle) ||
+              step.classList.contains(completeIndicatorStyle)
+          ).toBe(false)
+      })
     })
 
     it('clicking previous navigates to the previous page', async () => {
@@ -145,13 +180,24 @@ describe('ClaimForm Layout', () => {
       const nextButton = screen.queryByText('pagination.next')
       const completeButton = screen.queryByText('pagination.complete')
       const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
-      const claimFormPageHeading = screen.queryByText('Last page')
+      const claimFormPageHeading = screen.queryByText('Last page', {
+        selector: 'h1',
+      })
 
       expect(previousButton).toBeInTheDocument()
       expect(nextButton).not.toBeInTheDocument()
       expect(completeButton).toBeInTheDocument()
       expect(saveAndExitLink).toBeInTheDocument()
       expect(claimFormPageHeading).toBeInTheDocument()
+
+      const steps = within(screen.getByTestId('step-indicator')).getAllByRole(
+        'listitem'
+      )
+      steps.forEach((step) => {
+        if (step.textContent?.includes('Last page'))
+          expect(step.classList.contains(currentIndicatorStyle)).toBe(true)
+        else expect(step.classList.contains(completeIndicatorStyle)).toBe(true)
+      })
     })
 
     it('clicking submit navigates home', async () => {

@@ -1,6 +1,11 @@
 import { MouseEventHandler, ReactNode, useEffect, useMemo, useRef } from 'react'
 import { Form, Formik, FormikHelpers } from 'formik'
-import { Alert, FormGroup } from '@trussworks/react-uswds'
+import {
+  Alert,
+  FormGroup,
+  StepIndicator,
+  StepIndicatorStep,
+} from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
@@ -175,9 +180,32 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
             }))
           }
         }
+        const getStatus = (index: number) => {
+          if (index === currentPageIndex) return 'current'
+          if (index < currentPageIndex) return 'complete'
+          return undefined
+        }
 
         return (
           <>
+            <StepIndicator
+              className="overflow-hidden width-mobile-lg margin-x-auto"
+              counters="none"
+              headingLevel="h2"
+              divProps={{
+                role: 'region',
+                'aria-label': `progress - step ${step} of ${totalSteps}`,
+              }}
+              data-testid="step-indicator"
+            >
+              {pageDefinitions.map((page, i) => (
+                <StepIndicatorStep
+                  key={page.path}
+                  label={page.heading}
+                  status={getStatus(i)}
+                />
+              ))}
+            </StepIndicator>
             <Head>
               <title>{currentPageDefinition.heading}</title>
             </Head>
@@ -191,6 +219,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
               {showErrorSummary && (
                 <FormErrorSummary key={submitCount} errors={errors} />
               )}
+
               {children}
               <div className={styles.pagination}>
                 {/* TODO ClaimFormPagination Component? */}
