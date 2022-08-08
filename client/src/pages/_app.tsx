@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 import { LiveAnnouncer } from 'react-aria-live'
+import { GridContainer } from '@trussworks/react-uswds'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -15,7 +16,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   const providerPage = <LiveAnnouncer>{page}</LiveAnnouncer>
   const currentPath = router.pathname
   if (currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`)) {
-    return <ClaimForm>{providerPage}</ClaimForm>
+    return (
+      <section className="usa-section">
+        <GridContainer>
+          <ClaimForm>{providerPage}</ClaimForm>
+        </GridContainer>
+      </section>
+    )
   }
 
   return providerPage

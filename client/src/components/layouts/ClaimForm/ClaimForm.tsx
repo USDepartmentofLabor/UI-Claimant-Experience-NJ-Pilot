@@ -188,76 +188,82 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
         return (
           <>
-            <StepIndicator
-              className="overflow-hidden width-mobile-lg margin-x-auto"
-              counters="none"
-              headingLevel="h2"
-              divProps={{
-                role: 'region',
-                'aria-label': `progress - step ${step} of ${totalSteps}`,
-              }}
-              data-testid="step-indicator"
-            >
-              {pageDefinitions.map((page, i) => (
-                <StepIndicatorStep
-                  key={page.path}
-                  label={page.heading}
-                  status={getStatus(i)}
-                />
-              ))}
-            </StepIndicator>
             <Head>
               <title>{currentPageDefinition.heading}</title>
             </Head>
-            <ClaimFormPageHeading
-              pageHeading={currentPageDefinition.heading}
-              step={step}
-              totalSteps={totalSteps}
-              ref={headingRef}
-            />
-            <Form className={styles.claimForm}>
-              {showErrorSummary && (
-                <FormErrorSummary key={submitCount} errors={errors} />
-              )}
-
-              {children}
-              <div className={styles.pagination}>
-                {/* TODO ClaimFormPagination Component? */}
-                <FormGroup>
-                  {nextPageDefinition && (
-                    <div className="text-center text-italic margin-bottom-2">
-                      {t('pagination.next_step', {
-                        stepName: nextPageDefinition.heading,
-                      })}
-                    </div>
+            <div className="grid-row grid-gap">
+              <StepIndicator
+                className="overflow-hidden width-mobile-lg margin-x-auto"
+                counters="none"
+                headingLevel="h2"
+                divProps={{
+                  role: 'region',
+                  'aria-label': `progress - step ${step} of ${totalSteps}`,
+                }}
+                data-testid="step-indicator"
+              >
+                {pageDefinitions.map((page, i) => (
+                  <StepIndicatorStep
+                    key={page.path}
+                    label={page.heading}
+                    status={getStatus(i)}
+                  />
+                ))}
+              </StepIndicator>
+              <main
+                className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
+                id="main-content"
+              >
+                <ClaimFormPageHeading
+                  pageHeading={currentPageDefinition.heading}
+                  step={step}
+                  totalSteps={totalSteps}
+                  ref={headingRef}
+                />
+                <Form className={styles.claimForm}>
+                  {showErrorSummary && (
+                    <FormErrorSummary key={submitCount} errors={errors} />
                   )}
-                  <div className="text-center">
-                    {previousPageDefinition && (
-                      <PreviousPageButton onClick={handleClickPrevious} />
-                    )}
-                    <SubmitButton
-                      disabled={isLoading}
-                      onClick={
-                        nextPageDefinition
-                          ? handleClickNext
-                          : handleClickComplete
-                      }
-                    >
-                      {nextPageDefinition
-                        ? t('pagination.next')
-                        : t('pagination.complete')}
-                    </SubmitButton>
-                    <div className="margin-top-1">
-                      {!isComplete && (
-                        <SaveAndExitLink
-                          onClick={() => handleSaveAndExit(values)}
-                        />
+                  {children}
+                  <div className={styles.pagination}>
+                    {/* TODO ClaimFormPagination Component? */}
+                    <FormGroup>
+                      {nextPageDefinition && (
+                        <div className="text-center text-italic margin-bottom-2">
+                          {t('pagination.next_step', {
+                            stepName: nextPageDefinition.heading,
+                          })}
+                        </div>
                       )}
-                    </div>
+                      <div className="text-center">
+                        {previousPageDefinition && (
+                          <PreviousPageButton onClick={handleClickPrevious} />
+                        )}
+                        <SubmitButton
+                          disabled={isLoading}
+                          onClick={
+                            nextPageDefinition
+                              ? handleClickNext
+                              : handleClickComplete
+                          }
+                        >
+                          {nextPageDefinition
+                            ? t('pagination.next')
+                            : t('pagination.complete')}
+                        </SubmitButton>
+                        <div className="margin-top-1">
+                          {!isComplete && (
+                            <SaveAndExitLink
+                              onClick={() => handleSaveAndExit(values)}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </FormGroup>
                   </div>
-                </FormGroup>
-              </div>
-            </Form>
+                </Form>
+              </main>
+            </div>
           </>
         )
       }}
