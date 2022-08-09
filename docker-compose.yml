@@ -5,6 +5,9 @@ services:
     build:
       context: client
     image: dol-ui-client:latest
+    container_name: dol-ui-client
+    networks:
+      - front-tier
     read_only: true
     ports:
       - "3000:3000"
@@ -12,7 +15,35 @@ services:
     build:
       context: server
     image: dol-ui-server:latest
+    container_name: dol-ui-server
+    networks:
+      - back-tier
     read_only: true
     tmpfs: /tmp
     ports:
       - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: localdocker
+  db:
+    image: postgres:14.3
+    container_name: dol-ui-db
+    restart: always
+    networks:
+      - back-tier
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: localdev-postgres
+      POSTGRES_PASSWORD: localdev-postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+
+networks:
+  front-tier:
+    name: dol-ui-front-tier
+  back-tier:
+    name: dol-ui-back-tier
+
+volumes:
+  db:
+    name: dol-ui-db

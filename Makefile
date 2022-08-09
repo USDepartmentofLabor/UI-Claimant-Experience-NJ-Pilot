@@ -15,6 +15,9 @@ lint: ## Run lint check
 dev-up: ## Run all docker services locally
 	docker compose up --build --force-recreate
 
+dev-db-up: ## Run the database locally in docker
+	docker compose up db
+
 dev-down: ## Shut down all local docker services
 	docker compose down
 
@@ -79,7 +82,7 @@ server-build: ## installs dependencies and runs tests for server
 	cd server && ./gradlew build
 
 server-bootRun: ## Runs the SpringBoot development server
-	cd server && ./gradlew bootRun
+	cd server && ./gradlew bootRun --args='--spring.profiles.active=localdev'
 
 server-test: ## run server unit tests
 	cd server && ./gradlew test
