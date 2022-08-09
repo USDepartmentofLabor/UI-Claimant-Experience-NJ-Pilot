@@ -7,6 +7,8 @@ import {
   AccountTypeOption,
   DisabilityTypeOption,
   AuthorizationTypeOption,
+  EducationLevelOption,
+  EnrollmentOption,
 } from 'constants/formOptions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -19,7 +21,7 @@ export type ClaimantInput = PersonalInput &
   // SelfEmploymentInput &
   // OtherPayInput &
   // OccupationInput &
-  // EducationVocationalRehabInput &
+  EducationAndTrainingInput &
   UnionInput &
   AbleAndAvailableStatusInput &
   // AvailabilityInput &
@@ -120,3 +122,10 @@ type IdentityInput = {
     issuer?: string
   }
 }
+
+type EducationAndTrainingInput = Partial<{
+  attending_college_or_job_training: boolean
+  enrollment: EnrollmentOption
+  registered_with_vocational_rehab: boolean
+  education_level?: EducationLevelOption
+}>

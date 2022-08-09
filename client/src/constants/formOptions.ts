@@ -36,3 +36,25 @@ export const disabilityTypeOptions = [
   'workers_compensation',
 ] as const
 export type DisabilityTypeOption = typeof disabilityTypeOptions[number]
+
+export const educationLevelOptions = [
+  'none',
+  'primary_school',
+  'some_high_school',
+  'high_school_ged',
+  'technical_associates',
+  'bachelors',
+  'masters',
+  'doctorate',
+  'other',
+] as const
+
+export type EducationLevelOption = typeof educationLevelOptions[number]
+
+export const enrollmentOptions = [
+  'self_enrolled',
+  'career_center',
+  'union',
+] as const
+
+export type EnrollmentOption = typeof enrollmentOptions[number]

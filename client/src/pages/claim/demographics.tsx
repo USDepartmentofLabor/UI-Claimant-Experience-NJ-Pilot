@@ -6,6 +6,7 @@ import {
   sexOptions,
   raceOptions,
   RaceOption,
+  educationLevelOptions,
 } from 'constants/formOptions'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import { CheckboxGroupField } from 'components/form/fields/CheckboxGroupField/CheckboxGroupField'
@@ -18,6 +19,8 @@ import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
 import { array, mixed, object } from 'yup'
+import DropdownField from '../../components/form/fields/DropdownField/DropdownField'
+import * as yup from 'yup'
 
 const Demographics: NextPage = () => {
   const { t } = useTranslation('claimForm')
@@ -67,6 +70,15 @@ const Demographics: NextPage = () => {
           }))}
         />
       </Fieldset>
+      <DropdownField
+        name="education_level"
+        label={t('education_level.label')}
+        startEmpty
+        options={educationLevelOptions.map((option) => ({
+          value: option,
+          label: t(`education_level.options.${option}`),
+        }))}
+      />
     </>
   )
 }
@@ -95,6 +107,10 @@ export const DemographicsPageDefinition: PageDefinition = {
     ethnicity: mixed()
       .oneOf([...ethnicityOptions])
       .required(i18n_claimForm.t('ethnicity.errors.required')),
+    education_level: yup
+      .mixed()
+      .oneOf([...educationLevelOptions])
+      .required(i18n_claimForm.t('education_level.errors.required')),
   }),
 }
 

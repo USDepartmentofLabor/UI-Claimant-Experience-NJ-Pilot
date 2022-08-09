@@ -7,6 +7,7 @@ import { IdentityPageDefinition } from 'pages/claim/identity'
 import { UnionPageDefinition } from 'pages/claim/union'
 import { AbleAndAvailablePageDefinition } from 'pages/claim/able-and-available'
 import { PaymentPageDefinition } from 'pages/claim/payment'
+import { EducationAndTrainingPageDefinition } from 'pages/claim/education-and-training'
 
 export type PageDefinition = {
   heading: string
@@ -25,7 +26,7 @@ export const pageDefinitions: PageDefinition[] = [
   // SelfEmploymentPageDefinition,
   // OtherPayPageDefinition,
   // OccupationPageDefinition,
-  // EducationVocationalRehabPageDefinition,
+  EducationAndTrainingPageDefinition,
   UnionPageDefinition,
   AbleAndAvailablePageDefinition,
   // AvailabilityPageDefinition,

@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render, within } from '@testing-library/react'
 import { Formik } from 'formik'
 import { screen } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
@@ -10,6 +10,7 @@ import { noop } from 'helpers/noop/noop'
 //   getValidClaimFormFixtures,
 // } from "../../../testUtils/fixtures";
 import {
+  educationLevelOptions,
   ethnicityOptions,
   raceOptions,
   sexOptions,
@@ -49,6 +50,16 @@ describe('Demographics page', () => {
       expect(ethnicityRadio).not.toBeChecked()
       expect(ethnicityRadio).toHaveAttribute('id', `ethnicity.${ethnicity}`)
       expect(ethnicityRadio).toHaveAttribute('name', 'ethnicity')
+    })
+
+    const educationLevelDropdown = screen.getByLabelText(
+      `education_level.label`
+    )
+    expect(educationLevelDropdown).toBeInTheDocument()
+    educationLevelOptions.forEach((educationLevel) => {
+      within(educationLevelDropdown).getByText(
+        `education_level.options.${educationLevel}`
+      )
     })
   })
 
@@ -151,6 +162,29 @@ describe('Demographics page', () => {
     })
   })
 
+  describe('education level', () => {
+    it('Allows selection of an education level', async () => {
+      const user = userEvent.setup()
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <Demographics />
+        </Formik>
+      )
+
+      const educationLevelDropdown = screen.getByLabelText(
+        'education_level.label'
+      )
+      expect(educationLevelDropdown).toHaveValue('')
+
+      await user.click(educationLevelDropdown)
+      await user.selectOptions(educationLevelDropdown, 'none')
+      expect(educationLevelDropdown).toHaveValue('none')
+
+      await user.selectOptions(educationLevelDropdown, 'high_school_ged')
+      expect(educationLevelDropdown).toHaveValue('high_school_ged')
+      expect(educationLevelDropdown).not.toHaveValue('none')
+    })
+  })
   // TODO: enable these tests when validations are set up
   // describe("validations", () => {
   //   describe("valid answers", () => {

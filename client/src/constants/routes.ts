@@ -16,9 +16,7 @@ export const Routes = {
     SELF_EMPLOYMENT: makeClaimFormRoute('self-employment'),
     OTHER_PAY: makeClaimFormRoute('other-pay'),
     OCCUPATION: makeClaimFormRoute('occupation'),
-    EDUCATION_VOCATIONAL_REHAB: makeClaimFormRoute(
-      'education-vocational-rehab'
-    ),
+    EDUCATION_VOCATIONAL_REHAB: makeClaimFormRoute('education-and-training'),
     UNION: makeClaimFormRoute('union'),
     ABLE_AND_AVAILABLE: makeClaimFormRoute('able-and-available'),
     AVAILABILITY: makeClaimFormRoute('availability'),

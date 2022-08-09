@@ -6,6 +6,8 @@ const fillDemographicsFields = (demographic) => {
   races.forEach((race) => {
     cy.get(`input[id=race\\.${race}]`).parent().click()
   })
+
+  cy.get('[name=education_level]').select(demographic.education_level)
 }
 
 export default fillDemographicsFields

@@ -84,7 +84,7 @@ const claimForm = {
       doctorate: 'Ph.D or higher',
       other: 'Other',
     },
-    required: 'At least one education level must be selected',
+    errors: { required: 'At least one education level must be selected' },
   },
   work_authorization: {
     authorized_to_work: {
@@ -444,50 +444,32 @@ const claimForm = {
       },
     },
   },
-  education_vocational_rehab: {
-    education: {
-      heading: 'Your education',
-      attending_training: {
-        label: 'Are you currently attending school, college, or job training?',
-        required:
-          'You must indicate whether you are currently attending school, college, or job training',
-        help_text:
-          'If you are in union-required training or paid job training, choose "No."',
+  education_and_training: {
+    heading: 'Your education and training',
+    attending_training: {
+      label:
+        'Are you currently attending school, college, or unpaid job training?',
+      required:
+        'You must indicate whether you are currently attending school, college, or job training',
+      help_text:
+        'If you are in union-required training or paid job training, choose "No."',
+    },
+    enrollment: {
+      label: 'How did you enroll?',
+      options: {
+        self_enrolled: 'Self-enrolled',
+        career_center:
+          'Through a Career Center such as Department of Labor, Vocational Rehabilitation, etc.',
+        union: 'Through a union hiring hall',
       },
-      training_type: {
-        label: 'Select what best matches your situation:',
-        options: {
-          part_time_student_outside_working_hours:
-            'Part-time student, outside of your typical working hours',
-          part_time_student_during_working_hours:
-            'Part-time student, during your typical working hours',
-          part_time_student_online_classes_only:
-            'Part-time student, online classes only',
-          full_time_student: 'Full time student, in-person or online',
-        },
-        error: {
-          required: 'Select the best match for your current situation',
-        },
-      },
-      full_time_student: {
-        label: 'Have you been a full-time student during the last 18 months?',
-        required:
-          'You must indicate whether you have been a full-time student during the last 18 months',
+      error: {
+        required: 'Select how you enrolled',
       },
     },
-    vocational_rehab: {
-      heading: 'Vocational rehabilitation',
-      is_registered: {
-        label: 'Are you currently registered with Vocational Rehabilitation?',
-        required:
-          'You must indicate whether you are currently registered with Vocational Rehabilitation',
-        help_text: {
-          description:
-            'Vocational Rehabilitation is a program that helps people living with disabilities find and keep jobs.',
-          learn_more_here:
-            '<extLink>Learn more here<span>opens in a new tab</span><icon></icon></extLink>',
-        },
-      },
+    full_time_student: {
+      label: 'Have you been a full-time student during the last 18 months?',
+      required:
+        'You must indicate whether you have been a full-time student during the last 18 months',
     },
   },
   union: {

@@ -5,6 +5,7 @@ import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
 import fillAbleAndAvailableFields from './formPageFilling/able_and_available'
 import fillPaymentFields from './formPageFilling/payment'
+import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -40,6 +41,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       sex: 'female',
       ethnicity: 'not_hispanic',
       races: ['asian', 'hawaiian_or_pacific_islander'],
+      education_level: 'bachelors',
     })
     cy.checkA11y()
     cy.clickNext()
@@ -57,6 +59,14 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
         authorized_to_work: true,
         authorization_type: 'US_citizen_or_national',
       },
+    })
+    cy.checkA11y()
+    cy.clickNext()
+
+    // Education and training page
+    fillEducationAndTrainingFields({
+      attending_college_or_job_training: 'yes',
+      enrollment: 'self_enrolled',
     })
     cy.checkA11y()
     cy.clickNext()
