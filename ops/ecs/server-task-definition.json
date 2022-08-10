@@ -61,7 +61,28 @@
         }
       ],
       "workingDirectory": null,
-      "secrets": null,
+      "secrets": [
+        {
+          "valueFrom": "/dol-ui-claimant-intake-dev/database-host",
+          "name": "DB_HOST"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-dev/database-port",
+          "name": "DB_PORT"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-dev/database-name",
+          "name": "DB_NAME"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-dev/database-user",
+          "name": "DB_USER"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-dev/database-password",
+          "name": "DB_PASSWORD"
+        }
+      ],
       "dockerSecurityOptions": null,
       "memory": null,
       "memoryReservation": null,
