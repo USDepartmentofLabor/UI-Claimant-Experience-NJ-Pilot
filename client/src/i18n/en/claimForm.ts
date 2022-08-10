@@ -39,7 +39,7 @@ const claimForm = {
     options: {
       female: 'Female',
       male: 'Male',
-      x: 'X',
+      x: 'X (unspecified)',
     },
     errors: {
       required: 'Sex is a required field',
