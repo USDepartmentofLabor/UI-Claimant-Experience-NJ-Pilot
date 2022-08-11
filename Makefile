@@ -78,6 +78,9 @@ server-gradle-tasks: ## list the gradle tasks that can be run when invoking ./gr
 server-deps: ## installs dependencies for server
 	cd server && ./gradlew assemble
 
+server-spotless: ## runs and applies spotless (formatting) changes
+	cd server && ./gradlew :spotlessApply
+
 server-build: ## installs dependencies and runs tests for server
 	cd server && ./gradlew build
 
