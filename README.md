@@ -31,7 +31,7 @@ and other development commands.
 
 - [Node](https://nodejs.org/en/download/)
   - This project's required Node version can be found in [.tool-versions](./.tool-versions)
-  - Since [Node versions](https://nodejs.org/en/about/releases/) enter and exit active LTS status regularly, using a
+  - Since [Node versions](https://nodejs.org/en/about/releases/) enter and exit active LTS status regularly, use a
     Node version manager. On Mac use asdf for version management by following theses steps:
       - Install asdf if applicable (https://asdf-vm.com/guide/getting-started.html)
       - Install GnuPG (a prerequiste for asdf controlling Nodejs version)
@@ -55,7 +55,7 @@ and other development commands.
         ```
         asdf global nodejs <version number>
         ```
-      - Double check NodeJs is installed in your local directory
+      - Double check NodeJs is using the correct version
         ```
         node -v
         ```
