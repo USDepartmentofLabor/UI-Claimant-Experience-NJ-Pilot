@@ -30,10 +30,40 @@ and other development commands.
 #### Client and Cypress (e2e)
 
 - [Node](https://nodejs.org/en/download/)
-  - This project's required Node version can be found in [.node-version](./client/.node-version).
+  - This project's required Node version can be found in [.tool-versions](./.tool-versions)
   - Since [Node versions](https://nodejs.org/en/about/releases/) enter and exit active LTS status regularly, using a
-    Node version manager like [n](https://www.npmjs.com/package/n) or, for Windows environments,
-    [nvm-windows](https://github.com/coreybutler/nvm-windows) is highly encouraged.
+    Node version manager. On Mac use asdf for version management by following theses steps:
+      - Install asdf if applicable (https://asdf-vm.com/guide/getting-started.html)
+      - Install GnuPG (a prerequiste for asdf controlling Nodejs version)
+        ```
+        brew install gpg gawk
+        ```
+      - install the asdf NodeJS plugin
+        ```
+        asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+        ```
+      - Check that the nodejs plugin installed correctly with the below command
+        ```
+        asdf plugin list
+        ```
+        NOTE: you should see 'nodejs' listed in the terminal as a response
+      - Install the correct NodeJS version specified in [.tool-versions](./.tool-versions)
+        ```
+        asdf install nodejs <version number>
+        ```
+      - Set the version used above to be applied globally 
+        ```
+        asdf global nodejs <version number>
+        ```
+      - Double check NodeJs is installed in your local directory
+        ```
+        node -v
+        ```
+      - if you have an issue run the following command and then close and re-open your terminal to be sure changes have taken affect
+        ```
+        asdf reshim nodejs
+        ```
+  - for Windows environments, [nvm-windows](https://github.com/coreybutler/nvm-windows) is highly encouraged.
 - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
 
 #### Server
