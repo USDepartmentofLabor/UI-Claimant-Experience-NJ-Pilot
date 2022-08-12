@@ -51,7 +51,7 @@ and other development commands.
       ```
       asdf install nodejs <version number>
       ```
-    - Set the version used above to be applied globally 
+    - Set the version used above to be applied globally
       ```
       asdf global nodejs <version number>
       ```
@@ -63,6 +63,19 @@ and other development commands.
       ```
       asdf reshim nodejs
       ```
+    - If you are still running into an issue due to previous installations of node, do the following
+      - Add the node version to your path file by opening the ~/.zshrc and adding the following to the bottom:
+        ```
+        export PATH=“/Users/<YourUsername>/.asdf/installs/nodejs/<DesiredVersion>//bin:$PATH”
+        ```
+      - rerun the asdf reshim command to ensure asdf forces a recheck on your setting
+        ```
+        asdf reshim nodejs
+        ```
+      - Close and reopen your terminal and check that node is now on the correct version:
+        ```
+        node -v
+        ```
   - for Windows environments, [nvm-windows](https://github.com/coreybutler/nvm-windows) is highly encouraged.
 - [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
 
