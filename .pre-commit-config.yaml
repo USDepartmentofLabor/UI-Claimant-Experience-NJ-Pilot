@@ -60,3 +60,7 @@ repos:
         language: node
         files: \.(js|jsx|ts|tsx)$
         pass_filenames: false
+      - id: server-spotless
+        name: server-spotless
+        entry: make server-spotless
+        language: system
