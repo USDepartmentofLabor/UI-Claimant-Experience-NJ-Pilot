@@ -6,6 +6,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'java'
     id "com.diffplug.spotless" version "6.9.1"
+    id "com.github.spotbugs" version "5.0.9"
 }
 
 group = 'nj.lwd.ui'
@@ -28,6 +29,8 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 }
 
 tasks.named('test') {

@@ -90,4 +90,7 @@ server-bootRun: ## Runs the SpringBoot development server
 server-test: ## run server unit tests
 	cd server && ./gradlew test
 
+server-spotbugs: ## runs SpotBugs plugin that checks for static analysis bugs
+	cd server && ./gradlew check
+
 all-deps: dev-deps client-deps e2e-deps server-deps ## Runs all required dependencies for running the application
