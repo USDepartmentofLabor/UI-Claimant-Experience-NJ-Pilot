@@ -64,7 +64,7 @@ and other development commands.
       asdf reshim nodejs
       ```
     - If you are still running into an issue due to previous installations of node, do the following
-      - Add the node version to your path file by opening your startup file (ex. `~/.zshrc`  or `~/.bash-profile`) and adding the following to the bottom:
+      - Add the node version to your path file by opening your startup file (ex. `~/.zshrc` or `~/.bash-profile`) and adding the following to the bottom:
         ```
         export PATH=“/Users/<YourUsername>/.asdf/installs/nodejs/<DesiredVersion>//bin:$PATH”
         ```
