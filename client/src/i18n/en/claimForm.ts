@@ -12,7 +12,7 @@ const claimForm = {
   },
   demographics: {
     heading: 'Demographics',
-    info_alert:
+    preamble:
       "We ask for your demographic information only for our reporting requirements. Your responses to these questions won't affect your application or potential payment amount.",
   },
   identity: {

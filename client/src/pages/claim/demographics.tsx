@@ -1,4 +1,8 @@
-import { Alert, Fieldset } from '@trussworks/react-uswds'
+import {
+  Fieldset,
+  SummaryBox,
+  SummaryBoxContent,
+} from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -27,9 +31,9 @@ const Demographics: NextPage = () => {
   const { values, setFieldValue } = useFormikContext<ClaimantInput>()
   return (
     <>
-      <Alert type="info" headingLevel="h4" noIcon>
-        {t('demographics.info_alert')}
-      </Alert>
+      <SummaryBox>
+        <SummaryBoxContent>{t('demographics.preamble')}</SummaryBoxContent>
+      </SummaryBox>
       <Fieldset legend={t('sex.label')} className={formStyles.field}>
         <RadioField
           name="sex"
