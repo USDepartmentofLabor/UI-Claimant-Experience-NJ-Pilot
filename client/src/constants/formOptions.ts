@@ -58,3 +58,13 @@ export const enrollmentOptions = [
 ] as const
 
 export type EnrollmentOption = typeof enrollmentOptions[number]
+
+export const suffixOptions = [
+  'I',
+  'II',
+  'III',
+  'IV',
+  'junior',
+  'senior',
+] as const
+export type SuffixOption = typeof suffixOptions[number]

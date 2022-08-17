@@ -548,6 +548,17 @@ const claimForm = {
     first_name: { label: 'First name', required: 'First name is required' },
     middle_name: { label: 'Middle initial <i>(optional)</i>' },
     last_name: { label: 'Last name', required: 'Last name is required' },
+    suffix: {
+      label: 'Suffix <i>(optional)</i>',
+      options: {
+        I: 'I',
+        II: 'II',
+        III: 'III',
+        IV: 'IV',
+        junior: 'Junior',
+        senior: 'Senior',
+      },
+    },
     claimant_has_alternate_names: {
       label:
         'In the last 18 months, have you worked under a name different from your legal name?',

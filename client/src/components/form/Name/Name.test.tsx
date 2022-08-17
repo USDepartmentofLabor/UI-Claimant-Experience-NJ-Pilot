@@ -35,6 +35,7 @@ describe('Name component', () => {
     const firstNameField = getByLabelText('name.first_name.label')
     const middleNameField = getByLabelText('name.middle_name.label')
     const lastNameField = getByLabelText('name.last_name.label')
+    const suffixField = getByLabelText('name.suffix.label')
 
     expect(firstNameField).toHaveValue('')
     expect(firstNameField).toHaveAttribute('id', `${claimantName}.first_name`)
@@ -50,6 +51,10 @@ describe('Name component', () => {
     expect(lastNameField).toHaveValue('')
     expect(lastNameField).toHaveAttribute('id', `${claimantName}.last_name`)
     expect(lastNameField).toHaveAttribute('name', `${claimantName}.last_name`)
+
+    expect(suffixField).toHaveValue('')
+    expect(suffixField).toHaveAttribute('id', `${claimantName}.suffix`)
+    expect(suffixField).toHaveAttribute('name', `${claimantName}.suffix`)
   })
 
   it('accepts initial values passed in', () => {
@@ -59,6 +64,7 @@ describe('Name component', () => {
         first_name: 'Ima',
         middle_name: 'Dee',
         last_name: 'Claimant',
+        suffix: 'junior',
       },
     }
 
@@ -71,10 +77,12 @@ describe('Name component', () => {
     const firstNameField = getByLabelText('name.first_name.label')
     const middleNameField = getByLabelText('name.middle_name.label')
     const lastNameField = getByLabelText('name.last_name.label')
+    const suffixField = getByLabelText('name.suffix.label')
 
     expect(firstNameField).toHaveValue('Ima')
     expect(middleNameField).toHaveValue('Dee')
     expect(lastNameField).toHaveValue('Claimant')
+    expect(suffixField).toHaveValue('junior')
   })
 
   it('accepts a validation schema passed in', async () => {
@@ -93,6 +101,7 @@ describe('Name component', () => {
         first_name: yup.string().required('First Name is required'),
         middle_name: yup.string().optional(),
         last_name: yup.string().required('Last Name is required'),
+        suffix: yup.string().optional(),
       }),
     })
 
