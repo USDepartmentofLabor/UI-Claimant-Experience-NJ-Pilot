@@ -47,11 +47,9 @@ export const AbleAndAvailable: NextPage = () => {
         </SummaryBoxHeading>
         <SummaryBoxContent>
           <ul>
-            <li>{t('able_and_available.info_alert.items.fli')}</li>
-            <li>{t('able_and_available.info_alert.items.leave')}</li>
+            <li>{t('able_and_available.info_alert.items.doctor_cert')}</li>
             <li>{t('able_and_available.info_alert.items.tdi')}</li>
             <li>{t('able_and_available.info_alert.items.workers_comp')}</li>
-            <li>{t('able_and_available.info_alert.items.doctor_cert')}</li>
           </ul>
         </SummaryBoxContent>
       </SummaryBox>

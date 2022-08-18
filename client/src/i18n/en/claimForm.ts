@@ -369,14 +369,12 @@ const claimForm = {
     heading: 'Able and available',
     info_alert: {
       title:
-        'The following also qualify as "disability" for unemployment insurance',
+        'For unemployment insurance, you are “disabled” if any of the following are true:',
       items: {
-        fli: 'Family leave (FLI)',
-        leave: 'Medical leave',
-        tdi: 'Temporary disability (TDI)',
-        workers_comp: "Worker's compensation",
         doctor_cert:
-          'If a doctor has certified some other reason for disability',
+          'A medical provider certifies you are unable to work due to a physical/mental health condition, pregnancy, or childbirth recovery',
+        tdi: 'You are receiving temporary disability benefits',
+        workers_comp: "You are receiving workers' compensation benefits",
       },
     },
     can_begin_work_immediately: {
@@ -388,7 +386,7 @@ const claimForm = {
     },
     has_collected_disability: {
       label:
-        'Since your last day worked, have you received disability payments?',
+        'Since your last day worked, have you received disability or family leave payments?',
       help_text:
         'Choose "No" if you received payments from Social Security (SSI/SSDI).',
       errors: {
@@ -407,10 +405,11 @@ const claimForm = {
     type_of_disability: {
       label: 'What plan do you get your payment from?',
       options: {
-        state_plan: 'State insurance plan (NJ TDI/FLI)',
-        private_plan: 'Private insurance plan provided by your job',
+        state_plan:
+          'State insurance plan (temporary disability or family leave)',
+        private_plan: 'Private insurance plan provided by your employer',
         workers_compensation:
-          "Worker's compensation due to being injured on the job",
+          "Workers' compensation due to being injured on the job",
       },
       errors: {
         required:
@@ -418,16 +417,16 @@ const claimForm = {
       },
     },
     date_disability_began: {
-      label: 'Date disability began',
+      label: 'Date disability or family leave began',
       errors: {
         required: 'You must indicate the date disability began',
         maxDate: "Date disability began cannot be after today's date",
       },
     },
     recovery_date: {
-      label: 'Recovery/release date',
+      label: 'Recovery/release/end date',
       help_text:
-        'If you have not recovered, type the current date below and we will request more information from you at a later date by email.',
+        'If you have not yet recovered, type the current date below and we will request more information from you at a later date by email.',
       errors: {
         required: 'You must indicate a recovery date',
         minDate: 'Recovery date has to be after the date of disability',
