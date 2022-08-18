@@ -41,8 +41,8 @@ describe('Demographics page', () => {
     raceOptions.forEach((race) => {
       const raceCheckbox = getByLabelText(`race.options.${race}`)
       expect(raceCheckbox).not.toBeChecked()
-      expect(raceCheckbox).toHaveAttribute('id', `race.${race}`)
-      expect(raceCheckbox).toHaveAttribute('name', 'race')
+      expect(raceCheckbox).toHaveAttribute('id', `race[0].${race}`)
+      expect(raceCheckbox).toHaveAttribute('name', 'race[0]')
     })
 
     ethnicityOptions.forEach((ethnicity) => {
@@ -92,52 +92,85 @@ describe('Demographics page', () => {
   })
 
   describe('race', () => {
-    it('Allows selection of multiple races', async () => {
+    it('Allows selection of race', async () => {
       const user = userEvent.setup()
-      const { getByLabelText } = render(
+      render(
         <Formik initialValues={initialValues} onSubmit={noop}>
           <Demographics />
         </Formik>
       )
-
-      const asian = getByLabelText('race.options.asian')
-      const hawaiianPI = getByLabelText(
+      const americanIndianAN = screen.getByLabelText(
+        'race.options.american_indian_or_alaskan'
+      )
+      const asian = screen.getByLabelText('race.options.asian')
+      const black = screen.getByLabelText('race.options.black')
+      const hawaiianPI = screen.getByLabelText(
         'race.options.hawaiian_or_pacific_islander'
       )
-      const black = getByLabelText('race.options.black')
-      const white = getByLabelText('race.options.white')
-      const optOut = getByLabelText('race.options.opt_out')
+      const white = screen.getByLabelText('race.options.white')
+      const optOut = screen.getByLabelText('race.options.opt_out')
 
-      // Checkboxes start unchecked
+      // Nothing should start checked
+      expect(americanIndianAN).not.toBeChecked()
+      expect(asian).not.toBeChecked()
+      expect(black).not.toBeChecked()
+      expect(hawaiianPI).not.toBeChecked()
+      expect(white).not.toBeChecked()
+      expect(optOut).not.toBeChecked()
+
+      // User clicks American Indian or Alaskan Native
+      await user.click(americanIndianAN)
+      expect(americanIndianAN).toBeChecked()
+      expect(asian).not.toBeChecked()
+      expect(black).not.toBeChecked()
+      expect(hawaiianPI).not.toBeChecked()
+      expect(white).not.toBeChecked()
+      expect(optOut).not.toBeChecked()
+
+      // User clicks Asian
+      await user.click(asian)
+      expect(asian).toBeChecked()
+      expect(americanIndianAN).not.toBeChecked()
+      expect(black).not.toBeChecked()
+      expect(hawaiianPI).not.toBeChecked()
+      expect(white).not.toBeChecked()
+      expect(optOut).not.toBeChecked()
+
+      // User clicks Black or African American
+      await user.click(black)
+      expect(black).toBeChecked()
+      expect(americanIndianAN).not.toBeChecked()
       expect(asian).not.toBeChecked()
       expect(hawaiianPI).not.toBeChecked()
-      expect(black).not.toBeChecked()
       expect(white).not.toBeChecked()
       expect(optOut).not.toBeChecked()
 
-      // User checks a subset
-      await user.click(asian)
+      // User clicks Native Hawaiian or Other Pacific Islander
       await user.click(hawaiianPI)
-
-      // The checkboxes that the user clicked on are checked
-      expect(asian).toBeChecked()
       expect(hawaiianPI).toBeChecked()
-
-      // The checkboxes *not* clicked on remain unchecked
+      expect(americanIndianAN).not.toBeChecked()
+      expect(asian).not.toBeChecked()
       expect(black).not.toBeChecked()
       expect(white).not.toBeChecked()
       expect(optOut).not.toBeChecked()
 
+      // User clicks White
+      await user.click(white)
+      expect(white).toBeChecked()
+      expect(americanIndianAN).not.toBeChecked()
+      expect(asian).not.toBeChecked()
+      expect(black).not.toBeChecked()
+      expect(hawaiianPI).not.toBeChecked()
+      expect(optOut).not.toBeChecked()
+
+      // User clicks Choose not to answer
       await user.click(optOut)
       expect(optOut).toBeChecked()
+      expect(americanIndianAN).not.toBeChecked()
       expect(asian).not.toBeChecked()
-      expect(asian).toBeDisabled()
-      expect(hawaiianPI).not.toBeChecked()
-      expect(hawaiianPI).toBeDisabled()
       expect(black).not.toBeChecked()
-      expect(black).toBeDisabled()
+      expect(hawaiianPI).not.toBeChecked()
       expect(white).not.toBeChecked()
-      expect(white).toBeDisabled()
     })
   })
 

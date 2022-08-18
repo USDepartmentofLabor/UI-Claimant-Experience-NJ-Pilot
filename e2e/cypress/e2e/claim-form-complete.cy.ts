@@ -40,7 +40,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     fillDemographicsFields({
       sex: 'female',
       ethnicity: 'not_hispanic',
-      races: ['asian', 'hawaiian_or_pacific_islander'],
+      races: ['asian'],
       education_level: 'bachelors',
     })
     cy.checkA11y()

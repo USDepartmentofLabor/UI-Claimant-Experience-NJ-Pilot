@@ -46,7 +46,7 @@ const claimForm = {
     },
   },
   race: {
-    label: 'What race(s) are you? (Check all that apply)',
+    label: 'What race are you?',
     options: {
       american_indian_or_alaskan: 'American Indian or Alaskan Native',
       asian: 'Asian',
@@ -56,7 +56,6 @@ const claimForm = {
       opt_out: 'Choose not to answer',
     },
     errors: {
-      opt_out_only: 'You may not choose a race if you opt out',
       required: 'Race is a required field',
     },
   },

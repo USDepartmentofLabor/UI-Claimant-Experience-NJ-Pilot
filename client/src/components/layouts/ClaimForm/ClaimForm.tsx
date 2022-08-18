@@ -114,7 +114,6 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         values,
         errors,
         setErrors,
-        touched,
         submitCount,
         validateForm,
         isValid,
@@ -122,9 +121,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         setFormikState,
       }) => {
         const showErrorSummary =
-          submitCount > 0 &&
-          Object.keys(touched).length > 0 &&
-          Object.keys(errors).length > 0
+          submitCount > 0 && Object.keys(errors).length > 0
 
         // TODO: To resolve "act" warnings in unit tests, use a loader/spinner
         //       and only show the form when renders like this are complete

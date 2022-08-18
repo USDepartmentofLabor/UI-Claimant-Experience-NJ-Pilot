@@ -17,12 +17,14 @@ type RadioInputProps = Optional<
 
 interface IRadioFieldProps extends RadioInputProps {
   options: IRadioOption[]
+  errorMessage?: string
 }
 
 export const RadioField = ({
   id: idProp,
   options,
   onChange,
+  errorMessage,
   ...inputProps
 }: IRadioFieldProps & JSX.IntrinsicElements['input']) => {
   const [fieldProps, metaProps] = useField(inputProps.name)
@@ -57,7 +59,9 @@ export const RadioField = ({
         />
       ))}
 
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
+      {showError && (
+        <ErrorMessage>{errorMessage || metaProps.error}</ErrorMessage>
+      )}
     </FormGroup>
   )
 }
