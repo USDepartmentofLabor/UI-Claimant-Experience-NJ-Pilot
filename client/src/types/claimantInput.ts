@@ -9,6 +9,7 @@ import {
   AuthorizationTypeOption,
   EducationLevelOption,
   EnrollmentOption,
+  SuffixOption,
 } from 'constants/formOptions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -86,6 +87,7 @@ export type PersonNameInput = {
   first_name: string
   middle_name?: string
   last_name: string
+  suffix?: SuffixOption
 }
 
 export type AddressInput = {
