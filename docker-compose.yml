@@ -23,7 +23,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: localdocker
+      SPRING_PROFILES_ACTIVE: local
+      DB_HOST: db
   db:
     image: postgres:14.3
     container_name: dol-ui-db

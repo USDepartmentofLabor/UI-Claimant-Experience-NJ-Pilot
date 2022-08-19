@@ -50,7 +50,12 @@
       "command": null,
       "linuxParameters": null,
       "cpu": null,
-      "environment": [],
+      "environment": [
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "aws"
+        }
+      ],
       "resourceRequirements": null,
       "ulimits": null,
       "dnsServers": null,

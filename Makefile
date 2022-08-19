@@ -85,7 +85,7 @@ server-build: ## installs dependencies, compiles code, and runs tests for server
 	cd server && ./gradlew build
 
 server-bootRun: ## Runs the SpringBoot development server
-	cd server && ./gradlew bootRun --args='--spring.profiles.active=localdev'
+	cd server && ./gradlew bootRun --args='--spring.profiles.active=local'
 
 server-test: ## run server unit tests
 	cd server && ./gradlew test
