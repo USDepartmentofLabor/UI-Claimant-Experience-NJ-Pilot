@@ -472,12 +472,6 @@ const claimForm = {
   },
   union: {
     heading: 'Union membership',
-    is_union_member: {
-      label: 'Are you a member of a union?',
-      errors: {
-        required: 'You must indicate whether you are a member of a union',
-      },
-    },
     union_name: {
       label: 'Name of your union',
       errors: {

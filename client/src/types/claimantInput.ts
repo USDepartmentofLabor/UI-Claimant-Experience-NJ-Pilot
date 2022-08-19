@@ -51,7 +51,6 @@ export type PhoneInput = {
 
 type UnionInput = {
   union?: {
-    is_union_member?: boolean
     union_name?: string
     union_local_number?: string
     required_to_seek_work_through_hiring_hall?: boolean

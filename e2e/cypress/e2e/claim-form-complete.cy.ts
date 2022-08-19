@@ -73,7 +73,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Union page
     fillUnionFields({
-      is_union_member: true,
       required_to_seek_work_through_hiring_hall: true,
       union_name: 'United ACME',
       union_local_number: '12345',

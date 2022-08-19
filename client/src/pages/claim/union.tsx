@@ -16,25 +16,21 @@ export const Union: NextPage = () => {
   const { values } = useFormikContext<ClaimantInput>()
   const { clearFields } = useClearFields()
 
-  const handleIsUnionMemberChange = () => {
+  const handleSeekWorkThroughHiringHallChange = () => {
     // Remove conditional data if previous answer is changed
-    if (values.union?.is_union_member === false) {
-      clearFields([
-        'union.union_name',
-        'union.union_local_number',
-        'union.required_to_seek_work_through_hiring_hall',
-      ])
+    if (values.union?.required_to_seek_work_through_hiring_hall === false) {
+      clearFields(['union.union_name', 'union.union_local_number'])
     }
   }
 
   return (
     <>
       <YesNoQuestion
-        question={t('is_union_member.label')}
-        name="union.is_union_member"
-        onChange={handleIsUnionMemberChange}
+        question={t('required_to_seek_work_through_hiring_hall.label')}
+        name="union.required_to_seek_work_through_hiring_hall"
+        onChange={handleSeekWorkThroughHiringHallChange}
       />
-      {values.union?.is_union_member === true && (
+      {values.union?.required_to_seek_work_through_hiring_hall === true && (
         <>
           <TextField
             label={t('union_name.label')}
@@ -46,10 +42,6 @@ export const Union: NextPage = () => {
             type="text"
             name="union.union_local_number"
           />
-          <YesNoQuestion
-            question={t('required_to_seek_work_through_hiring_hall.label')}
-            name="union.required_to_seek_work_through_hiring_hall"
-          />
         </>
       )}
     </>
@@ -60,36 +52,30 @@ export const UnionPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('union.heading'),
   path: Routes.CLAIM.UNION,
   initialValues: {
-    union: { is_union_member: undefined },
+    union: { required_to_seek_work_through_hiring_hall: undefined },
   },
   validationSchema: object().shape({
     union: object().shape({
-      is_union_member: boolean().required(
-        i18n_claimForm.t('union.is_union_member.errors.required')
+      required_to_seek_work_through_hiring_hall: boolean().required(
+        i18n_claimForm.t(
+          'union.required_to_seek_work_through_hiring_hall.errors.required'
+        )
       ),
-      union_name: string().when('is_union_member', {
+      union_name: string().when('required_to_seek_work_through_hiring_hall', {
         is: true,
         then: string()
           .max(32)
           .required(i18n_claimForm.t('union.union_name.errors.required')),
       }),
-      union_local_number: string().when('is_union_member', {
-        is: true,
-        then: string()
-          .max(16)
-          .required(
-            i18n_claimForm.t('union.union_local_number.errors.required')
-          ),
-      }),
-      required_to_seek_work_through_hiring_hall: boolean().when(
-        'is_union_member',
+      union_local_number: string().when(
+        'required_to_seek_work_through_hiring_hall',
         {
           is: true,
-          then: boolean().required(
-            i18n_claimForm.t(
-              'union.required_to_seek_work_through_hiring_hall.errors.required'
-            )
-          ),
+          then: string()
+            .max(16)
+            .required(
+              i18n_claimForm.t('union.union_local_number.errors.required')
+            ),
         }
       ),
     }),

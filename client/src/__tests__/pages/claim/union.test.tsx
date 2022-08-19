@@ -14,19 +14,21 @@ describe('Union page', () => {
   })
 
   it('renders', async () => {
-    expect(await screen.findByText('is_union_member.label')).toBeInTheDocument()
+    expect(
+      screen.queryByText('required_to_seek_work_through_hiring_hall.label')
+    ).toBeInTheDocument()
   })
 
   it('toggles fields conditionally', async () => {
     const user = userEvent.setup()
 
-    const isUnionMember = screen.getByRole('group', {
-      name: 'is_union_member.label',
+    const seekWorkThroughHiringHall = screen.getByRole('group', {
+      name: 'required_to_seek_work_through_hiring_hall.label',
     })
-    const yesMemberOfUnion = within(isUnionMember).getByRole('radio', {
+    const yesSeekWork = within(seekWorkThroughHiringHall).getByRole('radio', {
       name: 'yes',
     })
-    const noMemberOfUnion = within(isUnionMember).getByRole('radio', {
+    const noSeekWork = within(seekWorkThroughHiringHall).getByRole('radio', {
       name: 'no',
     })
 
@@ -42,12 +44,12 @@ describe('Union page', () => {
     expect(queryForUnionName()).not.toBeInTheDocument()
     expect(queryForUnionLocalNumber()).not.toBeInTheDocument()
 
-    await user.click(yesMemberOfUnion)
+    await user.click(yesSeekWork)
 
     expect(queryForUnionName()).toBeInTheDocument()
     expect(queryForUnionLocalNumber()).toBeInTheDocument()
 
-    await user.click(noMemberOfUnion)
+    await user.click(noSeekWork)
 
     expect(queryForUnionName()).not.toBeInTheDocument()
     expect(queryForUnionLocalNumber()).not.toBeInTheDocument()
