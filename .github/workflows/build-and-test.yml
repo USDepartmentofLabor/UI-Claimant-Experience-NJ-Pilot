@@ -52,11 +52,14 @@ jobs:
       - name: Install server dependencies
         run: make server-deps
 
-      - name: Run SpotBugs
-        run: make server-spotbugs
-
       - name: Lint
         run: make lint
+
+      - name: Run JUnit tests
+        run: make server-test
+
+      - name: Run server checks
+        run: make server-check
 
       - name: Check client Typescript compilation
         run: make client-compile-check

@@ -81,7 +81,7 @@ server-deps: ## installs dependencies for server
 server-spotless: ## runs and applies spotless (formatting) changes
 	cd server && ./gradlew :spotlessApply
 
-server-build: ## installs dependencies and runs tests for server
+server-build: ## installs dependencies, compiles code, and runs tests for server
 	cd server && ./gradlew build
 
 server-bootRun: ## Runs the SpringBoot development server
@@ -90,7 +90,10 @@ server-bootRun: ## Runs the SpringBoot development server
 server-test: ## run server unit tests
 	cd server && ./gradlew test
 
-server-spotbugs: ## runs SpotBugs plugin that checks for static analysis bugs
+server-check: ## runs the gradle `check` lifecycle which includes unit tests and other plugin integrations such as Spotbugs
 	cd server && ./gradlew check
+
+server-clean: ## cleans the build output and incremental build "Up-to-date" checks
+	cd server && ./gradlew clean
 
 all-deps: dev-deps client-deps e2e-deps server-deps ## Runs all required dependencies for running the application
