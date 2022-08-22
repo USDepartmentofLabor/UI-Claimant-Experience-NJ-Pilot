@@ -9,7 +9,7 @@ Modern Unemployment Insurance (UI) intake application for the state of New Jerse
 
 This project uses several tools which are either recommended or required for development.
 
-### Recommended Tools
+### Recommended tools
 
 This project uses [Make](https://www.gnu.org/software/make/manual/make.html) as a convenience for environment set up
 and other development commands.
@@ -22,7 +22,7 @@ and other development commands.
 >   corresponding `make` commands from the [Makefile](./Makefile). Setup instructions in this project will assume the
 >   installation of Make.
 
-### Required Tools
+### Required tools
 
 - [Python (with PIP)](https://www.python.org/downloads/)
   - PIP is used to install [pre-commit](https://pre-commit.com/)
@@ -158,7 +158,7 @@ OR run all of the above dependencies:
 make all-deps
 ```
 
-## Web Client
+## Web client
 
 To run the client server locally:
 
@@ -166,7 +166,24 @@ To run the client server locally:
 make client-dev
 ```
 
-## Docker Setup
+## Web server
+
+To run the api server locally:
+
+```
+make server-build
+make server-bootRun
+```
+
+### API documentation
+
+The web server exposes several API endpoints, and uses swagger as a self-documenting API tool.
+
+To use the swagger user interface `/api/swagger-ui.html`
+
+To view the JSON-formatted api documentation, navigate to `/api/v3/api-docs`
+
+## Docker setup
 
 To run the application locally in docker, use:
 
