@@ -103,7 +103,7 @@ and other development commands.
       ```
       asdf install java {java-release-candidate}
       ```
-      Where {java-release-candidate} is the name of the release you would like to use, for example `temurin-17.0.3+7`.
+      Where {java-release-candidate} is the name of the release you would like to use.
       The `temurin-` prefixed candidates are from the AdoptOpenJDK/Adoptium vendor. Make sure _not_ to accidentally
       select the candidates prefixed with `{vendor}-jre-`, as that is just the JRE. Developers will want the JDK.
     - Set the installed version as your global default
