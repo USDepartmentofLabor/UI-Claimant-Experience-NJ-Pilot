@@ -130,3 +130,12 @@ type EducationAndTrainingInput = Partial<{
   registered_with_vocational_rehab: boolean
   education_level?: EducationLevelOption
 }>
+
+export type WhoAmI = {
+  first_name: string
+  last_name: string
+  birthdate: string
+  ssn: string
+  email: string
+  phone: string
+}
