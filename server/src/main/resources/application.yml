@@ -1,0 +1,14 @@
+management:
+  endpoint:
+    health:
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    web:
+      discovery:
+        enabled: false
+      exposure:
+        include: health
+server:
+  servlet:
+    context-path: /api
