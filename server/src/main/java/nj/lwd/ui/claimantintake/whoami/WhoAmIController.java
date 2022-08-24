@@ -11,6 +11,13 @@ public class WhoAmIController {
 
     @GetMapping
     public WhoAmI whoami() {
-        return new WhoAmI("Harry", "Potter", "boy_who_lived@hogwarts.com", "1980-07-31");
+        return new WhoAmI(
+                "Harry",
+                "J",
+                "Potter",
+                "boy_who_lived@hogwarts.com",
+                "2028675309",
+                "123-45-6789",
+                "1980-07-31");
     }
 }

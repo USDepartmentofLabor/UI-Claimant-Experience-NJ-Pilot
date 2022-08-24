@@ -24,6 +24,6 @@ class WhoAmIControllerTest {
                 .andExpect(
                         content()
                                 .string(
-                                        "{\"firstName\":\"Harry\",\"lastName\":\"Potter\",\"email\":\"boy_who_lived@hogwarts.com\"}"));
+                                        "{\"firstName\":\"Harry\",\"middleInitial\":\"J\",\"lastName\":\"Potter\",\"email\":\"boy_who_lived@hogwarts.com\",\"phone\":\"2028675309\",\"ssn\":\"123-45-6789\",\"birthdate\":\"1980-07-31\"}"));
     }
 }
