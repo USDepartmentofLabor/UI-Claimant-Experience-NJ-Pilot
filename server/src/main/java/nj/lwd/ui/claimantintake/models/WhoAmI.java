@@ -54,17 +54,4 @@ public class WhoAmI {
     public String getBirthdate() {
         return birthdate;
     }
-
-    //    @Override
-    //    public String toString() {
-    //        return "{\"firstName\":\""
-    //                + getFirstName()
-    //                + "\","
-    //                + "\"lastName\":\""
-    //                + getLastName()
-    //                + "\","
-    //                + "\"email:\""
-    //                + getEmail()
-    //                + "\"}";
-    //    }
 }
