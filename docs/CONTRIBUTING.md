@@ -20,6 +20,15 @@ to track work within Agile sprints.
 
 This repository uses an organization level project that can be found [here](https://github.com/orgs/newjersey/projects/6).
 
+The project categorizes each issue as either a story, chore, bug, or spike and
+assigns each issue a complexity rating - also known as a
+[StoryPoint](https://scrumdictionary.com/term/storypoint/) - using the
+Fibonacci sequence (1, 2, 3, 5, 8, ...). Some teams may choose not to point
+chores or bugs, but we've decided to point all issues and rely on other
+mechanisms to distinguish velocity based on issue type as needed.
+
+- We point all [chores](https://scrumdictionary.com/term/chore/) as 2.
+
 ### Create a new issue
 
 It's always a good idea to double-check if an issue already exists for the scope of what you'd like to add, try
