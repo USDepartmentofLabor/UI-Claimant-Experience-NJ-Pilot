@@ -13,13 +13,18 @@ lint: ## Run lint check
 	pre-commit run --all-files
 
 dev-up: ## Run all docker services locally
-	docker compose up --build --force-recreate
+	docker compose up --build --force-recreate --remove-orphans
 
 dev-db-up: ## Run the database locally in docker
 	docker compose up db
 
 dev-down: ## Shut down all local docker services
 	docker compose down
+
+dev-clean: ## Shut down all local docker services and remove volumes
+	docker compose down --volumes
+
+dev-reset: dev-clean dev-up ## Runs dev-clean and dev-up
 
 dev-logs: ## View the local docker service logs
 	docker compose logs -f
