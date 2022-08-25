@@ -13,7 +13,9 @@ const claimForm = {
   demographics: {
     heading: 'Demographics',
     preamble:
-      "We ask for your demographic information only for our reporting requirements. Your responses to these questions won't affect your application or potential payment amount.",
+      'We ask for your demographic information only for our reporting requirements. ' +
+      "Your responses to these questions won't affect your application or potential payment amount. " +
+      'We are working to update our systems to support more inclusive selections.',
   },
   identity: {
     heading: 'Identity Information',
@@ -35,7 +37,7 @@ const claimForm = {
     },
   },
   sex: {
-    label: 'What is your gender?',
+    label: 'What is your sex?',
     options: {
       female: 'Female',
       male: 'Male',
@@ -73,17 +75,18 @@ const claimForm = {
   education_level: {
     label: 'What is the highest level of education you have completed?',
     options: {
-      none: 'No schooling',
-      primary_school: 'Primary school (pre-school to 8th grade)',
-      some_high_school: 'Some high school',
-      high_school_ged: 'High school/GED',
-      technical_associates: 'Technical or Associates degree',
-      bachelors: "Bachelor's degree",
-      masters: "Master's degree",
-      doctorate: 'Ph.D or higher',
-      other: 'Other',
+      none: 'No Schooling',
+      less_than_high_school: 'Less than High School',
+      some_high_school: 'Some High School',
+      high_school_ged: 'High School Graduate/GED',
+      some_college: 'Some College',
+      associates: "Associate's Degree",
+      bachelors: "Bachelor's Degree",
+      some_graduate: 'Some Graduate School',
+      masters: "Master's Degree",
+      doctorate: 'Doctoral Degree',
     },
-    errors: { required: 'At least one education level must be selected' },
+    errors: { required: 'Education level must be selected' },
   },
   work_authorization: {
     authorized_to_work: {
