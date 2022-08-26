@@ -1,6 +1,6 @@
-package nj.lwd.ui.claimantintake.whoami;
+package nj.lwd.ui.claimantintake.controller;
 
-import nj.lwd.ui.claimantintake.models.WhoAmI;
+import nj.lwd.ui.claimantintake.dto.WhoAmI;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

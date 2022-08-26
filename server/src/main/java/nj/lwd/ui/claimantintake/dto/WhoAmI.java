@@ -1,11 +1,10 @@
-package nj.lwd.ui.claimantintake.models;
+package nj.lwd.ui.claimantintake.dto;
 
 public class WhoAmI {
     private final String firstName;
     private final String middleInitial;
     private final String lastName;
     private final String email;
-
     private final String phone;
     private final String ssn;
     private final String birthdate;
