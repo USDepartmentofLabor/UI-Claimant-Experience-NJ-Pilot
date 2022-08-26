@@ -39,14 +39,15 @@ export type DisabilityTypeOption = typeof disabilityTypeOptions[number]
 
 export const educationLevelOptions = [
   'none',
-  'primary_school',
+  'less_than_high_school',
   'some_high_school',
   'high_school_ged',
-  'technical_associates',
+  'some_college',
+  'associates',
   'bachelors',
+  'some_graduate',
   'masters',
   'doctorate',
-  'other',
 ] as const
 
 export type EducationLevelOption = typeof educationLevelOptions[number]

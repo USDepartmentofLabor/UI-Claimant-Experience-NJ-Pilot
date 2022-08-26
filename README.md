@@ -197,6 +197,61 @@ To shut the docker services down, use:
 make dev-down
 ```
 
+### LocalStack
+
+The application integrates with AWS services in the deployed environments, such
+as Amazon Simple Storage Service (S3), and we use
+[LocalStack](https://docs.localstack.cloud/overview/) to emulate those AWS
+services locally.
+
+#### Dependency: AWS command-line interface (CLI)
+
+You can use the AWS CLI to interact with the LocalStack environment.
+
+To install the AWS CLI:
+
+```
+# MacOS
+brew install awscli
+
+# Windows
+choco install awscli
+```
+
+See [Setting up local region and credentials to run
+LocalStack](https://docs.localstack.cloud/integrations/aws-cli/#setting-up-local-region-and-credentials-to-run-localstack)
+for instructions to configure the AWS CLI to work with LocalStack.
+
+#### Usage
+
+LocalStack runs as a docker container and will be started along with the other
+application services by running the following command:
+
+```
+make dev-up
+```
+
+To confirm the LocalStack container is running, run the following command:
+
+```
+docker compose ps
+
+# The output should include the following container:
+NAME                COMMAND                  SERVICE             STATUS              PORTS
+dol-ui-localstack   "docker-entrypoint.sh"   localstack          running (healthy)   0.0.0.0:4566->4566/tcp
+```
+
+Once the container is running, you can use the AWS CLI to interact
+with it by including the `--endpoint-url=<localstack-url>` flag:
+
+```
+# to list all buckets in the LocalStack environment
+aws --endpoint-url=http://localhost:4566 s3 ls
+
+# to list the objects within a particular bucket, for example:
+aws --endpoint-url=http://localhost:4566 s3 ls s3://dol-ui-claims
+```
+
 ## Makefile
 
 Run `make` or `make help` to see the available `make` commands we use with this

@@ -38,6 +38,14 @@ services:
       POSTGRES_PASSWORD: localdev-postgres
     volumes:
       - db:/var/lib/postgresql/data
+  localstack:
+    container_name: dol-ui-localstack
+    image: localstack/localstack:1.0.4
+    ports:
+      - "4566:4566"
+    volumes:
+      - "localstack:/var/lib/localstack"
+      - "./scripts/aws-init:/docker-entrypoint-initaws.d"
 
 networks:
   front-tier:
@@ -48,3 +56,5 @@ networks:
 volumes:
   db:
     name: dol-ui-db
+  localstack:
+    name: dol-ui-localstack

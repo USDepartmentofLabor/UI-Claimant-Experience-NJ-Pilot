@@ -5,16 +5,15 @@ plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'java'
+    id 'idea'
     id "com.diffplug.spotless" version "6.9.1"
     id "com.github.spotbugs" version "5.0.9"
+    id "org.liquibase.gradle" version "2.1.1"
 }
 
 group = 'nj.lwd.ui'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
-
-apply plugin: 'java'
-apply plugin: 'idea'
 
 repositories {
     mavenCentral()
@@ -23,6 +22,15 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'org.postgresql:postgresql:42.4.1'
+
+    // Liquibase
+    implementation 'org.liquibase:liquibase-core:4.15.0'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'
+    liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.15.0'
+    liquibaseRuntime 'org.postgresql:postgresql:42.4.1'
+    liquibaseRuntime 'org.springframework.boot:spring-boot-starter-data-jpa'
+    liquibaseRuntime 'info.picocli:picocli:4.6.3'
+    liquibaseRuntime sourceSets.main.output
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -55,6 +63,52 @@ configurations {
             googleJavaFormat('1.15.0').aosp().reflowLongStrings()
         }
     }
+}
+
+liquibaseDiff.dependsOn assemble
+liquibaseDiffChangeLog.dependsOn assemble
+liquibaseGenerateChangelog.dependsOn assemble
+liquibaseUpdate.dependsOn assemble
+
+// Liquibase plugin properties. These apply when devs invoke liquibase commands through the CLI. (We use make shorthands)
+// When migrations are applied via Spring Boot (such as on startup), the Spring Boot app's DB connection is used.
+liquibase {
+    def liquibaseChangeLogFile = 'src/main/resources/db/changelog/changelog.yaml'
+    def liquibaseReferenceUrl = 'hibernate:spring:nj.lwd.ui.claimantintake.model?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+    def dbHost = System.getenv("DB_HOST") ?: 'localhost'
+    def dbPort = System.getenv("DB_PORT") ?: '5432'
+    def dbName = System.getenv("DB_NAME") ?: 'localdev-postgres'
+    def dbUrl = "jdbc:postgresql://${dbHost}:${dbPort}/${dbName}"
+    def dbUser = System.getenv("DB_USER") ?: "localdev-postgres"
+    def dbPassword = System.getenv("DB_PASSWORD") ?: "localdev-postgres"
+
+    activities {
+        doFirst {
+            project.ext.runList = project.findProperty('runList') ?: "main"
+        }
+        // For most liquibase operations, the main changelog file is used
+        main {
+            changeLogFile liquibaseChangeLogFile
+            referenceUrl liquibaseReferenceUrl
+            url dbUrl
+            username dbUser
+            password dbPassword
+        }
+        // When generating diffs from Entities, we want to create an isolated changelog file which the main changelog includes
+        diffChangeLog {
+            changeLogFile "src/main/resources/db/changelog/changes/" + new Date().format('yyyyMMddHHmmss') + '_' + (project.findProperty('migrationDescription')?.toLowerCase()?.replace(' ', '_') ?: 'generated') + '_changelog.yaml'
+            referenceUrl liquibaseReferenceUrl
+            url dbUrl
+            username dbUser
+            password dbPassword
+        }
+    }
+
+    runList = project.ext.runList
+}
+
+spotbugs {
+    excludeFilter = file('./spotbugs/exclude.xml')
 }
 
 tasks.withType(Test) {
