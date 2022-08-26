@@ -86,6 +86,9 @@ server-deps: ## installs dependencies for server
 server-spotless: ## runs and applies spotless (formatting) changes
 	cd server && ./gradlew :spotlessApply
 
+server-check: ## runs the gradle `check` lifecycle which includes unit tests and other plugin integrations such as Spotbugs
+	cd server && ./gradlew check
+
 server-build: ## installs dependencies, compiles code, and runs tests for server
 	cd server && ./gradlew build
 
@@ -95,8 +98,20 @@ server-bootRun: ## Runs the SpringBoot development server
 server-test: ## run server unit tests
 	cd server && ./gradlew test
 
-server-check: ## runs the gradle `check` lifecycle which includes unit tests and other plugin integrations such as Spotbugs
-	cd server && ./gradlew check
+server-migration: ## generate database migrations based on a diff between the current database and the model entities. Use description="a_short_description_of_the_changes"
+	cd server && ./gradlew liquibaseDiffChangeLog -PrunList=diffChangeLog -PmigrationDescription="$(description)"
+
+server-migrate: ## Manually apply migrations to the database (This happens automatically when calling bootRun)
+	cd server && ./gradlew liquibaseUpdate
+
+server-migrate-dry-run: ## Print SQL that would be executed in a `server-migrate`
+	cd server && ./gradlew liquibaseUpdateSql
+
+server-rollback: ## Roll back a given number of change sets. Use number_of_change_sets=n, where 'n' is the number of databasechangelog entries you'd like to rollback
+	cd server && ./gradlew liquibaseRollbackCount -PliquibaseCommandValue=$(number_of_change_sets)
+
+server-rollback-dry-run: ## Print SQL that would be executed in a `server-rollback`
+	cd server && ./gradlew liquibaseRollbackCountSql -PliquibaseCommandValue=$(number_of_change_sets)
 
 server-clean: ## cleans the build output and incremental build "Up-to-date" checks
 	cd server && ./gradlew clean

@@ -1,4 +1,4 @@
-package nj.lwd.ui.claimantintake.hello;
+package nj.lwd.ui.claimantintake.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

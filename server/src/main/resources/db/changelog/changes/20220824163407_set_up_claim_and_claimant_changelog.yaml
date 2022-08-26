@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1661373250343-1
+      author: brandonlenz (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: claimPK
+                  name: id
+                  type: UUID
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: claimant_id
+                  type: UUID
+            tableName: claim
+  - changeSet:
+      id: 1661373250343-2
+      author: brandonlenz (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: claimantPK
+                  name: id
+                  type: UUID
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            tableName: claimant
+  - changeSet:
+      id: 1661373250343-3
+      author: brandonlenz (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: claimant_id
+            baseTableName: claim
+            constraintName: FK8reg1f1n4uioijaeoiy7cnfq6
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: claimant
+            validate: true

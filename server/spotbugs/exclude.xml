@@ -1,0 +1,8 @@
+<FindBugsFilter>
+    <Match>
+        <!-- Spring data JPA uses mutable objects for associations. -->
+        <!-- Using a Builder or Factory pattern can be a workaround, but that's too much overhead for core application entities -->
+        <Package name="~nj\.lwd\.ui\.claimantintake.model.*" />
+        <Bug code="EI, EI2" />
+    </Match>
+</FindBugsFilter>
