@@ -33,7 +33,7 @@
     "@storybook/testing-library": "^0.0.13",
     "@swc/core": "^1.2.218",
     "@swc/jest": "^0.2.22",
-    "@testing-library/dom": "^8.13.0",
+    "@testing-library/dom": "^8.17.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.4.2",
