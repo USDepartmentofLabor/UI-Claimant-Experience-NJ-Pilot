@@ -22,10 +22,10 @@ export const Name = ({ id: idProp, name }: INameProps) => {
         type="text"
       />
       <TextField
-        id={`${id}.middle_name`}
-        name={`${name}.middle_name`}
+        id={`${id}.middle_initial`}
+        name={`${name}.middle_initial`}
         label={
-          <Trans t={t} i18nKey="name.middle_name.label">
+          <Trans t={t} i18nKey="name.middle_initial.label">
             Middle name <i>(optional)</i>
           </Trans>
         }

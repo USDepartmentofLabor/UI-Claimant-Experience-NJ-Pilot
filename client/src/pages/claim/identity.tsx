@@ -11,9 +11,7 @@ import TextAreaField from 'components/form/fields/TextAreaField/TextAreaField'
 import { useClearFields } from 'hooks/useClearFields'
 import { string, object, boolean } from 'yup'
 import { yupDate } from 'validations/yup/custom'
-import { StatesDropdown } from 'components/form/StatesDropdown/StatesDropdown'
 import { i18n_claimForm } from 'i18n/i18n'
-import states from 'fixtures/states.json'
 import { authorizationTypeOptions } from 'constants/formOptions'
 import { useFormikContext } from 'formik'
 import { Routes } from 'constants/routes'
@@ -28,15 +26,14 @@ export const Identity: NextPage = () => {
   const { clearField, clearFields } = useClearFields()
   const [showSsn, setShowSsn] = useState(false)
 
-  const showWorkAuthorizationFields =
-    values.work_authorization?.authorized_to_work
+  const showWorkAuthorizationFields = values.authorized_to_work
 
   const showAlienRegistrationNumber =
-    values.work_authorization?.authorization_type &&
-    values.work_authorization.authorization_type !== 'US_citizen_or_national'
+    values.authorization_type &&
+    values.authorization_type !== 'US_citizen_or_national'
 
   const showNotAllowedToWorkInUSExplanation =
-    values.work_authorization?.authorized_to_work === false
+    values.authorized_to_work === false
 
   const handleShowSsn = () => {
     setShowSsn(!showSsn)
@@ -44,19 +41,16 @@ export const Identity: NextPage = () => {
 
   const handleAuthorizedToWorkChange = () => {
     if (!showWorkAuthorizationFields) {
-      clearFields([
-        'work_authorization.authorization_type',
-        'work_authorization.alien_registration_number',
-      ])
+      clearFields(['authorization_type', 'alien_registration_number'])
     }
     if (!showNotAllowedToWorkInUSExplanation) {
-      clearField('work_authorization.not_authorized_to_work_explanation')
+      clearField('not_authorized_to_work_explanation')
     }
   }
 
   const handleAuthorizationTypeChange = () => {
     if (!showAlienRegistrationNumber) {
-      clearField('work_authorization.alien_registration_number')
+      clearField('alien_registration_number')
     }
   }
 
@@ -83,18 +77,13 @@ export const Identity: NextPage = () => {
       </div>
       <DateInputField legend={t('birthdate.label')} name="birthdate" />
       <TextField
-        label={t('state_credential.drivers_license_or_state_id_number.label')}
-        name="state_credential.drivers_license_or_state_id_number"
+        label={t('drivers_license_or_state_id_number.label')}
+        name="drivers_license_or_state_id_number"
         type="text"
-      />
-      <StatesDropdown
-        label={t('state_credential.issuer.label')}
-        name="state_credential.issuer"
-        startEmpty
       />
       <YesNoQuestion
         question={t('work_authorization.authorized_to_work.label')}
-        name="work_authorization.authorized_to_work"
+        name="authorized_to_work"
         onChange={handleAuthorizedToWorkChange}
       />
       {showNotAllowedToWorkInUSExplanation && (
@@ -102,14 +91,14 @@ export const Identity: NextPage = () => {
           label={t(
             'work_authorization.not_authorized_to_work_explanation.label'
           )}
-          name="work_authorization.not_authorized_to_work_explanation"
+          name="not_authorized_to_work_explanation"
         />
       )}
       {showWorkAuthorizationFields && (
         <>
           <DropdownField
             label={t('work_authorization.authorization_type.label')}
-            name="work_authorization.authorization_type"
+            name="authorization_type"
             startEmpty
             options={authorizationTypeOptions.map((option) => ({
               label: t(
@@ -122,7 +111,7 @@ export const Identity: NextPage = () => {
           {showAlienRegistrationNumber && (
             <TextField
               label={t('work_authorization.alien_registration_number.label')}
-              name="work_authorization.alien_registration_number"
+              name="alien_registration_number"
               type="text"
             />
           )}
@@ -141,38 +130,34 @@ const pageSchema = object().shape({
   birthdate: yupDate(t('birthdate.label'))
     .max(dayjs(new Date()).format('YYYY-MM-DD'), t('birthdate.errors.maxDate'))
     .required(t('birthdate.errors.required')),
-  state_credential: object().shape({
-    drivers_license_or_state_id_number: string().required(
-      t('state_credential.drivers_license_or_state_id_number.errors.required')
-    ),
-    issuer: string()
-      .oneOf(Object.keys(states))
-      .required(t('state_credential.issuer.errors.required')),
-  }),
-
-  work_authorization: object().shape({
-    authorized_to_work: boolean().required(
-      t('work_authorization.authorized_to_work.errors.required')
-    ),
-    not_authorized_to_work_explanation: string().when('authorized_to_work', {
-      is: false,
-      then: string().required(
+  drivers_license_or_state_id_number: string().required(
+    t('drivers_license_or_state_id_number.errors.required')
+  ),
+  authorized_to_work: boolean().required(
+    t('work_authorization.authorized_to_work.errors.required')
+  ),
+  not_authorized_to_work_explanation: string().when('authorized_to_work', {
+    is: false,
+    then: (schema) =>
+      schema.required(
         t(
           'work_authorization.not_authorized_to_work_explanation.errors.required'
         )
       ),
-    }),
-    authorization_type: string().when('authorized_to_work', {
-      is: true,
-      then: string()
+  }),
+  authorization_type: string().when('authorized_to_work', {
+    is: true,
+    then: (schema) =>
+      schema
         .oneOf([...authorizationTypeOptions])
         .required(t('work_authorization.authorization_type.errors.required')),
-    }),
-    alien_registration_number: string().when('authorization_type', {
-      is: (alienRegistrationType: string) =>
-        alienRegistrationType &&
-        alienRegistrationType !== 'US_citizen_or_national',
-      then: string()
+  }),
+  alien_registration_number: string().when('authorization_type', {
+    is: (alienRegistrationType: string) =>
+      alienRegistrationType &&
+      alienRegistrationType !== 'US_citizen_or_national',
+    then: (schema) =>
+      schema
         .matches(
           /^[0-9]{3}-?[0-9]{3}-?[0-9]{3}$/,
           t('work_authorization.alien_registration_number.errors.format')
@@ -180,7 +165,6 @@ const pageSchema = object().shape({
         .required(
           t('work_authorization.alien_registration_number.errors.required')
         ),
-    }),
   }),
 })
 
@@ -190,16 +174,12 @@ export const IdentityPageDefinition: PageDefinition = {
   initialValues: {
     birthdate: '',
     ssn: '',
-    work_authorization: {
-      authorized_to_work: undefined,
-      not_authorized_to_work_explanation: undefined,
-      authorization_type: undefined,
-      alien_registration_number: undefined,
-    },
-    state_credential: {
-      drivers_license_or_state_id_number: '',
-      issuer: undefined,
-    },
+    authorized_to_work: undefined,
+    not_authorized_to_work_explanation: undefined,
+    authorization_type: undefined,
+    alien_registration_number: undefined,
+    drivers_license_or_state_id_number: '',
+    id_issuer: undefined,
   },
   validationSchema: pageSchema,
 }

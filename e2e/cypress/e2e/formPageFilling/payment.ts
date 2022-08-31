@@ -12,20 +12,12 @@ const fillPaymentFields = (paymentInformation) => {
   )
     .parent()
     .click()
-  cy.get(`input[id="payment\\.payment_method\\.${payment_method}"]`)
-    .parent()
-    .click()
-  cy.get(`input[id="payment\\.account_type\\.${account_type}"]`)
-    .parent()
-    .click()
-  cy.get('input[id="payment\\.routing_number"]').type(routing_number)
-  cy.get('input[id="payment\\.LOCAL_re_enter_routing_number"]').type(
-    routing_number
-  )
-  cy.get('input[id="payment\\.account_number"]').type(account_number)
-  cy.get('input[id="payment\\.LOCAL_re_enter_account_number"]').type(
-    account_number
-  )
+  cy.get(`input[id="payment_method\\.${payment_method}"]`).parent().click()
+  cy.get(`input[id="account_type\\.${account_type}"]`).parent().click()
+  cy.get('input[id="routing_number"]').type(routing_number)
+  cy.get('input[id="LOCAL_re_enter_routing_number"]').type(routing_number)
+  cy.get('input[id="account_number"]').type(account_number)
+  cy.get('input[id="LOCAL_re_enter_account_number"]').type(account_number)
 }
 
 export default fillPaymentFields

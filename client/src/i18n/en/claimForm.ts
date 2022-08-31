@@ -122,18 +122,10 @@ const claimForm = {
       },
     },
   },
-  state_credential: {
-    drivers_license_or_state_id_number: {
-      label: 'Driver’s license or state ID number',
-      errors: {
-        required: 'Driver’s license or state ID number is required',
-      },
-    },
-    issuer: {
-      label: 'State that issued your license/ID',
-      errors: {
-        required: 'Please select the state that issued your license or ID',
-      },
+  drivers_license_or_state_id_number: {
+    label: 'Driver’s license or state ID number',
+    errors: {
+      required: 'Driver’s license or state ID number is required',
     },
   },
   employers: {
@@ -422,8 +414,9 @@ const claimForm = {
     date_disability_began: {
       label: 'Date disability or family leave began',
       errors: {
-        required: 'You must indicate the date disability began',
-        maxDate: "Date disability began cannot be after today's date",
+        required: 'You must indicate the date disability or family leave began',
+        maxDate:
+          "Date disability or family leave began cannot be after today's date",
       },
     },
     recovery_date: {
@@ -431,9 +424,10 @@ const claimForm = {
       help_text:
         'If you have not yet recovered, type the current date below and we will request more information from you at a later date by email.',
       errors: {
-        required: 'You must indicate a recovery date',
-        minDate: 'Recovery date has to be after the date of disability',
-        maxDate: "Recovery date cannot be after today's date",
+        required: 'You must indicate a Recovery/release/end date',
+        minDate:
+          'Recovery/release/end date has to be after the date of disability',
+        maxDate: "Recovery/release/end date cannot be after today's date",
       },
     },
     contacted_last_employer_after_recovery: {
@@ -496,34 +490,6 @@ const claimForm = {
       },
     },
   },
-  availability: {
-    can_begin_work_immediately: {
-      label: 'Can you begin work immediately?',
-      required: 'You must indicate whether you can begin work immediately',
-    },
-    can_work_full_time: {
-      label: 'Can you work full time?',
-      required: 'You must indicate whether you can work full time',
-    },
-    is_prevented_from_accepting_full_time_work: {
-      label: 'Is anything stopping you from working?',
-      required:
-        'You must indicate whether anything prevents you from accepting work',
-    },
-    cannot_begin_work_immediately_reason: {
-      label: "Please share more about what's preventing you from working:",
-      required: 'A reason you cannot begin work immediately is required',
-    },
-    cannot_work_full_time_reason: {
-      label: 'Please share more about why you can’t work full time:',
-      required: 'A reason you cannot work full-time is required',
-    },
-    is_prevented_from_accepting_full_time_work_reason: {
-      label:
-        'Please share more about what’s preventing you from working full time:',
-      required: 'A reason you cannot accept full-time work is required',
-    },
-  },
   contact: {
     heading: 'Contact Information',
     more_phones: 'Add another phone number',
@@ -541,7 +507,12 @@ const claimForm = {
     legal_name: 'What is your legal name?',
     alternate_name: 'Additional name',
     first_name: { label: 'First name', required: 'First name is required' },
-    middle_name: { label: 'Middle initial <i>(optional)</i>' },
+    middle_initial: {
+      label: 'Middle initial <i>(optional)</i>',
+      errors: {
+        max: 'Middle initial must be at most 1 character',
+      },
+    },
     last_name: { label: 'Last name', required: 'Last name is required' },
     suffix: {
       label: 'Suffix <i>(optional)</i>',

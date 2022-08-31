@@ -21,7 +21,7 @@ describe('Name component', () => {
     const initialValues = {
       [claimantName]: {
         first_name: '',
-        middle_name: '',
+        middle_initial: '',
         last_name: '',
       },
     }
@@ -33,7 +33,7 @@ describe('Name component', () => {
     )
 
     const firstNameField = getByLabelText('name.first_name.label')
-    const middleNameField = getByLabelText('name.middle_name.label')
+    const middleNameField = getByLabelText('name.middle_initial.label')
     const lastNameField = getByLabelText('name.last_name.label')
     const suffixField = getByLabelText('name.suffix.label')
 
@@ -42,10 +42,13 @@ describe('Name component', () => {
     expect(firstNameField).toHaveAttribute('name', `${claimantName}.first_name`)
 
     expect(middleNameField).toHaveValue('')
-    expect(middleNameField).toHaveAttribute('id', `${claimantName}.middle_name`)
+    expect(middleNameField).toHaveAttribute(
+      'id',
+      `${claimantName}.middle_initial`
+    )
     expect(middleNameField).toHaveAttribute(
       'name',
-      `${claimantName}.middle_name`
+      `${claimantName}.middle_initial`
     )
 
     expect(lastNameField).toHaveValue('')
@@ -62,7 +65,7 @@ describe('Name component', () => {
     const initialValues = {
       [claimantName]: {
         first_name: 'Ima',
-        middle_name: 'Dee',
+        middle_initial: 'D',
         last_name: 'Claimant',
         suffix: 'junior',
       },
@@ -75,12 +78,12 @@ describe('Name component', () => {
     )
 
     const firstNameField = getByLabelText('name.first_name.label')
-    const middleNameField = getByLabelText('name.middle_name.label')
+    const middleNameField = getByLabelText('name.middle_initial.label')
     const lastNameField = getByLabelText('name.last_name.label')
     const suffixField = getByLabelText('name.suffix.label')
 
     expect(firstNameField).toHaveValue('Ima')
-    expect(middleNameField).toHaveValue('Dee')
+    expect(middleNameField).toHaveValue('D')
     expect(lastNameField).toHaveValue('Claimant')
     expect(suffixField).toHaveValue('junior')
   })
@@ -91,7 +94,7 @@ describe('Name component', () => {
     const initialValues = {
       [claimantName]: {
         first_name: '',
-        middle_name: '',
+        middle_initial: '',
         last_name: '',
       },
     }
@@ -99,7 +102,7 @@ describe('Name component', () => {
     const validationSchema = yup.object().shape({
       [claimantName]: yup.object().shape({
         first_name: yup.string().required('First Name is required'),
-        middle_name: yup.string().optional(),
+        middle_initial: yup.string().optional(),
         last_name: yup.string().required('Last Name is required'),
         suffix: yup.string().optional(),
       }),

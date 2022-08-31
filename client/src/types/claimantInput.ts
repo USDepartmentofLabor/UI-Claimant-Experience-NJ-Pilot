@@ -25,7 +25,6 @@ export type ClaimantInput = PersonalInput &
   EducationAndTrainingInput &
   UnionInput &
   AbleAndAvailableStatusInput &
-  // AvailabilityInput &
   PaymentInput
 // & ReviewInput
 
@@ -33,6 +32,7 @@ type DemographicsInput = {
   sex?: SexOption
   ethnicity?: EthnicityOption
   race?: RaceOption[]
+  education_level?: EducationLevelOption
 }
 
 type ContactInput = {
@@ -50,34 +50,28 @@ export type PhoneInput = {
 }
 
 type UnionInput = {
-  union?: {
-    union_name?: string
-    union_local_number?: string
-    required_to_seek_work_through_hiring_hall?: boolean
-  }
+  union_name?: string
+  union_local_number?: string
+  required_to_seek_work_through_hiring_hall?: boolean
 }
 
 type AbleAndAvailableStatusInput = {
-  able_and_available?: {
-    has_collected_disability?: boolean
-    disabled_immediately_before?: boolean
-    type_of_disability?: DisabilityTypeOption
-    date_disability_began?: string
-    recovery_date?: string
-    contacted_last_employer_after_recovery?: boolean
-  }
+  has_collected_disability?: boolean
+  disabled_immediately_before?: boolean
+  type_of_disability?: DisabilityTypeOption
+  date_disability_began?: string
+  recovery_date?: string
+  contacted_last_employer_after_recovery?: boolean
 }
 
 type PaymentInput = {
   federal_income_tax_withheld?: boolean
-  payment?: {
-    payment_method?: PaymentMethodOption
-    account_type?: AccountTypeOption
-    routing_number?: string
-    LOCAL_re_enter_routing_number?: string
-    account_number?: string
-    LOCAL_re_enter_account_number?: string
-  }
+  payment_method?: PaymentMethodOption
+  account_type?: AccountTypeOption
+  routing_number?: string
+  LOCAL_re_enter_routing_number?: string
+  account_number?: string
+  LOCAL_re_enter_account_number?: string
 }
 
 type PersonalInput = ClaimantNameInput & ClaimantAddressInput
@@ -112,23 +106,17 @@ export type ClaimantNameInput = {
 type IdentityInput = {
   birthdate?: string
   ssn?: string
-  work_authorization?: {
-    authorized_to_work?: boolean
-    not_authorized_to_work_explanation?: string
-    authorization_type?: AuthorizationTypeOption
-    alien_registration_number?: string
-  }
-  state_credential?: {
-    drivers_license_or_state_id_number?: string
-    issuer?: string
-  }
+  authorized_to_work?: boolean
+  not_authorized_to_work_explanation?: string
+  authorization_type?: AuthorizationTypeOption
+  alien_registration_number?: string
+  drivers_license_or_state_id_number?: string
+  id_issuer?: string
 }
 
 type EducationAndTrainingInput = Partial<{
   attending_college_or_job_training: boolean
   enrollment: EnrollmentOption
-  registered_with_vocational_rehab: boolean
-  education_level?: EducationLevelOption
 }>
 
 export type WhoAmI = {

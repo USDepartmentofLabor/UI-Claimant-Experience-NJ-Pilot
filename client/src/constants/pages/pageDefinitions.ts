@@ -29,7 +29,6 @@ export const pageDefinitions: PageDefinition[] = [
   EducationAndTrainingPageDefinition,
   UnionPageDefinition,
   AbleAndAvailablePageDefinition,
-  // AvailabilityPageDefinition,
   PaymentPageDefinition,
   // ReviewPageDefinition,
 ]

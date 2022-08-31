@@ -18,8 +18,8 @@ export const Union: NextPage = () => {
 
   const handleSeekWorkThroughHiringHallChange = () => {
     // Remove conditional data if previous answer is changed
-    if (values.union?.required_to_seek_work_through_hiring_hall === false) {
-      clearFields(['union.union_name', 'union.union_local_number'])
+    if (values.required_to_seek_work_through_hiring_hall === false) {
+      clearFields(['union_name', 'union_local_number'])
     }
   }
 
@@ -27,20 +27,20 @@ export const Union: NextPage = () => {
     <>
       <YesNoQuestion
         question={t('required_to_seek_work_through_hiring_hall.label')}
-        name="union.required_to_seek_work_through_hiring_hall"
+        name="required_to_seek_work_through_hiring_hall"
         onChange={handleSeekWorkThroughHiringHallChange}
       />
-      {values.union?.required_to_seek_work_through_hiring_hall === true && (
+      {values.required_to_seek_work_through_hiring_hall === true && (
         <>
           <TextField
             label={t('union_name.label')}
             type="text"
-            name="union.union_name"
+            name="union_name"
           />
           <TextField
             label={t('union_local_number.label')}
             type="text"
-            name="union.union_local_number"
+            name="union_local_number"
           />
         </>
       )}
@@ -52,33 +52,33 @@ export const UnionPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('union.heading'),
   path: Routes.CLAIM.UNION,
   initialValues: {
-    union: { required_to_seek_work_through_hiring_hall: undefined },
+    required_to_seek_work_through_hiring_hall: undefined,
   },
   validationSchema: object().shape({
-    union: object().shape({
-      required_to_seek_work_through_hiring_hall: boolean().required(
-        i18n_claimForm.t(
-          'union.required_to_seek_work_through_hiring_hall.errors.required'
-        )
-      ),
-      union_name: string().when('required_to_seek_work_through_hiring_hall', {
-        is: true,
-        then: string()
+    required_to_seek_work_through_hiring_hall: boolean().required(
+      i18n_claimForm.t(
+        'union.required_to_seek_work_through_hiring_hall.errors.required'
+      )
+    ),
+    union_name: string().when('required_to_seek_work_through_hiring_hall', {
+      is: true,
+      then: (schema) =>
+        schema
           .max(32)
           .required(i18n_claimForm.t('union.union_name.errors.required')),
-      }),
-      union_local_number: string().when(
-        'required_to_seek_work_through_hiring_hall',
-        {
-          is: true,
-          then: string()
+    }),
+    union_local_number: string().when(
+      'required_to_seek_work_through_hiring_hall',
+      {
+        is: true,
+        then: (schema) =>
+          schema
             .max(16)
             .required(
               i18n_claimForm.t('union.union_local_number.errors.required')
             ),
-        }
-      ),
-    }),
+      }
+    ),
   }),
 }
 

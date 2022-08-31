@@ -31,7 +31,7 @@ describe('ClaimantNames component', () => {
   const getFirstNameField = (fieldset: HTMLElement) =>
     within(fieldset).getByLabelText('name.first_name.label')
   const getMiddleNameField = (fieldset: HTMLElement) =>
-    within(fieldset).getByLabelText('name.middle_name.label')
+    within(fieldset).getByLabelText('name.middle_initial.label')
   const getLastNameField = (fieldset: HTMLElement) =>
     within(fieldset).getByLabelText('name.last_name.label')
   const getAlternateNamesQuestion = () =>
@@ -53,7 +53,7 @@ describe('ClaimantNames component', () => {
     )
     const claimantName = getClaimantNameFieldset()
     const firstNameField = getFirstNameField(claimantName)
-    const middleNameField = getMiddleNameField(claimantName)
+    const middleInitialField = getMiddleNameField(claimantName)
     const lastNameField = getLastNameField(claimantName)
 
     const alternateName = queryForAlternateNameFieldset()
@@ -65,14 +65,14 @@ describe('ClaimantNames component', () => {
       `${CLAIMANT_NAME}.first_name`
     )
 
-    expect(middleNameField).toHaveValue('')
-    expect(middleNameField).toHaveAttribute(
+    expect(middleInitialField).toHaveValue('')
+    expect(middleInitialField).toHaveAttribute(
       'id',
-      `${CLAIMANT_NAME}.middle_name`
+      `${CLAIMANT_NAME}.middle_initial`
     )
-    expect(middleNameField).toHaveAttribute(
+    expect(middleInitialField).toHaveAttribute(
       'name',
-      `${CLAIMANT_NAME}.middle_name`
+      `${CLAIMANT_NAME}.middle_initial`
     )
 
     expect(lastNameField).toHaveValue('')
@@ -119,11 +119,11 @@ describe('ClaimantNames component', () => {
       expect(alternateMiddleNameField).toHaveValue('')
       expect(alternateMiddleNameField).toHaveAttribute(
         'id',
-        `${ALTERNATE_NAMES}.0.middle_name`
+        `${ALTERNATE_NAMES}.0.middle_initial`
       )
       expect(alternateMiddleNameField).toHaveAttribute(
         'name',
-        `${ALTERNATE_NAMES}.0.middle_name`
+        `${ALTERNATE_NAMES}.0.middle_initial`
       )
 
       expect(alternateLastNameField).toHaveValue('')

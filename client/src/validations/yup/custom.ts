@@ -54,7 +54,9 @@ export const yupName = object().shape({
     .nullable()
     .max(36)
     .required(i18n_claimForm.t('name.last_name.required')),
-  middle_name: string().nullable().max(36),
+  middle_initial: string()
+    .nullable()
+    .max(1, i18n_claimForm.t('name.middle_initial.errors.max')),
 })
 
 export const yupPhone = object().shape({

@@ -64,3 +64,12 @@ repos:
         name: server-spotless
         entry: make server-spotless
         language: system
+  - repo: https://github.com/sirosen/check-jsonschema
+    rev: 0.6.0
+    hooks:
+      - id: check-github-workflows
+      - id: check-jsonschema
+        name: "Check UI schema"
+        language: python
+        files: ^schemas
+        args: ["--schemafile", "https://json-schema.org/draft/2020-12/schema"]

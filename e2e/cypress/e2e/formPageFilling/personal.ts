@@ -5,11 +5,11 @@ const fillPersonalFields = (claimant, addresses) => {
 
 const fillClaimantNameFields = (claimant) => {
   cy.get('[name=claimant_name\\.first_name]').clear().type(claimant.first_name)
-  claimant.middle_name &&
+  claimant.middle_initial &&
     cy
-      .get('[name=claimant_name\\.middle_name]')
+      .get('[name=claimant_name\\.middle_initial]')
       .clear()
-      .type(claimant.middle_name)
+      .type(claimant.middle_initial)
   cy.get('[name=claimant_name\\.last_name]').clear().type(claimant.last_name)
   if (claimant.alternate_names) {
     cy.get('input[id=LOCAL_claimant_has_alternate_names\\.yes').parent().click()

@@ -14,7 +14,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     fillPersonalFields(
       {
         first_name: 'Dave',
-        middle_name: 'Rupert',
+        middle_initial: 'R',
         last_name: 'Smith',
         alternate_names: [{ first_name: 'Tasha', last_name: 'McGee' }],
       },
@@ -54,7 +54,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
         year: '1982',
       },
       drivers_license: 'D12345678912345',
-      state_license_issuer: 'NJ',
       work_authorization: {
         authorized_to_work: true,
         authorization_type: 'US_citizen_or_national',

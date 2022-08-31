@@ -87,6 +87,7 @@ export const DemographicsPageDefinition: PageDefinition = {
     sex: undefined,
     ethnicity: undefined,
     race: [],
+    education_level: undefined,
   },
   validationSchema: object().shape({
     sex: mixed()

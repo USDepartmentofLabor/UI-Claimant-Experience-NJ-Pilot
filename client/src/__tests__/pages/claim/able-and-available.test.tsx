@@ -6,6 +6,7 @@ import {
   AbleAndAvailable,
   AbleAndAvailablePageDefinition,
 } from 'pages/claim/able-and-available'
+import { disabilityTypeOptions } from 'constants/formOptions'
 
 describe('AbleAndAvailableStatus component', () => {
   // Re-useable queries
@@ -47,15 +48,14 @@ describe('AbleAndAvailableStatus component', () => {
       name: 'able_and_available.type_of_disability.label',
     })
   const getDateDisabilityBegan = () =>
-    screen.getByTestId('able_and_available.date_disability_began.parent-div')
+    screen.getByTestId('date_disability_began.parent-div')
   const getMonthDisabilityBegan = () =>
     within(getDateDisabilityBegan()).getByRole('textbox', { name: /month/i })
   const getDayDisabilityBegan = () =>
     within(getDateDisabilityBegan()).getByRole('textbox', { name: /day/i })
   const getYearDisabilityBegan = () =>
     within(getDateDisabilityBegan()).getByRole('textbox', { name: /year/i })
-  const getRecoveryDate = () =>
-    screen.getByTestId('able_and_available.recovery_date.parent-div')
+  const getRecoveryDate = () => screen.getByTestId('recovery_date.parent-div')
   const getRecoveryMonth = () =>
     within(getRecoveryDate()).getByRole('textbox', { name: /month/i })
   const getRecoveryDay = () =>
@@ -235,6 +235,129 @@ describe('AbleAndAvailableStatus component', () => {
       expect(recoveryDayAfterClear).toHaveValue('')
       expect(recoveryYearAfterClear).toHaveValue('')
       expect(contactedEmployer).not.toBeChecked()
+    })
+  })
+
+  describe('Validation Schema', () => {
+    describe('disabled_immediately_before', () => {
+      it.each([true, false])('validates with a valid value', async (value) => {
+        const schemaSlice = {
+          has_collected_disability: true,
+          disabled_immediately_before: value,
+        }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `disabled_immediately_before`,
+            schemaSlice
+          )
+        ).resolves.toEqual(value)
+      })
+
+      it('fails validation with an invalid value', async () => {
+        const schemaSlice = {
+          has_collected_disability: true,
+          disabled_immediately_before: undefined,
+        }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `disabled_immediately_before`,
+            schemaSlice
+          )
+        ).rejects.toBeTruthy()
+      })
+    })
+
+    describe('type_of_disability', () => {
+      it.each(disabilityTypeOptions)(
+        'validates with a valid value',
+        async (value) => {
+          const schemaSlice = {
+            has_collected_disability: true,
+            type_of_disability: value,
+          }
+
+          await expect(
+            AbleAndAvailablePageDefinition.validationSchema.validateAt(
+              `type_of_disability`,
+              schemaSlice
+            )
+          ).resolves.toEqual(value)
+        }
+      )
+
+      it('fails validation with an invalid value', async () => {
+        const schemaSlice = { type_of_disability: 'invalid value' }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `type_of_disability`,
+            schemaSlice
+          )
+        ).rejects.toBeTruthy()
+      })
+    })
+
+    describe('date_disability_began', () => {
+      it('validates with a valid value', async () => {
+        const schemaSlice = {
+          has_collected_disability: true,
+          date_disability_began: '2020-06-26',
+        }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `date_disability_began`,
+            schemaSlice
+          )
+        ).resolves.toBeTruthy()
+      })
+
+      it('fails validation with an invalid value', async () => {
+        const schemaSlice = {
+          has_collected_disability: true,
+          date_disability_began: undefined,
+        }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `date_disability_began`,
+            schemaSlice
+          )
+        ).rejects.toBeTruthy()
+      })
+    })
+
+    describe('recovery_date', () => {
+      it('validates with a valid value', async () => {
+        const schemaSlice = {
+          has_collected_disability: true,
+          recovery_date: '2020-06-27',
+        }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `recovery_date`,
+            schemaSlice
+          )
+        ).resolves.toBeTruthy()
+      })
+
+      it('fails validation with an invalid value before date_disability_began', async () => {
+        const schemaSlice = {
+          has_collected_disability: true,
+          date_disability_began: '2020-06-25',
+          recovery_date: '2020-06-24',
+        }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `recovery_date`,
+            schemaSlice
+          )
+        ).rejects.toBeTruthy()
+      })
     })
   })
 })

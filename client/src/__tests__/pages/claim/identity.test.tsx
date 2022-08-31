@@ -24,12 +24,8 @@ describe('Identity Information Page', () => {
     const dateOfBirthYear =
       within(dateOfBirthFields).queryByLabelText('date.year.label')
     const idNumber = screen.queryByLabelText(
-      'state_credential.drivers_license_or_state_id_number.label'
+      'drivers_license_or_state_id_number.label'
     )
-    const stateDropdown = screen.queryByLabelText(
-      'state_credential.issuer.label'
-    )
-
     const authorizedToWorkInUSRadioGroup = screen.getByRole('group', {
       name: 'work_authorization.authorized_to_work.label',
     })
@@ -50,7 +46,6 @@ describe('Identity Information Page', () => {
     expect(dateOfBirthYear).toBeInTheDocument()
 
     expect(idNumber).toBeInTheDocument()
-    expect(stateDropdown).toBeInTheDocument()
     expect(yesAuthorizedToWorkInUS).toBeInTheDocument()
     expect(noAuthorizedToWorkInUS).toBeInTheDocument()
   })
