@@ -1,6 +1,10 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.Instant
+
 plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
@@ -96,7 +100,11 @@ liquibase {
         }
         // When generating diffs from Entities, we want to create an isolated changelog file which the main changelog includes
         diffChangeLog {
-            changeLogFile "src/main/resources/db/changelog/changes/" + new Date().format('yyyyMMddHHmmss') + '_' + (project.findProperty('migrationDescription')?.toLowerCase()?.replace(' ', '_') ?: 'generated') + '_changelog.yaml'
+            def utcTimestamp = DateTimeFormatter.ofPattern('yyyyMMddHHmmss').withZone(ZoneOffset.UTC).format(Instant.now())
+            def description = project.findProperty('migrationDescription')?.toLowerCase()?.replace(' ', '_') ?: 'generated'
+            def newMigrationFile = "src/main/resources/db/changelog/changes/" + utcTimestamp + '_' + description + '_changelog.yaml'
+
+            changeLogFile newMigrationFile
             referenceUrl liquibaseReferenceUrl
             url dbUrl
             username dbUser

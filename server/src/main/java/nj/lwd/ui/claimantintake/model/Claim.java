@@ -2,6 +2,7 @@ package nj.lwd.ui.claimantintake.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -19,6 +20,9 @@ public class Claim {
 
     @ManyToOne private Claimant claimant;
 
+    @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClaimEvent> events;
+
     @CreatedDate private Instant createdAt;
 
     @LastModifiedDate private Instant updatedAt;
@@ -35,6 +39,15 @@ public class Claim {
 
     public void setClaimant(Claimant claimant) {
         this.claimant = claimant;
+    }
+
+    public void addEvent(ClaimEvent event) {
+        events.add(event);
+        event.setClaim(this);
+    }
+
+    public List<ClaimEvent> getEvents() {
+        return events;
     }
 
     public Instant getCreatedAt() {
