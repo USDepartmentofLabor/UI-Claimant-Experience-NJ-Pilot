@@ -10,7 +10,7 @@
     "formik": "^2.2.9",
     "i18next": "^21.9.1",
     "i18next-browser-languagedetector": "^6.1.4",
-    "next": "12.2.2",
+    "next": "12.2.5",
     "next-i18next": "^11.3.0",
     "react": "18.2.0",
     "react-aria-live": "2.0.5",
