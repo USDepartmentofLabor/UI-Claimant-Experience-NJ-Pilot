@@ -31,7 +31,7 @@
     "@storybook/manager-webpack5": "^6.5.9",
     "@storybook/react": "^6.5.9",
     "@storybook/testing-library": "^0.0.13",
-    "@swc/core": "^1.2.218",
+    "@swc/core": "^1.2.248",
     "@swc/jest": "^0.2.22",
     "@testing-library/dom": "^8.17.1",
     "@testing-library/jest-dom": "^5.16.5",
