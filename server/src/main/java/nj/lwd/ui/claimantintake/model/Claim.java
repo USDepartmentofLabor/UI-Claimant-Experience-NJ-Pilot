@@ -2,15 +2,18 @@ package nj.lwd.ui.claimantintake.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 import javax.persistence.*;
+import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@EntityListeners(AuditingEntityListener.class)
 public class Claim {
 
     @Id
@@ -21,13 +24,17 @@ public class Claim {
     @ManyToOne private Claimant claimant;
 
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ClaimEvent> events;
+    private List<ClaimEvent> events = new ArrayList<>();
 
-    @CreatedDate private Instant createdAt;
+    @CreatedDate
+    @Column(nullable = false)
+    private Instant createdAt;
 
-    @LastModifiedDate private Instant updatedAt;
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
 
-    protected Claim() {}
+    public Claim() {}
 
     public UUID getId() {
         return id;
@@ -56,5 +63,25 @@ public class Claim {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    /**
+     * Whether a claim is complete
+     *
+     * @return true if the claim has a corresponding COMPLETED event, otherwise, false
+     */
+    public boolean isComplete() {
+        return events.stream()
+                .map(ClaimEvent::getCategory)
+                .anyMatch(event -> event.equals(ClaimEventCategory.COMPLETED));
+    }
+
+    private Stream<ClaimEvent> streamEventsByCategory(ClaimEventCategory desiredCategory) {
+        return events.stream().filter(event -> event.getCategory().equals(desiredCategory));
+    }
+
+    public Optional<ClaimEvent> getLatestEventByCategory(ClaimEventCategory desiredCategory) {
+        return streamEventsByCategory(desiredCategory)
+                .max(Comparator.comparing(ClaimEvent::getCreatedAt));
     }
 }

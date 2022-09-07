@@ -6,9 +6,11 @@ import javax.persistence.*;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@EntityListeners(AuditingEntityListener.class)
 public class ClaimEvent {
 
     @Id
@@ -17,13 +19,18 @@ public class ClaimEvent {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ClaimEventCategory category;
 
     @ManyToOne private Claim claim;
 
-    @CreatedDate private Instant createdAt;
+    @CreatedDate
+    @Column(nullable = false)
+    private Instant createdAt;
 
-    @LastModifiedDate private Instant updatedAt;
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     protected ClaimEvent() {}
 
