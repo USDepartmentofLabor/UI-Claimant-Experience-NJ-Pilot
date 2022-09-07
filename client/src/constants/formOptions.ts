@@ -1,3 +1,22 @@
+export const interpreterTTYOptions = [
+  'interpreter',
+  'tty',
+  'no_interpreter_tty',
+] as const
+export type InterpreterTTYOption = typeof interpreterTTYOptions[number]
+
+export const preferredLanguageOptions = [
+  'mandarin',
+  'spanish',
+  'haitian',
+  'polish',
+  'portuguese',
+  'russian',
+  'vietnamese',
+  'other',
+] as const
+export type PreferredLanguageOption = typeof preferredLanguageOptions[number]
+
 export const sexOptions = ['female', 'male', 'x'] as const
 export type SexOption = typeof sexOptions[number]
 
@@ -13,9 +32,6 @@ export const raceOptions = [
   'opt_out',
 ] as const
 export type RaceOption = typeof raceOptions[number]
-
-export const phoneTypeOptions = ['home', 'work', 'mobile'] as const
-export type PhoneTypeOption = typeof phoneTypeOptions[number]
 
 export const paymentMethodOptions = ['debit', 'direct_deposit'] as const
 export type PaymentMethodOption = typeof paymentMethodOptions[number]

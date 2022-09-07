@@ -52,10 +52,30 @@
           "comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
           "pattern": "[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}"
         },
-        "type": "string",
-        "enum": ["home", "work", "mobile"]
+        "sms": {
+          "type": "boolean"
+        }
       },
       "required": ["number"]
+    },
+    "phoneWithSMS": {
+      "$id": "/definitions/phoneWithSMS",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/phoneWithSMS",
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 32,
+          "comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
+          "pattern": "[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}"
+        },
+        "sms": {
+          "type": "boolean"
+        }
+      },
+      "required": ["number", "sms"]
     },
     "state": {
       "$id": "/definitions/state",
@@ -139,10 +159,14 @@
     "mailing_address": {
       "$ref": "#/definitions/address"
     },
-    "phones": {
-      "type": "array",
-      "items": { "$ref": "#/definitions/phone" },
-      "minItems": 1
+    "claimant_phone": {
+      "$ref": "#/definitions/phoneWithSMS"
+    },
+    "alternate_phone": {
+      "$ref": "#/definitions/phone"
+    },
+    "sms": {
+      "type": "boolean"
     },
     "email": {
       "type": "string",
@@ -153,6 +177,19 @@
       "type": "boolean"
     },
     "preferred_language": {
+      "type": "string",
+      "enum": [
+        "mandarin",
+        "spanish",
+        "haitian",
+        "polish",
+        "portuguese",
+        "russian",
+        "vietnamese",
+        "other"
+      ]
+    },
+    "preferred_language_other": {
       "type": "string",
       "maxLength": 64
     },
@@ -305,7 +342,9 @@
     "claimant_name",
     "residence_address",
     "mailing_address",
-    "phones",
+    "claimant_phone",
+    "sms",
+    "email",
     "interpreter_required",
     "sex",
     "ethnicity",
@@ -372,13 +411,26 @@
       "if": {
         "properties": {
           "interpreter_required": {
-            "type": "boolean",
-            "const": true
+            "type": "string",
+            "enum": ["interpreter", "tty"]
           }
         }
       },
       "then": {
         "required": ["preferred_language"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preferred_language": {
+            "type": "string",
+            "enum": ["other"]
+          }
+        }
+      },
+      "then": {
+        "required": ["preferred_language_other"]
       }
     },
     {

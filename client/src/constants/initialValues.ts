@@ -3,7 +3,6 @@ import { PhoneInput, AddressInput, PersonNameInput } from 'types/claimantInput'
 export const PHONE_SKELETON: PhoneInput = {
   number: '',
   sms: undefined,
-  type: undefined,
 }
 
 export const ADDRESS_SKELETON: AddressInput = {

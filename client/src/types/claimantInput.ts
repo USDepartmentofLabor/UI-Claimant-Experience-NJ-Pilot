@@ -2,7 +2,8 @@ import {
   EthnicityOption,
   RaceOption,
   SexOption,
-  PhoneTypeOption,
+  InterpreterTTYOption,
+  PreferredLanguageOption,
   PaymentMethodOption,
   AccountTypeOption,
   DisabilityTypeOption,
@@ -37,16 +38,16 @@ type DemographicsInput = {
 
 type ContactInput = {
   email?: string
-  phones?: PhoneInput[]
-  interpreter_required?: boolean
-  preferred_language?: string
-  LOCAL_more_phones?: boolean
+  claimant_phone?: PhoneInput
+  alternate_phone?: PhoneInput
+  interpreter_required?: InterpreterTTYOption
+  preferred_language?: PreferredLanguageOption
+  preferred_language_other?: string
 }
 
 export type PhoneInput = {
   number: string
   sms?: boolean
-  type?: PhoneTypeOption
 }
 
 type UnionInput = {

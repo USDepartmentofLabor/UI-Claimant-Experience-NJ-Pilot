@@ -1,9 +1,7 @@
 import { NextPage } from 'next'
 import { useTranslation } from 'react-i18next'
-import { FieldArray, useFormikContext } from 'formik'
+import { useFormikContext } from 'formik'
 import { TextField } from 'components/form/fields/TextField/TextField'
-import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
-import { CheckboxField } from 'components/form/fields/CheckboxField/CheckboxField'
 import { PhoneNumberField } from 'components/form/PhoneNumberField/PhoneNumberField'
 import { ClaimantInput } from 'types/claimantInput'
 import { PHONE_SKELETON } from 'constants/initialValues'
@@ -11,8 +9,15 @@ import { useClearFields } from 'hooks/useClearFields'
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
-import { array, boolean, object, string } from 'yup'
-import { yupPhone } from 'validations/yup/custom'
+import { mixed, object, string } from 'yup'
+import {
+  interpreterTTYOptions,
+  preferredLanguageOptions,
+} from 'constants/formOptions'
+import { Fieldset } from '@trussworks/react-uswds'
+import { RadioField } from 'components/form/fields/RadioField/RadioField'
+import formStyles from 'components/form/form.module.scss'
+import { yupPhoneOptional, yupPhoneWithSMS } from 'validations/yup/custom'
 
 const Contact: NextPage = () => {
   const { t } = useTranslation('claimForm', {
@@ -22,58 +27,69 @@ const Contact: NextPage = () => {
   const { clearField } = useClearFields()
 
   const handleInterpreterRequiredChange = () => {
-    if (values.interpreter_required === false) {
+    if (values.interpreter_required !== 'no_interpreter_tty') {
       clearField('preferred_language')
+      clearField('preferred_language_other')
+    }
+  }
+
+  const handlePreferredLanguageOtherChange = () => {
+    if (values.preferred_language === 'other') {
+      clearField('preferred_language_other')
     }
   }
 
   return (
     <>
-      {/*<VerifiedFields fields={['email', 'phone']} /> implement when designed and hooked up to api */}
-      <FieldArray
-        name="phones"
-        render={(arrayHelpers) => (
-          <>
-            <PhoneNumberField name="phones[0]" showSMS={false} />
-            <CheckboxField
-              name="LOCAL_more_phones"
-              data-testid="LOCAL_more_phones"
-              label={t('more_phones')}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  values.phones?.length === 1 &&
-                    arrayHelpers.push({ ...PHONE_SKELETON })
-                } else {
-                  const shouldRemoveSecondPhone =
-                    (values.phones?.length || 0) >= 2
-                  shouldRemoveSecondPhone && arrayHelpers.remove(1)
-                }
-              }}
-            />
-            {values.LOCAL_more_phones && (
-              <PhoneNumberField name="phones[1]" showSMS={false} />
-            )}
-          </>
-        )}
+      <PhoneNumberField
+        name="claimant_phone"
+        label={t('claimant_phone.label')}
+        showSMS={true}
       />
-      <TextField
-        name="email"
-        type="text"
-        label={t('email')}
-        disabled
-        readOnly
+      <PhoneNumberField
+        name="alternate_phone"
+        label={t('alternate_phone.label')}
+        showSMS={false}
       />
-      <YesNoQuestion
-        question={t('interpreter_required.label')}
-        name="interpreter_required"
-        onChange={handleInterpreterRequiredChange}
-      />
-      {values.interpreter_required && (
-        <TextField
-          label={t('preferred_language.label')}
-          name="preferred_language"
-          type="text"
+      <Fieldset
+        legend={t('interpreter_required.label')}
+        className={formStyles.field}
+      >
+        <RadioField
+          name="interpreter_required"
+          options={interpreterTTYOptions.map((option) => {
+            return {
+              label: t(`interpreter_required.options.${option}`),
+              value: option,
+            }
+          })}
+          onChange={handleInterpreterRequiredChange}
         />
+      </Fieldset>
+      {values.interpreter_required === 'interpreter' && (
+        <Fieldset
+          legend={t('preferred_language.label')}
+          className={formStyles.field}
+        >
+          <RadioField
+            name="preferred_language"
+            options={preferredLanguageOptions.map((option) => {
+              return {
+                label: t(`preferred_language.options.${option}`),
+                value: option,
+              }
+            })}
+            onChange={handlePreferredLanguageOtherChange}
+          />
+          {values.preferred_language === 'other' && (
+            <TextField
+              labelled-by="preferred_language.other"
+              name="preferred_language_other"
+              type="text"
+              label={t('other_language')}
+            />
+          )}
+        </Fieldset>
       )}
     </>
   )
@@ -83,27 +99,29 @@ export const ContactPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('contact.heading'),
   path: Routes.CLAIM.CONTACT,
   initialValues: {
-    email: undefined,
-    phones: [{ ...PHONE_SKELETON }],
-    LOCAL_more_phones: undefined,
+    claimant_phone: { ...PHONE_SKELETON },
+    alternate_phone: { ...PHONE_SKELETON },
     interpreter_required: undefined,
+    preferred_language: undefined,
+    preferred_language_other: undefined,
   },
   validationSchema: object().shape({
-    // email is not editable, so omit required() but include the schema def just in case.
-    email: string().email(),
-    phones: array().when('LOCAL_more_phones', {
-      is: true,
-      then: array().of(yupPhone).min(2).required(),
-      otherwise: array().of(yupPhone).min(1).required(),
+    claimant_phone: yupPhoneWithSMS,
+    alternate_phone: yupPhoneOptional,
+    interpreter_required: mixed()
+      .oneOf([...interpreterTTYOptions])
+      .required(i18n_claimForm.t('contact.interpreter_required.required')),
+    preferred_language: mixed().when('interpreter_required', {
+      is: 'interpreter',
+      then: string()
+        .oneOf([...preferredLanguageOptions])
+        .required(i18n_claimForm.t('contact.preferred_language.required')),
     }),
-    interpreter_required: boolean().required(
-      i18n_claimForm.t('contact.interpreter_required.required')
-    ),
-    preferred_language: string().when('interpreter_required', {
-      is: true,
-      then: string().required(
-        i18n_claimForm.t('contact.preferred_language.required')
-      ),
+    preferred_language_other: mixed().when('preferred_language', {
+      is: 'other',
+      then: string()
+        .max(32)
+        .required(i18n_claimForm.t('contact.preferred_language.required')),
     }),
   }),
 }

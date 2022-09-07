@@ -1,21 +1,24 @@
 import TextField from '../fields/TextField/TextField'
-import { Trans, useTranslation } from 'react-i18next'
-import DropdownField from '../fields/DropdownField/DropdownField'
-import CheckboxField from '../fields/CheckboxField/CheckboxField'
-import { phoneTypeOptions } from 'constants/formOptions'
+import { useTranslation } from 'react-i18next'
+import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
+import { ReactNode } from 'react'
 
 type PhoneNumberFieldProps = {
   id?: string
   name: string
+  label: ReactNode
   showSMS?: boolean
 }
 
 export const PhoneNumberField = ({
   id: idProp,
   name,
+  label,
   showSMS = true,
 }: PhoneNumberFieldProps) => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('claimForm', {
+    keyPrefix: 'contact',
+  })
 
   const id = idProp || name
 
@@ -24,29 +27,11 @@ export const PhoneNumberField = ({
       <TextField
         id={`${id}.number`}
         name={`${name}.number`}
-        label={t('phone.number.label')}
+        label={label}
         type="tel"
       />
-      <DropdownField
-        id={`${id}.type`}
-        name={`${name}.type`}
-        label={
-          <Trans t={t} i18nKey="phone.type.label">
-            Type of phone number <i>(optional)</i>
-          </Trans>
-        }
-        startEmpty
-        options={phoneTypeOptions.map((option) => ({
-          value: option,
-          label: t(`phone.type.${option}`),
-        }))}
-      />
       {showSMS && (
-        <CheckboxField
-          id={`${id}.sms`}
-          name={`${name}.sms`}
-          label={t('phone.sms.label')}
-        />
+        <YesNoQuestion question={t('sms.label')} name={`${name}.sms`} />
       )}
     </>
   )

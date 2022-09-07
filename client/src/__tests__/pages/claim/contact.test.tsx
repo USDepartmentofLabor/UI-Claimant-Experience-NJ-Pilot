@@ -1,4 +1,4 @@
-import { screen, render, within } from '@testing-library/react'
+import { screen, render } from '@testing-library/react'
 import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import Contact from 'pages/claim/contact'
@@ -6,11 +6,11 @@ import userEvent from '@testing-library/user-event'
 
 describe('Contact page', () => {
   const initialValues = {
-    email: undefined,
-    phones: [],
-    LOCAL_more_phones: undefined,
+    claimant_phone: { number: '', sms: undefined },
+    alternate_phone: { number: '', sms: undefined },
     interpreter_required: undefined,
-    preferred_language: '',
+    preferred_language: undefined,
+    preferred_language_other: undefined,
   }
 
   it('renders properly', () => {
@@ -43,52 +43,27 @@ describe('Contact page', () => {
     // expect(verifiedPhoneNumber).toBeInTheDocument();
     // expect(verifiedPhoneNumberValue).toBeInTheDocument();
 
-    const interpreterField = screen.getByRole('group', {
-      name: 'interpreter_required.label',
+    const claimantPhone = screen.getByRole('textbox', {
+      name: 'claimant_phone.label',
     })
-    const interpreterYes = within(interpreterField).getByLabelText('yes')
-    const interpreterNo = within(interpreterField).getByLabelText('no')
-    expect(interpreterYes).toHaveAttribute('id', 'interpreter_required.yes')
-    expect(interpreterNo).toHaveAttribute('id', 'interpreter_required.no')
+    expect(claimantPhone).toHaveAttribute('id', 'claimant_phone.number')
 
-    const phoneOne = screen.getByRole('textbox', {
-      name: 'phone.number.label',
+    const sms = screen.getByText('sms.label')
+    expect(sms).not.toBeChecked()
+
+    const altPhone = screen.getByRole('textbox', {
+      name: 'alternate_phone.label',
     })
-    expect(phoneOne).toHaveAttribute('id', 'phones[0].number')
+    expect(altPhone).toHaveAttribute('id', 'alternate_phone.number')
 
-    const email = screen.getByRole('textbox', { name: 'email' })
-    expect(email).toHaveAttribute('id', 'email')
-    expect(email).toHaveAttribute('readonly', '')
-    expect(email).toHaveAttribute('disabled', '')
-  })
-
-  it('displays alternate phone fields', async () => {
-    const user = userEvent.setup()
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Contact />
-      </Formik>
+    const interpreterYes = screen.getByLabelText(
+      'interpreter_required.options.interpreter'
     )
-    const morePhones = screen.getByRole('checkbox', { name: 'more_phones' })
-    expect(morePhones).not.toBeChecked()
-
-    await user.click(morePhones)
-
-    const [phone1, phone2] = screen.getAllByRole('textbox', {
-      name: 'phone.number.label',
-    })
-    expect(phone1).toHaveAttribute('id', 'phones[0].number')
-    expect(phone2).toHaveAttribute('id', 'phones[1].number')
-
-    expect(phone1).toHaveValue('')
-    expect(phone1).toHaveAttribute('name', `phones[0].number`)
-
-    expect(phone2).toHaveValue('')
-    expect(phone2).toHaveAttribute('name', `phones[1].number`)
-
-    await user.click(morePhones)
-
-    expect(phone2).not.toBeInTheDocument()
+    const interpreterNo = screen.getByLabelText(
+      'interpreter_required.options.no_interpreter_tty'
+    )
+    expect(interpreterYes).not.toBeChecked()
+    expect(interpreterNo).not.toBeChecked()
   })
 
   it('conditionally displays preferred language', async () => {
@@ -99,23 +74,64 @@ describe('Contact page', () => {
       </Formik>
     )
 
-    const interpreterField = screen.getByRole('group', {
-      name: 'interpreter_required.label',
-    })
-    const interpreterYes = within(interpreterField).getByLabelText('yes')
-    const interpreterNo = within(interpreterField).getByLabelText('no')
-    expect(interpreterYes).toHaveAttribute('id', 'interpreter_required.yes')
-    expect(interpreterNo).toHaveAttribute('id', 'interpreter_required.no')
+    const interpreterYes = screen.getByLabelText(
+      'interpreter_required.options.interpreter'
+    )
+    const interpreterNo = screen.getByLabelText(
+      'interpreter_required.options.no_interpreter_tty'
+    )
+    expect(interpreterYes).not.toBeChecked()
     expect(screen.queryByLabelText('preferred_language.label')).toBeNull()
 
     await user.click(interpreterYes)
-
-    expect(
-      screen.getByLabelText('preferred_language.label')
-    ).toBeInTheDocument()
+    expect(interpreterYes).toBeChecked()
 
     await user.click(interpreterNo)
-
+    expect(interpreterNo).toBeChecked()
+    expect(interpreterYes).not.toBeChecked()
     expect(screen.queryByLabelText('preferred_language.label')).toBeNull()
+  })
+
+  it('Allows selection of preferred language', async () => {
+    const user = userEvent.setup()
+    render(
+      <Formik initialValues={initialValues} onSubmit={noop}>
+        <Contact />
+      </Formik>
+    )
+
+    const interpreterYes = screen.getByLabelText(
+      'interpreter_required.options.interpreter'
+    )
+    expect(screen.queryByLabelText('preferred_language.label')).toBeNull()
+
+    await user.click(interpreterYes)
+    expect(interpreterYes).toBeChecked()
+
+    const languageMandarin = screen.getByLabelText(
+      'preferred_language.options.mandarin'
+    )
+    const languageOther = screen.getByLabelText(
+      'preferred_language.options.other'
+    )
+
+    await user.click(languageMandarin)
+    expect(languageMandarin).toBeChecked()
+
+    await user.click(languageOther)
+    expect(languageOther).toBeChecked()
+
+    const preferredOtherLanguage = screen.getByLabelText('other_language', {
+      exact: false,
+    })
+
+    await user.type(preferredOtherLanguage, 'Japanese')
+    expect(languageMandarin).not.toBeChecked()
+
+    await user.click(languageMandarin)
+    expect(languageOther).not.toBeChecked()
+
+    await user.click(languageOther)
+    expect(screen.queryByLabelText('other_language')).toHaveTextContent('')
   })
 })

@@ -14,7 +14,6 @@ export default {
 const Template: ComponentStory<typeof PhoneNumberField> = (args) => {
   const initialValues = {
     [args.name]: {
-      type: '',
       number: '',
       sms: false,
     },

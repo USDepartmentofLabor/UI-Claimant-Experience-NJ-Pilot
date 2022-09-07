@@ -68,6 +68,28 @@ export const yupPhone = object().shape({
     .min(10)
     .max(32)
     .required(i18n_common.t('phone.number.errors.required')),
-  type: string(),
+  sms: boolean(),
+})
+
+export const yupPhoneWithSMS = object().shape({
+  number: string()
+    .matches(
+      /[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}/,
+      i18n_claimForm.t('contact.claimant_phone.errors.matches')
+    )
+    .min(10)
+    .max(32)
+    .required(i18n_claimForm.t('contact.claimant_phone.errors.required')),
+  sms: boolean().required(i18n_claimForm.t('contact.sms.errors.required')),
+})
+
+export const yupPhoneOptional = object().shape({
+  number: string()
+    .matches(
+      /[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}/,
+      i18n_claimForm.t('contact.claimant_phone.errors.matches')
+    )
+    .min(10)
+    .max(32),
   sms: boolean(),
 })

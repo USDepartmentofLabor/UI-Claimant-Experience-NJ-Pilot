@@ -492,16 +492,47 @@ const claimForm = {
   },
   contact: {
     heading: 'Contact Information',
-    more_phones: 'Add another phone number',
-    email: 'Email address', // no label, not editable
+    claimant_phone: {
+      label: 'Phone number',
+      errors: {
+        matches: 'Please enter a phone number like (555) 555-1234',
+        required: 'Phone number is required',
+      },
+    },
+    alternate_phone: {
+      label: 'Alternate phone number (optional)',
+    },
+    sms: {
+      label: 'Can we send text messages to this number?',
+      errors: {
+        required:
+          'Please indicate if we are able to send text messages to this number',
+      },
+    },
     interpreter_required: {
-      label: 'Do you need an interpreter to communicate with us?',
-      required: 'You must indicate whether you need an interpreter',
+      label: 'Do you need an interpreter or TTY to communicate with us?',
+      options: {
+        interpreter: 'Yes, an interpreter',
+        tty: 'Yes, TTY',
+        no_interpreter_tty: 'No',
+      },
+      required: 'You must indicate whether you need an interpreter or TTY',
     },
     preferred_language: {
       label: 'What language do you speak?',
+      options: {
+        mandarin: '中文 (Mandarin Chinese)',
+        spanish: 'Español (Spanish)',
+        haitian: 'Kreyòl ayisyen (Haitian Creole)',
+        polish: 'Polski (Polish)',
+        portuguese: 'Português (Portuguese)',
+        russian: 'Русский (Russian)',
+        vietnamese: 'Tiếng Việt (Vietnamese)',
+        other: 'Other',
+      },
       required: 'Please indicate the language you speak',
     },
+    other_language: 'Enter the language you speak',
   },
   name: {
     legal_name: 'What is your legal name?',
