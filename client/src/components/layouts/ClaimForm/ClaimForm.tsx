@@ -19,6 +19,7 @@ import { ClaimFormPageHeading } from './ClaimFormHeading/ClaimFormPageHeading'
 
 import styles from './ClaimForm.module.scss'
 import Head from 'next/head'
+import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -207,6 +208,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                   />
                 ))}
               </StepIndicator>
+              <ClaimFormSideNav className="desktop:grid-col-3 desktop:margin-top-4" />
               <main
                 className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
                 id="main-content"

@@ -54,6 +54,22 @@ describe('ClaimForm Layout', () => {
               step.classList.contains(completeIndicatorStyle)
           ).toBe(false)
       })
+
+      const sideNavElements = within(screen.getByTestId('sidenav'))
+
+      expect(
+        sideNavElements
+          .getByText('First page')
+          .classList.contains('usa-current')
+      ).toBe(true)
+      expect(
+        sideNavElements
+          .getByText('Middle page')
+          .classList.contains('usa-current')
+      ).toBe(false)
+      expect(
+        sideNavElements.getByText('Last page').classList.contains('usa-current')
+      ).toBe(false)
     })
 
     it('clicking next navigates to the next page', async () => {
@@ -76,7 +92,6 @@ describe('ClaimForm Layout', () => {
       await screen.findByText('First Page!')
       const nextButton = screen.getByText('pagination.next')
 
-      expect(mockGetPathName).toHaveBeenCalledTimes(1)
       expect(nextButton).toBeInTheDocument()
 
       await user.click(nextButton)
@@ -150,7 +165,6 @@ describe('ClaimForm Layout', () => {
       await screen.findByText('Middle Page!')
       const previousButton = screen.getByText('pagination.previous')
 
-      expect(mockGetPathName).toHaveBeenCalledTimes(1)
       expect(previousButton).toBeInTheDocument()
 
       await user.click(previousButton)
@@ -218,7 +232,6 @@ describe('ClaimForm Layout', () => {
       await screen.findByText('Last Page!')
       const completeButton = screen.getByText('pagination.complete')
 
-      expect(mockGetPathName).toHaveBeenCalledTimes(1)
       expect(completeButton).toBeInTheDocument()
 
       await user.click(completeButton)
@@ -271,7 +284,6 @@ describe('ClaimForm Layout', () => {
     await screen.findByText('Any page')
     const saveAndExitLink = screen.getByText('pagination.save_and_exit')
 
-    expect(mockGetPathName).toHaveBeenCalledTimes(1)
     expect(saveAndExitLink).toBeInTheDocument()
 
     await user.click(saveAndExitLink)

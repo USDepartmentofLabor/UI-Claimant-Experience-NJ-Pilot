@@ -84,7 +84,10 @@ export const yupPhoneWithSMS = object().shape({
 })
 
 export const yupPhoneOptional = object().shape({
+  //TODO: transform is a work around for the side nav yup validation which doesn't convert
+  // empty strings to undefined like the formik validation does.
   number: string()
+    .transform((number) => (!number ? undefined : number))
     .matches(
       /[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}/,
       i18n_claimForm.t('contact.claimant_phone.errors.matches')
