@@ -14,9 +14,9 @@ const claimForm = {
   demographics: {
     heading: 'Demographics',
     preamble:
-      'We ask for your demographic information only for our reporting requirements. ' +
-      "Your responses to these questions won't affect your application or potential payment amount. " +
-      'We are working to update our systems to support more inclusive selections.',
+      'We ask for the following information only for our reporting requirements. ' +
+      "Your answers to these questions won't affect your application or potential payment amount. " +
+      'We are working on our systems to support more inclusive options.',
   },
   identity: {
     heading: 'Identity Information',
@@ -49,7 +49,7 @@ const claimForm = {
     },
   },
   race: {
-    label: 'What race are you?',
+    label: 'What is your race?',
     options: {
       american_indian_or_alaskan: 'American Indian or Alaskan Native',
       asian: 'Asian',
@@ -369,8 +369,9 @@ const claimForm = {
       items: {
         doctor_cert:
           'A medical provider certifies you are unable to work due to a physical/mental health condition, pregnancy, or childbirth recovery',
-        tdi: 'You are receiving temporary disability benefits',
-        workers_comp: "You are receiving workers' compensation benefits",
+        tdi: 'You are receiving or have applied for temporary disability payments',
+        workers_comp:
+          'You are receiving or have applied for workers’ compensation payments ',
       },
     },
     can_begin_work_immediately: {
@@ -382,12 +383,12 @@ const claimForm = {
     },
     has_collected_disability: {
       label:
-        'Since your last day worked, have you received disability or family leave payments?',
+        'Since your last day worked, have you applied for or received disability or family leave payments?',
       help_text:
         'Choose "No" if you received payments from Social Security (SSI/SSDI).',
       errors: {
         required:
-          'You must indicate whether you have received disability payments',
+          'You must indicate whether you have applied for or received disability payments',
       },
     },
     disabled_immediately_before: {
