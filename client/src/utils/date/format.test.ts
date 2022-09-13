@@ -1,4 +1,4 @@
-import { formatUserInputDate } from './format'
+import { formatUserInputDate, formatStoredDateToDisplayDate } from './format'
 
 describe('formatUserInputDate', () => {
   it('returns the expected date', () => {
@@ -13,5 +13,19 @@ describe('formatUserInputDate', () => {
     const invalidDateString = '21-21-19'
     const result = formatUserInputDate(invalidDateString)
     expect(result).toEqual(invalidDateString)
+  })
+})
+
+describe('formatStoredDate', () => {
+  it('returns the expected date format', () => {
+    const storedDate = '2009-08-20'
+    const result = formatStoredDateToDisplayDate(storedDate)
+    expect(result).toEqual('August 20, 2009')
+  })
+
+  it('returns undefined of storedDate is undefined', () => {
+    const storedDate = undefined
+    const result = formatStoredDateToDisplayDate(storedDate)
+    expect(result).toEqual(undefined)
   })
 })

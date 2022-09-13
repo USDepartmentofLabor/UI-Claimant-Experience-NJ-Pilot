@@ -8,6 +8,7 @@ import { CENTS_REGEX } from 'constants/currency/format'
 import { i18n_claimForm, i18n_common } from 'i18n/i18n'
 import { boolean, date, object, string } from 'yup'
 import * as states from 'fixtures/states.json'
+import { suffixOptions } from 'constants/formOptions'
 
 export const yupAddress = () =>
   object().shape({
@@ -54,19 +55,20 @@ export const yupName = object().shape({
     .nullable()
     .max(36)
     .required(i18n_claimForm.t('name.last_name.required')),
-  middle_initial: string()
-    .nullable()
-    .max(1, i18n_claimForm.t('name.middle_initial.errors.max')),
+  middle_initial: string().nullable().max(1),
+  suffix: string()
+    .oneOf([...suffixOptions])
+    .nullable(),
 })
 
 export const yupPhone = object().shape({
   number: string()
     .matches(
-      /[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}/,
+      /^[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}$/,
       i18n_common.t('phone.number.errors.matches')
     )
     .min(10)
-    .max(32)
+    .max(13)
     .required(i18n_common.t('phone.number.errors.required')),
   sms: boolean(),
 })
@@ -74,11 +76,11 @@ export const yupPhone = object().shape({
 export const yupPhoneWithSMS = object().shape({
   number: string()
     .matches(
-      /[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}/,
+      /^[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}$/,
       i18n_claimForm.t('contact.claimant_phone.errors.matches')
     )
     .min(10)
-    .max(32)
+    .max(13)
     .required(i18n_claimForm.t('contact.claimant_phone.errors.required')),
   sms: boolean().required(i18n_claimForm.t('contact.sms.errors.required')),
 })
@@ -89,10 +91,10 @@ export const yupPhoneOptional = object().shape({
   number: string()
     .transform((number) => (!number ? undefined : number))
     .matches(
-      /[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}/,
+      /^[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}$/,
       i18n_claimForm.t('contact.claimant_phone.errors.matches')
     )
     .min(10)
-    .max(32),
+    .max(13),
   sms: boolean(),
 })

@@ -18,12 +18,15 @@ import { Fieldset } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import formStyles from 'components/form/form.module.scss'
 import { yupPhoneOptional, yupPhoneWithSMS } from 'validations/yup/custom'
+import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
+import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
+import { formatStoredToDisplayPhone } from 'utils/phone/format'
 
 const Contact: NextPage = () => {
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'contact',
   })
-  const { values } = useFormikContext<ClaimantInput>()
+  const { values, initialValues } = useFormikContext<ClaimantInput>()
   const { clearField } = useClearFields()
 
   const handleInterpreterRequiredChange = () => {
@@ -41,6 +44,17 @@ const Contact: NextPage = () => {
 
   return (
     <>
+      <VerifiedFields>
+        <VerifiedField label={t('email.label')} value={values.email} />
+        {initialValues.claimant_phone?.number && (
+          <VerifiedField
+            label={t('claimant_phone.label')}
+            value={formatStoredToDisplayPhone(
+              initialValues.claimant_phone?.number
+            )}
+          />
+        )}
+      </VerifiedFields>
       <PhoneNumberField
         name="claimant_phone"
         label={t('claimant_phone.label')}

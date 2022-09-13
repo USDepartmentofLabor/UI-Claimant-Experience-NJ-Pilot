@@ -53,7 +53,7 @@ client-deps: ## installs dependencies for client
 client-test: ## run Jest unit/integration tests
 	cd client && yarn test
 
-client-test-coverage: ## run Jest unit/integration tests
+client-test-coverage: ## run Jest unit/integration tests with coverage
 	cd client && yarn test:coverage
 
 client-test-watch: ## run Jest unit/integration tests and watch

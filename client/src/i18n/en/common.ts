@@ -54,6 +54,11 @@ const common = {
     lock_title: 'Lock',
     lock_description: 'A locked padlock',
   },
+  verified_fields: {
+    default_heading:
+      'The following information has been added to your application:',
+  },
+  page_loader: 'Loading...',
 }
 
 export default common

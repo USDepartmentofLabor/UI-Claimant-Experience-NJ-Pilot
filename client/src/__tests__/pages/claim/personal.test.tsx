@@ -4,17 +4,32 @@ import Personal, { PersonalPageDefinition } from 'pages/claim/personal'
 import { noop } from 'helpers/noop/noop'
 
 describe('Personal information component', () => {
-  const initialValues = PersonalPageDefinition.initialValues
+  const initialValues = {
+    ...PersonalPageDefinition.initialValues,
+    claimant_name: {
+      first_name: 'Dori',
+      middle_initial: 'D',
+      last_name: 'Coxen',
+    },
+  }
   it('renders properly without error', () => {
     render(
       <Formik initialValues={initialValues} onSubmit={noop}>
         <Personal />
       </Formik>
     )
+    const verifiedFieldsSection = screen.getByTestId('verified-fields')
+    const verifiedFields = within(verifiedFieldsSection).getAllByRole(
+      'listitem'
+    )
+    const verifiedLegalName = within(verifiedFieldsSection).getByText(
+      'personal.verified_legal_name.label'
+    )
 
-    const claimantName = screen.queryByRole('group', {
-      name: 'legal_name',
-    })
+    const verifiedLegalNameValue = within(verifiedFieldsSection).getByText(
+      'Dori D Coxen'
+    )
+
     const hasAlternateNamesQuestion = screen.getByRole('group', {
       name: 'claimant_has_alternate_names.label',
     })
@@ -44,7 +59,11 @@ describe('Personal information component', () => {
       name: 'label.mailing_address',
     })
 
-    expect(claimantName).toBeInTheDocument()
+    expect(verifiedFieldsSection).toBeInTheDocument()
+    expect(verifiedFields).toHaveLength(1)
+    expect(verifiedLegalName).toBeInTheDocument()
+    expect(verifiedLegalNameValue).toBeInTheDocument()
+
     expect(yesAlternateNames).toBeInTheDocument()
     expect(yesAlternateNames).not.toBeChecked()
     expect(noAlternateNames).toBeInTheDocument()

@@ -13,9 +13,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.visit('/claim/personal')
     fillPersonalFields(
       {
-        first_name: 'Dave',
-        middle_initial: 'R',
-        last_name: 'Smith',
         alternate_names: [{ first_name: 'Tasha', last_name: 'McGee' }],
       },
       {
@@ -47,12 +44,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     fillIdentityFields({
-      ssn: '111111111',
-      birthdate: {
-        month: '11',
-        day: '5',
-        year: '1982',
-      },
       drivers_license: 'D12345678912345',
       work_authorization: {
         authorized_to_work: true,

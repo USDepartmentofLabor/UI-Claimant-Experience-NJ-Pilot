@@ -1,18 +1,36 @@
+import { array, boolean, mixed, object } from 'yup'
 import { NextPage } from 'next'
+
 import { ClaimantNames } from 'components/form/ClaimantNames/ClaimantNames'
 import { ClaimantAddress } from 'components/form/ClaimantAddress/ClaimantAddress'
-
 import { yupName, yupAddress } from 'validations/yup/custom'
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { ADDRESS_SKELETON, PERSON_NAME_SKELETON } from 'constants/initialValues'
 import { Routes } from 'constants/routes'
-import { i18n_claimForm } from 'i18n/i18n'
 
-import { array, boolean, mixed, object } from 'yup'
+import { i18n_claimForm } from 'i18n/i18n'
+import { useTranslation } from 'next-i18next'
+import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
+import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
+import { useFormikContext } from 'formik'
+import { ClaimantInput } from 'types/claimantInput'
 
 const Personal: NextPage = () => {
+  const { t } = useTranslation('claimForm')
+  const { values } = useFormikContext<ClaimantInput>()
+
+  const legalName = `${values.claimant_name?.first_name} ${values.claimant_name?.middle_initial} ${values.claimant_name?.last_name}`
+
   return (
     <>
+      {legalName && (
+        <VerifiedFields>
+          <VerifiedField
+            label={t('personal.verified_legal_name.label')}
+            value={legalName}
+          />
+        </VerifiedFields>
+      )}
       <ClaimantNames />
       <ClaimantAddress />
     </>
@@ -20,7 +38,6 @@ const Personal: NextPage = () => {
 }
 
 const validationSchema = object().shape({
-  claimant_name: yupName,
   LOCAL_claimant_has_alternate_names: boolean().required(
     i18n_claimForm.t('name.claimant_has_alternate_names.required')
   ),

@@ -8,7 +8,8 @@ const claimForm = {
     complete: 'Complete',
   },
   personal: {
-    heading: 'Personal Information',
+    heading: 'Personal information',
+    verified_legal_name: { label: 'Legal name' },
   },
   demographics: {
     heading: 'Demographics',
@@ -508,6 +509,9 @@ const claimForm = {
         required:
           'Please indicate if we are able to send text messages to this number',
       },
+    },
+    email: {
+      label: 'Email address',
     },
     interpreter_required: {
       label: 'Do you need an interpreter or TTY to communicate with us?',

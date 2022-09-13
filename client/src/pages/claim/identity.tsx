@@ -1,30 +1,26 @@
-import { useState } from 'react'
-import { Checkbox as UswdsCheckbox } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
+
 import { PageDefinition } from 'constants/pages/pageDefinitions'
-import dayjs from 'dayjs'
 import TextField from 'components/form/fields/TextField/TextField'
-import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import TextAreaField from 'components/form/fields/TextAreaField/TextAreaField'
 import { useClearFields } from 'hooks/useClearFields'
 import { string, object, boolean } from 'yup'
-import { yupDate } from 'validations/yup/custom'
 import { i18n_claimForm } from 'i18n/i18n'
 import { authorizationTypeOptions } from 'constants/formOptions'
 import { useFormikContext } from 'formik'
 import { Routes } from 'constants/routes'
 import { NextPage } from 'next'
 import { ClaimantInput } from 'types/claimantInput'
-
-import styles from 'styles/pages/claim/identity.module.scss'
+import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
+import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
+import { formatStoredDateToDisplayDate } from 'utils/date/format'
 
 export const Identity: NextPage = () => {
   const { t } = useTranslation('claimForm')
-  const { values } = useFormikContext<ClaimantInput>()
+  const { values, initialValues } = useFormikContext<ClaimantInput>()
   const { clearField, clearFields } = useClearFields()
-  const [showSsn, setShowSsn] = useState(false)
 
   const showWorkAuthorizationFields = values.authorized_to_work
 
@@ -34,10 +30,6 @@ export const Identity: NextPage = () => {
 
   const showNotAllowedToWorkInUSExplanation =
     values.authorized_to_work === false
-
-  const handleShowSsn = () => {
-    setShowSsn(!showSsn)
-  }
 
   const handleAuthorizedToWorkChange = () => {
     if (!showWorkAuthorizationFields) {
@@ -56,26 +48,17 @@ export const Identity: NextPage = () => {
 
   return (
     <>
-      <div className="position-relative">
-        <TextField
-          label={t('ssn.label')}
-          name="ssn"
-          type={showSsn ? 'text' : 'password'}
-          hint={t('ssn.hint')}
-          fieldAddon={
-            <UswdsCheckbox
-              id="show-ssn"
-              name="LOCAL_showSsn"
-              label={t('ssn.showSsnLabel')}
-              checked={showSsn}
-              onChange={handleShowSsn}
-              tile
-              className={styles.showSsn}
-            />
-          }
-        />
-      </div>
-      <DateInputField legend={t('birthdate.label')} name="birthdate" />
+      <VerifiedFields>
+        {initialValues.ssn && (
+          <VerifiedField label={t('ssn.label')} value={initialValues.ssn} />
+        )}
+        {initialValues.birthdate && (
+          <VerifiedField
+            label={t('birthdate.label')}
+            value={formatStoredDateToDisplayDate(initialValues.birthdate)}
+          />
+        )}
+      </VerifiedFields>
       <TextField
         label={t('drivers_license_or_state_id_number.label')}
         name="drivers_license_or_state_id_number"
@@ -124,12 +107,12 @@ export const Identity: NextPage = () => {
 export default Identity
 const { t } = i18n_claimForm
 const pageSchema = object().shape({
-  ssn: string()
-    .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, t('ssn.errors.badFormat'))
-    .required(t('ssn.errors.required')),
-  birthdate: yupDate(t('birthdate.label'))
-    .max(dayjs(new Date()).format('YYYY-MM-DD'), t('birthdate.errors.maxDate'))
-    .required(t('birthdate.errors.required')),
+  // ssn: string()
+  //   .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, t('ssn.errors.badFormat'))
+  //   .required(t('ssn.errors.required')),
+  // birthdate: yupDate(t('birthdate.label'))
+  //   .max(dayjs(new Date()).format('YYYY-MM-DD'), t('birthdate.errors.maxDate'))
+  //   .required(t('birthdate.errors.required')),
   drivers_license_or_state_id_number: string().required(
     t('drivers_license_or_state_id_number.errors.required')
   ),

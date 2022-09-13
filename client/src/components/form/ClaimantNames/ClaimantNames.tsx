@@ -17,9 +17,6 @@ export const ClaimantNames = () => {
     <LiveMessenger>
       {({ announcePolite }) => (
         <>
-          <Fieldset legend={t('legal_name')}>
-            <Name name="claimant_name" />
-          </Fieldset>
           <FieldArray
             name="alternate_names"
             render={(arrayHelpers) => {

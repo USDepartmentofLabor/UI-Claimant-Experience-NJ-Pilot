@@ -5,7 +5,14 @@ import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
 
 describe('Identity Information Page', () => {
-  const initialValues = IdentityPageDefinition.initialValues
+  const ssn = '123-45-6789'
+  const birthdate = '1980-07-31'
+  const initialValues = {
+    ...IdentityPageDefinition.initialValues,
+    ssn,
+    birthdate,
+  }
+  const displayedBirthdate = 'July 31, 1980'
 
   it('renders properly', () => {
     render(
@@ -14,15 +21,19 @@ describe('Identity Information Page', () => {
       </Formik>
     )
 
-    const socialSecurityNumber = screen.queryByLabelText('ssn.label')
-    const dateOfBirthLabel = screen.getByText('birthdate.label')
-    const dateOfBirthFields = screen.getByTestId('birthdate.parent-div')
-    const dateOfBirthMonth =
-      within(dateOfBirthFields).queryByLabelText('date.month.label')
-    const dateOfBirthDay =
-      within(dateOfBirthFields).queryByLabelText('date.day.label')
-    const dateOfBirthYear =
-      within(dateOfBirthFields).queryByLabelText('date.year.label')
+    const verifiedFieldsSection = screen.getByTestId('verified-fields')
+
+    const verifiedSsnLabel = within(verifiedFieldsSection).getByText(
+      'ssn.label'
+    )
+    const verifiedSsnValue = within(verifiedFieldsSection).getByText(ssn)
+
+    const verifiedBirthdateLabel = within(verifiedFieldsSection).getByText(
+      'birthdate.label'
+    )
+    const verifiedBirthdateValue = within(verifiedFieldsSection).getByText(
+      displayedBirthdate
+    )
     const idNumber = screen.queryByLabelText(
       'drivers_license_or_state_id_number.label'
     )
@@ -36,34 +47,17 @@ describe('Identity Information Page', () => {
       authorizedToWorkInUSRadioGroup
     ).queryByLabelText('no')
 
-    expect(socialSecurityNumber).toBeInTheDocument()
+    expect(verifiedSsnLabel).toBeInTheDocument()
+    expect(verifiedSsnValue).toBeInTheDocument()
 
-    expect(dateOfBirthLabel).toBeInTheDocument()
-    expect(dateOfBirthMonth).toBeInTheDocument()
-
-    expect(dateOfBirthDay).toBeInTheDocument()
-
-    expect(dateOfBirthYear).toBeInTheDocument()
+    expect(verifiedBirthdateLabel).toBeInTheDocument()
+    expect(verifiedBirthdateValue).toBeInTheDocument()
 
     expect(idNumber).toBeInTheDocument()
     expect(yesAuthorizedToWorkInUS).toBeInTheDocument()
     expect(noAuthorizedToWorkInUS).toBeInTheDocument()
   })
-  it('can toggle ssn value visibility', async () => {
-    const user = userEvent.setup()
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Identity />
-      </Formik>
-    )
-    const socialSecurityNumber = screen.getByLabelText('ssn.label')
-    expect(socialSecurityNumber).toHaveAttribute('type', 'password')
-    const showSsn = screen.getByLabelText('ssn.showSsnLabel')
-    await user.click(showSsn)
-    await waitFor(() => {
-      expect(socialSecurityNumber).toHaveAttribute('type', 'text')
-    })
-  })
+
   it('hides and shows explanation field', async () => {
     const user = userEvent.setup()
     render(

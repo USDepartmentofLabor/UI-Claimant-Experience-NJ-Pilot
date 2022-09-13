@@ -2,12 +2,16 @@ import { render, screen, within } from '@testing-library/react'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { makeClaimFormRoute, Routes } from 'constants/routes'
 import userEvent from '@testing-library/user-event'
+import { useWhoAmI } from 'queries/whoami'
 
 const useRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => useRouter(),
 }))
 jest.mock('constants/pages/pageDefinitions')
+
+jest.mock('queries/whoami')
+const mockedUseWhoAmI = useWhoAmI as any
 
 describe('ClaimForm Layout', () => {
   const FirstPage = () => <div>First Page!</div>
@@ -18,6 +22,23 @@ describe('ClaimForm Layout', () => {
   const completeIndicatorStyle = 'usa-step-indicator__segment--complete'
 
   describe('first page', () => {
+    mockedUseWhoAmI.mockImplementation(() => ({
+      data: {
+        claimant_name: {
+          first_name: 'Dori',
+          last_name: 'Coxen',
+          middle_initial: 'D',
+        },
+        claimant_phone: { number: '555-555-4321' },
+        ssn: '900-99-9923',
+        email: 'dori@test.com',
+        birthdate: '1999-08-20',
+      },
+      isLoading: false,
+      error: null,
+      isError: false,
+      isSuccess: true,
+    }))
     it('renders properly with next page button', async () => {
       useRouter.mockImplementation(() => ({
         pathname: makeClaimFormRoute('first'),
@@ -290,5 +311,19 @@ describe('ClaimForm Layout', () => {
 
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
+  })
+  describe('when ClaimForm is loading', () => {
+    it('shows PageLoader while loading', () => {
+      mockedUseWhoAmI.mockImplementation(() => ({
+        data: {},
+        isLoading: true,
+      }))
+      render(
+        <ClaimForm>
+          <div>Any page</div>
+        </ClaimForm>
+      )
+      expect(screen.getByTestId('page-loading')).toBeInTheDocument()
+    })
   })
 })

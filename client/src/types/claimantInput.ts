@@ -78,9 +78,9 @@ type PaymentInput = {
 type PersonalInput = ClaimantNameInput & ClaimantAddressInput
 
 export type PersonNameInput = {
-  first_name: string
-  middle_name?: string
-  last_name: string
+  first_name?: string
+  middle_initial?: string
+  last_name?: string
   suffix?: SuffixOption
 }
 
@@ -121,8 +121,9 @@ type EducationAndTrainingInput = Partial<{
 }>
 
 export type WhoAmI = {
-  first_name: string
-  last_name: string
+  firstName: string
+  lastName: string
+  middleInitial?: string
   birthdate: string
   ssn: string
   email: string

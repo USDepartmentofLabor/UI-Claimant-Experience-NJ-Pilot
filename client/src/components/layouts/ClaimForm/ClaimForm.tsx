@@ -16,10 +16,12 @@ import { SubmitButton } from 'components/layouts/ClaimForm/SubmitButton/SubmitBu
 import { PreviousPageButton } from 'components/layouts/ClaimForm/PreviousPageButton/PreviousPageButton'
 import { SaveAndExitLink } from 'components/layouts/ClaimForm/SaveAndExitLink/SaveAndExitLink'
 import { ClaimFormPageHeading } from './ClaimFormHeading/ClaimFormPageHeading'
+import PageLoader from 'components/loaders/PageLoader'
 
 import styles from './ClaimForm.module.scss'
 import Head from 'next/head'
 import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
+import { useWhoAmI } from 'queries/whoami'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -59,16 +61,45 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const step = currentPageIndex + 1
   const totalSteps = pageDefinitions.length
 
+  const { data: whoAmI, isLoading: isLoadingWhoAmI } = useWhoAmI()
+
   const initialValues = useMemo(
     // TODO merge with previously saved values for all pages (When API and persistence are added)
-    () =>
-      pageDefinitions
+    () => {
+      let initialWhoAmIValues = {}
+      if (whoAmI) {
+        const {
+          firstName,
+          lastName,
+          middleInitial,
+          email,
+          ssn,
+          birthdate,
+          phone,
+        } = whoAmI
+        initialWhoAmIValues = {
+          claimant_name: {
+            first_name: firstName,
+            last_name: lastName,
+            middle_initial: middleInitial,
+          },
+          email,
+          ssn,
+          birthdate,
+          claimant_phone: {
+            number: phone,
+          },
+        }
+      }
+      const initialDefinitionValues = pageDefinitions
         .flatMap((pageDefinition) => pageDefinition.initialValues)
         .reduce((previousValue, currentValue) => ({
           ...previousValue,
           ...currentValue,
-        })),
-    [pageDefinitions]
+        }))
+      return { ...initialDefinitionValues, ...initialWhoAmIValues }
+    },
+    [pageDefinitions, whoAmI]
   )
 
   const validationSchema = currentPageDefinition.validationSchema
@@ -104,7 +135,9 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
     helpers.setSubmitting(false)
   }
 
-  return (
+  return isLoadingWhoAmI ? (
+    <PageLoader />
+  ) : (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}

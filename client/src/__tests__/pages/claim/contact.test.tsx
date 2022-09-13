@@ -1,4 +1,4 @@
-import { screen, render } from '@testing-library/react'
+import { screen, render, within } from '@testing-library/react'
 import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import Contact from 'pages/claim/contact'
@@ -6,7 +6,8 @@ import userEvent from '@testing-library/user-event'
 
 describe('Contact page', () => {
   const initialValues = {
-    claimant_phone: { number: '', sms: undefined },
+    email: 'boy_who_lived@hogwarts.com',
+    claimant_phone: { number: '2028675309', sms: undefined },
     alternate_phone: { number: '', sms: undefined },
     interpreter_required: undefined,
     preferred_language: undefined,
@@ -20,28 +21,28 @@ describe('Contact page', () => {
       </Formik>
     )
 
-    // const verifiedFieldsSection = screen.getByTestId("verified-fields");
-    // const verifiedFields = within(verifiedFieldsSection).getAllByRole(
-    //   "listitem"
-    // );
-    // const verifiedEmailAddress = within(verifiedFieldsSection).getByText(
-    //   "email"
-    // );
-    // const verifiedEmailAddressValue = within(verifiedFieldsSection).getByText(
-    //   "test@test.com"
-    // );
-    // const verifiedPhoneNumber = within(verifiedFieldsSection).getByText(
-    //   "phone"
-    // );
-    // const verifiedPhoneNumberValue = within(verifiedFieldsSection).getByText(
-    //   "(123)-456-7890"
-    // );
-    // expect(verifiedFieldsSection).toBeInTheDocument();
-    // expect(verifiedFields).toHaveLength(2);
-    // expect(verifiedEmailAddress).toBeInTheDocument();
-    // expect(verifiedEmailAddressValue).toBeInTheDocument();
-    // expect(verifiedPhoneNumber).toBeInTheDocument();
-    // expect(verifiedPhoneNumberValue).toBeInTheDocument();
+    const verifiedFieldsSection = screen.getByTestId('verified-fields')
+    const verifiedFields = within(verifiedFieldsSection).getAllByRole(
+      'listitem'
+    )
+    const verifiedEmailAddress = within(verifiedFieldsSection).getByText(
+      'email.label'
+    )
+    const verifiedEmailAddressValue = within(verifiedFieldsSection).getByText(
+      'boy_who_lived@hogwarts.com'
+    )
+    const verifiedPhoneNumber = within(verifiedFieldsSection).getByText(
+      'claimant_phone.label'
+    )
+    const verifiedPhoneNumberValue = within(verifiedFieldsSection).getByText(
+      '202-867-5309'
+    )
+    expect(verifiedFieldsSection).toBeInTheDocument()
+    expect(verifiedFields).toHaveLength(2)
+    expect(verifiedEmailAddress).toBeInTheDocument()
+    expect(verifiedEmailAddressValue).toBeInTheDocument()
+    expect(verifiedPhoneNumber).toBeInTheDocument()
+    expect(verifiedPhoneNumberValue).toBeInTheDocument()
 
     const claimantPhone = screen.getByRole('textbox', {
       name: 'claimant_phone.label',
@@ -133,5 +134,18 @@ describe('Contact page', () => {
 
     await user.click(languageOther)
     expect(screen.queryByLabelText('other_language')).toHaveTextContent('')
+  })
+
+  it('Autofills the phone number value', async () => {
+    render(
+      <Formik initialValues={initialValues} onSubmit={noop}>
+        <Contact />
+      </Formik>
+    )
+    const phone = screen.getByRole('textbox', {
+      name: 'claimant_phone.label',
+    })
+
+    await expect(phone).toHaveValue('2028675309')
   })
 })

@@ -7,7 +7,6 @@ import { noop } from 'helpers/noop/noop'
 import { LiveAnnouncer } from 'react-aria-live'
 import { PersonalPageDefinition } from 'pages/claim/personal'
 
-const CLAIMANT_NAME = 'claimant_name'
 const ALTERNATE_NAMES = 'alternate_names'
 
 describe('ClaimantNames component', () => {
@@ -19,11 +18,6 @@ describe('ClaimantNames component', () => {
       name: 'alternate_name',
     })
 
-  // re-useable getters
-  const getClaimantNameFieldset = () =>
-    screen.getByRole('group', {
-      name: 'legal_name',
-    })
   const getAlternateNameFieldset = () =>
     screen.getByRole('group', {
       name: 'alternate_name',
@@ -51,33 +45,7 @@ describe('ClaimantNames component', () => {
         </Formik>
       </LiveAnnouncer>
     )
-    const claimantName = getClaimantNameFieldset()
-    const firstNameField = getFirstNameField(claimantName)
-    const middleInitialField = getMiddleNameField(claimantName)
-    const lastNameField = getLastNameField(claimantName)
-
     const alternateName = queryForAlternateNameFieldset()
-
-    expect(firstNameField).toHaveValue('')
-    expect(firstNameField).toHaveAttribute('id', `${CLAIMANT_NAME}.first_name`)
-    expect(firstNameField).toHaveAttribute(
-      'name',
-      `${CLAIMANT_NAME}.first_name`
-    )
-
-    expect(middleInitialField).toHaveValue('')
-    expect(middleInitialField).toHaveAttribute(
-      'id',
-      `${CLAIMANT_NAME}.middle_initial`
-    )
-    expect(middleInitialField).toHaveAttribute(
-      'name',
-      `${CLAIMANT_NAME}.middle_initial`
-    )
-
-    expect(lastNameField).toHaveValue('')
-    expect(lastNameField).toHaveAttribute('id', `${CLAIMANT_NAME}.last_name`)
-    expect(lastNameField).toHaveAttribute('name', `${CLAIMANT_NAME}.last_name`)
 
     expect(alternateName).not.toBeInTheDocument()
   })
