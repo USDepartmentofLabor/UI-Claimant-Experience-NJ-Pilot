@@ -20,7 +20,7 @@ const customJestConfig: Config.InitialOptions = {
     '!./src/i18n/**',
     '!**/*.stories.*',
     '!./src/pages/_app.tsx',
-    '!src/constants/**',
+    '!./src/constants/**',
   ],
   coverageThreshold: {
     global: {
