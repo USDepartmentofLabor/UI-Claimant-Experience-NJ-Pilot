@@ -17,3 +17,7 @@ server:
 spring:
   liquibase:
     change-log: "classpath:/db/changelog/changelog.yaml"
+
+aws:
+  s3:
+    claims-bucket: ${S3_CLAIMS_BUCKET:dol-ui-claims}

@@ -8,3 +8,10 @@ spring:
 logging:
   level:
     nj.lwd.ui: DEBUG
+
+aws:
+  accessKeyId: test
+  secretKey: test
+  region: ${AWS_REGION:us-east-1}
+  s3:
+    endpoint-url: ${AWS_S3_ENDPOINT_URL:http://localhost:4566}

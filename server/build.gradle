@@ -39,6 +39,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // AWS
+    implementation platform('software.amazon.awssdk:bom:2.17.270')
+    implementation 'software.amazon.awssdk:s3'
+
+    // Swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

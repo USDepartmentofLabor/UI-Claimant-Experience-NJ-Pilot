@@ -8,6 +8,7 @@ import {
 } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
+import { useSavePartialClaim } from 'queries/useSavePartialClaim'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { ClaimantInput } from 'types/claimantInput'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
@@ -31,6 +32,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const router = useRouter()
   const { t } = useTranslation('claimForm')
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const savePartialClaim = useSavePartialClaim()
 
   const currentPath = router.pathname
   const currentPageDefinition = pageDefinitions.find(
@@ -109,17 +111,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   }
 
   const saveFormValues = (values: ClaimantInput) => {
-    // TODO: The following simulates a save. Replace with API save
-    console.log('saving...', values)
-    new Promise<ClaimantInput>((resolve) =>
-      setTimeout(() => {
-        resolve(values)
-      }, 1000)
-    ).then((savedValues) => {
-      // TODO: Let the user know, the claim was saved
-      //       Note: This may finish after the redirect})
-      console.log('...saved!', { status: 200, ...savedValues })
-    })
+    savePartialClaim.mutate(values)
   }
 
   const handleSaveAndExit = async (values: ClaimantInput) => {
@@ -182,11 +174,14 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
           if (isValid && nextPageDefinition) {
+            saveFormValues(values)
+
             router.push(nextPageDefinition.path).then(() => {
               setFormikState((previousState) => ({
                 ...previousState,
                 submitCount: 0,
               }))
+
               focusHeading()
             })
           } else {
@@ -197,9 +192,10 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
           }
         }
 
-        const handleClickComplete: MouseEventHandler<
-          HTMLButtonElement
-        > = () => {
+        const handleClickComplete: MouseEventHandler<HTMLButtonElement> = (
+          e
+        ) => {
+          e.preventDefault()
           if (isValid) {
             submitForm().then(async () => {
               await router.push(Routes.HOME)

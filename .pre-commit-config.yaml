@@ -62,7 +62,7 @@ repos:
         pass_filenames: false
       - id: server-spotless
         name: server-spotless
-        entry: make server-spotless
+        entry: bash -c 'cd server && ./gradlew :spotlessApply'
         language: system
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 0.6.0

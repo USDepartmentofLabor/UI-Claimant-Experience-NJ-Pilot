@@ -3,6 +3,7 @@ import { ClaimFormSideNav } from './ClaimFormSideNav'
 import { makeClaimFormRoute } from 'constants/routes'
 import { noop } from 'helpers/noop/noop'
 import { Formik } from 'formik'
+import userEvent from '@testing-library/user-event'
 
 jest.mock('constants/pages/pageDefinitions')
 
@@ -38,5 +39,25 @@ describe('ClaimFormSideNav', () => {
         </Formik>
       )
     ).toThrow('Page not found')
+  })
+
+  it('pushes the link in the page definition and formik state when a link is pressed', async () => {
+    const user = userEvent.setup()
+    const mockPush = jest.fn(async () => true)
+    useRouter.mockImplementation(() => ({
+      pathname: makeClaimFormRoute('middle'),
+      push: mockPush,
+    }))
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <ClaimFormSideNav />
+      </Formik>
+    )
+
+    const firstPage = screen.getByText('First page')
+
+    await user.click(firstPage)
+
+    expect(mockPush).toHaveBeenCalledTimes(1)
   })
 })

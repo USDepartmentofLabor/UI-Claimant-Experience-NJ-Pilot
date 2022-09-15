@@ -86,6 +86,10 @@
         {
           "valueFrom": "/dol-ui-claimant-intake-dev/database-password",
           "name": "DB_PASSWORD"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-dev/s3-claims-bucket",
+          "name": "S3_CLAIMS_BUCKET"
         }
       ],
       "dockerSecurityOptions": null,

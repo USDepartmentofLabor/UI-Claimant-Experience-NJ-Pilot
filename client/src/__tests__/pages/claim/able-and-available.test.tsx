@@ -235,7 +235,7 @@ describe('AbleAndAvailableStatus component', () => {
       expect(recoveryDayAfterClear).toHaveValue('')
       expect(recoveryYearAfterClear).toHaveValue('')
       expect(contactedEmployer).not.toBeChecked()
-    })
+    }, 10000)
   })
 
   describe('Validation Schema', () => {

@@ -15,6 +15,9 @@ lint: ## Run lint check
 dev-up: ## Run all docker services locally
 	docker compose up --build --force-recreate --remove-orphans
 
+services-up: ## run supporting services locally (database, localstack)
+	docker compose up db localstack --build  --force-recreate --remove-orphans -d
+
 dev-db-up: ## Run the database locally in docker
 	docker compose up db
 

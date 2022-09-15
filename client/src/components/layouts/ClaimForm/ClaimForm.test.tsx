@@ -10,6 +10,18 @@ jest.mock('next/router', () => ({
 }))
 jest.mock('constants/pages/pageDefinitions')
 
+const useSavePartialClaim = jest.fn()
+jest.mock('queries/useSavePartialClaim', () => ({
+  useSavePartialClaim: () => useSavePartialClaim(),
+}))
+const mutate = jest.fn()
+useSavePartialClaim.mockImplementation(() => ({
+  mutate: mutate,
+}))
+
+beforeEach(() => {
+  mutate.mockClear()
+})
 jest.mock('queries/whoami')
 const mockedUseWhoAmI = useWhoAmI as any
 
@@ -63,6 +75,7 @@ describe('ClaimForm Layout', () => {
       expect(saveAndExitLink).toBeInTheDocument()
       expect(claimFormPageHeading).toBeInTheDocument()
 
+      expect(mutate).not.toHaveBeenCalled()
       const steps = within(screen.getByTestId('step-indicator')).getAllByRole(
         'listitem'
       )
@@ -194,6 +207,7 @@ describe('ClaimForm Layout', () => {
 
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith(firstPageRoute)
+      expect(mutate).toHaveBeenCalledTimes(1)
       expect(claimFormPageHeading).toHaveFocus()
     })
   })
@@ -257,6 +271,7 @@ describe('ClaimForm Layout', () => {
 
       await user.click(completeButton)
 
+      expect(mutate).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
     })
@@ -309,6 +324,7 @@ describe('ClaimForm Layout', () => {
 
     await user.click(saveAndExitLink)
 
+    expect(mutate).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
   })

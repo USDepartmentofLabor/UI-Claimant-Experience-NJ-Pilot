@@ -191,6 +191,14 @@ To run the application locally in docker, use:
 make dev-up
 ```
 
+Or, if you prefer to run the application(s) outside of docker (in dev-mode for example) alongside dockerized services, use:
+
+```sh
+make services-up
+```
+
+Then, run the relevant application(s) individually.
+
 To shut the docker services down, use:
 
 ```sh
@@ -249,7 +257,10 @@ with it by including the `--endpoint-url=<localstack-url>` flag:
 aws --endpoint-url=http://localhost:4566 s3 ls
 
 # to list the objects within a particular bucket, for example:
-aws --endpoint-url=http://localhost:4566 s3 ls s3://dol-ui-claims
+aws s3api list-objects-v2 --endpoint-url http://localhost:4566 --bucket dol-ui-claims
+
+# to download an object from a particular bucket, for example:
+aws s3api get-object --endpoint-url http://localhost:4566 --bucket dol-ui-claims --key "YOUR_OBJECT_KEY_HERE" "NAME_OF_OUTPUT_FILE"
 ```
 
 ## Makefile
