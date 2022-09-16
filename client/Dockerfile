@@ -14,6 +14,8 @@ COPY src ./src
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG NEXT_PUBLIC_SERVER_BASE_URL
+
 RUN yarn build
 
 # Pin sha version of gcr.io/distroless/nodejs-debian11:16

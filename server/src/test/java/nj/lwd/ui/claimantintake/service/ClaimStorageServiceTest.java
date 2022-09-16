@@ -1,8 +1,13 @@
 package nj.lwd.ui.claimantintake.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,6 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ClaimStorageServiceTest {
 
     private static final String CLAIMS_BUCKET = "dol-ui-claims";
+    private static final String CLAIMS_BUCKET_KMS_KEY = "localdev-mock-kms-key";
 
     @Mock private ClaimantRepository claimantRepository;
     @Mock private ClaimRepository claimRepository;
@@ -36,7 +42,11 @@ class ClaimStorageServiceTest {
     void beforeEach() {
         claimStorageService =
                 new ClaimStorageService(
-                        CLAIMS_BUCKET, s3Service, claimRepository, claimantRepository);
+                        CLAIMS_BUCKET,
+                        CLAIMS_BUCKET_KMS_KEY,
+                        s3Service,
+                        claimRepository,
+                        claimantRepository);
     }
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -88,7 +98,8 @@ class ClaimStorageServiceTest {
                                         event.getCategory()
                                                 .equals(ClaimEventCategory.INITIATED_SAVE)));
 
-        verify(s3Service, times(1)).upload(CLAIMS_BUCKET, expectedS3Key, validClaim);
+        verify(s3Service, times(1))
+                .upload(CLAIMS_BUCKET, expectedS3Key, validClaim, CLAIMS_BUCKET_KMS_KEY);
 
         verify(claim, times(1))
                 .addEvent(argThat((event) -> event.getCategory().equals(ClaimEventCategory.SAVED)));
@@ -134,7 +145,8 @@ class ClaimStorageServiceTest {
                                         event.getCategory()
                                                 .equals(ClaimEventCategory.INITIATED_SAVE)));
 
-        verify(s3Service, times(1)).upload(CLAIMS_BUCKET, expectedS3Key, validClaim);
+        verify(s3Service, times(1))
+                .upload(CLAIMS_BUCKET, expectedS3Key, validClaim, CLAIMS_BUCKET_KMS_KEY);
 
         verify(claim, times(1))
                 .addEvent(argThat((event) -> event.getCategory().equals(ClaimEventCategory.SAVED)));

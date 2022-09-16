@@ -22,6 +22,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.ServerSideEncryption;
 
 @Service
 public class S3Service {
@@ -57,9 +58,16 @@ public class S3Service {
         this.s3Client = builder.build();
     }
 
-    public void upload(String bucket, String key, Object object)
+    public void upload(String bucket, String key, Object object, String kmsKey)
             throws AwsServiceException, SdkClientException, JsonProcessingException {
-        var request = PutObjectRequest.builder().bucket(bucket).key(key).build();
+        var request =
+                PutObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .bucketKeyEnabled(true)
+                        .serverSideEncryption(ServerSideEncryption.AWS_KMS)
+                        .ssekmsKeyId(kmsKey)
+                        .build();
         var requestBody = buildRequestBody(object);
 
         var response = s3Client.putObject(request, requestBody);

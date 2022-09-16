@@ -23,6 +23,7 @@ public class ClaimStorageService {
     private final Logger logger = LoggerFactory.getLogger(ClaimStorageService.class);
 
     private final String claimsBucket;
+    private final String claimsBucketKmsKey;
 
     private final S3Service s3Service;
     private final ClaimRepository claimRepository;
@@ -31,10 +32,12 @@ public class ClaimStorageService {
     @Autowired
     ClaimStorageService(
             @Value("${aws.s3.claims-bucket}") String claimsBucket,
+            @Value("${aws.s3.claims-bucket-kms-key}") String claimsBucketKmsKey,
             S3Service s3Service,
             ClaimRepository claimRepository,
             ClaimantRepository claimantRepository) {
         this.claimsBucket = claimsBucket;
+        this.claimsBucketKmsKey = claimsBucketKmsKey;
         this.s3Service = s3Service;
         this.claimRepository = claimRepository;
         this.claimantRepository = claimantRepository;
@@ -77,7 +80,7 @@ public class ClaimStorageService {
 
         try {
             String s3Key = "%s/%s.json".formatted(claimant.getId(), claim.getId());
-            s3Service.upload(claimsBucket, s3Key, claimPayload);
+            s3Service.upload(claimsBucket, s3Key, claimPayload, this.claimsBucketKmsKey);
 
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
 

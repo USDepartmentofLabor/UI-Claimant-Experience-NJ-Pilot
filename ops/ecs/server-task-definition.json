@@ -90,6 +90,10 @@
         {
           "valueFrom": "/dol-ui-claimant-intake-dev/s3-claims-bucket",
           "name": "S3_CLAIMS_BUCKET"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-dev/s3-claims-bucket-kms-key",
+          "name": "S3_CLAIMS_BUCKET_KMS_KEY"
         }
       ],
       "dockerSecurityOptions": null,

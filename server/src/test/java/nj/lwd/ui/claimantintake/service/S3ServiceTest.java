@@ -1,7 +1,12 @@
 package nj.lwd.ui.claimantintake.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.net.URL;
@@ -49,7 +54,7 @@ class S3ServiceTest {
                 .thenReturn(new URL("http://url-to-uploaded-object"));
 
         // when: upload is called
-        s3Service.upload("some-bucket", "my-key", Map.of("some-key", "some-value"));
+        s3Service.upload("some-bucket", "my-key", Map.of("some-key", "some-value"), "some-kms-key");
 
         // then: the s3 client makes a put object requests
         verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));

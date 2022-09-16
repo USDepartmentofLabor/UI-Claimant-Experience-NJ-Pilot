@@ -47,7 +47,9 @@ jobs:
           fi
           BUILD_TIME=$(date '+%Y%m%d%H%M%S')
           IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
-          docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" client
+          docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+            --build-arg NEXT_PUBLIC_SERVER_BASE_URL=https://claimant-intake-dev1.dol.nj.gov \
+            client
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
