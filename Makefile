@@ -116,6 +116,9 @@ server-rollback: server-deps ## Roll back a given number of change sets. Use num
 server-rollback-dry-run: server-deps ## Print SQL that would be executed in a `server-rollback`
 	cd server && ./gradlew liquibaseRollbackCountSql -PliquibaseCommandValue=$(number_of_change_sets)
 
+server-migration-starter-file: ## Create a starter file for raw SQL migration
+	./scripts/starter-migration-file
+
 server-clean: ## cleans the build output and incremental build "Up-to-date" checks
 	cd server && ./gradlew clean
 
