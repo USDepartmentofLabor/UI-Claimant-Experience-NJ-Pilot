@@ -9,7 +9,6 @@ import {
   DisabilityTypeOption,
   AuthorizationTypeOption,
   EducationLevelOption,
-  EnrollmentOption,
   SuffixOption,
 } from 'constants/formOptions'
 
@@ -117,7 +116,7 @@ type IdentityInput = {
 
 type EducationAndTrainingInput = Partial<{
   attending_college_or_job_training: boolean
-  enrollment: EnrollmentOption
+  enrollment: boolean
 }>
 
 export type WhoAmI = {

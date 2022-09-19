@@ -275,8 +275,7 @@
     },
     "enrollment": {
       "description": "How the claimant enrolled in training",
-      "type": "string",
-      "enum": ["self_enrolled", "career_center", "union"]
+      "type": "boolean"
     },
     "required_to_seek_work_through_hiring_hall": {
       "description": "If the claimant is required to seek work through a union hiring hall",

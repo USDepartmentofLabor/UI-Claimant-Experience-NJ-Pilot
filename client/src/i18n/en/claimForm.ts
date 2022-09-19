@@ -452,13 +452,9 @@ const claimForm = {
         'If you are in union-required training or paid job training, choose "No."',
     },
     enrollment: {
-      label: 'How did you enroll?',
-      options: {
-        self_enrolled: 'Self-enrolled',
-        career_center:
-          'Through a Career Center such as Department of Labor, Vocational Rehabilitation, etc.',
-        union: 'Through a union hiring hall',
-      },
+      label: 'Did you go through a union hiring hall or Career Center?',
+      help_text:
+        'Career Centers include Vocational Rehabilitation and other New Jersey career services.',
       error: {
         required: 'Select how you enrolled',
       },
