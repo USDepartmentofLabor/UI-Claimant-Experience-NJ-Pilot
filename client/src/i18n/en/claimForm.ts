@@ -371,7 +371,7 @@ const claimForm = {
           'A medical provider certifies you are unable to work due to a physical/mental health condition, pregnancy, or childbirth recovery',
         tdi: 'You are receiving or have applied for temporary disability payments',
         workers_comp:
-          'You are receiving or have applied for workers’ compensation payments ',
+          'You are receiving or have applied for workers’ compensation payments',
       },
     },
     can_begin_work_immediately: {
