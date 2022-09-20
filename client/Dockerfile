@@ -19,7 +19,7 @@ ARG NEXT_PUBLIC_SERVER_BASE_URL
 RUN yarn build
 
 # Pin sha version of gcr.io/distroless/nodejs-debian11:16
-FROM gcr.io/distroless/nodejs@sha256:f70e2ad790cd0df303c315c83fcb26dbd940f0ff50b9a9a84a3150eec8c7f6f6 AS runner
+FROM gcr.io/distroless/nodejs-debian11@sha256:96b8c823f1ba80024c04213d237c3fdded1248c3cb5f92ad1cc1681fde5360bc AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

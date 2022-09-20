@@ -65,6 +65,9 @@ client-test-watch: ## run Jest unit/integration tests and watch
 client-build: client-deps ## Build the client
 	cd client && yarn build
 
+client-image-build: ## Build client docker image
+	docker image build -t dol-ui-client:latest client
+
 client-dev: ## Runs the Next/React development server (with automatic reloading)
 	cd client && yarn dev
 
@@ -95,6 +98,9 @@ server-check: ## runs the gradle `check` lifecycle which includes unit tests and
 server-build: ## installs dependencies, compiles code, and runs tests for server
 	cd server && ./gradlew build
 
+server-image-build: ## Build server docker image
+	docker image build -t dol-ui-server:latest server
+
 server-bootRun: ## Runs the SpringBoot development server
 	cd server && ./gradlew bootRun --args='--spring.profiles.active=local'
 
@@ -121,5 +127,11 @@ server-migration-starter-file: ## Create a starter file for raw SQL migration
 
 server-clean: ## cleans the build output and incremental build "Up-to-date" checks
 	cd server && ./gradlew clean
+
+trivy-scan: ## Run trivy vulnerability scan on an image
+	trivy image --ignore-unfixed $(image)
+
+grype-scan: ## Run grype vulnerability scan on an image
+	grype $(image)
 
 all-deps: dev-deps client-deps e2e-deps server-deps ## Runs all required dependencies for running the application

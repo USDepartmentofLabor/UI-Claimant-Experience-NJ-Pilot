@@ -12,7 +12,7 @@ COPY ./src ./src
 RUN ./gradlew assemble
 
 # Pin sha version of java17-debian11:nonroot
-FROM gcr.io/distroless/java17-debian11@sha256:45e1a255d67d80cc3484c3cf4ff8b8e65d3b28bbda1c1d293874de5c79ee1075
+FROM gcr.io/distroless/java17-debian11@sha256:4ae200a8d1743d5391d9b6fa82111eda6cd3e750194da060b7d303a6ea5c6f5d
 
 WORKDIR /app
 
