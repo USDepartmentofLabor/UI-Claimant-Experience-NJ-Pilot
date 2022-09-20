@@ -2,14 +2,14 @@ import { BooleanRadio } from 'components/form/fields/BooleanRadio/BooleanRadio'
 import { Fieldset } from '@trussworks/react-uswds'
 import classnames from 'classnames'
 import { useShowErrors } from 'hooks/useShowErrors'
-import { ChangeEventHandler, PropsWithChildren } from 'react'
+import { ChangeEventHandler, PropsWithChildren, ReactNode } from 'react'
 import styles from './YesNoQuestion.module.scss'
 
 interface IYesNoQuestionProps {
   id?: string
   name: string
   question: string
-  hint?: string
+  hint?: ReactNode
   yesLabel?: string
   noLabel?: string
   onChange?: ChangeEventHandler<HTMLInputElement>

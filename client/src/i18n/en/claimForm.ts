@@ -454,7 +454,7 @@ const claimForm = {
     enrollment: {
       label: 'Did you go through a union hiring hall or Career Center?',
       help_text:
-        'Career Centers include Vocational Rehabilitation and other New Jersey career services.',
+        'Career Centers include Vocational Rehabilitation and other <0>New Jersey career services</0>.',
       error: {
         required: 'Select how you enrolled',
       },

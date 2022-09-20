@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Trans } from 'next-i18next'
 import { useFormikContext } from 'formik'
 import * as yup from 'yup'
 import { NextPage } from 'next'
@@ -9,6 +10,7 @@ import { useClearFields } from 'hooks/useClearFields'
 import { Routes } from 'constants/routes'
 import { i18n_claimForm } from 'i18n/i18n'
 import { ClaimantInput } from 'types/claimantInput'
+import { Link } from '@trussworks/react-uswds'
 
 const EducationAndTraining: NextPage = () => {
   const { t } = useTranslation('claimForm')
@@ -33,7 +35,16 @@ const EducationAndTraining: NextPage = () => {
         <YesNoQuestion
           question={t('education_and_training.enrollment.label')}
           name="enrollment"
-          hint={t('education_and_training.enrollment.help_text')}
+          hint={
+            <Trans t={t} i18nKey="education_and_training.enrollment.help_text">
+              <Link
+                variant="external"
+                href={'https://www.nj.gov/labor/career-services/'}
+              >
+                New Jersey career services
+              </Link>
+            </Trans>
+          }
         />
       )}
     </>
