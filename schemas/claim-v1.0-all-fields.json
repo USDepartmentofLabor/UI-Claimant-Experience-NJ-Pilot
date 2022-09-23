@@ -721,6 +721,11 @@
     }
   },
   "properties": {
+    "is_proofed_with_SSA_MVC": {
+      "description": "The social security number and id/license number have been verified",
+      "type": "boolean",
+      "default": false
+    },
     "claimant_name": {
       "$ref": "#/definitions/person_name"
     },
@@ -1000,6 +1005,7 @@
     }
   },
   "required": [
+    "is_proofed_with_SSA_MVC",
     "claimant_name",
     "residence_address",
     "mailing_address",
