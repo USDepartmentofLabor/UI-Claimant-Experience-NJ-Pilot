@@ -1,0 +1,1226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unemployment.nj.gov/schemas/claim-v1.0.json",
+  "title": "UI Claimant Intake Form",
+  "description": "NJ unemployment insurance claimant application form schema",
+  "type": "object",
+  "definitions": {
+    "person_name": {
+      "$id": "/definitions/person_name",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/person_name",
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "maxLength": 28
+        },
+        "last_name": {
+          "type": "string",
+          "maxLength": 28
+        },
+        "middle_initial": {
+          "type": "string",
+          "maxLength": 1
+        },
+        "suffix": {
+          "type": "string",
+          "enum": ["I", "II", "III", "IV", "junior", "senior"]
+        }
+      },
+      "required": ["first_name", "last_name"]
+    },
+    "address": {
+      "$id": "/definitions/address",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/address",
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "state": {
+          "$ref": "#/definitions/state"
+        },
+        "zipcode": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^\\d{5}(-\\d{4})?$"
+        }
+      },
+      "required": ["address", "city", "state", "zipcode"]
+    },
+    "addressWithoutPOBox": {
+      "$id": "/definitions/addressWithoutPOBox",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/addressWithoutPOBox",
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "/^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$/i"
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "state": {
+          "$ref": "#/definitions/state"
+        },
+        "zipcode": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^\\d{5}(-\\d{4})?$"
+        }
+      },
+      "required": ["address", "city", "state", "zipcode"]
+    },
+    "address_without_street": {
+      "$id": "/definitions/address",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/address",
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "state": {
+          "$ref": "#/definitions/state"
+        },
+        "zipcode": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^\\d{5}(-\\d{4})?$"
+        }
+      },
+      "required": ["address", "city", "state", "zipcode"]
+    },
+    "phone": {
+      "$id": "/definitions/phone",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/phone",
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 32,
+          "comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
+          "pattern": "^[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}$"
+        },
+        "sms": {
+          "type": "boolean"
+        }
+      },
+      "required": ["number"]
+    },
+    "phoneWithSMS": {
+      "$id": "/definitions/phoneWithSMS",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/phoneWithSMS",
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 32,
+          "comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
+          "pattern": "^[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}$"
+        },
+        "sms": {
+          "type": "boolean"
+        }
+      },
+      "required": ["number", "sms"]
+    },
+    "state": {
+      "$id": "/definitions/state",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/state",
+      "type": "string",
+      "enum": [
+        "AK",
+        "AL",
+        "AR",
+        "AS",
+        "AZ",
+        "CA",
+        "CO",
+        "CT",
+        "DC",
+        "DE",
+        "FL",
+        "FM",
+        "GA",
+        "GU",
+        "HI",
+        "IA",
+        "ID",
+        "IL",
+        "IN",
+        "KS",
+        "KY",
+        "LA",
+        "MA",
+        "MD",
+        "ME",
+        "MH",
+        "MI",
+        "MN",
+        "MO",
+        "MP",
+        "MS",
+        "MT",
+        "NC",
+        "ND",
+        "NE",
+        "NH",
+        "NJ",
+        "NM",
+        "NV",
+        "NY",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "PR",
+        "PW",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "TX",
+        "UT",
+        "VA",
+        "VI",
+        "VT",
+        "WA",
+        "WI",
+        "WV",
+        "WY"
+      ]
+    },
+    "canadian_province": {
+      "$id": "/definitions/canadian_province",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/canadian_province",
+      "type": "string",
+      "enum": [
+        "Alberta",
+        "British Columbia",
+        "Manitoba",
+        "New Brunswick",
+        "Newfoundland and Labrador",
+        "Nova Scotia",
+        "Ontario",
+        "Prince Edward Island",
+        "Quebec",
+        "Saskatchewan"
+      ]
+    },
+    "state_or_ca_province": {
+      "description": "Any of US states, territories, or Canadian provinces",
+      "type": "string",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/state"
+        },
+        {
+          "$ref": "#/definitions/canadian_province"
+        }
+      ]
+    },
+    "employer": {
+      "$id": "/definitions/employer",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/employer",
+      "type": "object",
+      "properties": {
+        "is_imported": {
+          "description": "This employer was imported through API",
+          "type": "boolean",
+          "default": false
+        },
+        "worked_for_imported_employee_in_last_18mo": {
+          "description": "Claimant confirmed that they worked for this imported employee in the last 18 months",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "is_imported": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["worked_for_imported_employee_in_last_18mo"]
+          }
+        },
+        "employer_name": {
+          "type": "string",
+          "$comment": "The following conditional may not work since federal_work_in_last_18mo and was_federal are outside of the employer definition. This should be revisited when pulled into the active schema",
+          "if": {
+            "properties": {
+              "federal_work_in_last_18mo": {
+                "type": "boolean",
+                "const": false
+              },
+              "was_federal": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["employer_name"]
+          }
+        },
+        "was_federal": {
+          "description": "This was a federal employer",
+          "type": "boolean"
+        },
+        "has_copy_of_sf8": {
+          "description": "Claimant has a copy of their SF8",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "was_federal": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["has_copy_of_sf8"]
+          }
+        },
+        "employer_agency_code": {
+          "description": "Federal employee agency code",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "was_federal": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["employer_agency_code"]
+          }
+        },
+        "has_copy_of_sf50": {
+          "description": "Claimant has a copy of their SF50",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "was_federal": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["has_copy_of_sf50"]
+          }
+        },
+        "alternate_employer_name": {
+          "description": "An alternate name for the employer",
+          "type": "string",
+          "$comment": "The following conditional may not work since federal_work_in_last_18mo and was_federal are outside of the employer definition. This should be revisited when pulled into the active schema",
+          "if": {
+            "properties": {
+              "federal_work_in_last_18mo": {
+                "type": "boolean",
+                "const": false
+              },
+              "was_federal": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["alternate_employer_name"]
+          }
+        },
+        "employer_address": {
+          "description": "Employer's address",
+          "$ref": "#/definitions/address"
+        },
+        "employer_phone": {
+          "description": "Employer's phone number",
+          "$ref": "#/definitions/phone"
+        },
+        "fein": {
+          "description": "Employer's Federal Employment Identification Number (FEIN)",
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "was_full_time": {
+          "description": "Job was more than 32 hours per week",
+          "type": "boolean"
+        },
+        "worked_at_employer_address": {
+          "description": "",
+          "type": "boolean"
+        },
+        "alternate_physical_work_address": {
+          "description": "Physical work location",
+          "type": "object",
+          "$ref": "#/definitions/address_without_street",
+          "if": {
+            "properties": {
+              "worked_at_employer_address": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["alternate_physical_work_address"]
+          }
+        },
+        "is_employer_phone_accurate": {
+          "type": "boolean"
+        },
+        "work_location_phone": {
+          "description": "Phone number at physical work location",
+          "$ref": "#/definitions/phone",
+          "if": {
+            "properties": {
+              "is_employer_phone_accurate": {
+                "type": "boolean",
+                "const": false
+              },
+              "is_imported": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["work_location_phone"]
+          }
+        },
+        "self_employed": {
+          "description": "Claimant was self-employed at this business",
+          "type": "boolean"
+        },
+        "is_owner": {
+          "description": "Claimant was an owner of this business",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "self_employed": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["is_owner"]
+          }
+        },
+        "corporate_officer_or_stock_ownership": {
+          "description": "Claimant was a corporate officer or owned more than 5% in stock for this business",
+          "type": "boolean"
+        },
+        "employer_is_sole_proprietorship": {
+          "description": "There is only one owner or the business would file a Schedule C (Form 1040)",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "corporate_officer_or_stock_ownership": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["employer_is_sole_proprietorship"]
+          }
+        },
+        "related_to_owner_or_child_of_owner_under_18": {
+          "type": "string",
+          "enum": ["no", "spouse", "parent", "child"],
+          "if": {
+            "properties": {
+              "employer_is_sole_proprietorship": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["related_to_owner_or_child_of_owner_under_18"]
+          }
+        },
+        "separation_circumstance": {
+          "description": "Reason for change in employment",
+          "type": "string",
+          "enum": [
+            "laid_off",
+            "fired_discharged_terminated",
+            "unsatisfactory_work_performance",
+            "quit_or_retired",
+            "still_employed",
+            "strike_or_lock_out_by_employer",
+            "federal_or_state_shutdown"
+          ]
+        },
+        "separation_circumstance_details": {
+          "description": "Additional notes from claimant on separation",
+          "type": "string",
+          "if": {
+            "properties": {
+              "separation_circumstance": {
+                "not": {
+                  "type": "string",
+                  "enum": [
+                    "laid_off",
+                    "still_employed",
+                    "federal_or_state_shutdown"
+                  ]
+                }
+              }
+            }
+          },
+          "then": {
+            "required": ["separation_circumstance_details"]
+          }
+        },
+        "reason_still_employed": {
+          "description": "Reason this person is still employed by this employer",
+          "type": "string",
+          "enum": [
+            "reduction_in_hours_by_employer",
+            "reduction_in_hours_by_claimant",
+            "hours_not_reduced_at_this_employer",
+            "leave_of_absence",
+            "paid_vacation_holiday_or_pto",
+            "temp_lay_off_or_furlough",
+            "school_employee_on_break",
+            "self_employed",
+            "shared_work_program"
+          ]
+        },
+        "hours_reduced_twenty_percent": {
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "reason_still_employed": {
+                "type": "string",
+                "enum": ["reduction_in_hours_by_employer"]
+              }
+            }
+          },
+          "then": {
+            "required": ["hours_reduced_twenty_percent"]
+          }
+        },
+        "employment_start_date": {
+          "description": "Start date for the employer",
+          "type": "string",
+          "format": "date"
+        },
+        "employment_last_date": {
+          "description": "Last date employed by this employer",
+          "type": "string",
+          "format": "date",
+          "if": {
+            "properties": {
+              "separation_circumstance": {
+                "type": "string",
+                "enum": ["still_employed"]
+              }
+            }
+          },
+          "then": {
+            "required": ["employment_last_date"]
+          }
+        },
+        "discharge_date": {
+          "description": "Date employee was discharged by this employer",
+          "type": "string",
+          "format": "date",
+          "if": {
+            "properties": {
+              "separation_circumstance": {
+                "type": "string",
+                "enum": ["fired_discharged_terminated"]
+              }
+            }
+          },
+          "then": {
+            "required": ["discharge_date"]
+          }
+        },
+        "expect_to_be_recalled": {
+          "description": "Claimant expects to be recalled by employer",
+          "type": "boolean"
+        },
+        "definite_recall": {
+          "description": "Claimant definitely expects to be recalled by employer",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "expect_to_be_recalled": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["definite_recall"]
+          }
+        },
+        "definite_recall_date": {
+          "description": "Date the claimant expects to be recalled",
+          "type": "string",
+          "format": "date",
+          "if": {
+            "properties": {
+              "definite_recall": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["definite_recall_date"]
+          }
+        },
+        "is_seasonal_work": {
+          "description": "This job is seasonal work",
+          "type": "boolean",
+          "if": {
+            "properties": {
+              "definite_recall": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["is_seasonal_work"]
+          }
+        },
+        "payments_received": {
+          "definition": "Pay received since last day of work",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/payments_received_detail"
+          }
+        }
+      },
+      "required": [
+        "employer_address",
+        "fein",
+        "worked_at_employer_address",
+        "self_employed",
+        "corporate_officer_or_stock_ownership",
+        "separate_circumstance",
+        "employment_start_date",
+        "expect_to_be_recalled",
+        "payments_received",
+        "was_full_time",
+        "is_imported"
+      ]
+    },
+    "payments_received_detail": {
+      "$id": "/definitions/payments_received_detail",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/payments_received_detail",
+      "type": "object",
+      "properties": {
+        "pay_type": {
+          "description": "Type of pay received from employer(s)",
+          "type": "string",
+          "enum": [
+            "vacation_sick_or_pto",
+            "final_paycheck",
+            "pension_annuity_or_retirement",
+            "severance_or_continuation",
+            "other_payment",
+            "none"
+          ]
+        },
+        "total": {
+          "description": "Total pay (stored in cents) received from employer for a specific type after becoming unemployed.",
+          "type": "integer"
+        },
+        "start_date_of_pay": {
+          "description": "Start date of this pay",
+          "type": "string",
+          "format": "date",
+          "if": {
+            "properties": {
+              "pay_type": {
+                "type": "string",
+                "enum": ["vacation_sick_or_pto", "severance_or_continuation"]
+              }
+            }
+          },
+          "then": {
+            "required": ["start_date_of_pay"]
+          }
+        },
+        "end_date_of_pay": {
+          "description": "End date of this pay",
+          "type": "string",
+          "if": {
+            "properties": {
+              "pay_type": {
+                "type": "string",
+                "enum": ["vacation_sick_or_pto", "severance_or_continuation"]
+              }
+            }
+          },
+          "then": {
+            "required": ["end_date_of_pay"]
+          }
+        },
+        "note": {
+          "description": "Text box to include reason or further explanation",
+          "type": "string",
+          "maxLength": 1024,
+          "if": {
+            "properties": {
+              "pay_type": {
+                "type": "string",
+                "enum": ["other_payment"]
+              }
+            }
+          },
+          "then": {
+            "required": ["note"]
+          }
+        }
+      },
+      "if": {
+        "not": {
+          "properties": {
+            "pay_type": {
+              "type": "string",
+              "const": "none"
+            }
+          }
+        },
+        "then": {
+          "required": ["pay_type", "total"]
+        }
+      }
+    }
+  },
+  "properties": {
+    "claimant_name": {
+      "$ref": "#/definitions/person_name"
+    },
+    "alternate_names": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/person_name" }
+    },
+    "residence_address": {
+      "$ref": "#/definitions/addressWithoutPOBox"
+    },
+    "mailing_address": {
+      "$ref": "#/definitions/address"
+    },
+    "claimant_phone": {
+      "$ref": "#/definitions/phoneWithSMS"
+    },
+    "alternate_phone": {
+      "$ref": "#/definitions/phone"
+    },
+    "sms": {
+      "type": "boolean"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "maxLength": 128
+    },
+    "interpreter_required": {
+      "type": "boolean"
+    },
+    "preferred_language": {
+      "type": "string",
+      "enum": [
+        "mandarin",
+        "spanish",
+        "haitian",
+        "polish",
+        "portuguese",
+        "russian",
+        "vietnamese",
+        "other"
+      ]
+    },
+    "preferred_language_other": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "sex": {
+      "type": "string",
+      "enum": ["female", "male", "x"]
+    },
+    "ethnicity": {
+      "type": "string",
+      "enum": ["hispanic", "not_hispanic", "opt_out"]
+    },
+    "race": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "american_indian_or_alaskan",
+          "asian",
+          "black",
+          "hawaiian_or_pacific_islander",
+          "white",
+          "opt_out"
+        ]
+      },
+      "maxItems": 1,
+      "$comment": "Until downstream can handle more than one race, return as an array of length 1"
+    },
+    "education_level": {
+      "type": "string",
+      "enum": [
+        "none",
+        "less_than_high_school",
+        "some_high_school",
+        "high_school_ged",
+        "some_college",
+        "associates",
+        "bachelors",
+        "some_graduate",
+        "masters",
+        "doctorate"
+      ]
+    },
+    "ssn": {
+      "description": "Claimant's social security number",
+      "type": "string",
+      "pattern": "^[0-9]{3}-[0-9]{2}-[0-9]{4}$"
+    },
+    "birthdate": {
+      "description": "Date of birth",
+      "type": "string",
+      "format": "date"
+    },
+    "has_nj_issued_id": {
+      "type": "boolean"
+    },
+    "drivers_license_or_state_id_number": {
+      "description": "Driver’s license or state ID number",
+      "type": "string"
+    },
+
+    "work_authorization": {
+      "description": "Are you legally allowed to work in the United States",
+      "type": "string",
+      "enum": [
+        "US_citizen_or_national",
+        "permanent_resident",
+        "H1B_visa",
+        "employment_authorization_or_card_or_doc",
+        "not_legally_allowed_to_work_in_US"
+      ]
+    },
+    "employment_authorization_document_name": {
+      "$ref": "#/definitions/person_name"
+    },
+    "alien_registration_number": {
+      "description": "Alien registration number",
+      "type": "string",
+      "pattern": "^[0-9]{3}-[0-9]{3}-[0-9]{3}$"
+    },
+    "country_of_origin": {
+      "description": "Country of origin",
+      "type": "string",
+      "enum": { "$ref": "https://unemployment.nj.gov/schemas/country" }
+    },
+    "employers": {
+      "description": "Employers of the claimant in the past 18 months",
+      "type": "array",
+      "items": { "$ref": "#/definitions/employer" }
+    },
+    "occucoder_description": {
+      "description": "Description returned from Occucoder service",
+      "type": "string",
+      "maxLength": 255
+    },
+    "occucoder_code": {
+      "description": "Code returned from Occucoder service",
+      "type": "string",
+      "maxLength": 255
+    },
+    "occucoder_job_title": {
+      "description": "Job title returned from Occucoder service",
+      "type": "string",
+      "maxLength": 255
+    },
+    "attending_college_or_job_training": {
+      "description": "If the claimant is currently attending college or job training",
+      "type": "boolean"
+    },
+    "training_thru_hiring_hall_or_career_center": {
+      "type": "boolean"
+    },
+    "required_to_seek_work_through_hiring_hall": {
+      "description": "If the claimant is required to seek work through a union hiring hall",
+      "type": "boolean"
+    },
+    "union_name": {
+      "description": "Name of claimant's union",
+      "type": "string",
+      "maxLength": 32
+    },
+    "union_local_number": {
+      "description": "Union's local number",
+      "type": "string",
+      "maxLength": 16
+    },
+    "disability_applied_to_or_received": {
+      "description": "What forms of disability has the claimant applied to and/or received",
+      "type": "array",
+      "items": {
+        "enum": ["disability", "family_leave", "social_security", "none"]
+      },
+      "if": {
+        "contains": {
+          "const": "none"
+        }
+      },
+      "then": {
+        "maxItems": 1
+      }
+    },
+    "disabled_immediately_before": {
+      "description": "Claimant was disabled within the last 4 weeks",
+      "type": "boolean"
+    },
+    "type_of_disability": {
+      "description": "Plan from which the claimant gets their disability",
+      "type": "string",
+      "enum": ["state_plan", "private_plan", "workers_compensation"]
+    },
+    "date_disability_began": {
+      "type": "string",
+      "format": "date"
+    },
+    "recovery_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "contacted_last_employer_after_recovery": {
+      "type": "boolean"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": ["debit", "direct_deposit"]
+    },
+    "account_type": {
+      "type": "string",
+      "enum": ["checking", "savings"]
+    },
+    "routing_number": {
+      "type": "string"
+    },
+    "account_number": {
+      "type": "string"
+    },
+    "federal_income_tax_withheld": {
+      "type": "boolean"
+    },
+    "apply_for_increased_payment_for_dependents": {
+      "type": "boolean"
+    },
+    "screener_current_country_us": {
+      "type": "boolean",
+      "description": "Screener question: Do you currently live in the United States (including Puerto Rico and the US Virgin Islands)?"
+    },
+    "screener_live_in_canada": {
+      "type": "boolean",
+      "description": "Screener question: Do you currently live in Canada?"
+    },
+    "screener_job_last_eighteen_months": {
+      "type": "boolean",
+      "description": "Screener question: In the last 18 months, have you had a job (including military service)?"
+    },
+    "screener_all_work_nj": {
+      "type": "boolean",
+      "description": "Screener question: Was all of your work (not including military service) performed in New Jersey?"
+    },
+    "screener_any_work_nj": {
+      "type": "boolean",
+      "description": "Screener question: Was any of your work (not including military service) performed in New Jersey?"
+    },
+    "screener_currently_disabled": {
+      "type": "boolean",
+      "description": "Screener question: Are you currently disabled and unable to work?"
+    },
+    "screener_military_service_eighteen_months": {
+      "type": "boolean",
+      "description": "Screener question: In the last 18 months, have you served in the United States Military?"
+    },
+    "screener_maritime_employer_eighteen_months": {
+      "type": "boolean",
+      "description": "Screener question: Have you worked for a maritime employer in the last 18 months (for example, did you work on a ship or in a harbor)?"
+    },
+    "filed_in_last_12mo": {
+      "description": "Claimant has filed for unemployment in the past 12 months",
+      "type": "boolean"
+    },
+    "state_province_where_filed": {
+      "description": "The US state or territory or Canadian province where claimant filed",
+      "type": "string",
+      "enum": { "$ref": "#/definitions/state_or_ca_province" }
+    },
+    "will_look_for_work_in_nj": {
+      "description": "Will continue to look for work in NJ in addition to other states",
+      "type": "boolean"
+    },
+    "can_begin_work_immediately": {
+      "description": "Claimant can begin full-time work immediately",
+      "type": "boolean"
+    },
+    "federal_work_in_last_18mo": {
+      "description": "Worked for the federal government in the past 18months (excluding military service)",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "claimant_name",
+    "residence_address",
+    "mailing_address",
+    "claimant_phone",
+    "sms",
+    "email",
+    "interpreter_required",
+    "sex",
+    "ethnicity",
+    "race",
+    "education_level",
+    "ssn",
+    "birthdate",
+    "has_nj_issued_id",
+    "authorized_to_work",
+    "employers",
+    "occucoder_description",
+    "occucoder_code",
+    "occucoder_job_title",
+    "attending_college_or_job_training",
+    "required_to_seek_work_through_hiring_hall",
+    "disability_applied_to_or_received",
+    "payment_method",
+    "federal_income_tax_withheld",
+    "apply_for_increased_payment_for_dependents",
+    "screener_current_country_us",
+    "screener_live_in_canada",
+    "screener_job_last_eighteen_months",
+    "screener_all_work_nj",
+    "screener_any_work_nj",
+    "screener_currently_disabled",
+    "screener_military_service_eighteen_months",
+    "screener_maritime_employer_eighteen_months",
+    "filed_in_last_12mo",
+    "can_begin_work_immediately",
+    "federal_work_in_last_18mo"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "attending_college_or_job_training": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": ["training_thru_hiring_hall_or_career_center"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "required_to_seek_work_through_hiring_hall": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": ["union_name", "union_local_number"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "disability_applied_to_or_received": {
+            "type": "string",
+            "enum": ["disability", "family_leave"]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "disabled_immediately_before",
+          "type_of_disability",
+          "date_disability_began",
+          "recovery_date",
+          "contacted_last_employer_after_recovery"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "interpreter_required": {
+            "type": "string",
+            "enum": ["interpreter", "tty"]
+          }
+        }
+      },
+      "then": {
+        "required": ["preferred_language"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "preferred_language": {
+            "type": "string",
+            "enum": ["other"]
+          }
+        }
+      },
+      "then": {
+        "required": ["preferred_language_other"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "payment_type": {
+            "type": "string",
+            "enum": ["direct_deposit"]
+          }
+        }
+      },
+      "then": {
+        "required": ["account_type", "routing_number", "account_number"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorized_to_work": {
+            "type": "boolean",
+            "const": true
+          },
+          "authorization_type": {
+            "not": {
+              "type": "string",
+              "enum": ["US_citizen_or_national"]
+            }
+          }
+        }
+      },
+      "then": {
+        "required": ["alien_registration_number"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "has_nj_issued_id": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "then": {
+          "required": ["drivers_license_or_state_id_number"]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "work_authorization": {
+            "type": "string",
+            "enum": [
+              "permanent_resident",
+              "H1B_visa",
+              "employment_authorization_or_card_or_doc",
+              "not_legally_allowed_to_work_in_US"
+            ]
+          }
+        },
+        "then": {
+          "required": [
+            "employment_authorization_document_name",
+            "alien_registration_number",
+            "country_of_origin"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "work_authorization": {
+            "type": "string",
+            "enum": [
+              "permanent_resident",
+              "H1B_visa",
+              "employment_authorization_or_card_or_doc"
+            ]
+          }
+        },
+        "then": {
+          "required": [
+            "employment_authorization_start_date",
+            "employment_authorization_end_date"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "filed_in_last_12mo": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "then": {
+          "required": ["state_province_where_filed"]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lived_outside_nj_when_working_nj": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "then": {
+          "required": ["will_look_for_work_in_nj"]
+        }
+      }
+    }
+  ]
+}

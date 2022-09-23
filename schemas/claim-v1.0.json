@@ -326,7 +326,7 @@
     },
     "account_type": {
       "type": "string",
-      "enum": ["debit", "direct_deposit"]
+      "enum": ["checking", "savings"]
     },
     "routing_number": {
       "type": "string"
@@ -353,7 +353,6 @@
     "ssn",
     "birthdate",
     "drivers_license_or_state_id_number",
-    "id_issuer",
     "authorized_to_work",
     "attending_college_or_job_training",
     "required_to_seek_work_through_hiring_hall",

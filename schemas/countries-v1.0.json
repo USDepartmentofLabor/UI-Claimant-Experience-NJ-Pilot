@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "id": "https://unemployment.nj.gov/schemas/countries-v1.0.json",
+  "title": "Countries list",
+  "description": "The countries to use for select options",
+  "type": "object",
+  "properties": {
+    "country": {
+      "type": "string",
+      "enum": [
+        "Belize",
+        "Canada",
+        "Costa Rica",
+        "El Salvador",
+        "Guatemala",
+        "Honduras",
+        "Mexico",
+        "Panama",
+        "Other country of the world",
+        "United States of America"
+      ]
+    }
+  }
+}
