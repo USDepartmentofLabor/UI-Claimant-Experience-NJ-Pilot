@@ -944,6 +944,10 @@
     "account_number": {
       "type": "string"
     },
+    "acknowledge_direct_deposit_option": {
+      "description": "Acknowledges that the claimant has the option to use direct deposit",
+      "type": "boolean"
+    },
     "federal_income_tax_withheld": {
       "type": "boolean"
     },
@@ -990,6 +994,10 @@
       "description": "The US state or territory or Canadian province where claimant filed",
       "type": "string",
       "enum": { "$ref": "#/definitions/state_or_ca_province" }
+    },
+    "lived_outside_nj_when_working_nj": {
+      "description": "Worked outside of NJ when working in NJ",
+      "type": "boolean"
     },
     "will_look_for_work_in_nj": {
       "description": "Will continue to look for work in NJ in addition to other states",
@@ -1040,6 +1048,7 @@
     "screener_military_service_eighteen_months",
     "screener_maritime_employer_eighteen_months",
     "filed_in_last_12mo",
+    "lived_outside_nj_when_working_nj",
     "can_begin_work_immediately",
     "federal_work_in_last_18mo"
   ],
@@ -1125,7 +1134,12 @@
         }
       },
       "then": {
-        "required": ["account_type", "routing_number", "account_number"]
+        "required": [
+          "account_type",
+          "routing_number",
+          "account_number",
+          "acknowledge_direct_deposit_option"
+        ]
       }
     },
     {
