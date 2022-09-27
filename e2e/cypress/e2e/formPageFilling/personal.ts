@@ -18,12 +18,9 @@ const fillClaimantNameFields = (claimant) => {
 }
 
 const fillAddressFields = (addresses) => {
-  cy.get('[name=residence_address\\.address1]')
+  cy.get('[name=residence_address\\.address]')
     .clear()
-    .type(addresses.residence_address.address1)
-  cy.get('[name=residence_address\\.address2]')
-    .clear()
-    .type(addresses.residence_address.address2)
+    .type(addresses.residence_address.address)
   cy.get('[name=residence_address\\.city]')
     .clear()
     .type(addresses.residence_address.city)
@@ -36,12 +33,9 @@ const fillAddressFields = (addresses) => {
   if (!addresses.mailing_address) {
     cy.get('[name=LOCAL_mailing_address_same]').check({ force: true })
   } else {
-    cy.get('[name=mailing_address\\.address1]')
+    cy.get('[name=mailing_address\\.address]')
       .clear()
-      .type(addresses.mailing_address.address1)
-    cy.get('[name=mailing_address\\.address2]')
-      .clear()
-      .type(addresses.mailing_address.address2)
+      .type(addresses.mailing_address.address)
     cy.get('[name=mailing_address\\.city]')
       .clear()
       .type(addresses.mailing_address.city)

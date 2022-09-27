@@ -1,7 +1,8 @@
 import TextField from '../fields/TextField/TextField'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import { suffixOptions } from 'constants/formOptions'
+import styles from 'styles/pages/claim/personal.module.scss'
 
 interface INameProps {
   id?: string
@@ -24,11 +25,7 @@ export const Name = ({ id: idProp, name }: INameProps) => {
       <TextField
         id={`${id}.middle_initial`}
         name={`${name}.middle_initial`}
-        label={
-          <Trans t={t} i18nKey="name.middle_initial.label">
-            Middle name <i>(optional)</i>
-          </Trans>
-        }
+        label={t('name.middle_initial.label')}
         type="text"
       />
       <TextField
@@ -39,11 +36,8 @@ export const Name = ({ id: idProp, name }: INameProps) => {
       />
       <DropdownField
         name={`${name}.suffix`}
-        label={
-          <Trans t={t} i18nKey="name.suffix.label">
-            Suffix <i>(optional)</i>
-          </Trans>
-        }
+        label={t('name.suffix.label')}
+        className={styles.suffix}
         startEmpty
         options={suffixOptions.map((option) => ({
           value: option,

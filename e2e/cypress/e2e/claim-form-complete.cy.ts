@@ -17,8 +17,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       },
       {
         residence_address: {
-          address1: '1 Street',
-          address2: 'Apartment 12345',
+          address: '1 Street',
           city: 'City',
           state: 'CA',
           zipcode: '00000',

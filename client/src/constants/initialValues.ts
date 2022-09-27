@@ -6,8 +6,7 @@ export const PHONE_SKELETON: PhoneInput = {
 }
 
 export const ADDRESS_SKELETON: AddressInput = {
-  address1: '',
-  address2: '',
+  address: '',
   city: '',
   state: '',
   zipcode: '',

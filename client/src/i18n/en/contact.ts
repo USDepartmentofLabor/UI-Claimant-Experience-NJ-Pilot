@@ -5,10 +5,10 @@ const contact = {
     city: 'City',
     state: 'State',
     zipcode: 'ZIP Code',
-    primary_address: 'What is your primary address?',
-    mailing_address: 'What is your mailing address?',
+    primary_address: '<strong>Where do you live?</strong>',
+    mailing_address: '<strong>What is your mailing address?</strong>',
     mailing_address_same:
-      'My mailing address is the same as my primary address',
+      'My mailing address is the same as my residence address.',
     email_address: 'Email address',
     confirm_email_address: 'Confirm email address',
   },
