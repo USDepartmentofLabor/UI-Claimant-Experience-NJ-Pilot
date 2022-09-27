@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import { LiveAnnouncer } from 'react-aria-live'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { NextPage } from 'next'
+import { ReactNode } from 'react'
 
 import 'i18n/i18n'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
@@ -13,9 +15,21 @@ import { NewJerseyBanner } from 'components/NewJerseyBanner/NewJerseyBanner'
 
 import 'styles/styles.scss'
 
-function MyApp({ Component, pageProps }: AppProps) {
+export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
+  P,
+  IP
+> & {
+  getLayout?: (page: ReactNode) => ReactNode
+}
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter()
 
+  const getLayout = Component.getLayout ?? ((page) => page)
   const page = <Component {...pageProps} />
   const currentPath = router.pathname
 
@@ -45,7 +59,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
             <ClaimForm>{page}</ClaimForm>
           ) : (
-            page
+            getLayout(page)
           )}
         </GridContainer>
       </LiveAnnouncer>

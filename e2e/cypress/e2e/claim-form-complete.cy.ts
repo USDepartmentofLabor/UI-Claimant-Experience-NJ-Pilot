@@ -1,3 +1,5 @@
+import fillScreenerFields from './formPageFilling/screener'
+import homePage from './formPageFilling/home'
 import fillPersonalFields from './formPageFilling/personal'
 import fillDemographicsFields from './formPageFilling/demographics'
 import fillContactFields from './formPageFilling/contact'
@@ -9,8 +11,16 @@ import fillEducationAndTrainingFields from './formPageFilling/education_and_trai
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
+    // Screener page
+    cy.visit('/screener')
+    fillScreenerFields()
+    cy.checkA11y()
+    cy.clickNext()
+
+    // Home page
+    homePage()
+
     // Personal page
-    cy.visit('/claim/personal')
     fillPersonalFields(
       {
         alternate_names: [{ first_name: 'Tasha', last_name: 'McGee' }],

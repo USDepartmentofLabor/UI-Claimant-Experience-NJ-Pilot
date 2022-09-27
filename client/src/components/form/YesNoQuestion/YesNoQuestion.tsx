@@ -4,11 +4,12 @@ import classnames from 'classnames'
 import { useShowErrors } from 'hooks/useShowErrors'
 import { ChangeEventHandler, PropsWithChildren } from 'react'
 import styles from './YesNoQuestion.module.scss'
+import { ReactNode } from 'react'
 
 interface IYesNoQuestionProps {
   id?: string
   name: string
-  question: string
+  question: ReactNode
   hint?: string
   yesLabel?: string
   noLabel?: string

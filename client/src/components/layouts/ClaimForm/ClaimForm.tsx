@@ -16,7 +16,7 @@ import { Routes } from 'constants/routes'
 import { SubmitButton } from 'components/layouts/ClaimForm/SubmitButton/SubmitButton'
 import { PreviousPageButton } from 'components/layouts/ClaimForm/PreviousPageButton/PreviousPageButton'
 import { SaveAndExitLink } from 'components/layouts/ClaimForm/SaveAndExitLink/SaveAndExitLink'
-import { ClaimFormPageHeading } from './ClaimFormHeading/ClaimFormPageHeading'
+import { PageHeading } from './ClaimFormHeading/PageHeading'
 import PageLoader from 'components/loaders/PageLoader'
 
 import styles from './ClaimForm.module.scss'
@@ -242,12 +242,18 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                 className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
                 id="main-content"
               >
-                <ClaimFormPageHeading
-                  pageHeading={currentPageDefinition.heading}
-                  step={step}
-                  totalSteps={totalSteps}
+                <PageHeading
                   ref={headingRef}
-                />
+                  aria-label={`${currentPageDefinition.heading} ${t(
+                    'step_progress',
+                    {
+                      step,
+                      totalSteps,
+                    }
+                  )}`}
+                >
+                  {currentPageDefinition.heading}
+                </PageHeading>
                 <Form className={styles.claimForm}>
                   {showErrorSummary && (
                     <FormErrorSummary key={submitCount} errors={errors} />
