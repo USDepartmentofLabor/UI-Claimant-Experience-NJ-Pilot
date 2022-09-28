@@ -51,8 +51,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
-
-    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.72');
 }
 
 tasks.named('test') {
