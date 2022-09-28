@@ -46,7 +46,7 @@ describe('Personal information component', () => {
       }
     )
     const claimantAlternateNames = screen.queryByRole('group', {
-      name: 'alternate_name',
+      name: 'alternate name',
     })
 
     const primaryAddress = screen.getByRole('group', {

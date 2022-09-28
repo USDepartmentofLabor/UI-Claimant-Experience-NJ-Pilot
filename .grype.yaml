@@ -1,0 +1,12 @@
+output: table
+ignore:
+  - fix-state: not-fixed
+  - fix-state: wont-fix
+  - fix-state: unknown
+  # SnakeYAML is a Spring Boot managed dependency. In this case,
+  # wait for a Spring Boot update that includes a patched version.
+  - package:
+      name: snakeyaml
+  # We use dependabot to monitor for javascript dependency updates
+  - package:
+      type: npm

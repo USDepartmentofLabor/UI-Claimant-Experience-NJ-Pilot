@@ -538,16 +538,29 @@ const claimForm = {
   name: {
     legal_name: 'What is your legal name?',
     alternate_name: 'Additional name',
-    first_name: { label: 'First name', required: 'First name is required' },
-    middle_initial: {
-      label: 'Middle initial <i>(optional)</i>',
+    first_name: {
+      label: 'First name',
+      required: 'First name is required',
       errors: {
+        alphabetical: 'First name must be alphabetical',
+      },
+    },
+    middle_initial: {
+      label: 'Middle initial (optional)',
+      errors: {
+        alphabetical: 'Middle initial must be alphabetical',
         max: 'Middle initial must be at most 1 character',
       },
     },
-    last_name: { label: 'Last name', required: 'Last name is required' },
+    last_name: {
+      label: 'Last name',
+      required: 'Last name is required',
+      errors: {
+        alphabetical: 'Last name must be alphabetical',
+      },
+    },
     suffix: {
-      label: 'Suffix <i>(optional)</i>',
+      label: 'Suffix (optional)',
       options: {
         I: 'I',
         II: 'II',

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { LiveMessenger } from 'react-aria-live'
 import { ClaimantInput } from 'types/claimantInput'
 import { ChangeEventHandler } from 'react'
+import styles from 'styles/pages/claim/personal.module.scss'
 
 export const ClaimantNames = () => {
   const { values } = useFormikContext<ClaimantInput>()
@@ -51,7 +52,10 @@ export const ClaimantNames = () => {
                     onChange={handleHasAlternateNamesChange}
                   />
                   {alternateNames && alternateNames.length > 0 && (
-                    <Fieldset legend={t('alternate_name')}>
+                    <Fieldset
+                      aria-label="alternate name"
+                      className={styles.alt_name}
+                    >
                       {alternateNames}
                     </Fieldset>
                   )}

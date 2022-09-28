@@ -3,7 +3,11 @@ import { NextPage } from 'next'
 
 import { ClaimantNames } from 'components/form/ClaimantNames/ClaimantNames'
 import { ClaimantAddress } from 'components/form/ClaimantAddress/ClaimantAddress'
-import { yupName, yupAddress } from 'validations/yup/custom'
+import {
+  yupName,
+  yupAddress,
+  yupAddressWithoutPOBox,
+} from 'validations/yup/custom'
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { ADDRESS_SKELETON, PERSON_NAME_SKELETON } from 'constants/initialValues'
 import { Routes } from 'constants/routes'
@@ -46,7 +50,7 @@ const validationSchema = object().shape({
     then: array().of(yupName).min(1).required(),
   }),
   LOCAL_mailing_address_same: boolean(),
-  residence_address: yupAddress(),
+  residence_address: yupAddressWithoutPOBox(),
   mailing_address: mixed().when('LOCAL_mailing_address_same', {
     is: false,
     then: yupAddress(),

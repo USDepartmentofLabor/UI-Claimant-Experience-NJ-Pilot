@@ -15,12 +15,12 @@ describe('ClaimantNames component', () => {
   // re-useable queries
   const queryForAlternateNameFieldset = () =>
     screen.queryByRole('group', {
-      name: 'alternate_name',
+      name: 'alternate name',
     })
 
   const getAlternateNameFieldset = () =>
     screen.getByRole('group', {
-      name: 'alternate_name',
+      name: 'alternate name',
     })
   const getFirstNameField = (fieldset: HTMLElement) =>
     within(fieldset).getByLabelText('name.first_name.label')
@@ -45,6 +45,7 @@ describe('ClaimantNames component', () => {
         </Formik>
       </LiveAnnouncer>
     )
+
     const alternateName = queryForAlternateNameFieldset()
 
     expect(alternateName).not.toBeInTheDocument()

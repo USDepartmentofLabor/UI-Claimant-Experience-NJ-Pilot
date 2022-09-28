@@ -1,0 +1,25 @@
+name: Image Vulnerability Scan
+description: Run image vulnerability scans
+inputs:
+  image:
+    description: The docker image to scan
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Run Trivy vulnerability scan
+      uses: aquasecurity/trivy-action@0.7.1
+      with:
+        scan-type: "image"
+        image-ref: ${{inputs.image}}
+        format: "table"
+        exit-code: "1"
+        ignore-unfixed: true
+        vuln-type: "os"
+        security-checks: "vuln,secret"
+    - name: Run Anchore vulnerability scan
+      uses: anchore/scan-action@v3
+      with:
+        image: ${{inputs.image}}
+        severity-cutoff: "negligible"
+        output-format: "table"

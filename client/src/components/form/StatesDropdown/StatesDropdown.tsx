@@ -1,6 +1,7 @@
 import states from 'fixtures/states.json'
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import { ComponentProps } from 'react'
+import styles from 'styles/pages/claim/personal.module.scss'
 
 export type StateAbbrev = keyof typeof states
 
@@ -10,8 +11,8 @@ type StatesDropdownProps = {
   stateSlice?: StateAbbrev[]
 } & Omit<DropdownProps, 'options'>
 
-const allStates = Object.entries(states).map(([key, value]) => ({
-  label: value,
+const allStates = Object.entries(states).map(([key]) => ({
+  label: key,
   value: key,
 }))
 
@@ -34,5 +35,6 @@ export const StatesDropdown = ({
           )
         : allStates
     }
+    className={styles.state}
   />
 )

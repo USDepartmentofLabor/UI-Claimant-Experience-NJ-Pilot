@@ -13,7 +13,8 @@ import {
 } from 'constants/formOptions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type ClaimantInput = PersonalInput &
+export type ClaimantInput = ScreenerInput &
+  PersonalInput &
   ContactInput &
   DemographicsInput &
   IdentityInput &
@@ -27,6 +28,17 @@ export type ClaimantInput = PersonalInput &
   AbleAndAvailableStatusInput &
   PaymentInput
 // & ReviewInput
+
+export type ScreenerInput = {
+  screener_current_country_us?: boolean
+  screener_live_in_canada?: boolean
+  screener_job_last_eighteen_months?: boolean
+  screener_all_work_nj?: boolean
+  screener_any_work_nj?: boolean
+  screener_currently_disabled?: boolean
+  screener_military_service_eighteen_months?: boolean
+  screener_maritime_employer_eighteen_months?: boolean
+}
 
 type DemographicsInput = {
   sex?: SexOption
@@ -84,8 +96,7 @@ export type PersonNameInput = {
 }
 
 export type AddressInput = {
-  address1: string
-  address2?: string
+  address: string
   city: string
   state: string
   zipcode: string

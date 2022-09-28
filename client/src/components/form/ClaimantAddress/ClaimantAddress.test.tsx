@@ -75,7 +75,7 @@ describe('ClaimantAddress component', () => {
       name: 'label.primary_address',
     })
     const residenceStreetAddress = within(residenceAddress).getByLabelText(
-      'address.address1.label'
+      'address.address.label'
     )
     const mailingAddressSame = screen.getByRole('checkbox', {
       name: 'label.mailing_address_same',
@@ -84,7 +84,7 @@ describe('ClaimantAddress component', () => {
       name: 'label.mailing_address',
     })
     const mailingStreetAddress = within(mailingAddress).getByLabelText(
-      'address.address1.label'
+      'address.address.label'
     )
 
     // Fill out some address information
@@ -107,7 +107,7 @@ describe('ClaimantAddress component', () => {
     })
     const mailingStreetAddressReturned = within(
       mailingAddressReturned
-    ).getByLabelText('address.address1.label')
+    ).getByLabelText('address.address.label')
 
     expect(mailingAddressReturned).toBeInTheDocument()
     expect(mailingStreetAddressReturned).toHaveValue('')
