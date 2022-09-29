@@ -3,16 +3,17 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
     hooks:
+      - id: check-ast
       - id: check-json
       - id: check-symlinks
       - id: check-merge-conflict
       - id: check-yaml
+      - id: debug-statements
       - id: detect-private-key
       - id: end-of-file-fixer
+      - id: fix-encoding-pragma
+      - id: requirements-txt-fixer
       - id: trailing-whitespace
-  # TODO: Add python specific checks alongside python code.
-  #       (fix-encoding-pragma, debug-statements, requirements-txt-fixer, check-ast)
-  #       Check ARPAUI for parity (https://github.com/USDOLEnterprise/ARPAUI/blob/main/.pre-commit-config.yaml)
 
   - repo: https://github.com/trussworks/pre-commit-hooks
     rev: v1.1.1

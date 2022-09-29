@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import argparse
+import json
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--taskdef")
+parser.add_argument("--environment")
+args = parser.parse_args()
+
+with open(args.taskdef, "r") as f:
+    task_def = json.load(f)
+    task_def["executionRoleArn"] = task_def["executionRoleArn"].replace(
+        "ENVIRONMENT_PLACEHOLDER", args.environment
+    )
+    task_def["taskRoleArn"] = task_def["taskRoleArn"].replace(
+        "ENVIRONMENT_PLACEHOLDER", args.environment
+    )
+    task_def["family"] = task_def["family"].replace(
+        "ENVIRONMENT_PLACEHOLDER", args.environment
+    )
+    for container in task_def["containerDefinitions"]:
+        container["logConfiguration"]["options"]["awslogs-group"] = container[
+            "logConfiguration"
+        ]["options"]["awslogs-group"].replace(
+            "ENVIRONMENT_PLACEHOLDER", args.environment
+        )
+        container["name"] = container["name"].replace(
+            "ENVIRONMENT_PLACEHOLDER", args.environment
+        )
+        if "secrets" in container and container["secrets"] is not None:
+            for secret in container["secrets"]:
+                secret["valueFrom"] = secret["valueFrom"].replace(
+                    "ENVIRONMENT_PLACEHOLDER", args.environment
+                )
+
+    print(json.dumps(task_def))
