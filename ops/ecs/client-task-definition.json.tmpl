@@ -1,6 +1,6 @@
 {
   "ipcMode": null,
-  "executionRoleArn": "ecs-task-execution-role-dol-ui-claimant-intake-client-dev",
+  "executionRoleArn": "ecs-task-execution-role-dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER",
   "containerDefinitions": [
     {
       "dnsSearchDomains": null,
@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/dev/dol-ui-claimant-intake-client",
+          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-client",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "dol-ui-claimant-intake-client"
         }
@@ -54,14 +54,14 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "dol-ui-claimant-intake-client-dev"
+      "name": "dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER"
     }
   ],
   "placementConstraints": [],
   "memory": "512",
-  "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-client-dev",
+  "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER",
   "taskDefinitionArn": null,
-  "family": "dol-ui-claimant-intake-client-dev",
+  "family": "dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER",
   "pidMode": null,
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",

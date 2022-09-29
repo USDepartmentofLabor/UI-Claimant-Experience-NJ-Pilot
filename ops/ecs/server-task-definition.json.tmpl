@@ -1,6 +1,6 @@
 {
   "ipcMode": null,
-  "executionRoleArn": "ecs-task-execution-role-dol-ui-claimant-intake-server-dev",
+  "executionRoleArn": "ecs-task-execution-role-dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
   "containerDefinitions": [
     {
       "name": "permissions-init",
@@ -18,7 +18,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/dev/dol-ui-claimant-intake-server",
+          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-server",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "dol-ui-claimant-intake-server-util"
         }
@@ -34,7 +34,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/dev/dol-ui-claimant-intake-server",
+          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-server",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "dol-ui-claimant-intake-server"
         }
@@ -68,31 +68,31 @@
       "workingDirectory": null,
       "secrets": [
         {
-          "valueFrom": "/dol-ui-claimant-intake-dev/database-host",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-host",
           "name": "DB_HOST"
         },
         {
-          "valueFrom": "/dol-ui-claimant-intake-dev/database-port",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-port",
           "name": "DB_PORT"
         },
         {
-          "valueFrom": "/dol-ui-claimant-intake-dev/database-name",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-name",
           "name": "DB_NAME"
         },
         {
-          "valueFrom": "/dol-ui-claimant-intake-dev/database-user",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-user",
           "name": "DB_USER"
         },
         {
-          "valueFrom": "/dol-ui-claimant-intake-dev/database-password",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-password",
           "name": "DB_PASSWORD"
         },
         {
-          "valueFrom": "/dol-ui-claimant-intake-dev/s3-claims-bucket",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/s3-claims-bucket",
           "name": "S3_CLAIMS_BUCKET"
         },
         {
-          "valueFrom": "/dol-ui-claimant-intake-dev/s3-claims-bucket-kms-key",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/s3-claims-bucket-kms-key",
           "name": "S3_CLAIMS_BUCKET_KMS_KEY"
         }
       ],
@@ -123,14 +123,14 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "dol-ui-claimant-intake-server-dev"
+      "name": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER"
     }
   ],
   "placementConstraints": [],
   "memory": "512",
-  "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-server-dev",
+  "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
   "taskDefinitionArn": null,
-  "family": "dol-ui-claimant-intake-server-dev",
+  "family": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
   "pidMode": null,
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
