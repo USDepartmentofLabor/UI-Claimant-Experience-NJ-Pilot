@@ -506,6 +506,7 @@ const claimForm = {
     },
     sms: {
       label: 'Can we send text messages to this number?',
+      help_text: 'Your mobile plan’s message and data rates may apply.',
       errors: {
         required:
           'Please indicate if we are able to send text messages to this number',

@@ -31,7 +31,11 @@ export const PhoneNumberField = ({
         type="tel"
       />
       {showSMS && (
-        <YesNoQuestion question={t('sms.label')} name={`${name}.sms`} />
+        <YesNoQuestion
+          question={t('sms.label')}
+          hint={t('sms.help_text')}
+          name={`${name}.sms`}
+        />
       )}
     </>
   )
