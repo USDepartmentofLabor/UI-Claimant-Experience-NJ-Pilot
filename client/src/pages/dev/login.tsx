@@ -20,7 +20,6 @@ type Login = {
 
 const DevLogin: NextPage = () => {
   const handleSubmit = async (values: Login) => {
-    console.log('submit login form')
     await new Promise((r) => setTimeout(r, 500))
     alert(JSON.stringify(values, null, 2))
   }

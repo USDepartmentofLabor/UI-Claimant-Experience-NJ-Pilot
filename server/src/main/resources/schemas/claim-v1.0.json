@@ -333,9 +333,21 @@
       "description": "Is the claimant is able to begin work immediately",
       "type": "boolean"
     },
-    "has_collected_disability": {
-      "description": "Has the claimant collected disability",
-      "type": "boolean"
+    "disability_applied_to_or_received": {
+      "description": "What forms of disability has the claimant applied to and/or received",
+      "type": "array",
+      "$comment": "The value persisted to LOOPS should be boolean: whether disability and/or family leave are selected.",
+      "items": {
+        "enum": ["disability", "family_leave", "social_security", "none"]
+      },
+      "if": {
+        "contains": {
+          "const": "none"
+        }
+      },
+      "then": {
+        "maxItems": 1
+      }
     },
     "disabled_immediately_before": {
       "description": "Claimant was disabled within the last 4 weeks",

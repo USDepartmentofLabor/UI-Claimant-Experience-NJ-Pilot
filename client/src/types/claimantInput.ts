@@ -6,6 +6,7 @@ import {
   PreferredLanguageOption,
   PaymentMethodOption,
   AccountTypeOption,
+  DisabilityPaymentTypeOption,
   DisabilityTypeOption,
   AuthorizationTypeOption,
   EducationLevelOption,
@@ -68,7 +69,7 @@ type UnionInput = {
 }
 
 type AbleAndAvailableStatusInput = {
-  has_collected_disability?: boolean
+  disability_applied_to_or_received?: DisabilityPaymentTypeOption[]
   disabled_immediately_before?: boolean
   type_of_disability?: DisabilityTypeOption
   date_disability_began?: string

@@ -898,6 +898,7 @@
     "disability_applied_to_or_received": {
       "description": "What forms of disability has the claimant applied to and/or received",
       "type": "array",
+      "$comment": "The value persisted to LOOPS should be boolean: whether disability and/or family leave are selected.",
       "items": {
         "enum": ["disability", "family_leave", "social_security", "none"]
       },

@@ -381,14 +381,18 @@ const claimForm = {
           'You must indicate whether you can begin full-time work immediately',
       },
     },
-    has_collected_disability: {
+    disability_applied_to_or_received: {
       label:
-        'Since your last day worked, have you applied for or received disability or family leave payments?',
-      help_text:
-        'Choose "No" if you received payments from Social Security (SSI/SSDI).',
+        'Since your last day worked, have you applied for or received payments for any of the following?',
+      options: {
+        disability: 'Disability',
+        family_leave: 'Family leave',
+        social_security: 'Social Security (SSI/SSDI)',
+        none: 'None of the above',
+      },
       errors: {
-        required:
-          'You must indicate whether you have applied for or received disability payments',
+        none_only: "You may not choose another selection if you choose 'none'",
+        required: 'You must choose at least one of the options',
       },
     },
     disabled_immediately_before: {

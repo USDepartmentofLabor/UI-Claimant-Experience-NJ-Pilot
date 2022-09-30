@@ -89,7 +89,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Able and available page
     fillAbleAndAvailableFields({
       can_begin_work_immediately: 'yes',
-      has_collected_disability: 'yes',
+      disability_applied_to_or_received: 'disability',
       disabled_immediately_before: 'no',
       type_of_disability: 'state_plan',
       date_disability_began: { mo: '01', day: '05', yr: '2020' },
