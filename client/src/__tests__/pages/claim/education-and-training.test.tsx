@@ -7,7 +7,6 @@ import userEvent from '@testing-library/user-event'
 //   getInvalidClaimFormFixtures,
 //   getValidClaimFormFixtures,
 // } from "helpers/fixtures";
-import { enrollmentOptions } from 'constants/formOptions'
 
 describe('EducationAndTraining component', () => {
   it('renders properly', () => {
@@ -52,13 +51,7 @@ describe('EducationAndTraining component', () => {
       name: 'education_and_training.enrollment.label',
     })
 
-    enrollmentOptions.forEach((enrollment) => {
-      expect(
-        within(enrollmentFormGroup).getByText(
-          `education_and_training.enrollment.options.${enrollment}`
-        )
-      )
-    })
+    expect(enrollmentFormGroup).toBeInTheDocument()
 
     await user.click(currentlyAttendingTrainingNo)
 

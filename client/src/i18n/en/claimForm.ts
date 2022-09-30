@@ -371,7 +371,7 @@ const claimForm = {
           'A medical provider certifies you are unable to work due to a physical/mental health condition, pregnancy, or childbirth recovery',
         tdi: 'You are receiving or have applied for temporary disability payments',
         workers_comp:
-          'You are receiving or have applied for workers’ compensation payments ',
+          'You are receiving or have applied for workers’ compensation payments',
       },
     },
     can_begin_work_immediately: {
@@ -452,13 +452,9 @@ const claimForm = {
         'If you are in union-required training or paid job training, choose "No."',
     },
     enrollment: {
-      label: 'How did you enroll?',
-      options: {
-        self_enrolled: 'Self-enrolled',
-        career_center:
-          'Through a Career Center such as Department of Labor, Vocational Rehabilitation, etc.',
-        union: 'Through a union hiring hall',
-      },
+      label: 'Did you go through a union hiring hall or Career Center?',
+      help_text:
+        'Career Centers include Vocational Rehabilitation and other <0>New Jersey career services</0>.',
       error: {
         required: 'Select how you enrolled',
       },

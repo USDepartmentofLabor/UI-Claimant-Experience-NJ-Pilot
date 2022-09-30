@@ -72,7 +72,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Education and training page
     fillEducationAndTrainingFields({
       attending_college_or_job_training: 'yes',
-      enrollment: 'self_enrolled',
+      enrollment: 'yes',
     })
     cy.checkA11y()
     cy.clickNext()
