@@ -24,7 +24,7 @@ declare global {
        * Custom command to use pa11y with specific configurations
        * @example cy.check_a11y()
        */
-      checkA11y(): Chainable<Element>
+      checkA11y(options?: Options): Chainable<Element>
       clickNext(): Chainable<Element>
     }
   }

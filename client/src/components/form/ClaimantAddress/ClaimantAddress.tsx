@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Fieldset } from '@trussworks/react-uswds'
 import { useFormikContext } from 'formik'
 import { isEqual } from 'lodash'
@@ -13,12 +13,15 @@ export const ClaimantAddress = () => {
 
   const { values, setFieldValue } = useFormikContext<ClaimantInput>()
 
+  const residence_address = useMemo(() => {
+    return values.residence_address
+  }, [values.residence_address])
   // Keep mailing_address synchronized if checked
   useEffect(() => {
     if (values.LOCAL_mailing_address_same) {
       setFieldValue('mailing_address', { ...values.residence_address })
     }
-  }, [values.LOCAL_mailing_address_same, values.residence_address])
+  }, [values.LOCAL_mailing_address_same, residence_address])
 
   return (
     <>

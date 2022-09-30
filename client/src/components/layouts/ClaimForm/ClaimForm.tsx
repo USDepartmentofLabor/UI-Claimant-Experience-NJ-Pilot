@@ -23,6 +23,7 @@ import styles from './ClaimForm.module.scss'
 import Head from 'next/head'
 import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
 import { useWhoAmI } from 'queries/whoami'
+import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -63,6 +64,8 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const step = currentPageIndex + 1
   const totalSteps = pageDefinitions.length
 
+  const { data: getPartialClaim, isLoading: isLoadingGetPartialClaim } =
+    useGetPartialClaim()
   const { data: whoAmI, isLoading: isLoadingWhoAmI } = useWhoAmI()
 
   const initialValues = useMemo(
@@ -93,15 +96,21 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
           },
         }
       }
+
       const initialDefinitionValues = pageDefinitions
         .flatMap((pageDefinition) => pageDefinition.initialValues)
         .reduce((previousValue, currentValue) => ({
           ...previousValue,
           ...currentValue,
         }))
-      return { ...initialDefinitionValues, ...initialWhoAmIValues }
+
+      return {
+        ...initialDefinitionValues,
+        ...initialWhoAmIValues,
+        ...getPartialClaim,
+      }
     },
-    [pageDefinitions, whoAmI]
+    [pageDefinitions, whoAmI, getPartialClaim]
   )
 
   const validationSchema = currentPageDefinition.validationSchema
@@ -123,11 +132,10 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
     values: ClaimantInput,
     helpers: FormikHelpers<ClaimantInput>
   ) => {
-    saveFormValues(values)
     helpers.setSubmitting(false)
   }
 
-  return isLoadingWhoAmI ? (
+  return isLoadingWhoAmI || isLoadingGetPartialClaim ? (
     <PageLoader />
   ) : (
     <Formik

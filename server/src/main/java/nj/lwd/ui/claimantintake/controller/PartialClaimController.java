@@ -1,14 +1,12 @@
 package nj.lwd.ui.claimantintake.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/partial-claim")
@@ -35,5 +33,16 @@ public class PartialClaimController {
         } else {
             return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping()
+    public ResponseEntity<Map<String, Object>> getPartialClaim() {
+        String claimantId = "test_id";
+
+        var claimData = claimStorageService.getClaim(claimantId);
+
+        return claimData
+                .map(data -> new ResponseEntity<>(data, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(new HashMap<>(), HttpStatus.OK));
     }
 }

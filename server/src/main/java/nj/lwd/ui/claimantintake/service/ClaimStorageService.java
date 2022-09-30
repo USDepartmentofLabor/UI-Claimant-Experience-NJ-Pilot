@@ -1,7 +1,13 @@
 package nj.lwd.ui.claimantintake.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import nj.lwd.ui.claimantintake.model.Claim;
@@ -117,5 +123,60 @@ public class ClaimStorageService {
             claimantRepository.save(claimant);
             return false;
         }
+    }
+
+    public Optional<Map<String, Object>> getClaim(String claimantIdpId) {
+        Claimant claimant;
+        Claim claim;
+        try {
+            Optional<Claimant> existingClaimant =
+                    claimantRepository.findClaimantByIdpId(claimantIdpId);
+
+            claimant =
+                    existingClaimant.orElseThrow(
+                            () -> {
+                                logger.error("No claimant found with ID {}", claimantIdpId);
+                                return new NoSuchElementException();
+                            });
+
+            claim =
+                    claimant.getActivePartialClaim()
+                            .orElseThrow(
+                                    () -> {
+                                        logger.error(
+                                                "No claim found for claimant ID {}", claimantIdpId);
+                                        return new NoSuchElementException();
+                                    });
+        } catch (NoSuchElementException ex) {
+            return Optional.empty();
+        }
+
+        logger.info(
+                "Starting getClaim for claim id {} and claim {}", claimant.getId(), claim.getId());
+        // Get claim data from s3
+        try {
+            InputStream stream =
+                    s3Service.get(
+                            claimsBucket, "%s/%s.json".formatted(claimant.getId(), claim.getId()));
+            return Optional.of(deserializeToClaimData(stream));
+        } catch (AwsServiceException | SdkClientException ex) {
+            logger.error(
+                    "S3 service is not available for claimId {} : {}",
+                    claimantIdpId,
+                    ex.getMessage());
+            return Optional.empty();
+        } catch (IOException ex) {
+            logger.error(
+                    "Unable to process s3 object data from claimId {} : {}",
+                    claimantIdpId,
+                    ex.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    private Map<String, Object> deserializeToClaimData(InputStream stream) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
+        return mapper.readValue(stream, typeRef);
     }
 }
