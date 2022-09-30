@@ -16,7 +16,7 @@ dev-up: ## Run all docker services locally
 	docker compose up --build --force-recreate --remove-orphans
 
 services-up: ## run supporting services locally (database, localstack)
-	docker compose up db localstack --build  --force-recreate --remove-orphans -d
+	docker compose up db localstack --build --force-recreate --remove-orphans -d
 
 dev-db-up: ## Run the database locally in docker
 	docker compose up db
@@ -33,7 +33,7 @@ dev-logs: ## View the local docker service logs
 	docker compose logs -f
 
 ci-up: ## Run docker services through continuous integration
-	docker compose up -d
+	docker compose up -d --build --force-recreate --remove-orphans
 
 ci-down: ## Shut down docker services running through continuous integration
 	docker compose down

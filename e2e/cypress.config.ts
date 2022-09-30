@@ -1,6 +1,8 @@
 import { defineConfig } from 'cypress'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { pa11y, prepareAudit } = require('@cypress-audit/pa11y')
+const { lighthouse, prepareAudit } = require('@cypress-audit/lighthouse')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { pa11y } = require('@cypress-audit/pa11y')
 
 export default defineConfig({
   e2e: {
@@ -28,6 +30,7 @@ export default defineConfig({
       )
 
       on('task', {
+        lighthouse: lighthouse(),
         pa11y: pa11y((pa11yReport: any) => {
           console.log(pa11yReport) // raw pa11y report
         }),
