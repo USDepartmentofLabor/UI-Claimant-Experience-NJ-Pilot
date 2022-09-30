@@ -16,6 +16,7 @@ const namespaces = [
   'common',
   'claimForm',
   'whoAmI',
+  'redirect',
   'screener',
 ] as const
 
