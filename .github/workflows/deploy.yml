@@ -1,13 +1,20 @@
-name: Deploy Dev
+name: Deploy
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Test and Lint
+    types:
+      - completed
+    branches:
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  client-deploy:
+  dev-client-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment: dev
 
@@ -26,7 +33,8 @@ jobs:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
 
-  server-deploy:
+  dev-server-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment: dev
 
@@ -92,3 +100,72 @@ jobs:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-image: ${{ steps.build-image.outputs.image }}
           server-util-image: ${{ steps.build-util-image.outputs.image }}
+
+      - name: Write server image tag to file
+        env:
+          IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
+        run: |
+          mkdir -p tmp/artifact
+          echo -n "$IMAGE_TAG" > tmp/artifact/server_image_tag.txt
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: server-image-tag
+          path: tmp/artifact/server_image_tag.txt
+          retention-days: 1
+
+  test-client-deploy:
+    needs: [dev-client-deploy, dev-server-deploy]
+    runs-on: ubuntu-latest
+    environment: test
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy client
+        uses: ./.github/actions/deploy-client
+        with:
+          deploy-env: test
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_TEST }}
+          server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+
+  test-server-deploy:
+    needs: [dev-client-deploy, dev-server-deploy]
+    runs-on: ubuntu-latest
+    environment: test
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: server-image-tag
+          path: tmp/artifact
+
+      - name: Get server image tag
+        id: get-image-tag
+        run: |
+          IMAGE_TAG=$(cat tmp/artifact/server_image_tag.txt)
+          echo "::set-output name=image-tag::$IMAGE_TAG"
+
+      # The server images do not need to be rebuilt in each environment. Instead,
+      # promote and reuse the server images from the dev environment.
+      # Server configurations that need to vary between environments can be set
+      # at runtime through environment variables and/or spring boot profiles.
+      - name: Deploy server
+        uses: ./.github/actions/deploy-server
+        with:
+          deploy-env: test
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_TEST }}
+          server-image: ${{ secrets.ECR_REGISTRY_DEV}}/dol-ui-claimant-intake-server-dev:${{ steps.get-image-tag.outputs.image-tag }}
+          server-util-image: ${{ secrets.ECR_REGISTRY_DEV}}/dol-ui-claimant-intake-server-util-dev:${{ steps.get-image-tag.outputs.image-tag }}

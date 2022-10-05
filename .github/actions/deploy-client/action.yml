@@ -1,0 +1,80 @@
+name: Deploy Client
+description: Deploy the frontend client application
+inputs:
+  deploy-env:
+    description: The environment being deployed (e.g., dev, test, prod)
+    required: true
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  server-base-url:
+    description: The backend server base url
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Construct image tag
+      id: construct-image-tag
+      env:
+        GIT_BRANCH: ${{ github.ref_name }}
+        GIT_COMMIT: ${{ github.sha }}
+      shell: bash
+      run: |
+        BRANCH_PREFIX="$GIT_BRANCH"
+        # use a generic prefix for all non-main branches
+        if [[ "$BRANCH_PREFIX" != "main" ]]; then
+          BRANCH_PREFIX="branch"
+        fi
+        BUILD_TIME=$(date '+%Y%m%d%H%M%S')
+        IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
+        echo "::set-output name=image-tag::$IMAGE_TAG"
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
+        IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
+        NEXT_PUBLIC_SERVER_BASE_URL: ${{ inputs.server-base-url }}
+      shell: bash
+      run: |
+        docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+          --build-arg NEXT_PUBLIC_SERVER_BASE_URL=${NEXT_PUBLIC_SERVER_BASE_URL} \
+          client
+        docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+    - name: Set environment name in ECS task definition template
+      shell: bash
+      run: |
+        make client-task-definition environment=${{ inputs.deploy-env }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ops/ecs/client-task-definition.json
+        container-name: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: dol-ui-claimant-intake-client
+        cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        wait-for-service-stability: true

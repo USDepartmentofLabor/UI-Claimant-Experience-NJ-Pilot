@@ -264,6 +264,11 @@ aws s3api list-objects-v2 --endpoint-url http://localhost:4566 --bucket dol-ui-c
 aws s3api get-object --endpoint-url http://localhost:4566 --bucket dol-ui-claims --key "YOUR_OBJECT_KEY_HERE" "NAME_OF_OUTPUT_FILE"
 ```
 
+## CI/CD
+
+See [CI/CD Configurations](./docs/cicd-deployments.md) for an overview of the
+application's approach to CI/CD.
+
 ## Makefile
 
 Run `make` or `make help` to see the available `make` commands we use with this
