@@ -2,6 +2,7 @@ package nj.lwd.ui.claimantintake.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -20,6 +21,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.ServerSideEncryption;
@@ -77,6 +79,15 @@ public class S3Service {
 
         logger.debug("S3 putObjectResponse: {}", response);
         logger.debug("S3 reportUrl: {}", reportUrl);
+    }
+
+    public InputStream get(String bucket, String key) {
+        logger.debug("S3 Get bucket: {}", bucket);
+        logger.debug("s3 Get key: {}", key);
+
+        GetObjectRequest req = GetObjectRequest.builder().bucket(bucket).key(key).build();
+
+        return s3Client.getObject(req);
     }
 
     private RequestBody buildRequestBody(Object object) throws JsonProcessingException {

@@ -13,7 +13,6 @@ type ClaimFormSideNavProps = {
 
 export const ClaimFormSideNav = ({ className }: ClaimFormSideNavProps) => {
   //TODO: Once backend DB has been created uncomment/implement stateful claim progress
-  //const { data: partialClaimResponse } = useGetPartialClaim();
   const { values, submitCount, setFormikState } =
     useFormikContext<ClaimantInput>()
   const { pathname, push } = useRouter()

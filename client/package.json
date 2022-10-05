@@ -2,7 +2,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
-    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@trussworks/react-uswds": "^3.1.0",
     "axios": "^0.27.2",
@@ -17,16 +17,16 @@
     "react-aria-live": "2.0.5",
     "react-dom": "18.2.0",
     "react-query": "^3.39.2",
-    "sass": "^1.54.9",
+    "sass": "^1.55.0",
     "uswds": "2.13.3",
     "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.19.0",
-    "@storybook/addon-a11y": "^6.5.9",
+    "@storybook/addon-a11y": "^6.5.12",
     "@storybook/addon-actions": "^6.5.9",
-    "@storybook/addon-essentials": "^6.5.9",
-    "@storybook/addon-interactions": "^6.5.11",
+    "@storybook/addon-essentials": "^6.5.12",
+    "@storybook/addon-interactions": "^6.5.12",
     "@storybook/addon-links": "^6.5.12",
     "@storybook/builder-webpack5": "^6.5.11",
     "@storybook/manager-webpack5": "^6.5.9",
@@ -36,12 +36,12 @@
     "@swc/jest": "^0.2.22",
     "@testing-library/dom": "^8.17.1",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.3.0",
+    "@testing-library/react": "^13.4.0",
     "@testing-library/react-hooks": "^8.0.1",
-    "@testing-library/user-event": "^14.4.2",
+    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^28.1.4",
-    "@types/node": "18.6.4",
-    "@types/react": "18.0.18",
+    "@types/node": "18.7.23",
+    "@types/react": "18.0.21",
     "@types/react-aria-live": "^2.0.2",
     "@types/react-dom": "18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
@@ -59,7 +59,7 @@
     "storybook-addon-next": "^1.6.6",
     "ts-jest": "^28.0.8",
     "ts-node": "^10.8.2",
-    "typescript": "4.8.3"
+    "typescript": "4.8.4"
   },
   "engines": {
     "node": ">=16.15.1"

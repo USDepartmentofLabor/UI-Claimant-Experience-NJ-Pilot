@@ -6,7 +6,10 @@ import {
   AbleAndAvailable,
   AbleAndAvailablePageDefinition,
 } from 'pages/claim/able-and-available'
-import { disabilityTypeOptions } from 'constants/formOptions'
+import {
+  disabilityTypeOptions,
+  disabilityPaymentTypeOptions,
+} from 'constants/formOptions'
 
 describe('AbleAndAvailableStatus component', () => {
   // Re-useable queries
@@ -35,10 +38,7 @@ describe('AbleAndAvailableStatus component', () => {
     screen.getByRole('group', {
       name: 'able_and_available.can_begin_work_immediately.label',
     })
-  const getHasCollectedDisability = () =>
-    screen.getByRole('group', {
-      name: 'able_and_available.has_collected_disability.label',
-    })
+
   const getDisabledImmediatelyBefore = () =>
     screen.getByRole('group', {
       name: 'able_and_available.disabled_immediately_before.label',
@@ -77,19 +77,29 @@ describe('AbleAndAvailableStatus component', () => {
       </Formik>
     )
 
+    const hasCollectedDisabilityDisability = screen.getByRole('checkbox', {
+      name: 'able_and_available.disability_applied_to_or_received.options.disability',
+    })
+    const hasCollectedDisabilityFamilyLeave = screen.getByRole('checkbox', {
+      name: 'able_and_available.disability_applied_to_or_received.options.family_leave',
+    })
+    const hasCollectedDisabilitySocialSecurity = screen.getByRole('checkbox', {
+      name: 'able_and_available.disability_applied_to_or_received.options.social_security',
+    })
+    const hasCollectedDisabilityNone = screen.getByRole('checkbox', {
+      name: 'able_and_available.disability_applied_to_or_received.options.none',
+    })
     // Shows initial questions
     const canBeginWorkImmediately = getCanBeginWorkImmediately()
     const canBeginWorkImmediatelyYes = getYesAnswer(canBeginWorkImmediately)
     const canBeginWorkImmediatelyNo = getNoAnswer(canBeginWorkImmediately)
 
-    const hasCollectedDisability = getHasCollectedDisability()
-    const hasCollectedDisabilityYes = getYesAnswer(hasCollectedDisability)
-    const hasCollectedDisabilityNo = getNoAnswer(hasCollectedDisability)
-
     expect(canBeginWorkImmediatelyYes).toBeInTheDocument()
     expect(canBeginWorkImmediatelyNo).toBeInTheDocument()
-    expect(hasCollectedDisabilityYes).toBeInTheDocument()
-    expect(hasCollectedDisabilityNo).toBeInTheDocument()
+    expect(hasCollectedDisabilityDisability).toBeInTheDocument()
+    expect(hasCollectedDisabilityFamilyLeave).toBeInTheDocument()
+    expect(hasCollectedDisabilitySocialSecurity).toBeInTheDocument()
+    expect(hasCollectedDisabilityNone).toBeInTheDocument()
   })
 
   describe('Toggling fields', () => {
@@ -101,8 +111,21 @@ describe('AbleAndAvailableStatus component', () => {
         </Formik>
       )
 
-      const hasCollectedDisability = getHasCollectedDisability()
-      const hasCollectedDisabilityYes = getYesAnswer(hasCollectedDisability)
+      const hasCollectedDisabilityDisability = screen.getByRole('checkbox', {
+        name: 'able_and_available.disability_applied_to_or_received.options.disability',
+      })
+      const hasCollectedDisabilityFamilyLeave = screen.getByRole('checkbox', {
+        name: 'able_and_available.disability_applied_to_or_received.options.family_leave',
+      })
+      const hasCollectedDisabilitySocialSecurity = screen.getByRole(
+        'checkbox',
+        {
+          name: 'able_and_available.disability_applied_to_or_received.options.social_security',
+        }
+      )
+      const hasCollectedDisabilityNone = screen.getByRole('checkbox', {
+        name: 'able_and_available.disability_applied_to_or_received.options.none',
+      })
 
       // Additional questions are not yet shown
       expect(queryForDisabledImmediatelyBefore()).not.toBeInTheDocument()
@@ -110,8 +133,17 @@ describe('AbleAndAvailableStatus component', () => {
       expect(queryForDateDisabilityBegan()).not.toBeInTheDocument()
       expect(queryForRecoveryDate()).not.toBeInTheDocument()
 
-      // Toggle fields on
-      await user.click(hasCollectedDisabilityYes)
+      // Toggle checkboxes on that don't trigger the other fields
+      await user.click(hasCollectedDisabilitySocialSecurity)
+
+      // Additional questions are still not yet shown
+      expect(queryForDisabledImmediatelyBefore()).not.toBeInTheDocument()
+      expect(queryForTypeOfDisability()).not.toBeInTheDocument()
+      expect(queryForDateDisabilityBegan()).not.toBeInTheDocument()
+      expect(queryForRecoveryDate()).not.toBeInTheDocument()
+
+      await user.click(hasCollectedDisabilityDisability)
+
       // Additional questions are now shown
       expect(queryForDisabledImmediatelyBefore()).toBeInTheDocument()
       expect(queryForTypeOfDisability()).toBeInTheDocument()
@@ -120,6 +152,27 @@ describe('AbleAndAvailableStatus component', () => {
       const contactEmployer = queryForContactEmployer()
       expect(contactEmployer).toBeInTheDocument()
       expect(contactEmployer?.childElementCount).toEqual(2)
+
+      // uncheck disability checkbox
+      await user.click(hasCollectedDisabilityDisability)
+      // check family leave checkbox
+      await user.click(hasCollectedDisabilityFamilyLeave)
+      expect(queryForDisabledImmediatelyBefore()).toBeInTheDocument()
+      expect(queryForTypeOfDisability()).toBeInTheDocument()
+      expect(queryForDateDisabilityBegan()).toBeInTheDocument()
+      expect(queryForRecoveryDate()).toBeInTheDocument()
+      const contactEmployerAgain = queryForContactEmployer()
+      expect(contactEmployerAgain).toBeInTheDocument()
+      expect(contactEmployerAgain?.childElementCount).toEqual(2)
+
+      await user.click(hasCollectedDisabilityNone)
+      expect(hasCollectedDisabilityDisability).toBeDisabled()
+      expect(hasCollectedDisabilityFamilyLeave).toBeDisabled()
+      expect(hasCollectedDisabilitySocialSecurity).toBeDisabled()
+      expect(queryForDisabledImmediatelyBefore()).not.toBeInTheDocument()
+      expect(queryForTypeOfDisability()).not.toBeInTheDocument()
+      expect(queryForDateDisabilityBegan()).not.toBeInTheDocument()
+      expect(queryForRecoveryDate()).not.toBeInTheDocument()
     })
 
     it('Hides and clears fields as expected', async () => {
@@ -130,12 +183,11 @@ describe('AbleAndAvailableStatus component', () => {
         </Formik>
       )
 
-      const hasCollectedDisability = getHasCollectedDisability()
-      const hasCollectedDisabilityYes = getYesAnswer(hasCollectedDisability)
-      const hasCollectedDisabilityNo = getNoAnswer(hasCollectedDisability)
-
+      const hasCollectedDisabilityDisability = screen.getByRole('checkbox', {
+        name: 'able_and_available.disability_applied_to_or_received.options.disability',
+      })
       // Toggle fields on
-      await user.click(hasCollectedDisabilityYes)
+      await user.click(hasCollectedDisabilityDisability)
 
       const disabledImmediatelyBeforeBeforeClear =
         getDisabledImmediatelyBefore()
@@ -191,8 +243,8 @@ describe('AbleAndAvailableStatus component', () => {
       expect(contactedEmployerYesBeforeClear).toBeChecked()
       expect(contactEmployerNoBeforeClear).not.toBeChecked()
 
-      // Hide all fields
-      await user.click(hasCollectedDisabilityNo)
+      // Hide all fields by unchecking the disability option
+      await user.click(hasCollectedDisabilityDisability)
 
       expect(disabledImmediatelyBeforeYesBeforeClear).not.toBeInTheDocument()
       expect(disabledImmediatelyBeforeNoBeforeClear).not.toBeInTheDocument()
@@ -205,7 +257,7 @@ describe('AbleAndAvailableStatus component', () => {
       expect(contactEmployerNoBeforeClear).not.toBeInTheDocument()
 
       // Show all fields
-      await user.click(hasCollectedDisabilityYes)
+      await user.click(hasCollectedDisabilityDisability)
 
       const disabledImmediatelyBeforeAfterClear = getDisabledImmediatelyBefore()
       const disabledImmediatelyBeforeYesAfterClear = getYesAnswer(
@@ -242,7 +294,7 @@ describe('AbleAndAvailableStatus component', () => {
     describe('disabled_immediately_before', () => {
       it.each([true, false])('validates with a valid value', async (value) => {
         const schemaSlice = {
-          has_collected_disability: true,
+          disability_applied_to_or_received: ['disability', 'family_leave'],
           disabled_immediately_before: value,
         }
 
@@ -256,7 +308,7 @@ describe('AbleAndAvailableStatus component', () => {
 
       it('fails validation with an invalid value', async () => {
         const schemaSlice = {
-          has_collected_disability: true,
+          disability_applied_to_or_received: ['disability'],
           disabled_immediately_before: undefined,
         }
 
@@ -269,12 +321,41 @@ describe('AbleAndAvailableStatus component', () => {
       })
     })
 
+    describe('disability_applied_to_or_received', () => {
+      it.each(disabilityPaymentTypeOptions)(
+        'validates with a valid value',
+        async (value) => {
+          const schemaSlice = {
+            disability_applied_to_or_received: [value],
+          }
+
+          await expect(
+            AbleAndAvailablePageDefinition.validationSchema.validateAt(
+              `disability_applied_to_or_received`,
+              schemaSlice
+            )
+          ).resolves.toEqual([value])
+        }
+      )
+
+      it('fails validation with an invalid value', async () => {
+        const schemaSlice = { type_of_disability: 'invalid value' }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `type_of_disability`,
+            schemaSlice
+          )
+        ).rejects.toBeTruthy()
+      })
+    })
+
     describe('type_of_disability', () => {
       it.each(disabilityTypeOptions)(
         'validates with a valid value',
         async (value) => {
           const schemaSlice = {
-            has_collected_disability: true,
+            disability_applied_to_or_received: ['family_leave'],
             type_of_disability: value,
           }
 
@@ -302,7 +383,7 @@ describe('AbleAndAvailableStatus component', () => {
     describe('date_disability_began', () => {
       it('validates with a valid value', async () => {
         const schemaSlice = {
-          has_collected_disability: true,
+          disability_applied_to_or_received: ['disability', 'family_leave'],
           date_disability_began: '2020-06-26',
         }
 
@@ -316,7 +397,7 @@ describe('AbleAndAvailableStatus component', () => {
 
       it('fails validation with an invalid value', async () => {
         const schemaSlice = {
-          has_collected_disability: true,
+          disability_applied_to_or_received: ['disability'],
           date_disability_began: undefined,
         }
 
@@ -332,7 +413,7 @@ describe('AbleAndAvailableStatus component', () => {
     describe('recovery_date', () => {
       it('validates with a valid value', async () => {
         const schemaSlice = {
-          has_collected_disability: true,
+          disability_applied_to_or_received: ['disability', 'family_leave'],
           recovery_date: '2020-06-27',
         }
 
@@ -346,7 +427,7 @@ describe('AbleAndAvailableStatus component', () => {
 
       it('fails validation with an invalid value before date_disability_began', async () => {
         const schemaSlice = {
-          has_collected_disability: true,
+          disability_applied_to_or_received: ['disability', 'family_leave'],
           date_disability_began: '2020-06-25',
           recovery_date: '2020-06-24',
         }
@@ -357,6 +438,21 @@ describe('AbleAndAvailableStatus component', () => {
             schemaSlice
           )
         ).rejects.toBeTruthy()
+      })
+    })
+    describe('contacted_last_employer_after_recovery', () => {
+      it.each([true, false])('validates with a valid value', async (value) => {
+        const schemaSlice = {
+          disability_applied_to_or_received: ['family_leave'],
+          contacted_last_employer_after_recovery: value,
+        }
+
+        await expect(
+          AbleAndAvailablePageDefinition.validationSchema.validateAt(
+            `contacted_last_employer_after_recovery`,
+            schemaSlice
+          )
+        ).resolves.toEqual(value)
       })
     })
   })

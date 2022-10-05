@@ -3,8 +3,10 @@ package nj.lwd.ui.claimantintake.controller;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.HashMap;
+import java.util.Optional;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +46,36 @@ class PartialClaimControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnPartialClaim() throws Exception {
+        var partialClaimMap = new HashMap<String, Object>();
+
+        partialClaimMap.put("ssn", "123456789");
+        when(claimStorageService.getClaim(anyString())).thenReturn(Optional.of(partialClaimMap));
+
+        this.mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get("/partial-claim")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ssn").value("123456789"));
+    }
+
+    @Test
+    void shouldReturnNothingIfNoPartialClaim() throws Exception {
+        when(claimStorageService.getClaim(anyString())).thenReturn(Optional.empty());
+
+        this.mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get("/partial-claim")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("{}"));
     }
 }

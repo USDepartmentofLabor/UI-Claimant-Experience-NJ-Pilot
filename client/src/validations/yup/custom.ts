@@ -12,10 +12,28 @@ import { suffixOptions } from 'constants/formOptions'
 
 export const yupAddress = () =>
   object().shape({
-    address1: string()
+    address: string()
       .max(64)
-      .required(i18n_common.t('address.address1.required')),
-    address2: string().max(64),
+      .required(i18n_common.t('address.address.required')),
+    city: string().max(64).required(i18n_common.t('address.city.required')),
+    state: string()
+      .oneOf(Object.keys(states))
+      .required(i18n_common.t('address.state.required')),
+    zipcode: string()
+      // eslint-disable-next-line security/detect-unsafe-regex
+      .matches(/^\d{5}(-\d{4})?$/, i18n_common.t('address.zipcode.format'))
+      .required(i18n_common.t('address.zipcode.required')),
+  })
+
+export const yupAddressWithoutPOBox = () =>
+  object().shape({
+    address: string()
+      .max(64)
+      .matches(
+        /^(?!.*(?:(.*((p|post)[-.\s]*(o|off|office)[-.\s]*(box|bin)[-.\s]*)|.*((p |post)[-.\s]*(box|bin)[-.\s]*)))).*$/i,
+        i18n_common.t('address.address.pobox')
+      )
+      .required(i18n_common.t('address.address.required')),
     city: string().max(64).required(i18n_common.t('address.city.required')),
     state: string()
       .oneOf(Object.keys(states))
@@ -50,12 +68,26 @@ export const yupName = object().shape({
   first_name: string()
     .nullable()
     .max(36)
+    .matches(
+      /^[A-Za-z]+$/,
+      i18n_claimForm.t('name.first_name.errors.alphabetical')
+    )
     .required(i18n_claimForm.t('name.first_name.required')),
   last_name: string()
     .nullable()
     .max(36)
+    .matches(
+      /^[A-Za-z]+$/,
+      i18n_claimForm.t('name.last_name.errors.alphabetical')
+    )
     .required(i18n_claimForm.t('name.last_name.required')),
-  middle_initial: string().nullable().max(1),
+  middle_initial: string()
+    .nullable()
+    .matches(
+      /[A-Za-z]/,
+      i18n_claimForm.t('name.middle_initial.errors.alphabetical')
+    )
+    .max(1, i18n_claimForm.t('name.middle_initial.errors.max')),
   suffix: string()
     .oneOf([...suffixOptions])
     .nullable(),

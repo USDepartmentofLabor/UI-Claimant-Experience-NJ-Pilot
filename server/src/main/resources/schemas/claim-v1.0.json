@@ -11,9 +11,21 @@
       "$anchor": "#/definitions/person_name",
       "type": "object",
       "properties": {
-        "first_name": { "type": "string", "maxLength": 28 },
-        "last_name": { "type": "string", "maxLength": 28 },
-        "middle_initial": { "type": "string", "maxLength": 1 },
+        "first_name": {
+          "type": "string",
+          "maxLength": 28,
+          "pattern": "/^[A-Za-z]+$/"
+        },
+        "last_name": {
+          "type": "string",
+          "maxLength": 28,
+          "pattern": "/^[A-Za-z]+$/"
+        },
+        "middle_initial": {
+          "type": "string",
+          "maxLength": 1,
+          "pattern": "/[A-Za-z]/"
+        },
         "suffix": {
           "type": "string",
           "enum": ["I", "II", "III", "IV", "junior", "senior"]
@@ -27,8 +39,7 @@
       "$anchor": "#/definitions/address",
       "type": "object",
       "properties": {
-        "address1": { "type": "string", "maxLength": 64 },
-        "address2": { "type": "string", "maxLength": 64 },
+        "address": { "type": "string", "maxLength": 64 },
         "city": { "type": "string", "maxLength": 64 },
         "state": { "$ref": "#/definitions/state" },
         "zipcode": {
@@ -37,7 +48,28 @@
           "pattern": "^\\d{5}(-\\d{4})?$"
         }
       },
-      "required": ["address1", "city", "state", "zipcode"]
+      "required": ["address", "city", "state", "zipcode"]
+    },
+    "addressWithoutPOBox": {
+      "$id": "/definitions/addressWithoutPOBox",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/addressWithoutPOBox",
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "/^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$/i"
+        },
+        "city": { "type": "string", "maxLength": 64 },
+        "state": { "$ref": "#/definitions/state" },
+        "zipcode": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^\\d{5}(-\\d{4})?$"
+        }
+      },
+      "required": ["address", "city", "state", "zipcode"]
     },
     "phone": {
       "$id": "/definitions/phone",
@@ -153,11 +185,17 @@
       "type": "array",
       "items": { "$ref": "#/definitions/person_name" }
     },
+    "LOCAL_claimant_has_alternate_names": {
+      "type": "boolean"
+    },
     "residence_address": {
-      "$ref": "#/definitions/address"
+      "$ref": "#/definitions/addressWithoutPOBox"
     },
     "mailing_address": {
       "$ref": "#/definitions/address"
+    },
+    "LOCAL_mailing_address_same": {
+      "type": "boolean"
     },
     "claimant_phone": {
       "$ref": "#/definitions/phoneWithSMS"
@@ -275,8 +313,7 @@
     },
     "enrollment": {
       "description": "How the claimant enrolled in training",
-      "type": "string",
-      "enum": ["self_enrolled", "career_center", "union"]
+      "type": "boolean"
     },
     "required_to_seek_work_through_hiring_hall": {
       "description": "If the claimant is required to seek work through a union hiring hall",
@@ -296,9 +333,21 @@
       "description": "Is the claimant is able to begin work immediately",
       "type": "boolean"
     },
-    "has_collected_disability": {
-      "description": "Has the claimant collected disability",
-      "type": "boolean"
+    "disability_applied_to_or_received": {
+      "description": "What forms of disability has the claimant applied to and/or received",
+      "type": "array",
+      "$comment": "The value persisted to LOOPS should be boolean: whether disability and/or family leave are selected.",
+      "items": {
+        "enum": ["disability", "family_leave", "social_security", "none"]
+      },
+      "if": {
+        "contains": {
+          "const": "none"
+        }
+      },
+      "then": {
+        "maxItems": 1
+      }
     },
     "disabled_immediately_before": {
       "description": "Claimant was disabled within the last 4 weeks",
@@ -340,6 +389,7 @@
   },
   "required": [
     "claimant_name",
+    "LOCAL_claimant_has_alternate_names",
     "residence_address",
     "mailing_address",
     "claimant_phone",
@@ -361,6 +411,19 @@
     "federal_income_tax_withheld"
   ],
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "LOCAL_mailing_address_same": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "then": {
+        "required": ["mailing_address"]
+      }
+    },
     {
       "if": {
         "properties": {

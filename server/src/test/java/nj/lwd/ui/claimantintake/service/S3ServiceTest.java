@@ -1,6 +1,8 @@
 package nj.lwd.ui.claimantintake.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -14,12 +16,16 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.core.env.Environment;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
@@ -29,6 +35,8 @@ class S3ServiceTest {
     private final S3Client s3Client = mock(S3Client.class, RETURNS_DEEP_STUBS);
 
     private S3Service s3Service;
+
+    @Mock public ResponseInputStream<GetObjectResponse> inputStreamMock;
 
     @BeforeEach
     void beforeEach() {
@@ -58,5 +66,22 @@ class S3ServiceTest {
 
         // then: the s3 client makes a put object requests
         verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
+    }
+
+    @Test
+    void getCallsGetObjectWithCorrectRequest() throws Exception {
+        when(s3Client.getObject(any(GetObjectRequest.class))).thenReturn(inputStreamMock);
+
+        assertEquals(inputStreamMock, s3Service.get("bucket", "key"));
+
+        verify(s3Client, times(1))
+                .getObject(
+                        (GetObjectRequest)
+                                argThat(
+                                        (request) -> {
+                                            var req = (GetObjectRequest) request;
+                                            return req.bucket().equals("bucket")
+                                                    && req.key().equals("key");
+                                        }));
     }
 }

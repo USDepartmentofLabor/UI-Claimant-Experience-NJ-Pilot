@@ -46,6 +46,15 @@ export const authorizationTypeOptions = [
 ] as const
 export type AuthorizationTypeOption = typeof authorizationTypeOptions[number]
 
+export const disabilityPaymentTypeOptions = [
+  'disability',
+  'family_leave',
+  'social_security',
+  'none',
+] as const
+export type DisabilityPaymentTypeOption =
+  typeof disabilityPaymentTypeOptions[number]
+
 export const disabilityTypeOptions = [
   'state_plan',
   'private_plan',

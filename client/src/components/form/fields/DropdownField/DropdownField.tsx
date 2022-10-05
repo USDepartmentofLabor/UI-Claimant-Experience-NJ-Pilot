@@ -57,7 +57,7 @@ const DropdownField = ({
   useFocusFirstError(metaProps.error, selectRef)
 
   if (startEmpty && options[0].value !== EMPTY_OPTION_VALUE) {
-    options.unshift({ value: EMPTY_OPTION_VALUE, label: t('select_one') })
+    options.unshift({ value: EMPTY_OPTION_VALUE, label: t('select') })
   }
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {

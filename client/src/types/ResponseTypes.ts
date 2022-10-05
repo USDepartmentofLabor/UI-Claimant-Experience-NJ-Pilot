@@ -1,6 +1,8 @@
+import { Claim } from './Claim'
+
 export type APIResponseType = {
   status: string
   error: string
 }
 
-export type PartialClaimResponseType = APIResponseType
+export type PartialClaimResponseType = Partial<Claim>

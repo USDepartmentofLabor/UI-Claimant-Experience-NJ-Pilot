@@ -18,15 +18,20 @@ const common = {
     },
   },
   select_one: '-- Select one --',
+  select: '- Select -',
   address: {
-    address1: { label: 'Address line 1', required: 'Address is required' },
-    address2: { label: 'Address line 2 <i>(optional)</i>' },
+    address: {
+      label: 'Address',
+      required: 'Address is required',
+      pobox:
+        'PO boxes can only be used as a mailing address, not a residential address',
+    },
     city: { label: 'City', required: 'City is required' },
     state: { label: 'State', required: 'State is required' },
     zipcode: {
-      label: 'ZIP Code',
+      label: 'ZIP',
       required: 'ZIP Code is required',
-      format: 'ZIP Code must be five digits',
+      format: 'ZIP Code must be five digits or in 12345-1234 format',
     },
   },
   expanded_content: {

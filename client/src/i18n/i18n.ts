@@ -11,7 +11,14 @@ export const resources = {
   es,
 } as const
 
-const namespaces = ['home', 'common', 'claimForm', 'whoAmI'] as const
+const namespaces = [
+  'home',
+  'common',
+  'claimForm',
+  'whoAmI',
+  'redirect',
+  'screener',
+] as const
 
 i18n.use(LanguageDetector).use(initReactI18next).init({
   lng: 'en',
@@ -29,4 +36,8 @@ export const i18n_common = i18n.cloneInstance({
 
 export const i18n_claimForm = i18n.cloneInstance({
   defaultNS: 'claimForm',
+})
+
+export const i18n_screener = i18n.cloneInstance({
+  defaultNS: 'screener',
 })

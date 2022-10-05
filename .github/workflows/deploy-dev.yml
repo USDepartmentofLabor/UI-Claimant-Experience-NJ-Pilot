@@ -2,20 +2,31 @@ name: Deploy Dev
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - Test and Lint
-    types:
-      - completed
-    branches:
-      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   client-deploy:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy client
+        uses: ./.github/actions/deploy-client
+        with:
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+
+  server-deploy:
     runs-on: ubuntu-latest
     environment: dev
 
@@ -37,11 +48,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Construct image tag
+        id: construct-image-tag
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: dol-ui-claimant-intake-client-dev
           GIT_BRANCH: ${{ github.ref_name }}
           GIT_COMMIT: ${{ github.sha }}
         run: |
@@ -52,66 +61,15 @@ jobs:
           fi
           BUILD_TIME=$(date '+%Y%m%d%H%M%S')
           IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
-          docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
-            --build-arg NEXT_PUBLIC_SERVER_BASE_URL=https://claimant-intake-dev1.dol.nj.gov \
-            client
-          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ops/ecs/client-task-definition.json
-          container-name: dol-ui-claimant-intake-client-dev
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: dol-ui-claimant-intake-client
-          cluster: dol-ui-claimant-intake-dev
-          wait-for-service-stability: true
-
-  server-deploy:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
-    environment: dev
-
-    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          aws-region: us-east-1
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+          echo "::set-output name=image-tag::$IMAGE_TAG"
 
       - name: Build, tag, and push image to Amazon ECR (server-util)
         id: build-util-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: dol-ui-claimant-intake-server-util-dev
-          GIT_BRANCH: ${{ github.ref_name }}
-          GIT_COMMIT: ${{ github.sha }}
+          IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
         run: |
-          BRANCH_PREFIX="$GIT_BRANCH"
-          # use a generic prefix for all non-main branches
-          if [[ "$BRANCH_PREFIX" != "main" ]]; then
-            BRANCH_PREFIX="branch"
-          fi
-          BUILD_TIME=$(date '+%Y%m%d%H%M%S')
-          IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
           docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" --build-arg IMAGE_TAG="$IMAGE_TAG" ops/server-util
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
@@ -121,40 +79,16 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: dol-ui-claimant-intake-server-dev
-          GIT_BRANCH: ${{ github.ref_name }}
-          GIT_COMMIT: ${{ github.sha }}
+          IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
         run: |
-          BRANCH_PREFIX="$GIT_BRANCH"
-          # use a generic prefix for all non-main branches
-          if [[ "$BRANCH_PREFIX" != "main" ]]; then
-            BRANCH_PREFIX="branch"
-          fi
-          BUILD_TIME=$(date '+%Y%m%d%H%M%S')
-          IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
           docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" server
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Fill in the new image ID in the Amazon ECS task definition (server-util)
-        id: task-def-util
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
+      - name: Deploy server
+        uses: ./.github/actions/deploy-server
         with:
-          task-definition: ops/ecs/server-task-definition.json
-          container-name: permissions-init
-          image: ${{ steps.build-util-image.outputs.image }}
-
-      - name: Fill in the new image ID in the Amazon ECS task definition (server)
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def-util.outputs.task-definition }}
-          container-name: dol-ui-claimant-intake-server-dev
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: dol-ui-claimant-intake-server
-          cluster: dol-ui-claimant-intake-dev
-          wait-for-service-stability: true
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          server-image: ${{ steps.build-image.outputs.image }}
+          server-util-image: ${{ steps.build-util-image.outputs.image }}

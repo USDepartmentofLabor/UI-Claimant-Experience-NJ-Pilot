@@ -19,6 +19,15 @@ useSavePartialClaim.mockImplementation(() => ({
   mutate: mutate,
 }))
 
+const useGetPartialClaim = jest.fn()
+jest.mock('queries/useGetPartialClaim', () => ({
+  useGetPartialClaim: () => useSavePartialClaim(),
+}))
+useGetPartialClaim.mockImplementation(() => ({
+  data: {},
+  isLoading: false,
+}))
+
 beforeEach(() => {
   mutate.mockClear()
 })
@@ -271,7 +280,7 @@ describe('ClaimForm Layout', () => {
 
       await user.click(completeButton)
 
-      expect(mutate).toHaveBeenCalledTimes(1)
+      expect(mutate).toHaveBeenCalledTimes(0)
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
     })

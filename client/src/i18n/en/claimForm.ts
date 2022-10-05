@@ -371,7 +371,7 @@ const claimForm = {
           'A medical provider certifies you are unable to work due to a physical/mental health condition, pregnancy, or childbirth recovery',
         tdi: 'You are receiving or have applied for temporary disability payments',
         workers_comp:
-          'You are receiving or have applied for workers’ compensation payments ',
+          'You are receiving or have applied for workers’ compensation payments',
       },
     },
     can_begin_work_immediately: {
@@ -381,14 +381,18 @@ const claimForm = {
           'You must indicate whether you can begin full-time work immediately',
       },
     },
-    has_collected_disability: {
+    disability_applied_to_or_received: {
       label:
-        'Since your last day worked, have you applied for or received disability or family leave payments?',
-      help_text:
-        'Choose "No" if you received payments from Social Security (SSI/SSDI).',
+        'Since your last day worked, have you applied for or received payments for any of the following?',
+      options: {
+        disability: 'Disability',
+        family_leave: 'Family leave',
+        social_security: 'Social Security (SSI/SSDI)',
+        none: 'None of the above',
+      },
       errors: {
-        required:
-          'You must indicate whether you have applied for or received disability payments',
+        none_only: "You may not choose another selection if you choose 'none'",
+        required: 'You must choose at least one of the options',
       },
     },
     disabled_immediately_before: {
@@ -452,13 +456,9 @@ const claimForm = {
         'If you are in union-required training or paid job training, choose "No."',
     },
     enrollment: {
-      label: 'How did you enroll?',
-      options: {
-        self_enrolled: 'Self-enrolled',
-        career_center:
-          'Through a Career Center such as Department of Labor, Vocational Rehabilitation, etc.',
-        union: 'Through a union hiring hall',
-      },
+      label: 'Did you go through a union hiring hall or Career Center?',
+      help_text:
+        'Career Centers include Vocational Rehabilitation and other <0>New Jersey career services</0>.',
       error: {
         required: 'Select how you enrolled',
       },
@@ -506,6 +506,7 @@ const claimForm = {
     },
     sms: {
       label: 'Can we send text messages to this number?',
+      help_text: 'Your mobile plan’s message and data rates may apply.',
       errors: {
         required:
           'Please indicate if we are able to send text messages to this number',
@@ -542,16 +543,29 @@ const claimForm = {
   name: {
     legal_name: 'What is your legal name?',
     alternate_name: 'Additional name',
-    first_name: { label: 'First name', required: 'First name is required' },
-    middle_initial: {
-      label: 'Middle initial <i>(optional)</i>',
+    first_name: {
+      label: 'First name',
+      required: 'First name is required',
       errors: {
+        alphabetical: 'First name must be alphabetical',
+      },
+    },
+    middle_initial: {
+      label: 'Middle initial (optional)',
+      errors: {
+        alphabetical: 'Middle initial must be alphabetical',
         max: 'Middle initial must be at most 1 character',
       },
     },
-    last_name: { label: 'Last name', required: 'Last name is required' },
+    last_name: {
+      label: 'Last name',
+      required: 'Last name is required',
+      errors: {
+        alphabetical: 'Last name must be alphabetical',
+      },
+    },
     suffix: {
-      label: 'Suffix <i>(optional)</i>',
+      label: 'Suffix (optional)',
       options: {
         I: 'I',
         II: 'II',

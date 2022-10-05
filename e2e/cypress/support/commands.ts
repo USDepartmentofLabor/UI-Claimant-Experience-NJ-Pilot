@@ -37,12 +37,16 @@
 //   }
 // }
 
+import '@cypress-audit/lighthouse/commands'
 import '@cypress-audit/pa11y/commands'
+import Options = Cypress.Options
 
-Cypress.Commands.add('checkA11y', () => {
+Cypress.Commands.add('checkA11y', (options: Options = {}) => {
   cy.pa11y({
     runners: ['htmlcs'],
     standard: 'WCAG2AA',
+    actions: ['wait for element #page-loading to be hidden'],
+    ...options,
   })
 })
 

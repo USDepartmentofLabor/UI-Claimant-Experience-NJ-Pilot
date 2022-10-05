@@ -1,0 +1,60 @@
+name: Deploy Server
+description: Deploy the backend server application
+inputs:
+  deploy-env:
+    description: The environment being deployed (e.g., dev, test, prod)
+    required: true
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  server-image:
+    description: The server image to deploy
+    required: true
+  server-util-image:
+    description: The server util image to deploy
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Set environment name in ECS task definition template
+      shell: bash
+      run: |
+        make server-task-definition environment=${{ inputs.deploy-env }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition (server-util)
+      id: task-def-util
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ops/ecs/server-task-definition.json
+        container-name: permissions-init
+        image: ${{ inputs.server-util-image }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition (server)
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def-util.outputs.task-definition }}
+        container-name: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}
+        image: ${{ inputs.server-image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: dol-ui-claimant-intake-server
+        cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        wait-for-service-stability: true

@@ -16,7 +16,7 @@ dev-up: ## Run all docker services locally
 	docker compose up --build --force-recreate --remove-orphans
 
 services-up: ## run supporting services locally (database, localstack)
-	docker compose up db localstack --build  --force-recreate --remove-orphans -d
+	docker compose up db localstack --build --force-recreate --remove-orphans -d
 
 dev-db-up: ## Run the database locally in docker
 	docker compose up db
@@ -33,7 +33,7 @@ dev-logs: ## View the local docker service logs
 	docker compose logs -f
 
 ci-up: ## Run docker services through continuous integration
-	docker compose up -d
+	docker compose up -d --build --force-recreate --remove-orphans
 
 ci-down: ## Shut down docker services running through continuous integration
 	docker compose down
@@ -83,6 +83,9 @@ client-compile-check: ## check client for typescript compilation
 client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
 
+client-task-definition: ## Update the environment placeholders in the client ECS task definition
+	./scripts/render-task-definition --taskdef ops/ecs/client-task-definition.json.tmpl --environment $(environment) > ops/ecs/client-task-definition.json
+
 server-gradle-tasks: ## list the gradle tasks that can be run when invoking ./gradlew from the /server directory
 	cd server && ./gradlew tasks
 
@@ -127,6 +130,9 @@ server-migration-starter-file: ## Create a starter file for raw SQL migration
 
 server-clean: ## cleans the build output and incremental build "Up-to-date" checks
 	cd server && ./gradlew clean
+
+server-task-definition: ## Update the environment placeholders in the server ECS task definition
+	./scripts/render-task-definition --taskdef ops/ecs/server-task-definition.json.tmpl --environment $(environment) > ops/ecs/server-task-definition.json
 
 trivy-scan: ## Run trivy vulnerability scan on an image
 	trivy image --ignore-unfixed $(image)
