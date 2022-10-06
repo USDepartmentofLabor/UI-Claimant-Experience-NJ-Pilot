@@ -1,7 +1,11 @@
 package nj.lwd.ui.claimantintake.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.networknt.schema.ValidationMessage;
 import java.util.Map;
+import java.util.Set;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
+import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompletedClaimController {
 
     private final ClaimStorageService claimStorageService;
+    private final ClaimValidatorService claimValidatorService;
 
     @Autowired
-    public CompletedClaimController(ClaimStorageService claimStorageService) {
+    public CompletedClaimController(
+            ClaimStorageService claimStorageService, ClaimValidatorService claimValidatorService) {
         this.claimStorageService = claimStorageService;
+        this.claimValidatorService = claimValidatorService;
     }
-
+    // public ResponseEntity<> makeErrorEntity(String message, HttpStatus status){
+    //     return new ResponseEntity<>("Save successful", HttpStatus.OK);
+    // }
     @PostMapping()
     public ResponseEntity<String> saveCompletedClaim(
             @RequestBody Map<String, Object> completedClaimPayload) {
@@ -29,6 +38,23 @@ public class CompletedClaimController {
         String claimantIdpId = "test_id";
 
         // TODO: validate claim against the schema
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            Set<ValidationMessage> errorSet =
+                    claimValidatorService.validateAgainstSchema(
+                            objectMapper.writeValueAsString(completedClaimPayload));
+            if (errorSet.size() == 0) { // How do we want to send back errors to front end?
+                return new ResponseEntity<>(
+                        "Save failed, errors occured", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(
+                    "Save failed, error applying schema to claim payload",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
 
         if (saveStatus) {
