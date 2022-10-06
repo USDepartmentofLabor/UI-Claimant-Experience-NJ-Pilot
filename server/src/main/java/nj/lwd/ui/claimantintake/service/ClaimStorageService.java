@@ -49,6 +49,65 @@ public class ClaimStorageService {
         this.claimantRepository = claimantRepository;
     }
 
+    public boolean completeClaim(String claimantIdpId, Map<String, Object> claimPayload) {
+        logger.debug("Attempting to complete claimant with IDP ID: {}", claimantIdpId);
+
+        Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
+
+        if (existingClaimant.isEmpty()) {
+            logger.debug("No claimant exists with idp id: {}", claimantIdpId);
+            return false;
+        }
+        Claimant claimant = existingClaimant.get();
+
+        Claim claim =
+                claimant.getActivePartialClaim()
+                        .orElseGet(
+                                () -> {
+                                    logger.info(
+                                            "No active partial claim found for claimant {}."
+                                                    + " Creating a new partial claim...",
+                                            claimant.getId());
+                                    Claim newClaim = new Claim();
+                                    claimant.addClaim(newClaim);
+                                    return claimRepository.save(newClaim);
+                                });
+
+        claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_COMPLETE));
+
+        // Make sure we validate before this
+
+        claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_SAVE));
+
+        String s3Key = "%s/%s.json".formatted(claimant.getId(), claim.getId());
+        try {
+            s3Service.upload(claimsBucket, s3Key, claimPayload, this.claimsBucketKmsKey);
+        } catch (AwsServiceException | SdkClientException ex) {
+            logger.error(
+                    "S3 service is not available for claimId {} : {}",
+                    claimantIdpId,
+                    ex.getMessage());
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
+            return false;
+        } catch (IOException ex) {
+            logger.error(
+                    "Unable to process s3 object data from claimId {} : {}",
+                    claimantIdpId,
+                    ex.getMessage());
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
+            return false;
+        }
+
+        claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
+
+        // Something happens here
+
+        claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETED));
+        return true;
+    }
+
     // TODO: Use claimantId instead of claimantIdpId
     public boolean saveClaim(String claimantIdpId, Map<String, Object> claimPayload) {
         // TODO: Persist a claimant on login instead of here (when that functionality exists)

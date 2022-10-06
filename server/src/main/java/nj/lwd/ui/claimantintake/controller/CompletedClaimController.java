@@ -29,7 +29,7 @@ public class CompletedClaimController {
         String claimantIdpId = "test_id";
 
         // TODO: validate claim against the schema
-        var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
+        var saveStatus = claimStorageService.completeClaim(claimantIdpId, completedClaimPayload);
 
         if (saveStatus) {
             return new ResponseEntity<>("Save successful", HttpStatus.OK);
