@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# Generates self-signed TLS certificate and key
+
+set -eu
+
+SUBJ="/O=localdev/CN=sandbox-claimant-intake"
+PREFIX="sandbox-claimant-intake"
+SERVER_CERT=certs/"${PREFIX}".crt
+SERVER_KEY=certs/"${PREFIX}".key
+
+[[ -d certs ]] || mkdir certs
+
+SSL_CONF=certs/nginx-openssl.cnf
+cat > $SSL_CONF <<_END_
+[dn]
+CN                  = sandbox-claimant-intake
+[req]
+distinguished_name  = dn
+[EXT]
+basicConstraints    = critical,CA:false
+subjectAltName      = DNS:sandbox-claimant-intake
+keyUsage            = digitalSignature, keyEncipherment
+extendedKeyUsage    = serverAuth
+_END_
+
+# borrowed from https://letsencrypt.org/docs/certificates-for-localhost/
+openssl req -x509 -out "$SERVER_CERT" -keyout "$SERVER_KEY" \
+  -newkey rsa:2048 -nodes -sha256 \
+  -subj "$SUBJ" -extensions EXT -config "$SSL_CONF"

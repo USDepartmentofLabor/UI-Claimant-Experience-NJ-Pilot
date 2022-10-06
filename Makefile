@@ -45,7 +45,7 @@ e2e-test: ## runs Cypress tests in browser
 	cd e2e && yarn run cypress open
 
 e2e-ci-test: ## runs Cypress tests on the command line
-	cd e2e && yarn cypress run --headless --browser chrome
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443"
 
 e2e-compile-check: ## check e2e for typescript compilation
 	cd e2e && yarn tsc --noEmit
@@ -133,6 +133,9 @@ server-clean: ## cleans the build output and incremental build "Up-to-date" chec
 
 server-task-definition: ## Update the environment placeholders in the server ECS task definition
 	./scripts/render-task-definition --taskdef ops/ecs/server-task-definition.json.tmpl --environment $(environment) > ops/ecs/server-task-definition.json
+
+nginx-cert: ## Create a self-signed certificate for local development with nginx
+	./scripts/generate-nginx-cert
 
 trivy-scan: ## Run trivy vulnerability scan on an image
 	trivy image --ignore-unfixed $(image)
