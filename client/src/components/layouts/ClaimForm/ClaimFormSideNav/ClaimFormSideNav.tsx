@@ -5,7 +5,6 @@ import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
 import { useClaimProgress } from 'hooks/useClaimProgress'
-import { Routes } from 'constants/routes'
 
 type ClaimFormSideNavProps = {
   className?: string
@@ -23,10 +22,8 @@ export const ClaimFormSideNav = ({ className }: ClaimFormSideNavProps) => {
   }
 
   const { continuePath } = useClaimProgress(values, submitCount)
-  const continuePage = continuePath.replace(Routes.HOME, '')
-
   const continuePageIndex = pageDefinitions.findIndex(
-    (p) => p.path === continuePage
+    (p) => p.path === continuePath
   )
 
   const getCompletionStatus = (index: number) => {
