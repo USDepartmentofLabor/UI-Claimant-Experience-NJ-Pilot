@@ -15,7 +15,7 @@ This project uses several tools which are either recommended or required for dev
 This project uses [Make](https://www.gnu.org/software/make/manual/make.html) as a convenience for environment set up
 and other development commands.
 
-> #### :information_source: Note:
+> :information_source: Note:
 >
 > - On Windows, [Winget](https://docs.microsoft.com/en-us/windows/package-manager/winget/)
 >   or [Chocolaty](https://chocolatey.org/) can be used to install Make.
@@ -263,6 +263,37 @@ aws s3api list-objects-v2 --endpoint-url http://localhost:4566 --bucket dol-ui-c
 # to download an object from a particular bucket, for example:
 aws s3api get-object --endpoint-url http://localhost:4566 --bucket dol-ui-claims --key "YOUR_OBJECT_KEY_HERE" "NAME_OF_OUTPUT_FILE"
 ```
+
+### Nginx
+
+In the deployed environments, the frontend and backend applications sit behind
+an Application Load Balancer. We can replicate some of this configuration
+locally by using Nginx.
+
+To use Nginx locally, first run the following command to generate a certificate
+and key for the Nginx server:
+
+```
+make nginx-cert
+```
+
+Note: Do not commit the created certificate or key to the repository. We've
+configured the `.gitignore` file to ignore them and we use a `pre-commit` hook
+that checks for and prevents private keys from being committed.
+
+Next, add this entry to your `/etc/hosts` (or Windows equivalent) file:
+
+```
+127.0.0.1  sandbox-claimant-intake
+```
+
+Then run the following command to start everything in docker:
+
+```
+make dev-up
+```
+
+You can now visit the application at https://sandbox-claimant-intake:8443.
 
 ## CI/CD
 

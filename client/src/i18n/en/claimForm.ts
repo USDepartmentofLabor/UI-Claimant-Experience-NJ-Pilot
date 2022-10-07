@@ -5,7 +5,7 @@ const claimForm = {
     next: 'Next',
     next_step: 'Next: {{stepName}}',
     save_and_exit: 'Save and exit',
-    complete: 'Complete',
+    submit: 'Submit',
   },
   personal: {
     heading: 'Personal information',
@@ -718,6 +718,27 @@ const claimForm = {
     heading: 'The following information has been added to your application:',
     to_edit_visit: 'To edit your information, visit',
     idp_url_text: 'login.gov',
+  },
+  review: {
+    heading: 'Review application',
+    preamble: {
+      heading: 'Before you submit',
+      line1:
+        'Be sure that all of your answers are correct. You will not be able to change any of your answers after you click submit below.',
+      line2:
+        'Remember, the law provides penalties for false statements to obtain benefits.',
+      line3:
+        'After you click submit, wait for the confirmation information to show to be sure we have received your application.',
+    },
+    certify: {
+      label:
+        'I certify that all questions have been answered truthfully. I understand that <0>false and misleading information</0> may result in loss of benefits. In addition, I may be subject to fines and penalties if benefits are improperly paid to me as a result of providing false information.',
+      errors: {
+        mustBeTrue:
+          'You must certify that you have read and understood the above disclosure',
+        required: 'Your certification is required',
+      },
+    },
   },
 }
 

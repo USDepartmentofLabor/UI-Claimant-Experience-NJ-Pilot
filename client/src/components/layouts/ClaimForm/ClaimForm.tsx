@@ -291,7 +291,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                         >
                           {nextPageDefinition
                             ? t('pagination.next')
-                            : t('pagination.complete')}
+                            : t('pagination.submit')}
                         </SubmitButton>
                         <div className="margin-top-1">
                           {!isComplete && (
