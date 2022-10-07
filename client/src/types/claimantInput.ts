@@ -27,8 +27,8 @@ export type ClaimantInput = ScreenerInput &
   EducationAndTrainingInput &
   UnionInput &
   AbleAndAvailableStatusInput &
-  PaymentInput
-// & ReviewInput
+  PaymentInput &
+  ReviewInput
 
 export type ScreenerInput = {
   screener_current_country_us?: boolean
@@ -130,6 +130,10 @@ type EducationAndTrainingInput = Partial<{
   attending_college_or_job_training: boolean
   enrollment: boolean
 }>
+
+type ReviewInput = {
+  certify?: boolean
+}
 
 export type WhoAmI = {
   firstName: string

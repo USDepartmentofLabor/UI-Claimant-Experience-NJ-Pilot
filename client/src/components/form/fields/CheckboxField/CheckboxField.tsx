@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from 'react'
 import { useField } from 'formik'
-import { Checkbox } from '@trussworks/react-uswds'
+import { Checkbox, ErrorMessage, FormGroup } from '@trussworks/react-uswds'
+import { useShowErrors } from 'hooks/useShowErrors'
 
 /**
  * This component renders a checkbox
@@ -18,7 +19,9 @@ export const CheckboxField = ({
   onChange,
   ...inputProps
 }: Optional<React.ComponentProps<typeof Checkbox>, 'id'>) => {
-  const [fieldProps] = useField({ name, type: 'checkbox' })
+  const [fieldProps, metaProps] = useField({ name, type: 'checkbox' })
+
+  const showError = useShowErrors(name)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     fieldProps.onChange(e)
@@ -29,13 +32,16 @@ export const CheckboxField = ({
 
   /* eslint-disable-next-line react/jsx-props-no-spreading */
   return (
-    <Checkbox
-      {...fieldProps}
-      name={name}
-      id={id || name}
-      onChange={handleChange}
-      {...inputProps}
-    />
+    <FormGroup error={showError}>
+      <Checkbox
+        {...fieldProps}
+        name={name}
+        id={id || name}
+        onChange={handleChange}
+        {...inputProps}
+      />
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
+    </FormGroup>
   )
 }
 

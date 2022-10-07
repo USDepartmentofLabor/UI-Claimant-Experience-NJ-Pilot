@@ -8,6 +8,7 @@ import fillIdentityFields from './formPageFilling/identity'
 import fillAbleAndAvailableFields from './formPageFilling/able_and_available'
 import fillPaymentFields from './formPageFilling/payment'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
+import fillReviewFields from './formPageFilling/review'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -107,5 +108,10 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       routing_number: '12345',
       account_number: 'abcdefg',
     })
+    cy.checkA11y()
+    cy.clickNext()
+
+    // Review page
+    fillReviewFields()
   })
 })
