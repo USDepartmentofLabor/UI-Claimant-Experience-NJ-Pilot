@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import NextLink from 'next/link'
 import Head from 'next/head'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -16,6 +17,7 @@ import {
   CLAIMS_AGENT_NUMBER_2,
   CLAIMS_AGENT_NUMBER_3,
 } from 'constants/phoneNumbers'
+import { Routes } from 'constants/routes'
 
 const ScreenerRedirect: NextPage = () => {
   const { t } = useTranslation('redirect')
@@ -166,9 +168,9 @@ const ScreenerRedirect: NextPage = () => {
         <h2 id="military_ip">{t('military_ip.heading')}</h2>
         <p>{t('military_ip.label.line1')}</p>
         <Trans t={t} i18nKey="military_ip.label.line2">
-          <a href="/claim/personal/">
+          <NextLink href={Routes.HOME}>
             Continue without claiming military wages, only non-military NJ wages
-          </a>
+          </NextLink>
         </Trans>
         <p>
           <Trans t={t} i18nKey="military_ip.label.line3">
