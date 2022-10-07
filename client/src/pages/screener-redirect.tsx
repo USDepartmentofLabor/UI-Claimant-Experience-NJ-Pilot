@@ -17,7 +17,7 @@ import {
   CLAIMS_AGENT_NUMBER_2,
   CLAIMS_AGENT_NUMBER_3,
 } from 'constants/phoneNumbers'
-import { Routes } from 'constants/routes'
+import { pageDefinitions } from 'constants/pages/pageDefinitions'
 
 const ScreenerRedirect: NextPage = () => {
   const { t } = useTranslation('redirect')
@@ -168,7 +168,7 @@ const ScreenerRedirect: NextPage = () => {
         <h2 id="military_ip">{t('military_ip.heading')}</h2>
         <p>{t('military_ip.label.line1')}</p>
         <Trans t={t} i18nKey="military_ip.label.line2">
-          <NextLink href={Routes.HOME}>
+          <NextLink href={pageDefinitions[0].path}>
             Continue without claiming military wages, only non-military NJ wages
           </NextLink>
         </Trans>
