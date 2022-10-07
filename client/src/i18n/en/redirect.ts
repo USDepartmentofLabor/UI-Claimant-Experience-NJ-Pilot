@@ -7,9 +7,9 @@ import {
 } from 'constants/phoneNumbers'
 
 const redirect = {
-  page_title: 'Unable to file online',
+  page_title: 'Let’s try another way',
   info_alert: {
-    title: 'You are unable to file online due to the following reasons',
+    title: 'You are unable to use our new form due to the following reasons:',
     items: {
       ip_deny: 'You must be in the U.S. to file. ',
       canada:
@@ -18,6 +18,8 @@ const redirect = {
       other_state:
         'You have not worked in New Jersey within the last 18 months. ',
       disability: 'You might need to file for disability instead. ',
+      military_mvp:
+        "Because you indicated you had military employment, you'll need to apply with our standard form. ",
       military_ip:
         "Because you indicated you had military employment, you'll need to apply with an agent. ",
       maritime:
@@ -53,6 +55,14 @@ const redirect = {
       line1:
         "You answered 'Yes' to the question 'Are you currently disabled and unable to work?' By law, unemployment benefits are only payable if you are able to work. Instead, please file a claim for Temporary Disability Benefits.",
       line2: `Click “Start” below or call <0>${DISABILITY_BENEFITS_AGENT_NUMBER}</0> during our normal business hours from 8:30 AM to 4:30 PM for more information.`,
+    },
+  },
+  military_mvp: {
+    heading: 'Use our standard web form',
+    label: {
+      line1:
+        'We are continuously improving our new form experience, but it does not yet support military workers. Please use our standard web form to continue your application.',
+      button: 'Continue',
     },
   },
   military_ip: {

@@ -65,6 +65,12 @@ const ScreenerRedirect: NextPage = () => {
               </Link>
             </li>
             <li>
+              {t('info_alert.items.military_mvp')}
+              <Link variant="nav" href={'#military_mvp'}>
+                Read more
+              </Link>
+            </li>
+            <li>
               {t('info_alert.items.military_ip')}
               <Link variant="nav" href={'#military_ip'}>
                 Read more
@@ -135,6 +141,23 @@ const ScreenerRedirect: NextPage = () => {
             }
           >
             File a claim
+          </Button>
+        </p>
+      </div>
+
+      <div className={styles.bottom_horizontal_line}>
+        <h2 id="military_mvp">{t('military_mvp.heading')}</h2>
+        <p>{t('military_mvp.label.line1')}</p>
+        <p>
+          <Button
+            type="button"
+            onClick={
+              () =>
+                (window.location.href =
+                  'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess') //TODO change this link
+            }
+          >
+            {t('military_mvp.label.button')}
           </Button>
         </p>
       </div>
