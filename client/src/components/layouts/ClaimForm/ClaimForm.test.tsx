@@ -236,7 +236,7 @@ describe('ClaimForm Layout', () => {
 
       const previousButton = screen.queryByText('pagination.previous')
       const nextButton = screen.queryByText('pagination.next')
-      const completeButton = screen.queryByText('pagination.complete')
+      const completeButton = screen.queryByText('pagination.submit')
       const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
       const claimFormPageHeading = screen.queryByText('Last page', {
         selector: 'h1',
@@ -274,7 +274,7 @@ describe('ClaimForm Layout', () => {
       )
 
       await screen.findByText('Last Page!')
-      const completeButton = screen.getByText('pagination.complete')
+      const completeButton = screen.getByText('pagination.submit')
 
       expect(completeButton).toBeInTheDocument()
 
@@ -298,7 +298,7 @@ describe('ClaimForm Layout', () => {
 
     const previousPageButton = screen.queryByText('pagination.previous')
     const nextButton = screen.queryByText('pagination.next')
-    const completeButton = screen.queryByText('pagination.complete')
+    const completeButton = screen.queryByText('pagination.submit')
     const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
     const missingDefinitionAlert = screen.queryByTestId(
       'missing-page-definition-alert'
