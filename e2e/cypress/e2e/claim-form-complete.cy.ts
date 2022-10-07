@@ -40,7 +40,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       'best-practices': 90,
       seo: 90,
       pwa: 20,
-      performance: 60,
+      performance: 40,
     })
     cy.clickNext()
 
