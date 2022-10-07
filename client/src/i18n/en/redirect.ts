@@ -24,6 +24,7 @@ const redirect = {
         "Because you indicated you had maritime employment, you'll need to apply with an agent. ",
     },
   },
+  read_more: 'Read more.',
   ip_deny: {
     heading: 'You must be in the U.S. to file',
     label:
@@ -46,6 +47,7 @@ const redirect = {
     heading: 'File in another state',
     label:
       'In order to file an Unemployment Insurance claim in New Jersey you must have worked in New Jersey within the last 18 months. You may be eligible to receive Unemployment Insurance benefits from another state in which you worked.',
+    button: 'File in your state',
   },
   disability: {
     heading: 'File for temporary disability benefits',
@@ -54,6 +56,7 @@ const redirect = {
         "You answered 'Yes' to the question 'Are you currently disabled and unable to work?' By law, unemployment benefits are only payable if you are able to work. Instead, please file a claim for Temporary Disability Benefits.",
       line2: `Click “Start” below or call <0>${DISABILITY_BENEFITS_AGENT_NUMBER}</0> during our normal business hours from 8:30 AM to 4:30 PM for more information.`,
     },
+    button: 'File a claim',
   },
   military_ip: {
     heading: 'Apply with an agent (military)',
