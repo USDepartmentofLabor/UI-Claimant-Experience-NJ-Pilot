@@ -238,14 +238,6 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
             <Head>
               <title>{currentPageDefinition.heading}</title>
             </Head>
-            {saveCompleteClaim.isError && (
-              <Alert
-                type="error"
-                heading="Error completing claim, try again later"
-                headingLevel="h6"
-                className="margin-top-3"
-              />
-            )}
             <div className="grid-row grid-gap">
               <StepIndicator
                 className="overflow-hidden width-mobile-lg margin-x-auto"
@@ -270,6 +262,14 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                 className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
                 id="main-content"
               >
+                {saveCompleteClaim.isError && (
+                  <Alert
+                    type="error"
+                    heading="Error completing claim, try again later"
+                    headingLevel="h6"
+                    className="margin-top-1"
+                  />
+                )}
                 <PageHeading
                   ref={headingRef}
                   aria-label={`${currentPageDefinition.heading} ${t(
