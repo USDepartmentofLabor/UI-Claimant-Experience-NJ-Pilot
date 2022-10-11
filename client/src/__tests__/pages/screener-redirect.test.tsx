@@ -23,6 +23,8 @@ describe('Screener-redirect page', () => {
 
     expect(screen.getByText('disability.heading')).toBeInTheDocument()
 
+    expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
+
     expect(screen.getByText('military_ip.heading')).toBeInTheDocument()
 
     expect(screen.getByText('maritime.heading')).toBeInTheDocument()

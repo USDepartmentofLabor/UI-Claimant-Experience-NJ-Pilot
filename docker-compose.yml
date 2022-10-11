@@ -1,6 +1,18 @@
 version: "3.9"
 
 services:
+  nginx:
+    build:
+      context: nginx
+    image: dol-ui-nginx:latest
+    container_name: dol-ui-nginx
+    networks:
+      - front-tier
+      - back-tier
+    volumes:
+      - ./certs:/etc/nginx/certs
+    ports:
+      - "8443:8443"
   client:
     build:
       context: client
@@ -19,9 +31,10 @@ services:
     networks:
       - back-tier
     read_only: true
-    tmpfs: /tmp
     ports:
       - "8080:8080"
+    volumes:
+      - server:/tmp/app
     environment:
       AWS_REGION: us-east-1
       AWS_S3_ENDPOINT_URL: http://localstack:4566
@@ -62,3 +75,5 @@ volumes:
     name: dol-ui-db
   localstack:
     name: dol-ui-localstack
+  server:
+    name: dol-ui-server

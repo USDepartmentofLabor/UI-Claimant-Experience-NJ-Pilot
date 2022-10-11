@@ -97,6 +97,9 @@ describe('ClaimantAddress component', () => {
     // Toggle mailing address off (mailing address is same)
     await user.click(mailingAddressSame)
 
+    // Enter some more info in residence address
+    await user.type(residenceStreetAddress, 'New')
+
     expect(mailingAddress).not.toBeInTheDocument()
 
     // Toggle mailing address on (mailing address is not same)

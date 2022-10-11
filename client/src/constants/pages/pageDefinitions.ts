@@ -8,6 +8,7 @@ import { UnionPageDefinition } from 'pages/claim/union'
 import { AbleAndAvailablePageDefinition } from 'pages/claim/able-and-available'
 import { PaymentPageDefinition } from 'pages/claim/payment'
 import { EducationAndTrainingPageDefinition } from 'pages/claim/education-and-training'
+import { ReviewPageDefinition } from 'pages/claim/review'
 
 export type PageDefinition = {
   heading: string
@@ -30,5 +31,5 @@ export const pageDefinitions: PageDefinition[] = [
   UnionPageDefinition,
   AbleAndAvailablePageDefinition,
   PaymentPageDefinition,
-  // ReviewPageDefinition,
+  ReviewPageDefinition,
 ]

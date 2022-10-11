@@ -16,6 +16,7 @@ import {
   CLAIMS_AGENT_NUMBER_2,
   CLAIMS_AGENT_NUMBER_3,
 } from 'constants/phoneNumbers'
+import { pageDefinitions } from 'constants/pages/pageDefinitions'
 
 const ScreenerRedirect: NextPage = () => {
   const { t } = useTranslation('redirect')
@@ -61,6 +62,12 @@ const ScreenerRedirect: NextPage = () => {
             <li>
               {t('info_alert.items.disability')}
               <Link variant="nav" href={'#disability'}>
+                Read more
+              </Link>
+            </li>
+            <li>
+              {t('info_alert.items.military_mvp')}
+              <Link variant="nav" href={'#military_mvp'}>
                 Read more
               </Link>
             </li>
@@ -140,10 +147,27 @@ const ScreenerRedirect: NextPage = () => {
       </div>
 
       <div className={styles.bottom_horizontal_line}>
+        <h2 id="military_mvp">{t('military_mvp.heading')}</h2>
+        <p>{t('military_mvp.label.line1')}</p>
+        <p>
+          <Button
+            type="button"
+            onClick={
+              () =>
+                (window.location.href =
+                  'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess') //TODO change this link
+            }
+          >
+            {t('military_mvp.label.button')}
+          </Button>
+        </p>
+      </div>
+
+      <div className={styles.bottom_horizontal_line}>
         <h2 id="military_ip">{t('military_ip.heading')}</h2>
         <p>{t('military_ip.label.line1')}</p>
         <Trans t={t} i18nKey="military_ip.label.line2">
-          <a href="/claim/personal/">
+          <a href={pageDefinitions[0].path}>
             Continue without claiming military wages, only non-military NJ wages
           </a>
         </Trans>

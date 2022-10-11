@@ -118,7 +118,7 @@ As the person giving the feedback, if you notice that your comment has been addr
 
 Congratulations :tada::tada:
 
-Once your changes are merged to `main`, they will be eligible to be picked up by CI/CD pipelines for deployment in lower
+Once your changes are merged to `main`, they will be eligible to be picked up by [CI/CD pipelines](./cicd-deployments.md) for deployment in lower
 environments on the path to production.
 
 <!-- TODO: Dependencies + Dependabot -->
