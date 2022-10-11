@@ -3,7 +3,7 @@ export const makeClaimFormRoute = (page: string) =>
   `${CLAIM_FORM_BASE_ROUTE}/${page}`
 
 export const Routes = {
-  HOME: '/home',
+  HOME: '/',
   SCREENER: '/screener',
 
   // Claim Form

@@ -63,18 +63,7 @@ jobs:
           IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
           echo "::set-output name=image-tag::$IMAGE_TAG"
 
-      - name: Build, tag, and push image to Amazon ECR (server-util)
-        id: build-util-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: dol-ui-claimant-intake-server-util-dev
-          IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
-        run: |
-          docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" --build-arg IMAGE_TAG="$IMAGE_TAG" ops/server-util
-          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-      - name: Build, tag, and push image to Amazon ECR (server)
+      - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -91,4 +80,3 @@ jobs:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-image: ${{ steps.build-image.outputs.image }}
-          server-util-image: ${{ steps.build-util-image.outputs.image }}
