@@ -83,7 +83,7 @@ class CompletedClaimControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().is5xxServerError())
+                .andExpect(status().isBadRequest())
                 .andExpect(
                         content()
                                 .string(
