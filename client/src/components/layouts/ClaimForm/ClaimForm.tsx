@@ -217,8 +217,10 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
             saveFormValues(values)
             console.log('got a valid claim')
             const response = await saveCompleteClaim.mutateAsync(values)
-
+            console.log('this is the response')
+            console.log(response)
             if (response.data) {
+              console.log('positive response data')
               await submitForm()
               await router.push({
                 pathname: Routes.HOME,

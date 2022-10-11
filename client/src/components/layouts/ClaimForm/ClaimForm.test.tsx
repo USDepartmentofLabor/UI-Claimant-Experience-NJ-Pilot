@@ -11,10 +11,19 @@ jest.mock('next/router', () => ({
 jest.mock('constants/pages/pageDefinitions')
 
 const useSavePartialClaim = jest.fn()
+const useSaveCompleteClaim = jest.fn()
 jest.mock('queries/useSavePartialClaim', () => ({
   useSavePartialClaim: () => useSavePartialClaim(),
 }))
+jest.mock('queries/useSaveCompleteClaim', () => ({
+  useSaveCompleteClaim: () => useSaveCompleteClaim(),
+}))
 const mutate = jest.fn()
+const mutateAsync = jest.fn()
+
+useSaveCompleteClaim.mockImplementation(() => ({
+  mutateAsync: mutateAsync,
+}))
 useSavePartialClaim.mockImplementation(() => ({
   mutate: mutate,
 }))
@@ -262,6 +271,11 @@ describe('ClaimForm Layout', () => {
       const user = userEvent.setup()
       const mockGetPathName = jest.fn(() => makeClaimFormRoute('last'))
       const mockPush = jest.fn(async () => true)
+      const mockedData = jest.fn(async () => true)
+
+      mutateAsync.mockImplementation(() => ({
+        data: mockedData(),
+      }))
       useRouter.mockImplementation(() => ({
         pathname: mockGetPathName(),
         push: mockPush,
@@ -280,9 +294,13 @@ describe('ClaimForm Layout', () => {
 
       await user.click(completeButton)
 
-      expect(mutate).toHaveBeenCalledTimes(0)
+      expect(mutate).toHaveBeenCalledTimes(1)
+      expect(mutateAsync).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledTimes(1)
-      expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: Routes.HOME,
+        query: { completed: true },
+      })
     })
   })
 

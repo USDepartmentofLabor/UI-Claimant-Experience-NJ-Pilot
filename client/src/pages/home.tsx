@@ -17,7 +17,7 @@ const Home: NextPage = () => {
         <title>{t('page_title')}</title>
       </Head>
       <h1>{t('heading')}</h1>
-      {router.query?.completed && (
+      {router?.query?.completed && (
         <Alert type="success" heading="Claim Completed" headingLevel="h4" />
       )}
 
