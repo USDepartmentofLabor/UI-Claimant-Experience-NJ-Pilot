@@ -28,8 +28,8 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql:42.5.0'
 
     // Liquibase
-    implementation 'org.liquibase:liquibase-core:4.16.1'
-    liquibaseRuntime 'org.liquibase:liquibase-core:4.15.0'
+    implementation 'org.liquibase:liquibase-core:4.17.0'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.17.0'
     liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.16.1'
     liquibaseRuntime 'org.postgresql:postgresql:42.4.1'
     liquibaseRuntime 'org.springframework.boot:spring-boot-starter-data-jpa'
