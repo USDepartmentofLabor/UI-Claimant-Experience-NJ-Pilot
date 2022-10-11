@@ -44,7 +44,7 @@ class CompletedClaimControllerTest {
                                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-    } //
+    }
 
     @Test
     void shouldRejectEmptyClaim() throws Exception {
