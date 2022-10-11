@@ -24,6 +24,7 @@ import Head from 'next/head'
 import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
 import { useWhoAmI } from 'queries/whoami'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
+import { useSaveCompleteClaim } from '../../../queries/useSaveCompleteClaim'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -34,7 +35,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const { t } = useTranslation('claimForm')
   const headingRef = useRef<HTMLHeadingElement>(null)
   const savePartialClaim = useSavePartialClaim()
-
+  const saveCompleteClaim = useSaveCompleteClaim()
   const currentPath = router.pathname
   const currentPageDefinition = pageDefinitions.find(
     (pageDefinition) => pageDefinition.path == currentPath
@@ -200,14 +201,30 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
           }
         }
 
-        const handleClickComplete: MouseEventHandler<HTMLButtonElement> = (
-          e
-        ) => {
+        const handleClickComplete: MouseEventHandler<
+          HTMLButtonElement
+        > = async (e) => {
           e.preventDefault()
-          if (isValid) {
-            submitForm().then(async () => {
-              await router.push(Routes.HOME)
-            })
+
+          console.log('got in handleclickcomplete')
+          // check if all pages are valid
+          const valid = pageDefinitions.every((page) => {
+            console.log(page.path)
+            return page.validationSchema.isValidSync(values)
+          })
+          console.log('was it valid?: ' + valid)
+          if (valid) {
+            saveFormValues(values)
+            console.log('got a valid claim')
+            const response = await saveCompleteClaim.mutateAsync(values)
+
+            if (response.data) {
+              await submitForm()
+              await router.push({
+                pathname: Routes.HOME,
+                query: { completed: true },
+              })
+            }
           } else {
             setFormikState((previousState) => ({
               ...previousState,
@@ -226,6 +243,13 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
             <Head>
               <title>{currentPageDefinition.heading}</title>
             </Head>
+            {saveCompleteClaim.isError && (
+              <Alert
+                type="error"
+                heading="Error completing claim, try again later"
+                headingLevel="h5"
+              />
+            )}
             <div className="grid-row grid-gap">
               <StepIndicator
                 className="overflow-hidden width-mobile-lg margin-x-auto"
