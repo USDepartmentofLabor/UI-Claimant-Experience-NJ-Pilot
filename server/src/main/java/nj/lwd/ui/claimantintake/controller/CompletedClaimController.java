@@ -27,9 +27,11 @@ public class CompletedClaimController {
         this.claimStorageService = claimStorageService;
         this.claimValidatorService = claimValidatorService;
     }
-    // public ResponseEntity<> makeErrorEntity(String message, HttpStatus status){
-    //     return new ResponseEntity<>("Save successful", HttpStatus.OK);
-    // }
+
+    public ResponseEntity<String> makeErrorEntity(String message) {
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @PostMapping()
     public ResponseEntity<String> saveCompletedClaim(
             @RequestBody Map<String, Object> completedClaimPayload) {
@@ -44,23 +46,25 @@ public class CompletedClaimController {
             Set<ValidationMessage> errorSet =
                     claimValidatorService.validateAgainstSchema(
                             objectMapper.writeValueAsString(completedClaimPayload));
-            if (errorSet.size() == 0) { // How do we want to send back errors to front end?
-                return new ResponseEntity<>(
-                        "Save failed, errors occured", HttpStatus.INTERNAL_SERVER_ERROR);
+            if (errorSet.size() > 0) {
+                // TODO - change here when detailed error msgs are desired on the fronted
+                return makeErrorEntity(
+                        "Save failed, the schema was the correct JSON format but had invalid"
+                                + " data.");
             }
 
         } catch (Exception e) {
 
-            return new ResponseEntity<>(
-                    "Save failed, error applying schema to claim payload",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return makeErrorEntity(
+                    "Save failed, error occured accessing schema with IO or invalid JSON was"
+                            + " received");
         }
         var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
 
         if (saveStatus) {
             return new ResponseEntity<>("Save successful", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return makeErrorEntity("Save failed");
         }
     }
 }
