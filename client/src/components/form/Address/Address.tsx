@@ -3,6 +3,7 @@ import TextField from '../fields/TextField/TextField'
 import { FormGroup } from '@trussworks/react-uswds'
 import { StateAbbrev, StatesDropdown } from '../StatesDropdown/StatesDropdown'
 import styles from 'styles/pages/claim/personal.module.scss'
+import { ChangeEventHandler } from 'react'
 
 interface IAddressLabels {
   address: string
@@ -15,9 +16,15 @@ interface IAddressProps {
   labels?: IAddressLabels
   basename: string
   stateSlice?: StateAbbrev[]
+  onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>
 }
 
-export const Address = ({ labels, basename, stateSlice }: IAddressProps) => {
+export const Address = ({
+  labels,
+  basename,
+  stateSlice,
+  onChange,
+}: IAddressProps) => {
   const { t } = useTranslation('common')
   const defaultLabels: IAddressLabels = {
     address: t('address.address.label'),
@@ -33,6 +40,7 @@ export const Address = ({ labels, basename, stateSlice }: IAddressProps) => {
         label={labels ? labels.address : defaultLabels.address}
         type="text"
         data-testid={`${basename}.address`}
+        onChange={onChange}
       />
       <div
         className="usa-memorable-date"
@@ -44,6 +52,7 @@ export const Address = ({ labels, basename, stateSlice }: IAddressProps) => {
           type="text"
           data-testid={`${basename}.city`}
           className={styles.city}
+          onChange={onChange}
         />
         <StatesDropdown
           name={`${basename}.state`}
@@ -51,6 +60,7 @@ export const Address = ({ labels, basename, stateSlice }: IAddressProps) => {
           data-testid={`${basename}.state`}
           startEmpty
           stateSlice={stateSlice}
+          onChange={onChange}
         />
       </div>
       <TextField
@@ -61,6 +71,7 @@ export const Address = ({ labels, basename, stateSlice }: IAddressProps) => {
         inputMode="numeric"
         data-testid={`${basename}.zipcode`}
         className={styles.zipcode}
+        onChange={onChange}
       />
     </FormGroup>
   )
