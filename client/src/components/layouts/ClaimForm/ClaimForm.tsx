@@ -121,6 +121,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   }
 
   const saveFormValues = (values: ClaimantInput) => {
+    saveCompleteClaim.reset()
     savePartialClaim.mutate(values)
   }
 
@@ -206,21 +207,13 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         > = async (e) => {
           e.preventDefault()
 
-          console.log('got in handleclickcomplete')
-          // check if all pages are valid
           const valid = pageDefinitions.every((page) => {
-            console.log(page.path)
             return page.validationSchema.isValidSync(values)
           })
-          console.log('was it valid?: ' + valid)
           if (valid) {
             saveFormValues(values)
-            console.log('got a valid claim')
             const response = await saveCompleteClaim.mutateAsync(values)
-            console.log('this is the response')
-            console.log(response)
             if (response.data) {
-              console.log('positive response data')
               await submitForm()
               await router.push({
                 pathname: Routes.HOME,
@@ -249,7 +242,8 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
               <Alert
                 type="error"
                 heading="Error completing claim, try again later"
-                headingLevel="h5"
+                headingLevel="h6"
+                className="margin-top-3"
               />
             )}
             <div className="grid-row grid-gap">
