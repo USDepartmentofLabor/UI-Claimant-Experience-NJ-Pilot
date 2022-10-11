@@ -68,7 +68,7 @@ const ScreenerRedirect: NextPage = () => {
             <li>
               {t('info_alert.items.military_mvp')}
               <Link variant="nav" href={'#military_mvp'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
