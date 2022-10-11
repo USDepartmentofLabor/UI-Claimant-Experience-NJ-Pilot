@@ -3,31 +3,6 @@
   "executionRoleArn": "ecs-task-execution-role-dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
   "containerDefinitions": [
     {
-      "name": "permissions-init",
-      "image": null,
-      "entryPoint": ["sh", "-c"],
-      "command": ["chmod 1777 /tmp"],
-      "mountPoints": [
-        {
-          "containerPath": "/tmp",
-          "sourceVolume": "app_tmp"
-        }
-      ],
-      "essential": false,
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "secretOptions": null,
-        "options": {
-          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-server",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "dol-ui-claimant-intake-server-util"
-        }
-      },
-      "cpu": null,
-      "memory": null,
-      "readonlyRootFilesystem": true
-    },
-    {
       "dnsSearchDomains": null,
       "environmentFiles": null,
       "logConfiguration": {
@@ -61,7 +36,7 @@
       "dnsServers": null,
       "mountPoints": [
         {
-          "containerPath": "/tmp",
+          "containerPath": "/tmp/app",
           "sourceVolume": "app_tmp"
         }
       ],
@@ -104,12 +79,7 @@
       "image": null,
       "startTimeout": null,
       "firelensConfiguration": null,
-      "dependsOn": [
-        {
-          "containerName": "permissions-init",
-          "condition": "SUCCESS"
-        }
-      ],
+      "dependsOn": null,
       "disableNetworking": null,
       "interactive": null,
       "healthCheck": null,

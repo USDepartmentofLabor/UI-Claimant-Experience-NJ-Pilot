@@ -2,6 +2,8 @@ FROM eclipse-temurin:17.0.4_8-jdk AS builder
 
 WORKDIR /app
 
+RUN mkdir -p /tmp/app
+
 COPY ./gradle/wrapper ./gradle/wrapper
 COPY ./gradlew .
 COPY ./settings.gradle .
@@ -16,6 +18,9 @@ FROM gcr.io/distroless/java17-debian11@sha256:e10f5d5444139757302ae766416f2d62c2
 
 WORKDIR /app
 
+COPY --from=builder --chown=65532:65532 /tmp/app /tmp/app
 COPY --from=builder /app/build/libs/ui-claimant-intake-0.0.1-SNAPSHOT.jar .
 
-CMD ["ui-claimant-intake-0.0.1-SNAPSHOT.jar"]
+VOLUME ["/tmp/app"]
+
+CMD ["-Djava.io.tmpdir=/tmp/app", "ui-claimant-intake-0.0.1-SNAPSHOT.jar"]

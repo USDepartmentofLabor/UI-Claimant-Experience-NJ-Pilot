@@ -217,45 +217,48 @@ describe('TextField component', () => {
       })
     })
     describe('with prefix or suffix', () => {
-      it('shows appropriate error styling', async () => {
-        const user = userEvent.setup()
-        const mockMeta = {
-          touched: true,
-          error: "There's an error!",
-          initialError: "There's an error!",
-          initialTouched: true,
-          initialValue: '',
-          value: '',
+      it.each([{ inputPrefix: 'SomePrefix' }, { inputSuffix: 'SomeSuffix' }])(
+        'shows appropriate error styling with prefix',
+        async (prefixOrSuffixProp) => {
+          const user = userEvent.setup()
+          const mockMeta = {
+            touched: true,
+            error: "There's an error!",
+            initialError: "There's an error!",
+            initialTouched: true,
+            initialValue: '',
+            value: '',
+          }
+          const mockField = {
+            value: '',
+            checked: false,
+            onChange: jest.fn(),
+            onBlur: jest.fn(),
+            multiple: undefined,
+            name: 'firstName',
+          }
+          mockUseField.mockReturnValue([mockField, mockMeta])
+
+          render(
+            <TextField
+              name="firstName"
+              label="First Name"
+              type="text"
+              {...prefixOrSuffixProp}
+            />
+          )
+
+          const inputGroup = screen.getByTestId('firstName-input-group')
+          const textField = screen.getByLabelText('First Name')
+
+          expect(inputGroup).toHaveClass('usa-input-group--error')
+
+          await user.click(textField)
+          expect(textField).toHaveFocus()
+          expect(inputGroup).not.toHaveClass('usa-input-group--error')
+          expect(inputGroup).toHaveClass('is-focused')
         }
-        const mockField = {
-          value: '',
-          checked: false,
-          onChange: jest.fn(),
-          onBlur: jest.fn(),
-          multiple: undefined,
-          name: 'firstName',
-        }
-        mockUseField.mockReturnValue([mockField, mockMeta])
-
-        render(
-          <TextField
-            name="firstName"
-            label="First Name"
-            type="text"
-            inputPrefix={'SomePrefix'}
-          />
-        )
-
-        const inputGroup = screen.getByTestId('firstName-input-group')
-        const textField = screen.getByLabelText('First Name')
-
-        expect(inputGroup).toHaveClass('usa-input-group--error')
-
-        await user.click(textField)
-        expect(textField).toHaveFocus()
-        expect(inputGroup).not.toHaveClass('usa-input-group--error')
-        expect(inputGroup).toHaveClass('is-focused')
-      })
+      )
     })
   })
 

@@ -1,4 +1,10 @@
-import React, { FocusEventHandler, ReactNode, useRef, useState } from 'react'
+import React, {
+  ChangeEventHandler,
+  FocusEventHandler,
+  ReactNode,
+  useRef,
+  useState,
+} from 'react'
 import { useField } from 'formik'
 import {
   FormGroup,
@@ -22,7 +28,6 @@ interface ITextFieldProps extends TextInputProps {
   hint?: ReactNode
   inputPrefix?: ReactNode
   inputSuffix?: ReactNode
-  fieldAddon?: ReactNode
 }
 
 // TODO consider from https://github.com/transcom/mymove/tree/master/src/components/Hint
@@ -46,7 +51,7 @@ export const TextField = ({
   hint,
   inputPrefix,
   inputSuffix,
-  fieldAddon,
+  onChange,
   ...textInputProps
 }: ITextFieldProps) => {
   const [fieldProps, metaProps] = useField({
@@ -65,6 +70,13 @@ export const TextField = ({
     fieldProps.onBlur(e)
   }
 
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    fieldProps.onChange(e)
+    if (onChange) {
+      onChange(e)
+    }
+  }
+
   const textInput = (
     <TextInput
       {...fieldProps}
@@ -74,6 +86,7 @@ export const TextField = ({
       onFocus={() => setFocused(true)}
       onBlur={handleBlur}
       id={textInputProps.id || textInputProps.name}
+      onChange={handleChange}
       {...textInputProps}
       inputRef={textFieldRef}
     />
@@ -108,7 +121,6 @@ export const TextField = ({
         {hint}
       </div>
       {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
-      {fieldAddon ? fieldAddon : null}
     </FormGroup>
   )
 }
