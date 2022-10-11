@@ -10,9 +10,6 @@ inputs:
   server-image:
     description: The server image to deploy
     required: true
-  server-util-image:
-    description: The server util image to deploy
-    required: true
 runs:
   using: "composite"
   steps:
@@ -35,19 +32,11 @@ runs:
       run: |
         make server-task-definition environment=${{ inputs.deploy-env }}
 
-    - name: Fill in the new image ID in the Amazon ECS task definition (server-util)
-      id: task-def-util
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ops/ecs/server-task-definition.json
-        container-name: permissions-init
-        image: ${{ inputs.server-util-image }}
-
-    - name: Fill in the new image ID in the Amazon ECS task definition (server)
+    - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ steps.task-def-util.outputs.task-definition }}
+        task-definition: ops/ecs/server-task-definition.json
         container-name: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}
         image: ${{ inputs.server-image }}
 
