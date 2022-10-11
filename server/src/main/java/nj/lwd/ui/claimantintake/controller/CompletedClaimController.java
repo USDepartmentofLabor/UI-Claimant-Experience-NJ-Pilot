@@ -2,6 +2,7 @@ package nj.lwd.ui.claimantintake.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.ValidationMessage;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
@@ -28,10 +29,6 @@ public class CompletedClaimController {
         this.claimValidatorService = claimValidatorService;
     }
 
-    public ResponseEntity<String> makeErrorEntity(String message) {
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @PostMapping()
     public ResponseEntity<String> saveCompletedClaim(
             @RequestBody Map<String, Object> completedClaimPayload) {
@@ -39,32 +36,30 @@ public class CompletedClaimController {
         //       place. For now, just make up a static IdpId and use that for all claims
         String claimantIdpId = "test_id";
 
-        // TODO: validate claim against the schema
         ObjectMapper objectMapper = new ObjectMapper();
-
         try {
             Set<ValidationMessage> errorSet =
                     claimValidatorService.validateAgainstSchema(
                             objectMapper.writeValueAsString(completedClaimPayload));
             if (errorSet.size() > 0) {
-                // TODO - change here when detailed error msgs are desired on the fronted
-                return makeErrorEntity(
-                        "Save failed, the schema was the correct JSON format but had invalid"
-                                + " data.");
+                // TODO - change here when detailed error msgs are desired on the frontend
+                return new ResponseEntity<>(
+                        "Save failed, the schema was the correct JSON format but had invalid data.",
+                        HttpStatus.BAD_REQUEST);
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
 
-            return makeErrorEntity(
-                    "Save failed, error occured accessing schema with IO or invalid JSON was"
-                            + " received");
+            return new ResponseEntity<>(
+                    "Save failed, error occured accessing or reading the schema on the server side",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
 
+        var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
         if (saveStatus) {
             return new ResponseEntity<>("Save successful", HttpStatus.OK);
         } else {
-            return makeErrorEntity("Save failed");
+            return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
