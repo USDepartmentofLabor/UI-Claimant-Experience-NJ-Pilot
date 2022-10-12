@@ -2,6 +2,7 @@ package nj.lwd.ui.claimantintake.controller;
 
 import java.util.Map;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
+import nj.lwd.ui.claimantintake.service.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,8 @@ public class CompletedClaimController {
 
     @PostMapping()
     public ResponseEntity<String> saveCompletedClaim(
-            @RequestBody Map<String, Object> completedClaimPayload) {
+            @RequestBody Map<String, Object> completedClaimPayload,
+            SubmissionService submissionService) {
         // TODO: Get claimant id from session and use that instead of the idp_id when auth is in
         //       place. For now, just make up a static IdpId and use that for all claims
         String claimantIdpId = "test_id";
@@ -32,10 +34,13 @@ public class CompletedClaimController {
         var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
 
         if (saveStatus) {
+            boolean navaAPISuccess = submissionService.submitClaim(completedClaimPayload);
 
-            return new ResponseEntity<>("Save successful", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            if (navaAPISuccess) {
+                return new ResponseEntity<>("Save successful", HttpStatus.OK);
+            }
         }
+
+        return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
