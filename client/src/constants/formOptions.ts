@@ -33,7 +33,7 @@ export const raceOptions = [
 ] as const
 export type RaceOption = typeof raceOptions[number]
 
-export const paymentMethodOptions = ['debit', 'direct_deposit'] as const
+export const paymentMethodOptions = ['direct_deposit', 'debit'] as const
 export type PaymentMethodOption = typeof paymentMethodOptions[number]
 
 export const accountTypeOptions = ['checking', 'savings'] as const

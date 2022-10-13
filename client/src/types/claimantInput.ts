@@ -85,6 +85,8 @@ type PaymentInput = {
   LOCAL_re_enter_routing_number?: string
   account_number?: string
   LOCAL_re_enter_account_number?: string
+  acknowledge_direct_deposit_option?: boolean
+  apply_for_increased_payment_for_dependents?: boolean
 }
 
 type PersonalInput = ClaimantNameInput & ClaimantAddressInput

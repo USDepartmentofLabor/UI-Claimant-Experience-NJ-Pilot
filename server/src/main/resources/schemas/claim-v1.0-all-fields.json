@@ -940,10 +940,14 @@
       "enum": ["checking", "savings"]
     },
     "routing_number": {
-      "type": "string"
+      "type": "string",
+      "maxLength": 9,
+      "pattern": "/^\\d+$/"
     },
     "account_number": {
-      "type": "string"
+      "type": "string",
+      "maxLength": 17,
+      "pattern": "/^\\d+$/"
     },
     "acknowledge_direct_deposit_option": {
       "description": "Acknowledges that the claimant has the option to use direct deposit",
