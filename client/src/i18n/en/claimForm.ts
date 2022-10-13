@@ -584,23 +584,59 @@ const claimForm = {
   },
   payment: {
     heading: 'Payment information',
+    header_description: {
+      line1:
+        "Once you're approved for benefits, you can have your payments directly deposited into your bank account or loaded onto a prepaid debit card.",
+      line2: 'Questions? Please visit our <0>payments information page</0>.',
+    },
     federal_income_tax_withheld: {
+      header: '<strong>Taxes and deductions</strong>',
+      description:
+        'Unemployment insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts required to be deducted and withheld by law.',
       label:
-        'Would you like to have 10% federal income tax withheld from your benefits payments?',
+        'Would you like to withhold 10% of your benefits for federal taxes?',
       help_text:
-        'Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts required to be deducted and withheld by law.',
+        'If you don’t withhold now, you may be required to pay them later on when you file your taxes.',
       errors: {
         required: 'Your tax withholding preference is required',
       },
     },
     payment_method: {
+      header: '<strong>Benefits payments</strong>',
       label: 'How would you like to receive your benefits payments?',
+      direct_deposit_description:
+        "Direct deposit can take up to 7 days to take effect, but it's usually faster than the debit card option.",
+      debit_card_description:
+        'Your debit card will be sent via regular mail in a plain, unmarked envelope. Benefits will be transferred to your debit card within two business days after you claim your benefits.',
       options: {
-        debit: 'Prepaid debit card mailed to me',
-        direct_deposit: 'Direct deposit to my bank account',
+        debit: 'Prepaid debit card',
+        direct_deposit: 'Direct deposit (faster)',
       },
       errors: {
         required: 'Your payment preference is required',
+      },
+      acknowledge_direct_deposit_option: {
+        label:
+          'I acknowledge that the New Jersey Division of Unemployment Insurance (UI) offers unemployed workers the option to have their benefits deposited directly into their personal bank accounts. Direct deposit is a convenient, safe, and reliable way to receive your benefits. Funds will normally be available in your account within two full business days from the day you certify for benefits. Before attempting to use those funds, verify with your bank that the deposit cleared your account.',
+        errors: {
+          required: 'Your acknowledgement is required',
+          mustBeTrue:
+            'You must acknowledge that you have read and understood the above disclosure',
+        },
+      },
+    },
+    apply_for_increased_payment_for_dependents: {
+      header: '<strong>Dependency benefits</strong>',
+      label:
+        'Are you interested in applying for an increased payment based on your dependents?',
+      description: {
+        line1:
+          'You may qualify for an increase to your benefit amount based on your family’s situation. If you are not receiving the max benefit amount, and you are interested in an increased rate for Dependency Benefits, you will be required to provide proof of the dependents you are claiming along with supporting legal documentation. To be eligible, your spouse/civil union partner cannot be employed during the week you establish your claim or already be collecting dependency benefits. <0>Read more about additional eligibility requirements here</0>.',
+        line2:
+          'If interested, within a few business days you will receive two emails—one explaining who could be eligible for dependency benefits, and a second with a link to an online application where you will be asked to answer a few questions and submit further information.',
+      },
+      errors: {
+        required: 'Your dependency benefits preference is required',
       },
     },
     account_type: {
@@ -615,7 +651,11 @@ const claimForm = {
     },
     routing_number: {
       label: 'Routing number',
-      errors: { required: 'Routing number is required' },
+      errors: {
+        required: 'Routing number is required',
+        incorrectLength: 'Routing number must be exactly 9 characters',
+        digitsOnly: 'Routing number can only be numbers',
+      },
     },
     re_enter_routing_number: {
       label: 'Re-enter routing number',
@@ -626,13 +666,30 @@ const claimForm = {
     },
     account_number: {
       label: 'Account number',
-      errors: { required: 'Account number is required' },
+      errors: {
+        required: 'Account number is required',
+        maxLength: 'Account number must be at most 17 digits',
+        digitsOnly: 'Account number can only be numbers',
+      },
     },
     re_enter_account_number: {
       label: 'Re-enter account number',
       errors: {
         mustMatch: 'Must match account number',
         required: 'Re-enter account number is required',
+      },
+    },
+    routing_and_account_number: {
+      label: '<strong>How do I find these numbers?</strong>',
+      image_alt:
+        'A picture of a check showing where to find the routing and account numbers',
+      description: {
+        line1:
+          'The <strong>routing number</strong> is usually on the bottom-left corner of checks, and is always 9 numbers.',
+        line2:
+          'The <strong>account number</strong> is usually to the right of the routing number and slightly longer.',
+        line3:
+          'You may also find your routing and account numbers on your online bank account or mobile app.',
       },
     },
   },

@@ -15,17 +15,23 @@ describe('Payment page', () => {
         <PaymentInformation />
       </Formik>
     )
+    paymentMethodOptions.forEach((option) => {
+      const paymentMethodRadio = screen.getByRole('radio', {
+        name: `payment_method.options.${option}`,
+      })
+      expect(paymentMethodRadio).not.toBeChecked()
+    })
     ;['yes', 'no'].forEach((option) => {
       const federalTaxWithheldRadio = screen.getByTestId(
         `federal_income_tax_withheld.${option}`
       )
       expect(federalTaxWithheldRadio).not.toBeChecked()
     })
-    paymentMethodOptions.forEach((option) => {
-      const paymentMethodRadio = screen.getByRole('radio', {
-        name: `payment_method.options.${option}`,
-      })
-      expect(paymentMethodRadio).not.toBeChecked()
+    ;['yes', 'no'].forEach((option) => {
+      const dependencyBenefitsRadio = screen.getByTestId(
+        `apply_for_increased_payment_for_dependents.${option}`
+      )
+      expect(dependencyBenefitsRadio).not.toBeChecked()
     })
   })
 
@@ -60,7 +66,32 @@ describe('Payment page', () => {
       expect(
         screen.getByLabelText('re_enter_account_number.label')
       ).toBeInTheDocument()
+      expect(
+        screen.getByLabelText(
+          'payment_method.acknowledge_direct_deposit_option.label'
+        )
+      ).toBeInTheDocument()
     })
+
+    await user.type(screen.getByLabelText('routing_number.label'), '012345678')
+    await user.type(
+      screen.getByLabelText('re_enter_routing_number.label'),
+      '012345678'
+    )
+    await user.type(
+      screen.getByLabelText('account_number.label'),
+      '01234567890123'
+    )
+    await user.type(
+      screen.getByLabelText('re_enter_account_number.label'),
+      '01234567890123'
+    )
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: 'payment_method.acknowledge_direct_deposit_option.label',
+      })
+    )
+
     // check that values get cleared when debit is chosen
     await user.click(
       screen.getByRole('radio', {
@@ -87,5 +118,10 @@ describe('Payment page', () => {
     expect(
       screen.getByRole('textbox', { name: 're_enter_account_number.label' })
     ).toHaveValue('')
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'payment_method.acknowledge_direct_deposit_option.label',
+      })
+    ).not.toBeChecked()
   })
 })

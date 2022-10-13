@@ -378,12 +378,22 @@
       "enum": ["checking", "savings"]
     },
     "routing_number": {
-      "type": "string"
+      "type": "string",
+      "maxLength": 9,
+      "pattern": "/^\\d+$/"
     },
     "account_number": {
-      "type": "string"
+      "type": "string",
+      "maxLength": 17,
+      "pattern": "/^\\d+$/"
+    },
+    "acknowledge_direct_deposit_option": {
+      "type": "boolean"
     },
     "federal_income_tax_withheld": {
+      "type": "boolean"
+    },
+    "apply_for_increased_payment_for_dependents": {
       "type": "boolean"
     }
   },
@@ -408,7 +418,9 @@
     "required_to_seek_work_through_hiring_hall",
     "can_begin_work_immediately",
     "has_collected_disability",
-    "federal_income_tax_withheld"
+    "payment_method",
+    "federal_income_tax_withheld",
+    "apply_for_increased_payment_for_dependents"
   ],
   "allOf": [
     {
@@ -505,7 +517,12 @@
         }
       },
       "then": {
-        "required": ["account_type", "routing_number", "accounting_number"]
+        "required": [
+          "account_type",
+          "routing_number",
+          "account_number",
+          "acknowledge_direct_deposit_option"
+        ]
       }
     },
     {

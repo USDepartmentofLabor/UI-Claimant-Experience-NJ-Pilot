@@ -102,11 +102,12 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Payment page
     fillPaymentFields({
-      federal_income_tax_withheld: 'no',
       payment_method: 'direct_deposit',
       account_type: 'checking',
-      routing_number: '12345',
-      account_number: 'abcdefg',
+      routing_number: '012345678',
+      account_number: '01234567890123',
+      federal_income_tax_withheld: 'no',
+      apply_for_increased_payment_for_dependents: 'yes',
     })
     cy.checkA11y()
     cy.clickNext()
