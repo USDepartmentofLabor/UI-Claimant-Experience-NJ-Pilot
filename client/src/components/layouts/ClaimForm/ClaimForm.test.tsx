@@ -20,9 +20,11 @@ jest.mock('queries/useSaveCompleteClaim', () => ({
 }))
 const mutate = jest.fn()
 const mutateAsync = jest.fn()
+const reset = jest.fn()
 
 useSaveCompleteClaim.mockImplementation(() => ({
   mutateAsync: mutateAsync,
+  reset: reset,
 }))
 useSavePartialClaim.mockImplementation(() => ({
   mutate: mutate,
