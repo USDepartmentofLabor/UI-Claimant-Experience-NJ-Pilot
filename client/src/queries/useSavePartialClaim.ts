@@ -4,7 +4,7 @@ import httpclient from 'utils/http/httpclient'
 import { APIResponseType } from '../types/ResponseTypes'
 
 const savePartialClaim = (claim: Partial<Claim>) => {
-  return httpclient.post<APIResponseType>('/api/partial-claim', claim, {
+  return httpclient.post<APIResponseType>('/intake-api/partial-claim', claim, {
     withCredentials: false,
     headers: {
       'Content-Type': 'application/json',

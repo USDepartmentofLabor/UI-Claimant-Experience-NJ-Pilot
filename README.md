@@ -180,9 +180,9 @@ make server-bootRun
 
 The web server exposes several API endpoints, and uses swagger as a self-documenting API tool.
 
-To use the swagger user interface `/api/swagger-ui.html`
+To use the swagger user interface `/intake-api/swagger-ui.html`
 
-To view the JSON-formatted api documentation, navigate to `/api/v3/api-docs`
+To view the JSON-formatted api documentation, navigate to `/intake-api/v3/api-docs`
 
 ## Docker setup
 
