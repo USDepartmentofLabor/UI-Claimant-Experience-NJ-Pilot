@@ -2,8 +2,8 @@ on:
   push:
     branches:
       - 533-ab-schema-github-action-on-merging
-    # paths:
-    #   - \server\main\resources\schemas\claim-v1.0-all-fields.json
+    paths:
+      - \server\main\resources\schemas\claim-v1.0-all-fields.json
 jobs:
   slackNotification:
     name: Slack Schema Change Notification
@@ -16,13 +16,13 @@ jobs:
           # For posting a simple plain text message
           payload: |
             {
-              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "text": "Nava team, the schema claim-v1.0.all-fields has been changed. See this commit for details: \n${{github.event.head_commit.url }}",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    "text": "Nava team, the schema claim-v1.0.all-fields has been changed. See this commit for details: \n${{github.event.head_commit.url }}"
                   }
                 }
               ]
