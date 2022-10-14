@@ -3,7 +3,7 @@ on:
     branches:
       - 533-ab-schema-github-action-on-merging
     paths:
-      - \server\main\resources\schemas\claim-v1.0-all-fields.json
+      - ./server/main/resources/schemas/claim-v1.0-all-fields.json
 jobs:
   slackNotification:
     name: Slack Schema Change Notification
