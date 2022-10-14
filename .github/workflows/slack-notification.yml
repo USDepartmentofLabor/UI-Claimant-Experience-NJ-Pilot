@@ -13,8 +13,6 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
         with:
-          #              # "text": "Nava team, the schema claim-v1.0.all-fields has been changed. See this commit for details:\n<${{github.event.head_commit.url }}|See this commit for details>",
-
           payload: |
             {
               "blocks": [
