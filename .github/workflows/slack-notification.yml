@@ -16,13 +16,13 @@ jobs:
           # For posting a simple plain text message
           payload: |
             {
-              "text": "Nava team, the schema claim-v1.0.all-fields has been changed. See this commit for details: \n${{github.event.head_commit.url }}",
+              "text": "Nava team, the schema claim-v1.0.all-fields has been changed. See this commit for details:\n<${{github.event.head_commit.url }}|See this commit for details>",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Nava team, the schema claim-v1.0.all-fields has been changed. See this commit for details: \n${{github.event.head_commit.url }}"
+                    "text": "Nava team, the schema claim-v1.0.all-fields has been changed.\n<${{github.event.head_commit.url }}|See this commit for details>"
                   }
                 }
               ]
