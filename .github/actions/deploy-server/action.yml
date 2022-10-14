@@ -10,12 +10,22 @@ inputs:
   server-image:
     description: The server image to deploy
     required: true
+  db-migrations-subnet:
+    description: The subnet to run db migrations in
+    required: true
+  db-migrations-security-group:
+    description: The security group for use by db migration tasks
+    required: true
 runs:
   using: "composite"
   steps:
     - uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984
       with:
         python-version: "3.10"
+
+    - name: Install python dependencies
+      shell: bash
+      run: pip install -r requirements-ci.txt
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
@@ -27,23 +37,56 @@ runs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@9149ade017c57f86dea2f76a01f8b2d5bd06b10f
 
-    - name: Set environment name in ECS task definition template
+    - name: Set environment name in ECS task definition template (migrations)
+      shell: bash
+      run: |
+        make db-migrations-task-definition environment=${{ inputs.deploy-env }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition (migrations)
+      id: task-def-migrations
+      uses: aws-actions/amazon-ecs-render-task-definition@374ee96751fffe528c09b5f427848da60469bb55
+      with:
+        task-definition: ops/ecs/db-migrations-task-definition.json
+        container-name: dol-ui-claimant-intake-db-migrate-${{ inputs.deploy-env }}
+        image: ${{ inputs.server-image }}
+
+    - name: Deploy Amazon ECS task definition (migrations)
+      id: deploy-task-def-migrations
+      uses: aws-actions/amazon-ecs-deploy-task-definition@3cc43061dd30ad47511af35bca46e2c1435b9035
+      with:
+        task-definition: ${{ steps.task-def-migrations.outputs.task-definition }}
+        cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+
+    - name: Run DB migrations ECS task
+      env:
+        TASK_DEFINITION: ${{ steps.deploy-task-def-migrations.outputs.task-definition-arn }}
+        SUBNET: ${{ inputs.db-migrations-subnet }}
+        SECURITY_GROUP: ${{ inputs.db-migrations-security-group }}
+      shell: bash
+      run: |
+        python scripts/run-db-migrations-task.py \
+          --taskdef "$TASK_DEFINITION" \
+          --cluster dol-ui-claimant-intake-${{ inputs.deploy-env }} \
+          --subnet "$SUBNET" \
+          --sg "$SECURITY_GROUP"
+
+    - name: Set environment name in ECS task definition template (server)
       shell: bash
       run: |
         make server-task-definition environment=${{ inputs.deploy-env }}
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
+    - name: Fill in the new image ID in the Amazon ECS task definition (server)
+      id: task-def-server
       uses: aws-actions/amazon-ecs-render-task-definition@374ee96751fffe528c09b5f427848da60469bb55
       with:
         task-definition: ops/ecs/server-task-definition.json
         container-name: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}
         image: ${{ inputs.server-image }}
 
-    - name: Deploy Amazon ECS task definition
+    - name: Deploy Amazon ECS task definition (server)
       uses: aws-actions/amazon-ecs-deploy-task-definition@3cc43061dd30ad47511af35bca46e2c1435b9035
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        task-definition: ${{ steps.task-def-server.outputs.task-definition }}
         service: dol-ui-claimant-intake-server
         cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
         wait-for-service-stability: true

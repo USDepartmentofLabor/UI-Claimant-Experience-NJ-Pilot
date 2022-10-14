@@ -83,7 +83,7 @@ client-compile-check: ## check client for typescript compilation
 client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
 
-client-task-definition: ## Update the environment placeholders in the client ECS task definition
+client-task-definition: ## Update the environment placeholders in the client ECS task definition, e.g., dev/test/prod (only used in CI)
 	./scripts/render-task-definition --taskdef ops/ecs/client-task-definition.json.tmpl --environment $(environment) > ops/ecs/client-task-definition.json
 
 server-gradle-tasks: ## list the gradle tasks that can be run when invoking ./gradlew from the /server directory
@@ -131,8 +131,11 @@ server-migration-starter-file: ## Create a starter file for raw SQL migration
 server-clean: ## cleans the build output and incremental build "Up-to-date" checks
 	cd server && ./gradlew clean
 
-server-task-definition: ## Update the environment placeholders in the server ECS task definition
+server-task-definition: ## Update the environment placeholders in the server ECS task definition, e.g., dev/test/prod (only used in CI)
 	./scripts/render-task-definition --taskdef ops/ecs/server-task-definition.json.tmpl --environment $(environment) > ops/ecs/server-task-definition.json
+
+db-migrations-task-definition: ## Update the environment placeholders in the db migration ECS task definition, e.g., dev/test/prod (only used in CI)
+	./scripts/render-task-definition --taskdef ops/ecs/db-migrations-task-definition.json.tmpl --environment $(environment) > ops/ecs/db-migrations-task-definition.json
 
 nginx-cert: ## Create a self-signed certificate for local development with nginx
 	./scripts/generate-nginx-cert

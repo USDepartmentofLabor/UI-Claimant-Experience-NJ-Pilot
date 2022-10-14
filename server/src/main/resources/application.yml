@@ -17,6 +17,7 @@ server:
 spring:
   liquibase:
     change-log: "classpath:/db/changelog/changelog.yaml"
+    enabled: false
 
 aws:
   s3:

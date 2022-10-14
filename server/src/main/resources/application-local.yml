@@ -4,6 +4,8 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/localdev-postgres
     username: localdev-postgres
     password: localdev-postgres
+  liquibase:
+    enabled: true
 
 logging:
   level:
