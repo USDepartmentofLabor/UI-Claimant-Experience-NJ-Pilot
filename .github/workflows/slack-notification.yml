@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - main
+      - 533-ab-schema-github-action-on-merging
     paths:
       - \server\main\resources\schemas\claim-v1.0-all-fields.json
 jobs:
