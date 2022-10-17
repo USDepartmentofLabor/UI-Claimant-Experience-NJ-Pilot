@@ -20,7 +20,7 @@ const Home: NextPage = () => {
       {router?.query?.completed && (
         <Alert
           type="success"
-          heading="Claim Completed"
+          heading={t('complete_claim_success')}
           headingLevel="h4"
           className="margin-bottom-3"
         />

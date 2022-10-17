@@ -210,7 +210,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
           if (isValid) {
             saveFormValues(values)
             const response = await saveCompleteClaim.mutateAsync(values)
-            if (response.data) {
+            if (response.status === 200) {
               await submitForm()
               await router.push({
                 pathname: Routes.HOME,
