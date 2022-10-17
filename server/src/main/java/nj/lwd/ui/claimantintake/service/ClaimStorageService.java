@@ -50,7 +50,7 @@ public class ClaimStorageService {
     }
 
     public boolean completeClaim(String claimantIdpId, Map<String, Object> claimPayload) {
-        logger.debug("Attempting to complete claim with IDP ID: {}", claimantIdpId);
+        logger.debug("Attempting to complete claim for claimant with IDP ID: {}", claimantIdpId);
 
         Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
 
