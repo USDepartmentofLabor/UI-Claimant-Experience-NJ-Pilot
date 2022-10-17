@@ -771,6 +771,7 @@ const claimForm = {
   validation_alert_one: 'Correct the error on this page to proceed',
   validation_alert_other:
     'Correct the {{ count }} errors on this page to proceed',
+  complete_claim_error: 'Error completing claim, try again later',
   verified_by_idp: {
     heading: 'The following information has been added to your application:',
     to_edit_visit: 'To edit your information, visit',

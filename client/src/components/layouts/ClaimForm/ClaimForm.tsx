@@ -24,7 +24,7 @@ import Head from 'next/head'
 import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
 import { useWhoAmI } from 'queries/whoami'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
-import { useSaveCompleteClaim } from '../../../queries/useSaveCompleteClaim'
+import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -265,7 +265,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                 {saveCompleteClaim.isError && (
                   <Alert
                     type="error"
-                    heading="Error completing claim, try again later"
+                    heading={t('complete_claim_error')}
                     headingLevel="h6"
                     className="margin-top-1"
                   />

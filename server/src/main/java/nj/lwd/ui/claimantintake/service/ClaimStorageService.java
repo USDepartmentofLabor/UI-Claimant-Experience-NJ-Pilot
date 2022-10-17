@@ -50,7 +50,7 @@ public class ClaimStorageService {
     }
 
     public boolean completeClaim(String claimantIdpId, Map<String, Object> claimPayload) {
-        logger.debug("Attempting to complete claimant with IDP ID: {}", claimantIdpId);
+        logger.debug("Attempting to complete claim with IDP ID: {}", claimantIdpId);
 
         Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
 
@@ -75,13 +75,15 @@ public class ClaimStorageService {
 
         claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_COMPLETE));
 
-        // Make sure we validate before this
-
         claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_SAVE));
 
         String s3Key = "%s/%s.json".formatted(claimant.getId(), claim.getId());
         try {
             s3Service.upload(claimsBucket, s3Key, claimPayload, this.claimsBucketKmsKey);
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
+            // Something happens here
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETED));
+            return true;
         } catch (AwsServiceException | SdkClientException ex) {
             logger.error(
                     "S3 service is not available for claimId {} : {}",
@@ -99,13 +101,6 @@ public class ClaimStorageService {
             claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
             return false;
         }
-
-        claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
-
-        // Something happens here
-
-        claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETED));
-        return true;
     }
 
     // TODO: Use claimantId instead of claimantIdpId
