@@ -273,10 +273,9 @@ describe('ClaimForm Layout', () => {
       const user = userEvent.setup()
       const mockGetPathName = jest.fn(() => makeClaimFormRoute('last'))
       const mockPush = jest.fn(async () => true)
-      const mockedData = jest.fn(async () => true)
 
       mutateAsync.mockImplementation(() => ({
-        data: mockedData(),
+        data: true,
       }))
       useRouter.mockImplementation(() => ({
         pathname: mockGetPathName(),
