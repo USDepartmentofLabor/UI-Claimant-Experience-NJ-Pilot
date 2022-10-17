@@ -5,7 +5,6 @@ import { useSaveCompleteClaim } from './useSaveCompleteClaim'
 
 jest.mock('utils/http/httpclient', () => ({
   post: jest.fn().mockImplementation((url, claim: Claim) => {
-    console.log('got in post mock')
     if (claim.email === 'good data') {
       return true
     } else {

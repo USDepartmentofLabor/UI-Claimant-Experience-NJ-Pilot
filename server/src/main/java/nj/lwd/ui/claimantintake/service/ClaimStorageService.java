@@ -81,24 +81,39 @@ public class ClaimStorageService {
         try {
             s3Service.upload(claimsBucket, s3Key, claimPayload, this.claimsBucketKmsKey);
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
+            logger.info(
+                    "Successfully saved completed claim {} for claimant {} at {} in S3",
+                    claim.getId(),
+                    claimant.getId(),
+                    s3Key);
+            claimantRepository.save(claimant);
             // Something happens here
             claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETED));
             return true;
-        } catch (AwsServiceException | SdkClientException ex) {
+        } catch (JsonProcessingException e) {
             logger.error(
-                    "S3 service is not available for claimId {} : {}",
-                    claimantIdpId,
-                    ex.getMessage());
+                    "Claim {} payload is unable to be converted to JSON for storage in S3: {}",
+                    claim.getId(),
+                    e.getMessage());
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
-            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
+            claimantRepository.save(claimant);
             return false;
-        } catch (IOException ex) {
+        } catch (AwsServiceException e) {
             logger.error(
-                    "Unable to process s3 object data from claimId {} : {}",
-                    claimantIdpId,
-                    ex.getMessage());
+                    "Amazon S3 unable to process request to save claim {} to S3: {}",
+                    claim.getId(),
+                    e.getMessage());
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
-            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
+            claimantRepository.save(claimant);
+            return false;
+        } catch (SdkClientException e) {
+            logger.error(
+                    "Unable to contact Amazon S3 or unable to parse the response while trying to"
+                            + " save claim {} to S3: {}",
+                    claim.getId(),
+                    e.getMessage());
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claimantRepository.save(claimant);
             return false;
         }
     }
