@@ -77,7 +77,7 @@ public class ClaimStorageService {
 
         claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_SAVE));
 
-        String s3Key = "%s/%s.json".formatted(claimant.getId(), claim.getId());
+        String s3Key = getS3Location(claimant, claim);
         try {
             s3Service.upload(claimsBucket, s3Key, claimPayload, this.claimsBucketKmsKey);
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
@@ -247,5 +247,9 @@ public class ClaimStorageService {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
         return mapper.readValue(stream, typeRef);
+    }
+
+    private String getS3Location(Claimant claimant, Claim claim) {
+        return "%s/%s.json".formatted(claimant.getId(), claim.getId());
     }
 }
