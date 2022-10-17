@@ -207,10 +207,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         > = async (e) => {
           e.preventDefault()
 
-          const valid = pageDefinitions.every((page) => {
-            return page.validationSchema.isValidSync(values)
-          })
-          if (valid) {
+          if (isValid) {
             saveFormValues(values)
             const response = await saveCompleteClaim.mutateAsync(values)
             if (response.data) {
