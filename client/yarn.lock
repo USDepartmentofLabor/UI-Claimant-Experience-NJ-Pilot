@@ -1816,6 +1816,13 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+"@newjersey/njwds@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@newjersey/njwds/-/njwds-0.2.0.tgz#657813d14313e3724d26c9205931bdb023ecf972"
+  integrity sha512-8w9+bG6I8atkfdlTuEtNQ7d1tkM9HSELxs5n/3JN1sn8C5px7tl7HTCPOs2QxO71wNy+v6aLVU1/yBrkG5IkKg==
+  dependencies:
+    "@uswds/uswds" "3.0.1"
+
 "@next/env@12.3.1":
   version "12.3.1"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-12.3.1.tgz#18266bd92de3b4aa4037b1927aa59e6f11879260"
@@ -4127,6 +4134,17 @@
   dependencies:
     "@typescript-eslint/types" "5.37.0"
     eslint-visitor-keys "^3.3.0"
+
+"@uswds/uswds@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@uswds/uswds/-/uswds-3.0.1.tgz#3aa3ebc813c9f8cbd0b628259a1139e243360bef"
+  integrity sha512-O2WHvWjKJwy10UJV9srimCBFMHenvnWDtP3LelMpTCV2AxgO1j/zYPn2SWpK116X/SuiIZk9hycbBroJQ6eH4w==
+  dependencies:
+    classlist-polyfill "1.0.3"
+    domready "1.0.8"
+    object-assign "4.1.1"
+    receptor "1.0.0"
+    resolve-id-refs "0.1.0"
 
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
