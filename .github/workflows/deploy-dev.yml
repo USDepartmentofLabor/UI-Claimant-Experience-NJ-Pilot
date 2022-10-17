@@ -80,3 +80,5 @@ jobs:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-image: ${{ steps.build-image.outputs.image }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}

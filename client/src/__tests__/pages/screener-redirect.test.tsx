@@ -6,7 +6,6 @@ import ScreenerRedirect from 'pages/screener-redirect'
 
 describe('Screener-redirect page', () => {
   it('renders properly', () => {
-    ScreenerRedirect
     render(
       <Formik initialValues={{}} onSubmit={noop}>
         <ScreenerRedirect />

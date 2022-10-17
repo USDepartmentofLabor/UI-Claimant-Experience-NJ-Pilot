@@ -4,15 +4,17 @@ import { Trans, useTranslation } from 'react-i18next'
 import dotGovIcon from 'uswds/src/img/icon-dot-gov.svg'
 import httpsIcon from 'uswds/src/img/icon-https.svg'
 import nj_flag_small from 'assets/img/nj_flag_small.png'
-import { BannerHeader } from 'components/NewJerseyBanner/ReactUswdsBanner/BannerHeader'
-import { BannerContent } from 'components/NewJerseyBanner/ReactUswdsBanner/BannerContent'
-import { Banner } from 'components/NewJerseyBanner/ReactUswdsBanner/Banner'
-import { BannerButton } from 'components/NewJerseyBanner/ReactUswdsBanner/BannerButton'
-import { BannerGuidance } from 'components/NewJerseyBanner/ReactUswdsBanner/BannerGuidance'
-import { BannerFlag } from 'components/NewJerseyBanner/ReactUswdsBanner/BannerFlag'
-import { BannerIcon } from 'components/NewJerseyBanner/ReactUswdsBanner/BannerIcon'
-import { MediaBlockBody } from 'components/NewJerseyBanner/ReactUswdsBanner/MediaBlockBody'
-import { BannerLockImage } from 'components/NewJerseyBanner/ReactUswdsBanner/BannerLockImage'
+import {
+  BannerHeader,
+  BannerContent,
+  Banner,
+  BannerButton,
+  BannerGuidance,
+  BannerFlag,
+  BannerIcon,
+  MediaBlockBody,
+  BannerLockImage,
+} from '@trussworks/react-uswds'
 
 export const NewJerseyBanner = () => {
   const { t } = useTranslation('common', { keyPrefix: 'banner' })
