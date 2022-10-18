@@ -24,7 +24,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Deploy client
         uses: ./.github/actions/deploy-client
@@ -44,17 +44,17 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@9149ade017c57f86dea2f76a01f8b2d5bd06b10f
 
       - name: Construct image tag
         id: construct-image-tag
@@ -88,6 +88,8 @@ jobs:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-image: ${{ steps.build-image.outputs.image }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
 
       - name: Write server image tag to file
         env:
@@ -96,7 +98,7 @@ jobs:
           mkdir -p tmp/artifact
           echo -n "$IMAGE_TAG" > tmp/artifact/server_image_tag.txt
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
         with:
           name: server-image-tag
           path: tmp/artifact/server_image_tag.txt
@@ -113,7 +115,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Deploy client
         uses: ./.github/actions/deploy-client
@@ -133,9 +135,9 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
         with:
           name: server-image-tag
           path: tmp/artifact
@@ -156,3 +158,5 @@ jobs:
           deploy-env: test
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_TEST }}
           server-image: ${{ secrets.ECR_REGISTRY_DEV}}/dol-ui-claimant-intake-server-dev:${{ steps.get-image-tag.outputs.image-tag }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_TEST }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_TEST }}

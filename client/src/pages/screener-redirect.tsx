@@ -38,49 +38,49 @@ const ScreenerRedirect: NextPage = () => {
             <li>
               {t('info_alert.items.ip_deny')}
               <Link variant="nav" href={'#ip_deny'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
               {t('info_alert.items.canada')}
               <Link variant="nav" href={'#canada'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
               {t('info_alert.items.non_resident')}
               <Link variant="nav" href={'#non_resident'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
               {t('info_alert.items.other_state')}
               <Link variant="nav" href={'#other_state'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
               {t('info_alert.items.disability')}
               <Link variant="nav" href={'#disability'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
               {t('info_alert.items.military_mvp')}
               <Link variant="nav" href={'#military_mvp'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
               {t('info_alert.items.military_ip')}
               <Link variant="nav" href={'#military_ip'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
             <li>
               {t('info_alert.items.maritime')}
               <Link variant="nav" href={'#maritime'}>
-                Read more
+                {t('read_more')}
               </Link>
             </li>
           </ul>
@@ -118,7 +118,7 @@ const ScreenerRedirect: NextPage = () => {
                 'https://www.dol.gov/general/topic/unemployment-insurance/')
             }
           >
-            File in your state
+            {t('other_state.button')}
           </Button>
         </p>
       </div>
@@ -141,7 +141,7 @@ const ScreenerRedirect: NextPage = () => {
                 'https://nj.gov/labor/myleavebenefits/worker/tdi/')
             }
           >
-            File a claim
+            {t('disability.button')}
           </Button>
         </p>
       </div>

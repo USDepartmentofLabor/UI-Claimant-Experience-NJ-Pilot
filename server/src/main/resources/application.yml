@@ -12,11 +12,12 @@ management:
         include: health
 server:
   servlet:
-    context-path: /api
+    context-path: /intake-api
 
 spring:
   liquibase:
     change-log: "classpath:/db/changelog/changelog.yaml"
+    enabled: false
 
 aws:
   s3:

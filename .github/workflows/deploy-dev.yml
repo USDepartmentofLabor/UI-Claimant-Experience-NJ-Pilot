@@ -17,7 +17,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Deploy client
         uses: ./.github/actions/deploy-client
@@ -36,17 +36,17 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@9149ade017c57f86dea2f76a01f8b2d5bd06b10f
 
       - name: Construct image tag
         id: construct-image-tag
@@ -80,3 +80,5 @@ jobs:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-image: ${{ steps.build-image.outputs.image }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
