@@ -5,6 +5,7 @@ import contact from './contact'
 import whoAmI from './whoAmI'
 import redirect from './redirect'
 import screener from './screener'
+import privacy from './privacy'
 
 const en = {
   home,
@@ -14,6 +15,7 @@ const en = {
   whoAmI,
   redirect,
   screener,
+  privacy,
 }
 
 export default en
