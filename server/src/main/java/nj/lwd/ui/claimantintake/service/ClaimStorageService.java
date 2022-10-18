@@ -49,6 +49,75 @@ public class ClaimStorageService {
         this.claimantRepository = claimantRepository;
     }
 
+    public boolean completeClaim(String claimantIdpId, Map<String, Object> claimPayload) {
+        logger.debug("Attempting to complete claim with IDP ID: {}", claimantIdpId);
+
+        Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
+
+        if (existingClaimant.isEmpty()) {
+            logger.debug("No claimant exists with idp id: {}", claimantIdpId);
+            return false;
+        }
+        Claimant claimant = existingClaimant.get();
+
+        Claim claim =
+                claimant.getActivePartialClaim()
+                        .orElseGet(
+                                () -> {
+                                    logger.info(
+                                            "No active partial claim found for claimant {}."
+                                                    + " Creating a new partial claim...",
+                                            claimant.getId());
+                                    Claim newClaim = new Claim();
+                                    claimant.addClaim(newClaim);
+                                    return claimRepository.save(newClaim);
+                                });
+
+        claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_COMPLETE));
+
+        claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_SAVE));
+
+        String s3Key = getS3Location(claimant, claim);
+        try {
+            s3Service.upload(claimsBucket, s3Key, claimPayload, this.claimsBucketKmsKey);
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
+            logger.info(
+                    "Successfully saved completed claim {} for claimant {} at {} in S3",
+                    claim.getId(),
+                    claimant.getId(),
+                    s3Key);
+            claimantRepository.save(claimant);
+            // Something happens here
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETED));
+            return true;
+        } catch (JsonProcessingException e) {
+            logger.error(
+                    "Claim {} payload is unable to be converted to JSON for storage in S3: {}",
+                    claim.getId(),
+                    e.getMessage());
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claimantRepository.save(claimant);
+            return false;
+        } catch (AwsServiceException e) {
+            logger.error(
+                    "Amazon S3 unable to process request to save claim {} to S3: {}",
+                    claim.getId(),
+                    e.getMessage());
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claimantRepository.save(claimant);
+            return false;
+        } catch (SdkClientException e) {
+            logger.error(
+                    "Unable to contact Amazon S3 or unable to parse the response while trying to"
+                            + " save claim {} to S3: {}",
+                    claim.getId(),
+                    e.getMessage());
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claimantRepository.save(claimant);
+            return false;
+        }
+    }
+
     // TODO: Use claimantId instead of claimantIdpId
     public boolean saveClaim(String claimantIdpId, Map<String, Object> claimPayload) {
         // TODO: Persist a claimant on login instead of here (when that functionality exists)
@@ -178,5 +247,9 @@ public class ClaimStorageService {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
         return mapper.readValue(stream, typeRef);
+    }
+
+    private String getS3Location(Claimant claimant, Claim claim) {
+        return "%s/%s.json".formatted(claimant.getId(), claim.getId());
     }
 }

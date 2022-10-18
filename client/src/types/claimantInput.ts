@@ -125,7 +125,6 @@ type IdentityInput = {
   authorization_type?: AuthorizationTypeOption
   alien_registration_number?: string
   drivers_license_or_state_id_number?: string
-  id_issuer?: string
 }
 
 type EducationAndTrainingInput = Partial<{

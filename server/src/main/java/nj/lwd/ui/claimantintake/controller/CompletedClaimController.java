@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/completed-claim")
+@RequestMapping("/complete-claim")
 public class CompletedClaimController {
 
     private final ClaimStorageService claimStorageService;
@@ -55,7 +55,8 @@ public class CompletedClaimController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
+        var saveStatus = claimStorageService.completeClaim(claimantIdpId, completedClaimPayload);
+
         if (saveStatus) {
 
             return new ResponseEntity<>("Save successful", HttpStatus.OK);
