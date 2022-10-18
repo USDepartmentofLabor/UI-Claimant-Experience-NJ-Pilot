@@ -65,7 +65,7 @@ class CompletedClaimControllerTest {
                         "type",
                         CustomErrorMessageType.of("ErrorType"),
                         "name",
-                        "testchema",
+                        "testschema",
                         "1234",
                         "Not valid type");
 
@@ -76,7 +76,7 @@ class CompletedClaimControllerTest {
 
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.post("/completed-claim")
+                        MockMvcRequestBuilders.post("/complete-claim")
                                 .content(
                                         """
                         { "claimant":{"first_name":"harry", "last_name": "Potter"}}""")

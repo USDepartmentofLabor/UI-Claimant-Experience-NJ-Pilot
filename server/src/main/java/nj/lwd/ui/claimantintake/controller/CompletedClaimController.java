@@ -51,7 +51,8 @@ public class CompletedClaimController {
         } catch (IOException e) {
 
             return new ResponseEntity<>(
-                    "Save failed, error occured accessing or reading the schema on the server side",
+                    "Save failed, error occurred accessing or reading the schema on the server"
+                            + " side",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
