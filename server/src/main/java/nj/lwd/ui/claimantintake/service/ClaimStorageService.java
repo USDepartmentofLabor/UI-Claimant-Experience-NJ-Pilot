@@ -96,6 +96,7 @@ public class ClaimStorageService {
                     claim.getId(),
                     e.getMessage());
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
             claimantRepository.save(claimant);
             return false;
         } catch (AwsServiceException e) {
@@ -104,6 +105,7 @@ public class ClaimStorageService {
                     claim.getId(),
                     e.getMessage());
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
             claimantRepository.save(claimant);
             return false;
         } catch (SdkClientException e) {
@@ -113,6 +115,7 @@ public class ClaimStorageService {
                     claim.getId(),
                     e.getMessage());
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVE_FAILED));
+            claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETE_FAILED));
             claimantRepository.save(claimant);
             return false;
         }
