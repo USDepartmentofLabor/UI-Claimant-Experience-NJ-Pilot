@@ -2,33 +2,33 @@
 // ReactUSWDS CSS modules
 @import '~@trussworks/react-uswds/lib/index.css';
 
-// -------------------------------------
-// USWDS settings and utilities
+// // -------------------------------------
+// // USWDS settings and utilities
 @import 'uswds';
 
-// -------------------------------------
+// // -------------------------------------
 // USWDS SCSS - Individual Imports
-@import 'node_modules/uswds/src/stylesheets/packages/global';
+// @import 'node_modules/uswds/src/stylesheets/packages/global';
 
-@import 'node_modules/uswds/src/stylesheets/packages/form-controls';
-@import 'node_modules/uswds/src/stylesheets/packages/form-templates';
+// @import 'node_modules/uswds/src/stylesheets/packages/form-controls';
+// @import 'node_modules/uswds/src/stylesheets/packages/form-templates';
 // @import 'packages/layout-grid';
 // @import 'packages/typography';
 // @import 'packages/validation';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-accordion';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-alert';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-banner';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-accordion';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-alert';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-banner';
 // @import 'packages/usa-breadcrumb';
 // @import 'packages/usa-button-group';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-button';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-button';
 // @import 'packages/usa-card';
 // @import 'packages/usa-checklist';
 // @import 'packages/usa-collection';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-footer';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-header';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-footer';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-header';
 // @import 'packages/usa-hero';
 // @import 'packages/usa-icon-list';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-icon';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-icon';
 // @import 'packages/usa-identifier';
 // @import 'packages/usa-layout';
 // @import 'packages/usa-link';
@@ -36,19 +36,19 @@
 // @import 'packages/usa-megamenu';
 // @import 'packages/usa-modal';
 // @import 'packages/usa-nav-container';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-nav';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-navbar';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-nav';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-navbar';
 // @import 'packages/usa-process-list';
 // @import 'packages/usa-search';
 // @import "node_modules/uswds/src/stylesheets/packages/usa-section";
-@import 'node_modules/uswds/src/stylesheets/packages/usa-sidenav';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-site-alert';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-sidenav';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-site-alert';
 // @import 'packages/usa-skipnav';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-step-indicator';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-summary-box';
-@import 'node_modules/uswds/src/stylesheets/packages/usa-table';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-step-indicator';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-summary-box';
+// @import 'node_modules/uswds/src/stylesheets/packages/usa-table';
 // @import 'packages/usa-tag';
-@import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
+// @import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
 
 // -------------------------------------
 // global style overrides
@@ -101,6 +101,13 @@
   overflow: hidden;
   white-space: nowrap;
 }
+p {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
 
 .usa-input-prefix,
 .usa-input-suffix {
@@ -126,7 +133,7 @@
 .nav-future {
   cursor: not-allowed;
   display: block;
-  @extend .line-height-sans-3, .text-base-light;
+  // @extend .line-height-sans-3, .text-base-light;
 }
 .usa-sidenav .nav-future {
   padding: units(1) units(2);
