@@ -13,7 +13,6 @@ import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 import { NewJerseyBanner } from 'components/NewJerseyBanner/NewJerseyBanner'
 
-// import '@newjersey/njwds/dist/css/styles.css'
 import 'styles/styles.scss'
 
 export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
