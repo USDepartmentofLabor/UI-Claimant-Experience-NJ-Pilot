@@ -25,6 +25,7 @@ import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
 import { useWhoAmI } from 'queries/whoami'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
+import { useSubmitClaim } from 'queries/useSubmitClaim'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -36,6 +37,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const savePartialClaim = useSavePartialClaim()
   const saveCompleteClaim = useSaveCompleteClaim()
+  const submitClaim = useSubmitClaim()
   const currentPath = router.pathname
   const currentPageDefinition = pageDefinitions.find(
     (pageDefinition) => pageDefinition.path == currentPath
@@ -122,6 +124,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
   const saveFormValues = (values: ClaimantInput) => {
     saveCompleteClaim.reset()
+    submitClaim.reset()
     savePartialClaim.mutate(values)
   }
 
@@ -211,11 +214,15 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
             saveFormValues(values)
             const response = await saveCompleteClaim.mutateAsync(values)
             if (response.status === 200) {
-              await submitForm()
-              await router.push({
-                pathname: Routes.HOME,
-                query: { completed: true },
-              })
+              const submitResponse = await submitClaim.mutateAsync(values)
+              if (submitResponse.status === 200) {
+                console.log('submited!')
+                await submitForm()
+                await router.push({
+                  pathname: Routes.HOME,
+                  query: { completed: true },
+                })
+              }
             }
           } else {
             setFormikState((previousState) => ({
@@ -263,6 +270,14 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                   <Alert
                     type="error"
                     heading={t('complete_claim_error')}
+                    headingLevel="h6"
+                    className="margin-top-1"
+                  />
+                )}
+                {submitClaim.isError && (
+                  <Alert
+                    type="error"
+                    heading={t('submit_claim_error')}
                     headingLevel="h6"
                     className="margin-top-1"
                   />

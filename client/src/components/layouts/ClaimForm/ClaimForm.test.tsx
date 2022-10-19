@@ -12,17 +12,22 @@ jest.mock('constants/pages/pageDefinitions')
 
 const useSavePartialClaim = jest.fn()
 const useSaveCompleteClaim = jest.fn()
+const useSubmitClaim = jest.fn()
 jest.mock('queries/useSavePartialClaim', () => ({
   useSavePartialClaim: () => useSavePartialClaim(),
 }))
 jest.mock('queries/useSaveCompleteClaim', () => ({
   useSaveCompleteClaim: () => useSaveCompleteClaim(),
 }))
+jest.mock('queries/useSubmitClaim', () => ({
+  useSubmitClaim: () => useSubmitClaim(),
+}))
+
 const mutate = jest.fn()
 const mutateAsync = jest.fn()
 const reset = jest.fn()
 
-useSaveCompleteClaim.mockImplementation(() => ({
+useSubmitClaim.mockImplementation(() => ({
   mutateAsync: mutateAsync,
   reset: reset,
 }))
