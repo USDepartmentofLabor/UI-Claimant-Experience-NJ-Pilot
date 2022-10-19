@@ -18,12 +18,9 @@ const Home: NextPage = () => {
       </Head>
       <h1>{t('heading')}</h1>
       {router?.query?.completed && (
-        <Alert
-          type="success"
-          heading={t('complete_claim_success')}
-          headingLevel="h4"
-          className="margin-bottom-3"
-        />
+        <Alert type="success" headingLevel="h4" className="margin-bottom-3">
+          {t('complete_claim_success')}
+        </Alert>
       )}
 
       <Button type="button" onClick={goToFirstPageOfClaimForm}>

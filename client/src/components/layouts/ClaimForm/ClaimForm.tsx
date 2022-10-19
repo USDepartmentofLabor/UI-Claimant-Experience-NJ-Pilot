@@ -269,10 +269,11 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                 {saveCompleteClaim.isError && (
                   <Alert
                     type="error"
-                    heading={t('complete_claim_error')}
-                    headingLevel="h6"
+                    headingLevel="h4"
                     className="margin-top-1"
-                  />
+                  >
+                    {t('complete_claim_error')}
+                  </Alert>
                 )}
                 {submitClaim.isError && (
                   <Alert
