@@ -1816,10 +1816,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@newjersey/njwds@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@newjersey/njwds/-/njwds-0.2.0.tgz#657813d14313e3724d26c9205931bdb023ecf972"
-  integrity sha512-8w9+bG6I8atkfdlTuEtNQ7d1tkM9HSELxs5n/3JN1sn8C5px7tl7HTCPOs2QxO71wNy+v6aLVU1/yBrkG5IkKg==
+"@newjersey/njwds@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@newjersey/njwds/-/njwds-0.3.0.tgz#51b5d17298caef6d4b8543778d4bb9befd9a88d3"
+  integrity sha512-J6KFsVDz3xQyU1JFWVC94NlC2Av3hheQtACl7PDq/MhwNiqpK/p6lLYn/l5TJJdOCghStTu8yqK/buwVKJSp5w==
   dependencies:
     "@uswds/uswds" "3.0.1"
 
