@@ -1,0 +1,93 @@
+{
+  "ipcMode": null,
+  "executionRoleArn": "ecs-task-execution-role-dol-ui-claimant-intake-db-migrate-ENVIRONMENT_PLACEHOLDER",
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-db-migrate",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "dol-ui-claimant-intake-db-migrate"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": null,
+      "command": null,
+      "linuxParameters": null,
+      "cpu": null,
+      "environment": [
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "migrations"
+        }
+      ],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": [
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-host",
+          "name": "DB_HOST"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-port",
+          "name": "DB_PORT"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-name",
+          "name": "DB_NAME"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-user",
+          "name": "DB_USER"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-password",
+          "name": "DB_PASSWORD"
+        }
+      ],
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": null,
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": true,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "dol-ui-claimant-intake-db-migrate-ENVIRONMENT_PLACEHOLDER"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": "512",
+  "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-db-migrate-ENVIRONMENT_PLACEHOLDER",
+  "taskDefinitionArn": null,
+  "family": "dol-ui-claimant-intake-db-migrate-ENVIRONMENT_PLACEHOLDER",
+  "pidMode": null,
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "runtimePlatform": null,
+  "cpu": "256",
+  "inferenceAccelerators": null,
+  "proxyConfiguration": null,
+  "volumes": []
+}

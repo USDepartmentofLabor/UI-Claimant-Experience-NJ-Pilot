@@ -8,7 +8,7 @@ import { PartialClaimResponseType } from '../types/ResponseTypes'
 const getPartialClaim = async () => {
   try {
     const { data } = await httpclient.get<PartialClaimResponseType>(
-      '/api/partial-claim',
+      '/intake-api/partial-claim',
       {
         withCredentials: false,
         headers: { 'X-DOL': 'axios' },

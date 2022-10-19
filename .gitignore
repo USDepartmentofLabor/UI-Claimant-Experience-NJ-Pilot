@@ -16,3 +16,5 @@ certs/
 
 e2e/cypress/videos
 e2e/cypress/screenshots
+
+ops/ecs/*-task-definition.json

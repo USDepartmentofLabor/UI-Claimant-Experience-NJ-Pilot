@@ -5,7 +5,7 @@ import httpclient from '../utils/httpclient'
 import { WhoAmI } from 'types/claimantInput'
 
 const fetchWhoAmI = async () => {
-  const { data } = await httpclient.get<WhoAmI>('/api/whoami', {
+  const { data } = await httpclient.get<WhoAmI>('/intake-api/whoami', {
     // withCredentials: true,
     headers: { 'X-DOL': 'axios' },
   })

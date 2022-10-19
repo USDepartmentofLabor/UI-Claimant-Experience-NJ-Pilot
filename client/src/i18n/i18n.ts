@@ -18,6 +18,7 @@ const namespaces = [
   'whoAmI',
   'redirect',
   'screener',
+  'privacy',
 ] as const
 
 i18n.use(LanguageDetector).use(initReactI18next).init({
@@ -40,4 +41,8 @@ export const i18n_claimForm = i18n.cloneInstance({
 
 export const i18n_screener = i18n.cloneInstance({
   defaultNS: 'screener',
+})
+
+export const i18n_privacy = i18n.cloneInstance({
+  defaultNS: 'privacy',
 })
