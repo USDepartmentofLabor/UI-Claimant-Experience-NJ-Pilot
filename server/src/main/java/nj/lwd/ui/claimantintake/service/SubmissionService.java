@@ -21,6 +21,6 @@ public class SubmissionService {
 
     public boolean submitClaim(Map<String, Object> validatedClaimPayload) {
         logger.debug("Sending Nava Api post");
-        return false;
+        return true;
     }
 }
