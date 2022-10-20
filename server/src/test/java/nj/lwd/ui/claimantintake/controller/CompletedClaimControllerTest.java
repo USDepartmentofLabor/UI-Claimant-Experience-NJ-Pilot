@@ -31,12 +31,12 @@ class CompletedClaimControllerTest {
     @Test
     void shouldAcceptCompletedClaim() throws Exception {
         Set<ValidationMessage> validationMessageSet = new HashSet<>();
-        when(claimStorageService.saveClaim(anyString(), anyMap())).thenReturn(true);
+        when(claimStorageService.completeClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateAgainstSchema(anyString()))
                 .thenReturn(validationMessageSet);
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.post("/completed-claim")
+                        MockMvcRequestBuilders.post("/complete-claim")
                                 .content(
                                         """
                                 { "claimant":{"first_name":"harry", "last_name": "Potter"}}""")
@@ -50,7 +50,7 @@ class CompletedClaimControllerTest {
     void shouldRejectEmptyClaim() throws Exception {
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.post("/completed-claim")
+                        MockMvcRequestBuilders.post("/complete-claim")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -65,7 +65,7 @@ class CompletedClaimControllerTest {
                         "type",
                         CustomErrorMessageType.of("ErrorType"),
                         "name",
-                        "testchema",
+                        "testschema",
                         "1234",
                         "Not valid type");
 
@@ -76,7 +76,7 @@ class CompletedClaimControllerTest {
 
         this.mockMvc
                 .perform(
-                        MockMvcRequestBuilders.post("/completed-claim")
+                        MockMvcRequestBuilders.post("/complete-claim")
                                 .content(
                                         """
                         { "claimant":{"first_name":"harry", "last_name": "Potter"}}""")

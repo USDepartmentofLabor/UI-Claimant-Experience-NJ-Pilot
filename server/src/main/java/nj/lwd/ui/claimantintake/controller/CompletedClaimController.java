@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/completed-claim")
+@RequestMapping("/complete-claim")
 public class CompletedClaimController {
 
     private final ClaimStorageService claimStorageService;
@@ -51,11 +51,13 @@ public class CompletedClaimController {
         } catch (IOException e) {
 
             return new ResponseEntity<>(
-                    "Save failed, error occured accessing or reading the schema on the server side",
+                    "Save failed, error occurred accessing or reading the schema on the server"
+                            + " side",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        var saveStatus = claimStorageService.saveClaim(claimantIdpId, completedClaimPayload);
+        var saveStatus = claimStorageService.completeClaim(claimantIdpId, completedClaimPayload);
+
         if (saveStatus) {
             return new ResponseEntity<>("Save successful", HttpStatus.OK);
         } else {
