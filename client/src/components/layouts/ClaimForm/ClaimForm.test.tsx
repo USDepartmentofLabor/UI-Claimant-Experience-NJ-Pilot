@@ -313,10 +313,7 @@ describe('ClaimForm Layout', () => {
       expect(mutateAsync).toHaveBeenCalledTimes(2)
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith({
-        pathname: {
-          pathname: Routes.HOME,
-          query: { completed: true },
-        },
+        pathname: Routes.HOME,
         query: { completed: true },
       })
     })
