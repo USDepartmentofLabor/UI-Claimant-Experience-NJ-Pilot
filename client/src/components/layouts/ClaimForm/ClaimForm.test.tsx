@@ -287,6 +287,10 @@ describe('ClaimForm Layout', () => {
       mutateAsync.mockImplementation(() => ({
         status: 200,
       }))
+
+      mutateAsync.mockImplementation(() => ({
+        status: 200,
+      }))
       useRouter.mockImplementation(() => ({
         pathname: mockGetPathName(),
         push: mockPush,
@@ -309,7 +313,10 @@ describe('ClaimForm Layout', () => {
       expect(mutateAsync).toHaveBeenCalledTimes(2)
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith({
-        pathname: Routes.HOME,
+        pathname: {
+          pathname: Routes.HOME,
+          query: { completed: true },
+        },
         query: { completed: true },
       })
     })

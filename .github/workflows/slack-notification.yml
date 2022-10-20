@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "server/src/main/resources/schemas/claim-v1.0-all-fields.json"
+jobs:
+  slackNotification:
+    name: Slack Schema Change Notification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Nava team, the schema claim-v1.0.all-fields has been changed.\n<${{github.event.head_commit.url }}|See this commit for details>"
+                  }
+                }
+              ]
+            }
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
