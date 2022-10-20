@@ -1,3 +1,8 @@
+# local env files
+.env
+.env*.local
+
+# Keys and certificates
 *.pem
 *.crt
 *.key
@@ -14,6 +19,7 @@ certs/
 
 .DS_Store
 
+# Cypress test artifacts
 e2e/cypress/videos
 e2e/cypress/screenshots
 
