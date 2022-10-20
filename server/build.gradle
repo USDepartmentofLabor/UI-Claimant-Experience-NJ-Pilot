@@ -44,7 +44,7 @@ dependencies {
     implementation 'software.amazon.awssdk:s3'
 
     // Swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
