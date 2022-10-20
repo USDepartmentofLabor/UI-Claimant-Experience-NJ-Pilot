@@ -59,10 +59,9 @@ public class CompletedClaimController {
         var saveStatus = claimStorageService.completeClaim(claimantIdpId, completedClaimPayload);
 
         if (saveStatus) {
-
             return new ResponseEntity<>("Save successful", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

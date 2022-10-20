@@ -15,10 +15,6 @@ public class SubmissionService {
         // TODO -Nava api connection info here
     }
 
-    public int testOverride(Map<String, Object> completedClaimPayload) {
-        return 5;
-    }
-
     public boolean submitClaim(Map<String, Object> validatedClaimPayload) {
         logger.debug("Sending Nava Api post");
         return true;
