@@ -27,6 +27,11 @@ const mutate = jest.fn()
 const mutateAsync = jest.fn()
 const reset = jest.fn()
 
+useSaveCompleteClaim.mockImplementation(() => ({
+  mutateAsync: mutateAsync,
+  reset: reset,
+}))
+
 useSubmitClaim.mockImplementation(() => ({
   mutateAsync: mutateAsync,
   reset: reset,
@@ -301,7 +306,7 @@ describe('ClaimForm Layout', () => {
       await user.click(completeButton)
 
       expect(mutate).toHaveBeenCalledTimes(1)
-      expect(mutateAsync).toHaveBeenCalledTimes(1)
+      expect(mutateAsync).toHaveBeenCalledTimes(2)
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith({
         pathname: Routes.HOME,
