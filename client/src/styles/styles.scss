@@ -8,7 +8,6 @@
 
 // // -------------------------------------
 // USWDS SCSS - Individual Imports
-
 @import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
 
 // -------------------------------------
@@ -93,12 +92,25 @@
   display: block;
   @extend .line-height-sans-3, .text-base-light;
 }
+
 .usa-sidenav .nav-future {
   padding: units(1) units(2);
 }
+
+.line-height-sans-3,
+.nav-future {
+  line-height: 1.3;
+}
+
+.text-base-light,
+.nav-future {
+  color: #a9aeb1;
+}
+
 .usa-step-indicator__segment-label {
   display: none;
 }
+
 @media all and (max-width: units('desktop')) {
   #appMenu .nav-future {
     padding: units(1) units(2) units(1) units(4);
@@ -108,6 +120,7 @@
     display: none;
   }
 }
+
 @media all and (min-width: units('desktop')) {
   .usa-step-indicator {
     display: none;
