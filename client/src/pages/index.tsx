@@ -13,6 +13,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
+        <meta name="claim form" content="Fill out the form provided"></meta>
         <title>{t('page_title')}</title>
       </Head>
       <h1>{t('heading')}</h1>

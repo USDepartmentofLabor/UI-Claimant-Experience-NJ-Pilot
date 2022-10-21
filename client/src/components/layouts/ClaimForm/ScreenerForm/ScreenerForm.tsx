@@ -65,6 +65,10 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
         return (
           <>
             <Head>
+              <meta
+                name="claim form"
+                content="Fill out the form provided"
+              ></meta>
               <title>{heading}</title>
             </Head>
             <div className="grid-row grid-gap">
