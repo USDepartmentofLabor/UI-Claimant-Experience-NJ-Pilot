@@ -162,7 +162,6 @@ export const IdentityPageDefinition: PageDefinition = {
     authorization_type: undefined,
     alien_registration_number: undefined,
     drivers_license_or_state_id_number: '',
-    id_issuer: undefined,
   },
   validationSchema: pageSchema,
 }

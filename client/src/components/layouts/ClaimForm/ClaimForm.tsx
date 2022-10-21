@@ -24,6 +24,7 @@ import Head from 'next/head'
 import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
 import { useWhoAmI } from 'queries/whoami'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
+import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -34,7 +35,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const { t } = useTranslation('claimForm')
   const headingRef = useRef<HTMLHeadingElement>(null)
   const savePartialClaim = useSavePartialClaim()
-
+  const saveCompleteClaim = useSaveCompleteClaim()
   const currentPath = router.pathname
   const currentPageDefinition = pageDefinitions.find(
     (pageDefinition) => pageDefinition.path == currentPath
@@ -120,6 +121,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   }
 
   const saveFormValues = (values: ClaimantInput) => {
+    saveCompleteClaim.reset()
     savePartialClaim.mutate(values)
   }
 
@@ -200,14 +202,21 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
           }
         }
 
-        const handleClickComplete: MouseEventHandler<HTMLButtonElement> = (
-          e
-        ) => {
+        const handleClickComplete: MouseEventHandler<
+          HTMLButtonElement
+        > = async (e) => {
           e.preventDefault()
+
           if (isValid) {
-            submitForm().then(async () => {
-              await router.push(Routes.HOME)
-            })
+            saveFormValues(values)
+            const response = await saveCompleteClaim.mutateAsync(values)
+            if (response.status === 200) {
+              await submitForm()
+              await router.push({
+                pathname: Routes.HOME,
+                query: { completed: true },
+              })
+            }
           } else {
             setFormikState((previousState) => ({
               ...previousState,
@@ -251,6 +260,15 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                 className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
                 id="main-content"
               >
+                {saveCompleteClaim.isError && (
+                  <Alert
+                    type="error"
+                    headingLevel="h4"
+                    className="margin-top-1"
+                  >
+                    {t('complete_claim_error')}
+                  </Alert>
+                )}
                 <PageHeading
                   ref={headingRef}
                   aria-label={`${currentPageDefinition.heading} ${t(

@@ -17,7 +17,7 @@ export const preferredLanguageOptions = [
 ] as const
 export type PreferredLanguageOption = typeof preferredLanguageOptions[number]
 
-export const sexOptions = ['female', 'male', 'x'] as const
+export const sexOptions = ['female', 'male', 'unspecified'] as const
 export type SexOption = typeof sexOptions[number]
 
 export const ethnicityOptions = ['hispanic', 'not_hispanic', 'opt_out'] as const
