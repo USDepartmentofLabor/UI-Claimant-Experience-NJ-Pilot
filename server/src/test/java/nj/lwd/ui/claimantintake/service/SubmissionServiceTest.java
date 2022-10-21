@@ -42,7 +42,7 @@ public class SubmissionServiceTest {
                     }
                 };
 
-        boolean isSucess = submissionService.submitClaim(invalidClaim);
-        assertTrue(isSucess);
+        boolean isSuccess = submissionService.submitClaim(invalidClaim);
+        assertTrue(isSuccess);
     }
 }

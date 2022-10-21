@@ -75,6 +75,16 @@ public class Claim {
                 .map(ClaimEvent::getCategory)
                 .anyMatch(event -> event.equals(ClaimEventCategory.COMPLETED));
     }
+    /**
+     * Whether a claim is complete
+     *
+     * @return true if the claim has a corresponding COMPLETED event, otherwise, false
+     */
+    public boolean isSubmitted() {
+        return events.stream()
+                .map(ClaimEvent::getCategory)
+                .anyMatch(event -> event.equals(ClaimEventCategory.SUBMITTED));
+    }
 
     private Stream<ClaimEvent> streamEventsByCategory(ClaimEventCategory desiredCategory) {
         return events.stream().filter(event -> event.getCategory().equals(desiredCategory));

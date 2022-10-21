@@ -216,7 +216,6 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
             if (response.status === 200) {
               const submitResponse = await submitClaim.mutateAsync(values)
               if (submitResponse.status === 200) {
-                console.log('submited!')
                 await submitForm()
                 await router.push({
                   pathname: Routes.HOME,
@@ -266,7 +265,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                 className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
                 id="main-content"
               >
-                {saveCompleteClaim.isError && (
+                {(saveCompleteClaim.isError || submitClaim.isError) && (
                   <Alert
                     type="error"
                     headingLevel="h4"
@@ -274,14 +273,6 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                   >
                     {t('complete_claim_error')}
                   </Alert>
-                )}
-                {submitClaim.isError && (
-                  <Alert
-                    type="error"
-                    heading={t('submit_claim_error')}
-                    headingLevel="h6"
-                    className="margin-top-1"
-                  />
                 )}
                 <PageHeading
                   ref={headingRef}

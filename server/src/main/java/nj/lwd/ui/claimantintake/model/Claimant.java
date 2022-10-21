@@ -78,6 +78,12 @@ public class Claimant {
         return claims.stream().filter(claim -> !claim.isComplete()).toList();
     }
 
+    List<Claim> getCompletedClaims() {
+        return claims.stream()
+                .filter(claim -> claim.isComplete())
+                .filter(claim -> !claim.isSubmitted())
+                .toList();
+    }
     /**
      * Initial business logic only allows for a single active claim, though the architecture
      * supports more than one.
@@ -108,8 +114,41 @@ public class Claimant {
                             }
                         });
     }
+    /**
+     * As there can be more than one partial claim, allowing for a complete event in the case where
+     * the coprogram is expanded to allow someone to edit a claim after submission
+     *
+     * @return the completed claim from the most recent save that has yet to be submitted externally
+     */
+    public Optional<Claim> getActiveCompletedClaim() {
+        return getCompletedClaims().stream()
+                .max(
+                        (claim1, claim2) -> {
+                            Optional<ClaimEvent> claim1LatestSave =
+                                    claim1.getLatestEventByCategory(ClaimEventCategory.SAVED);
+                            Optional<ClaimEvent> claim2LatestSave =
+                                    claim2.getLatestEventByCategory(ClaimEventCategory.SAVED);
+
+                            if (claim1LatestSave.isPresent() && claim2LatestSave.isPresent()) {
+                                return claim1LatestSave
+                                        .get()
+                                        .getUpdatedAt()
+                                        .compareTo(claim2LatestSave.get().getUpdatedAt());
+                            } else if (claim1LatestSave.isPresent()) {
+                                return -1;
+                            } else if (claim2LatestSave.isPresent()) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        });
+    }
 
     public Boolean hasPartialClaim() {
         return !getPartialClaims().isEmpty();
+    }
+
+    public Boolean hasCompleteClaim() {
+        return !getCompletedClaims().isEmpty();
     }
 }

@@ -22,9 +22,8 @@ public class SubmitClaimController {
 
     @PostMapping()
     public ResponseEntity<String> submitClaim(Map<String, Object> completedClaimPayload) {
-        boolean navaAPISuccess = submissionService.submitClaim(completedClaimPayload);
-        System.out.println("nava success is " + navaAPISuccess);
-        if (navaAPISuccess) {
+        boolean externalSubmissionSuccess = submissionService.submitClaim(completedClaimPayload);
+        if (externalSubmissionSuccess) {
             return new ResponseEntity<>("Save successful", HttpStatus.OK);
         }
         return new ResponseEntity<>("Unable to submit claim.", HttpStatus.BAD_REQUEST);
