@@ -21,7 +21,8 @@
         },
         "middle_initial": {
           "type": "string",
-          "maxLength": 1
+          "maxLength": 1,
+          "pattern": "[A-Za-z]"
         },
         "suffix": {
           "type": "string",
@@ -64,7 +65,7 @@
         "address": {
           "type": "string",
           "maxLength": 64,
-          "pattern": "/^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$/i"
+          "pattern": "^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$"
         },
         "city": {
           "type": "string",
@@ -112,7 +113,6 @@
           "type": "string",
           "minLength": 10,
           "maxLength": 32,
-          "comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
           "pattern": "^[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}$"
         },
         "sms": {
@@ -745,16 +745,14 @@
     "alternate_phone": {
       "$ref": "#/definitions/phone"
     },
-    "sms": {
-      "type": "boolean"
-    },
     "email": {
       "type": "string",
       "format": "email",
       "maxLength": 128
     },
     "interpreter_required": {
-      "type": "boolean"
+      "type": "string",
+      "enum": ["interpreter", "tty", "no_interpreter_tty"]
     },
     "preferred_language": {
       "type": "string",
@@ -942,12 +940,12 @@
     "routing_number": {
       "type": "string",
       "maxLength": 9,
-      "pattern": "/^\\d+$/"
+      "pattern": "^[0-9]{9}$"
     },
     "account_number": {
       "type": "string",
       "maxLength": 17,
-      "pattern": "/^\\d+$/"
+      "pattern": "^[0-9]{1,17}$"
     },
     "acknowledge_direct_deposit_option": {
       "description": "Acknowledges that the claimant has the option to use direct deposit",
@@ -1023,7 +1021,6 @@
     "residence_address",
     "mailing_address",
     "claimant_phone",
-    "sms",
     "email",
     "interpreter_required",
     "sex",
@@ -1119,6 +1116,10 @@
     {
       "if": {
         "properties": {
+          "interpreter_required": {
+            "type": "string",
+            "enum": ["interpreter", "tty"]
+          },
           "preferred_language": {
             "type": "string",
             "enum": ["other"]
@@ -1132,7 +1133,7 @@
     {
       "if": {
         "properties": {
-          "payment_type": {
+          "payment_method": {
             "type": "string",
             "enum": ["direct_deposit"]
           }

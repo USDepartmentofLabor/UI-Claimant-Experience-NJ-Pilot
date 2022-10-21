@@ -13,18 +13,16 @@
       "properties": {
         "first_name": {
           "type": "string",
-          "maxLength": 28,
-          "pattern": "/^[A-Za-z]+$/"
+          "maxLength": 28
         },
         "last_name": {
           "type": "string",
-          "maxLength": 28,
-          "pattern": "/^[A-Za-z]+$/"
+          "maxLength": 28
         },
         "middle_initial": {
           "type": "string",
           "maxLength": 1,
-          "pattern": "/[A-Za-z]/"
+          "pattern": "[A-Za-z]"
         },
         "suffix": {
           "type": "string",
@@ -59,7 +57,7 @@
         "address": {
           "type": "string",
           "maxLength": 64,
-          "pattern": "/^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$/i"
+          "pattern": "^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$"
         },
         "city": { "type": "string", "maxLength": 64 },
         "state": { "$ref": "#/definitions/state" },
@@ -81,7 +79,6 @@
           "type": "string",
           "minLength": 10,
           "maxLength": 32,
-          "comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
           "pattern": "^[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}$"
         },
         "sms": {
@@ -203,16 +200,14 @@
     "alternate_phone": {
       "$ref": "#/definitions/phone"
     },
-    "sms": {
-      "type": "boolean"
-    },
     "email": {
       "type": "string",
       "format": "email",
       "maxLength": 128
     },
     "interpreter_required": {
-      "type": "boolean"
+      "type": "string",
+      "enum": ["interpreter", "tty", "no_interpreter_tty"]
     },
     "preferred_language": {
       "type": "string",
@@ -380,12 +375,12 @@
     "routing_number": {
       "type": "string",
       "maxLength": 9,
-      "pattern": "/^\\d+$/"
+      "pattern": "^[0-9]{9}$"
     },
     "account_number": {
       "type": "string",
       "maxLength": 17,
-      "pattern": "/^\\d+$/"
+      "pattern": "^[0-9]{1,17}$"
     },
     "acknowledge_direct_deposit_option": {
       "type": "boolean"
@@ -399,11 +394,9 @@
   },
   "required": [
     "claimant_name",
-    "LOCAL_claimant_has_alternate_names",
     "residence_address",
     "mailing_address",
     "claimant_phone",
-    "sms",
     "email",
     "interpreter_required",
     "sex",
@@ -416,8 +409,8 @@
     "authorized_to_work",
     "attending_college_or_job_training",
     "required_to_seek_work_through_hiring_hall",
+    "disability_applied_to_or_received",
     "can_begin_work_immediately",
-    "has_collected_disability",
     "payment_method",
     "federal_income_tax_withheld",
     "apply_for_increased_payment_for_dependents"
@@ -465,9 +458,9 @@
     {
       "if": {
         "properties": {
-          "has_collected_disability": {
-            "type": "boolean",
-            "const": true
+          "disability_applied_to_or_received": {
+            "type": "string",
+            "enum": ["disability", "family_leave"]
           }
         }
       },
@@ -497,6 +490,10 @@
     {
       "if": {
         "properties": {
+          "interpreter_required": {
+            "type": "string",
+            "enum": ["interpreter", "tty"]
+          },
           "preferred_language": {
             "type": "string",
             "enum": ["other"]
@@ -510,7 +507,7 @@
     {
       "if": {
         "properties": {
-          "payment_type": {
+          "payment_method": {
             "type": "string",
             "enum": ["direct_deposit"]
           }
