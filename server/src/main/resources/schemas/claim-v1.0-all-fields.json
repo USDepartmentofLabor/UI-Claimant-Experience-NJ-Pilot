@@ -775,7 +775,7 @@
     },
     "sex": {
       "type": "string",
-      "enum": ["female", "male", "x"]
+      "enum": ["female", "male", "unspecified"]
     },
     "ethnicity": {
       "type": "string",
