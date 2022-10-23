@@ -1,6 +1,7 @@
 package nj.lwd.ui.claimantintake.controller;
 
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,7 +24,7 @@ public class SubmitClaimControllerTest {
 
     @Test
     void shouldSubmitSuccessfully() throws Exception {
-        when(submissionService.submitClaim(anyMap())).thenReturn(true);
+        when(submissionService.submitClaim(anyMap(), anyString())).thenReturn(true);
 
         this.mockMvc
                 .perform(
@@ -40,7 +41,7 @@ public class SubmitClaimControllerTest {
 
     @Test
     void shouldFailToSubmit() throws Exception {
-        when(submissionService.submitClaim(anyMap())).thenReturn(false);
+        when(submissionService.submitClaim(anyMap(), anyString())).thenReturn(false);
         this.mockMvc
                 .perform(
                         MockMvcRequestBuilders.post("/submit")
