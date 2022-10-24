@@ -1813,7 +1813,7 @@
 
 "@newjersey/njwds@^0.3.0":
   version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@newjersey/njwds/-/njwds-0.3.0.tgz#51b5d17298caef6d4b8543778d4bb9befd9a88d3"
+  resolved "https://registry.npmjs.org/@newjersey/njwds/-/njwds-0.3.0.tgz"
   integrity sha512-J6KFsVDz3xQyU1JFWVC94NlC2Av3hheQtACl7PDq/MhwNiqpK/p6lLYn/l5TJJdOCghStTu8yqK/buwVKJSp5w==
   dependencies:
     "@uswds/uswds" "3.0.1"
