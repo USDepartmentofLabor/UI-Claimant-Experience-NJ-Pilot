@@ -26,12 +26,14 @@ public class SubmissionService {
 
     private boolean saveInitiatedSubmission(String claimantIdpId) {
 
-        logger.debug("Attempting to save submission event for claimant {}", claimantIdpId);
+        logger.debug(
+                "Attempting to save submission initiated event for claimant {}", claimantIdpId);
         Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
         if (existingClaimant.isEmpty()) {
             logger.debug("No claimant exists with idp id: {}", claimantIdpId);
             return false;
         }
+        logger.debug("No after first check");
 
         // Get the corresponding claimant
         Claimant claimant = existingClaimant.get();
@@ -59,7 +61,7 @@ public class SubmissionService {
     private boolean saveFinishedSubmission(String claimantIdpId, boolean wasSubmissionSuccessful) {
         logger.debug("Attempting to save submission event for claimant {}", claimantIdpId);
         Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
-        if (!existingClaimant.isEmpty()) {
+        if (existingClaimant.isEmpty()) {
             logger.debug("No claimant exists with idp id: {}", claimantIdpId);
             return false;
         }
@@ -77,8 +79,8 @@ public class SubmissionService {
 
         // get the corresponding claim
         Claim claim = existingClaim.get();
-        logger.info(
-                "Initiating submission for claim {} and claimant {}",
+        logger.debug(
+                "Saving Submission event for claim {} and claimant {}",
                 claim.getId(),
                 claimant.getId());
         if (wasSubmissionSuccessful) {
@@ -86,6 +88,7 @@ public class SubmissionService {
         } else {
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SUBMIT_FAILED));
         }
+
         claimantRepository.save(claimant);
         return true;
     }
@@ -95,6 +98,7 @@ public class SubmissionService {
         // used to force a claim post to fail
         if (validatedClaimPayload.containsKey("alternate_phone")
                 && validatedClaimPayload.get("alternate_phone").equals("0000000000")) {
+            logger.debug("Forcing sendClaim to return false");
             return false;
         }
         return true;
