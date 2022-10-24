@@ -24,7 +24,7 @@ const ScreenerRedirect: NextPage = () => {
   return (
     <>
       <Head>
-        <meta name="claim form" content="Fill out the form provided"></meta>
+        <meta name="claim form" content="Fill out the form provided" />
         <title>{t('page_title')}</title>
       </Head>
 
