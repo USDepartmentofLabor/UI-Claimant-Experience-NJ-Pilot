@@ -115,8 +115,7 @@ public class Claimant {
                         });
     }
     /**
-     * As there can be more than one partial claim, allowing for a complete event in the case where
-     * the coprogram is expanded to allow someone to edit a claim after submission
+     * As there can be more than one partial claim, allowing multiple complete claims
      *
      * @return the completed claim from the most recent save that has yet to be submitted externally
      */

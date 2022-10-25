@@ -25,7 +25,7 @@ public class SubmitClaimController {
 
     @PostMapping()
     public ResponseEntity<String> submitClaim(Map<String, Object> completedClaimPayload) {
-        // TODO - change to get ID form the session
+        // TODO - change to get ID from the session
         String claimantIdpId = "test_id";
 
         logger.debug("Initiating submit event for claimant: {}", claimantIdpId);

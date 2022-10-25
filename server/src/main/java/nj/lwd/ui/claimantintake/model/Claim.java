@@ -76,9 +76,9 @@ public class Claim {
                 .anyMatch(event -> event.equals(ClaimEventCategory.COMPLETED));
     }
     /**
-     * Whether a claim is complete
+     * Whether a claim is submitted
      *
-     * @return true if the claim has a corresponding COMPLETED event, otherwise, false
+     * @return true if the claim has a corresponding SUBMITTED event, otherwise, false
      */
     public boolean isSubmitted() {
         return events.stream()
