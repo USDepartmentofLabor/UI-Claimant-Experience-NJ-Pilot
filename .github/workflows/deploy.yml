@@ -54,7 +54,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@9149ade017c57f86dea2f76a01f8b2d5bd06b10f
+        uses: aws-actions/amazon-ecr-login@eb9a709a709d0d6e4b34a02d34494041831f6999
 
       - name: Construct image tag
         id: construct-image-tag
