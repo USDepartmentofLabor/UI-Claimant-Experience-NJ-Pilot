@@ -9,7 +9,6 @@
 // -------------------------------------
 // USWDS SCSS - Individual Imports
 @import 'node_modules/uswds/src/stylesheets/packages/global';
-
 @import 'node_modules/uswds/src/stylesheets/packages/form-controls';
 @import 'node_modules/uswds/src/stylesheets/packages/form-templates';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-accordion';
@@ -27,6 +26,7 @@
 @import 'node_modules/uswds/src/stylesheets/packages/usa-summary-box';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-table';
 @import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
+
 // -------------------------------------
 // NJWDS themes
 @import '@newjersey/njwds/dist/css/styles';
