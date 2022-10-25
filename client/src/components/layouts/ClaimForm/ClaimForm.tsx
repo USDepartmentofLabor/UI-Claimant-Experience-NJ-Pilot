@@ -212,6 +212,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
           if (isValid) {
             saveFormValues(values)
+            console.log(JSON.stringify(values))
             const response = await saveCompleteClaim.mutateAsync(values)
             if (response.status === 200) {
               const submitResponse = await submitClaim.mutateAsync(values)

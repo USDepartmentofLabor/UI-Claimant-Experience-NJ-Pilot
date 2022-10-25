@@ -50,7 +50,9 @@ public class SubmissionServiceTest {
                       "claimant_name": {
                         "first_name": "Harry"
                       },
-                      "alternate_phone":"0000000000"
+                      "alternate_phone":{
+                        "number":"0000000000"
+                      }
                     }
                     """,
                             new TypeReference<>() {});

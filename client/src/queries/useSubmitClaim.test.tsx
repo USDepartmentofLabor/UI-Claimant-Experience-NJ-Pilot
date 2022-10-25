@@ -21,7 +21,7 @@ const wrapper = ({ children }: any) => {
   )
 }
 
-describe('use sumbmitClaim', () => {
+describe('use submit complete claim', () => {
   it('calls the onSuccess callback if the completed claim was successfully submitted', async () => {
     const hook = renderHook(() => useSubmitClaim(), { wrapper })
     hook.result.current.mutate({ email: 'good data' })

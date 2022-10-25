@@ -79,7 +79,7 @@ public class SubmissionService {
         // get the corresponding claim
         Claim claim = existingClaim.get();
         logger.debug(
-                "Saving Submission event for claim {} and claimant {} with failed as {}",
+                "Saving Submission event for claim {} and claimant {} with successful as {}",
                 claim.getId(),
                 claimant.getId(),
                 wasSubmissionSuccessful);
@@ -97,10 +97,14 @@ public class SubmissionService {
         logger.debug("Sending Nava Api post");
         // used to force a claim post to fail
         if (validatedClaimPayload.containsKey("alternate_phone")
-                && validatedClaimPayload.get("alternate_phone").equals("0000000000")) {
+                && validatedClaimPayload.get("alternate_phone") instanceof Map
+                && ((Map<String, Object>) validatedClaimPayload.get("alternate_phone"))
+                        .get("number")
+                        .equals("0000000000")) {
             logger.debug("Forcing sendClaim to return false");
             return false;
         }
+
         return true;
     }
 
@@ -113,10 +117,6 @@ public class SubmissionService {
         if (isInitiatedEventSaved) {
             submissionSuccess = sendClaim(validatedClaimPayload);
             isSubmitEventSaved = saveFinishedSubmission(claimantIdpId, submissionSuccess);
-            logger.debug(
-                    "submissionSuccess is: {}   isSubmitedEventSaved is: {}",
-                    submissionSuccess,
-                    isSubmitEventSaved);
         }
 
         return submissionSuccess && isSubmitEventSaved;
