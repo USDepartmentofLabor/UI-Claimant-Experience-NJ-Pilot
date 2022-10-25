@@ -8,7 +8,6 @@ const Privacy: NextPage = () => {
   return (
     <>
       <Head>
-        <meta name="claim form" content="Fill out the form provided" />
         <title>{t('page_title')}</title>
       </Head>
       <h1>{t('heading')}</h1>

@@ -233,7 +233,6 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         return (
           <>
             <Head>
-              <meta name="claim form" content="Fill out the form provided" />
               <title>{currentPageDefinition.heading}</title>
             </Head>
             <div className="grid-row grid-gap">
