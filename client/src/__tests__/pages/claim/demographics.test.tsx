@@ -73,7 +73,7 @@ describe('Demographics page', () => {
       )
       const radio1 = screen.getByLabelText('sex.options.female')
       const radio2 = screen.getByLabelText('sex.options.male')
-      const radio3 = screen.getByLabelText('sex.options.x')
+      const radio3 = screen.getByLabelText('sex.options.unspecified')
       expect(radio1).not.toBeChecked()
 
       await user.click(radio1)

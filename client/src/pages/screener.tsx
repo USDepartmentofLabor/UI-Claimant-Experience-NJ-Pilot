@@ -49,13 +49,13 @@ const Screener: NextPageWithLayout = () => {
         />
       )}
       <YesNoQuestion
-        question={t('screener_military_service_eighteen_months.label')}
-        name="screener_military_service_eighteen_months"
-      />
-      <YesNoQuestion
         question={t('screener_job_last_eighteen_months.label')}
         name="screener_job_last_eighteen_months"
         onChange={handleWorkInLast18MonthsChange}
+      />
+      <YesNoQuestion
+        question={t('screener_military_service_eighteen_months.label')}
+        name="screener_military_service_eighteen_months"
       />
       {values.screener_job_last_eighteen_months === true && (
         <YesNoQuestion
@@ -92,8 +92,8 @@ export const ScreenerPageDefinition: PageDefinition = {
   initialValues: {
     screener_current_country_us: undefined,
     screener_live_in_canada: undefined,
-    screener_military_service_eighteen_months: undefined,
     screener_job_last_eighteen_months: undefined,
+    screener_military_service_eighteen_months: undefined,
     screener_all_work_nj: undefined,
     screener_any_work_nj: undefined,
     screener_currently_disabled: undefined,
@@ -109,14 +109,24 @@ export const ScreenerPageDefinition: PageDefinition = {
         i18n_screener.t('screener_live_in_canada.errors.required')
       ),
     }),
-    screener_military_service_eighteen_months: boolean().required(
-      i18n_screener.t(
-        'screener_military_service_eighteen_months.errors.required'
-      )
-    ),
     screener_job_last_eighteen_months: boolean().required(
       i18n_screener.t('screener_job_last_eighteen_months.errors.required')
     ),
+    screener_military_service_eighteen_months: boolean()
+      .required(
+        i18n_screener.t(
+          'screener_military_service_eighteen_months.errors.required'
+        )
+      )
+      .when('screener_job_last_eighteen_months', {
+        is: false,
+        then: boolean().oneOf(
+          [false],
+          i18n_screener.t(
+            'screener_military_service_eighteen_months.errors.job_conflict'
+          )
+        ),
+      }),
     screener_all_work_nj: boolean().when('screener_job_last_eighteen_months', {
       is: true,
       then: boolean().required(

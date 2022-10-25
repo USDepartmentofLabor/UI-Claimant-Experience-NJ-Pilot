@@ -114,7 +114,7 @@ export const ContactPageDefinition: PageDefinition = {
   path: Routes.CLAIM.CONTACT,
   initialValues: {
     claimant_phone: { ...PHONE_SKELETON },
-    alternate_phone: { ...PHONE_SKELETON },
+    alternate_phone: undefined,
     interpreter_required: undefined,
     preferred_language: undefined,
     preferred_language_other: undefined,
