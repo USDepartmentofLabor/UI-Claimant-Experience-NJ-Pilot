@@ -2,14 +2,32 @@
 // ReactUSWDS CSS modules
 @import '~@trussworks/react-uswds/lib/index.css';
 
-// // -------------------------------------
-// // USWDS settings and utilities
+// -------------------------------------
+// USWDS settings and utilities
 @import 'uswds';
 
-// // -------------------------------------
+// -------------------------------------
 // USWDS SCSS - Individual Imports
-@import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
+@import 'node_modules/uswds/src/stylesheets/packages/global';
 
+@import 'node_modules/uswds/src/stylesheets/packages/form-controls';
+@import 'node_modules/uswds/src/stylesheets/packages/form-templates';
+
+@import 'node_modules/uswds/src/stylesheets/packages/usa-accordion';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-alert';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-banner';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-button';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-footer';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-header';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-icon';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-nav';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-navbar';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-sidenav';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-site-alert';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-step-indicator';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-summary-box';
+@import 'node_modules/uswds/src/stylesheets/packages/usa-table';
+@import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
 // -------------------------------------
 // NJWDS themes
 @import '@newjersey/njwds/dist/css/styles';
