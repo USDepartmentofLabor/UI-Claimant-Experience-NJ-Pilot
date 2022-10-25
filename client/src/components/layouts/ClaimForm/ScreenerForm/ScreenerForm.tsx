@@ -31,8 +31,22 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
   ) => {
     helpers.setSubmitting(false)
   }
-  const checkRedirect = () => true
-  const isRedirect = checkRedirect()
+  const getIsRedirect = (values: ScreenerInput) => {
+    const {
+      screener_live_in_canada,
+      screener_any_work_nj,
+      screener_currently_disabled,
+      screener_military_service_eighteen_months,
+      screener_maritime_employer_eighteen_months,
+    } = values
+    return (
+      screener_live_in_canada !== undefined ||
+      screener_any_work_nj === false ||
+      screener_currently_disabled === true ||
+      screener_military_service_eighteen_months === true ||
+      screener_maritime_employer_eighteen_months === true
+    )
+  }
 
   return (
     <Formik
@@ -66,7 +80,7 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
               .join('&')
 
             submitForm().then(async () => {
-              isRedirect
+              getIsRedirect(values)
                 ? await router.push(
                     Routes.SCREENER_REDIRECT + '?' + queryString
                   )
