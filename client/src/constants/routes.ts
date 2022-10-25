@@ -5,6 +5,7 @@ export const makeClaimFormRoute = (page: string) =>
 export const Routes = {
   HOME: '/',
   SCREENER: '/screener',
+  SCREENER_REDIRECT: '/screener-redirect',
   PRIVACY: '/privacy',
 
   // Claim Form

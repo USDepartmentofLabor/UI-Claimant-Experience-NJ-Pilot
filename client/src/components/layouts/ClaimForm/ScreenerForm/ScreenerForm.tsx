@@ -31,6 +31,8 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
   ) => {
     helpers.setSubmitting(false)
   }
+  const checkRedirect = () => true
+  const isRedirect = checkRedirect()
 
   return (
     <Formik
@@ -39,20 +41,36 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
       validateOnMount
       onSubmit={handleSubmit}
     >
-      {({ errors, submitCount, isValid, submitForm, setFormikState }) => {
+      {({
+        errors,
+        submitCount,
+        isValid,
+        submitForm,
+        setFormikState,
+        values,
+      }) => {
         const showErrorSummary =
           submitCount > 0 && Object.keys(errors).length > 0
 
         const handleClickPrevious: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
-          router.push(Routes.HOME)
+          await router.push(Routes.HOME)
         }
 
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
           if (isValid) {
+            const queryString = Object.entries(values)
+              .filter(([, val]) => val !== undefined)
+              .map(([key, val]) => `${key}=${val}`)
+              .join('&')
+
             submitForm().then(async () => {
-              router.push(Routes.HOME)
+              isRedirect
+                ? await router.push(
+                    Routes.SCREENER_REDIRECT + '?' + queryString
+                  )
+                : await router.push(Routes.HOME)
             })
           } else {
             setFormikState((previousState) => ({
