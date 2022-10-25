@@ -33,7 +33,6 @@ public class SubmissionService {
             logger.debug("No claimant exists with idp id: {}", claimantIdpId);
             return false;
         }
-        logger.debug("No after first check");
 
         // Get the corresponding claimant
         Claimant claimant = existingClaimant.get();
@@ -80,9 +79,10 @@ public class SubmissionService {
         // get the corresponding claim
         Claim claim = existingClaim.get();
         logger.debug(
-                "Saving Submission event for claim {} and claimant {}",
+                "Saving Submission event for claim {} and claimant {} with failed as {}",
                 claim.getId(),
-                claimant.getId());
+                claimant.getId(),
+                wasSubmissionSuccessful);
         if (wasSubmissionSuccessful) {
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SUBMITTED));
         } else {
@@ -113,7 +113,12 @@ public class SubmissionService {
         if (isInitiatedEventSaved) {
             submissionSuccess = sendClaim(validatedClaimPayload);
             isSubmitEventSaved = saveFinishedSubmission(claimantIdpId, submissionSuccess);
+            logger.debug(
+                    "submissionSuccess is: {}   isSubmitedEventSaved is: {}",
+                    submissionSuccess,
+                    isSubmitEventSaved);
         }
+
         return submissionSuccess && isSubmitEventSaved;
     }
 }
