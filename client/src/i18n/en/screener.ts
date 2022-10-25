@@ -21,26 +21,24 @@ const screener = {
       required: 'Please indicate whether you currently live in Canada',
     },
   },
-  screener_military_service_eighteen_months: {
-    label:
-      'Have you served in the United States military in the last 18 months?',
+  screener_job_last_eighteen_months: {
+    label: 'Have you had a job in the last 18 months?',
     errors: {
+      military_id_wage_data:
+        'Are you sure? We have 1 employer who has listed you as an employee in the last 18 months',
+      military_id_wage_data_plural:
+        'Are you sure? We have {{count}} employers who have listed you as an employee in the last 18 months',
       required:
-        'Please indicate whether you served in the United States military in the last 18 months',
+        'Please indicate whether you had a job in the last 18 months, including military service',
     },
   },
-  screener_job_last_eighteen_months: {
-    label:
-      'Have you had a job in the last 18 months, including military service?',
+  screener_military_service_eighteen_months: {
+    label: 'In that time, did you serve in the United States military?',
     errors: {
-      military_conflict:
-        'If you served in the military, select yes. If you did not, please change your answer above.',
-      military_id_wage_data:
-        'Are you sure? We have 1 employer who has listed you as an employee in the last 18 months.',
-      military_id_wage_data_plural:
-        'Are you sure? We have {{count}} employers who have listed you as an employee in the last 18 months.',
+      job_conflict:
+        'If you served in the military, please change your answer above to say that you did have a job',
       required:
-        'Please indicate whether you had a job in the last 18 months, including military service?',
+        'Please indicate whether you served in the United States military in the last 18 months',
     },
   },
   screener_all_work_nj: {
