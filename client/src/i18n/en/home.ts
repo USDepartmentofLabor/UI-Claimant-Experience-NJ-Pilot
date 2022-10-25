@@ -1,6 +1,6 @@
 const home = {
-  page_title: 'Apply for unemployment insurance',
-  heading: 'Apply for unemployment insurance',
+  page_title: 'Apply for Unemployment Insurance',
+  heading: 'Apply for Unemployment Insurance',
   complete_claim_success:
     'Congratulations! You have successfully submitted your claim',
 }
