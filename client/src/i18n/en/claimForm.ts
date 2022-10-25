@@ -365,7 +365,7 @@ const claimForm = {
     heading: 'Able and available',
     info_alert: {
       title:
-        'For unemployment insurance, you are “disabled” if any of the following are true:',
+        'For Unemployment Insurance, you are “disabled” if any of the following are true:',
       items: {
         doctor_cert:
           'A medical provider certifies you are unable to work due to a physical/mental health condition, pregnancy, or childbirth recovery',
@@ -592,7 +592,7 @@ const claimForm = {
     federal_income_tax_withheld: {
       header: '<strong>Taxes and deductions</strong>',
       description:
-        'Unemployment insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts required to be deducted and withheld by law.',
+        'Unemployment Insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts required to be deducted and withheld by law.',
       label:
         'Would you like to withhold 10% of your benefits for federal taxes?',
       help_text:
