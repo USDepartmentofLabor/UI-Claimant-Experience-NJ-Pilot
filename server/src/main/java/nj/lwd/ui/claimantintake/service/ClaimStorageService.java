@@ -86,8 +86,8 @@ public class ClaimStorageService {
                     claim.getId(),
                     claimant.getId(),
                     s3Key);
-            claimantRepository.save(claimant);
             claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETED));
+            claimantRepository.save(claimant);
             return true;
         } catch (JsonProcessingException e) {
             logger.error(
