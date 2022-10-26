@@ -61,8 +61,8 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const previousPageDefinition =
     previousPageIndex >= 0 ? pageDefinitions.at(previousPageIndex) : undefined
   const nextPageDefinition = pageDefinitions.at(nextPageIndex)
-  const isComplete = false // TODO register when claim is completed
-  const isLoading = false // TODO From useSubmitClaim.isLoading
+  const isComplete = saveCompleteClaim.isSuccess
+  const isLoading = submitClaim.isLoading
 
   const step = currentPageIndex + 1
   const totalSteps = pageDefinitions.length
@@ -212,7 +212,6 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
           if (isValid) {
             saveFormValues(values)
-            console.log(JSON.stringify(values))
             const response = await saveCompleteClaim.mutateAsync(values)
             if (response.status === 200) {
               const submitResponse = await submitClaim.mutateAsync(values)
