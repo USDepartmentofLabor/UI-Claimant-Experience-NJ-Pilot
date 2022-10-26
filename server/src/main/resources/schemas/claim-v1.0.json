@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://unemployment.nj.gov/schemas/claim-v1.0.json",
   "title": "UI Claimant Intake Form",
-  "description": "NJ unemployment insurance claimant application form schema",
+  "description": "NJ Unemployment Insurance claimant application form schema",
   "type": "object",
   "definitions": {
     "person_name": {
