@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react'
 import { ScreenerForm } from 'components/layouts/ClaimForm/ScreenerForm/ScreenerForm'
 import { makeClaimFormRoute, Routes } from 'constants/routes'
 import userEvent from '@testing-library/user-event'
+import Screener from '../../../../pages/screener'
+import { Formik } from 'formik'
+import { noop } from '../../../../helpers/noop/noop'
 
 const useRouter = jest.fn()
 jest.mock('next/router', () => ({
@@ -85,5 +88,40 @@ describe('ScreenerForm Layout', () => {
 
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
+  })
+  describe('redirects to the screener-redirect page', () => {
+    const canUseFormValues = {
+      screener_current_country_us: true,
+      screener_live_in_canada: undefined,
+      screener_job_last_eighteen_months: true,
+      screener_all_work_nj: true,
+      screener_any_work_nj: undefined,
+      screener_currently_disabled: false,
+      screener_military_service_eighteen_months: false,
+      screener_maritime_employer_eighteen_months: false,
+    }
+    it('when they say they are not in the US', async () => {
+      const user = userEvent.setup()
+      const disqualifyingValues = {
+        screener_current_country_us: false,
+        screener_live_in_canada: true,
+      }
+      render(
+        <ScreenerForm>
+          <Formik
+            initialValues={{ ...canUseFormValues, ...disqualifyingValues }}
+            onSubmit={noop}
+          >
+            <Screener />
+          </Formik>
+        </ScreenerForm>
+      )
+      await user.click(screen.getByRole('button', { name: /next/i }))
+      expect(useRouter).toHaveBeenCalledWith(/\/screener-redirect/)
+    })
+    // it.skip('when no work was done in NJ', () => {})
+    // it.skip('when they mark yes to having a disability', () => {})
+    // it.skip('when they mark yes to military service', () => {})
+    // it.skip('when they mark yes to maritime work', () => {})
   })
 })
