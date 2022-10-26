@@ -37,7 +37,7 @@ The code submitter, code reviewer, and design reviewer should go through each of
 
     Check that all the intended links on the page are displayed in this menu with the right link label.
 
-- [ ] Use **[VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) screen reader** (with Safari) to walk through the interface changes
+- [ ] Use **[VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) screen reader** (with Safari) or JAWS (with Chrome) to walk through the interface changes
 
   - Listen to make sure context makes sense semantically
   - Make sure actions (like buttons) have enough verbal context to understand what they do
@@ -46,10 +46,8 @@ The code submitter, code reviewer, and design reviewer should go through each of
 
 - [ ] Open an **a11y browser tools** to check for errors or issues: [WAVE](https://wave.webaim.org/), [axe](https://www.deque.com/axe/devtools/) (free version is sufficient, for Chrome only) (this is the one used by gov (DHS Trusted Testers). For storybook-only components, use the accessibility tab in Storybook.
 
-## After completion of each epic:
+## After completion of each milestone/epic:
 
-Test with screen reader NVDA or JAWS on Windows machine using (Chrome or Firefox)
-
-Test responsiveness when zoomed in at 200%
-
-Test using an Android and an iPhone
+- [ ] Test all the above with JAWS screenreader on a Windows machine using Chrome or Firefox via [Asstistiv](https://docs.google.com/document/d/1YGVMAbQgBVYaPhTgzJeMer1iMpBsOSVCshyyu-vmGi4/edit#)
+- [ ] Test all the above for responsiveness when zoomed in at 200%
+- [ ] Test all the above using an Android and an iPhone
