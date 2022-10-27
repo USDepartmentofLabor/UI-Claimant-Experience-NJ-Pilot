@@ -48,7 +48,7 @@ export const Prequal: NextPage = () => {
           data-testid="state_province_territory_where_filed"
           startEmpty
           options={stateProvincesTerritoriesDropdownOptions}
-          divClassName={styles.state}
+          formGroupClassName={styles.state}
         />
       )}
       <YesNoQuestion
