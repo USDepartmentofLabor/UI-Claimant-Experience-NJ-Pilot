@@ -38,10 +38,6 @@
   margin-top: units(3);
   margin-bottom: units(3);
 }
-.usa-summary-box {
-  font-size: 1rem;
-  line-height: 1.6;
-}
 .dol-fieldset .usa-legend {
   margin-top: 0;
   margin-bottom: 8px;
@@ -117,16 +113,6 @@
   padding: units(1) units(2);
 }
 
-.line-height-sans-3,
-.nav-future {
-  line-height: 1.3;
-}
-
-.text-base-light,
-.nav-future {
-  color: #72777a;
-}
-
 .usa-step-indicator__segment-label {
   display: none;
 }
@@ -140,12 +126,29 @@
     display: none;
   }
 }
-.usa-sidenav {
-  font-size: 1.06rem;
-  line-height: 1.3;
-}
 @media all and (min-width: units('desktop')) {
   .usa-step-indicator {
     display: none;
   }
+}
+
+// -------------------------------------
+// Overrides for the NJWDS setting
+//remove when NJWDS updates
+.usa-summary-box {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.line-height-sans-3,
+.nav-future {
+  line-height: 1.3;
+}
+
+.text-base-light,
+.nav-future {
+  color: #72777a;
+}
+.usa-sidenav {
+  font-size: 1.06rem;
+  line-height: 1.3;
 }
