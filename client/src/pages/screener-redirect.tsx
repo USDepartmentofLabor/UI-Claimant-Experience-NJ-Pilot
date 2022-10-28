@@ -29,14 +29,9 @@ const ScreenerRedirect: NextPage = () => {
     setQueryParams(params)
   }, [])
 
-  const convertBoolStrToBool = (val: string | undefined) => {
-    if (val === 'true') {
-      return true
-    } else if (val === 'false') {
-      return false
-    }
-    return undefined
-  }
+  const convertBoolStrToBool = (val: string | undefined) =>
+    val === undefined ? undefined : val === 'true'
+
   const screener_current_country_us = convertBoolStrToBool(
     queryParams?.screener_current_country_us
   )
