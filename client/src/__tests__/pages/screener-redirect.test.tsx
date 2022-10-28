@@ -19,34 +19,8 @@ describe('Screener-redirect page', () => {
     expect(
       screen.getByRole('heading', { name: 'info_alert.title' })
     ).toBeInTheDocument()
-    //
-    // expect(screen.getByText('ip_deny.heading')).toBeInTheDocument()
-    //
-    // expect(screen.getByText('canada.heading')).toBeInTheDocument()
-    //
-    // expect(screen.getByText('non_resident.heading')).toBeInTheDocument()
-    //
-    // expect(screen.getByText('other_state.heading')).toBeInTheDocument()
-    //
-    // expect(screen.getByText('disability.heading')).toBeInTheDocument()
-    //
-    // expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
-    //
-    // expect(screen.getByText('military_ip.heading')).toBeInTheDocument()
-    //
-    // expect(screen.getByText('maritime.heading')).toBeInTheDocument()
   })
   describe('shows the correct content based on querystring values', () => {
-    // const canUseFormDefaults = {
-    //   screener_current_country_us: true,
-    //   screener_live_in_canada: undefined,
-    //   screener_job_last_eighteen_months: true,
-    //   screener_all_work_nj: true,
-    //   screener_any_work_nj: undefined,
-    //   screener_currently_disabled: false,
-    //   screener_military_service_eighteen_months: false,
-    //   screener_maritime_employer_eighteen_months: false,
-    // }
     const makeQueryString = (
       values: { [s: string]: unknown } | ArrayLike<unknown>
     ) => {
@@ -81,14 +55,21 @@ describe('Screener-redirect page', () => {
       )
 
       expect(screen.getByText('canada.heading')).toBeInTheDocument()
+      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
-    it('when not a resident of US or Canada', () => {
-      const searchString1 = {
+    it.skip('when not a resident of US or Canada', () => {
+      const searchString = {
         screener_current_country_us: false,
         screener_live_in_canada: false,
       }
 
-      makeMockWindowSearch(searchString1)
+      makeMockWindowSearch(searchString)
 
       render(
         <Formik initialValues={{}} onSubmit={noop}>
@@ -96,18 +77,104 @@ describe('Screener-redirect page', () => {
         </Formik>
       )
       expect(screen.getByText('non_resident.heading')).toBeInTheDocument()
+
+      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
-    // it('when needing to file in another state', () => {
-    //
-    // })
-    // it('when on disability', () => {
-    //
-    // })
-    // it('when worked in the military', () => {
-    //
-    // })
-    // it('when had maritime employment', () => {
-    //
-    // })
+    it('when needing to file in another state', () => {
+      const searchString = {
+        screener_any_work_nj: false,
+      }
+      makeMockWindowSearch(searchString)
+
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <ScreenerRedirect />
+        </Formik>
+      )
+
+      expect(screen.getByText('other_state.heading')).toBeInTheDocument()
+
+      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
+    })
+    it.skip('when on disability', () => {
+      const searchString = {
+        screener_currently_disabled: true,
+      }
+
+      makeMockWindowSearch(searchString)
+
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <ScreenerRedirect />
+        </Formik>
+      )
+
+      expect(screen.getByText('disability.heading')).toBeInTheDocument()
+
+      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
+    })
+    it.skip('when worked in the military', () => {
+      const searchString = {
+        screener_military_service_eighteen_months: true,
+      }
+
+      makeMockWindowSearch(searchString)
+
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <ScreenerRedirect />
+        </Formik>
+      )
+      expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
+
+      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
+    })
+    it.skip('when had maritime employment', () => {
+      const searchString = {
+        screener_maritime_employer_eighteen_months: true,
+      }
+
+      makeMockWindowSearch(searchString)
+
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <ScreenerRedirect />
+        </Formik>
+      )
+
+      expect(screen.getByText('maritime.heading')).toBeInTheDocument()
+
+      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+    })
   })
 })
