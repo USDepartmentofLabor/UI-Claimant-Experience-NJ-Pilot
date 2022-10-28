@@ -61,6 +61,7 @@ export const Address = ({
           startEmpty
           stateSlice={stateSlice}
           onChange={onChange}
+          className={styles.state}
         />
       </div>
       <TextField

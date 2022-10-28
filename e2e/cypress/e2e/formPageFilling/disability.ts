@@ -1,6 +1,5 @@
-const fillAbleAndAvailableFields = (disabilityStatus) => {
+const fillDisabilityFields = (disabilityStatus) => {
   const {
-    can_begin_work_immediately,
     disability_applied_to_or_received,
     disabled_immediately_before,
     type_of_disability,
@@ -8,10 +7,6 @@ const fillAbleAndAvailableFields = (disabilityStatus) => {
     recovery_date,
     contacted_last_employer_after_recovery,
   } = disabilityStatus
-
-  cy.get(`input[id=can_begin_work_immediately\\.${can_begin_work_immediately}]`)
-    .parent()
-    .click()
 
   cy.get(
     `input[id=disability_applied_to_or_received\\.${disability_applied_to_or_received}]`
@@ -60,4 +55,4 @@ const fillAbleAndAvailableFields = (disabilityStatus) => {
   }
 }
 
-export default fillAbleAndAvailableFields
+export default fillDisabilityFields

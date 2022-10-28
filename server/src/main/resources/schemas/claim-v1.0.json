@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://unemployment.nj.gov/schemas/claim-v1.0.json",
   "title": "UI Claimant Intake Form",
-  "description": "NJ unemployment insurance claimant application form schema",
+  "description": "NJ Unemployment Insurance claimant application form schema",
   "type": "object",
   "definitions": {
     "person_name": {
@@ -39,7 +39,7 @@
       "properties": {
         "address": { "type": "string", "maxLength": 64 },
         "city": { "type": "string", "maxLength": 64 },
-        "state": { "$ref": "#/definitions/state" },
+        "state": { "$ref": "#/definitions/state_or_territory" },
         "zipcode": {
           "type": "string",
           "maxLength": 10,
@@ -60,7 +60,7 @@
           "pattern": "^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$"
         },
         "city": { "type": "string", "maxLength": 64 },
-        "state": { "$ref": "#/definitions/state" },
+        "state": { "$ref": "#/definitions/state_or_territory" },
         "zipcode": {
           "type": "string",
           "maxLength": 10,
@@ -115,7 +115,6 @@
         "AK",
         "AL",
         "AR",
-        "AS",
         "AZ",
         "CA",
         "CO",
@@ -123,9 +122,7 @@
         "DC",
         "DE",
         "FL",
-        "FM",
         "GA",
-        "GU",
         "HI",
         "IA",
         "ID",
@@ -137,11 +134,9 @@
         "MA",
         "MD",
         "ME",
-        "MH",
         "MI",
         "MN",
         "MO",
-        "MP",
         "MS",
         "MT",
         "NC",
@@ -156,8 +151,6 @@
         "OK",
         "OR",
         "PA",
-        "PR",
-        "PW",
         "RI",
         "SC",
         "SD",
@@ -165,12 +158,52 @@
         "TX",
         "UT",
         "VA",
-        "VI",
         "VT",
         "WA",
         "WI",
         "WV",
         "WY"
+      ]
+    },
+    "canadian_province": {
+      "$id": "/definitions/canadian_province",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/canadian_province",
+      "type": "string",
+      "enum": ["AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK"]
+    },
+    "territory": {
+      "$id": "/definitions/territory",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/territory",
+      "type": "string",
+      "enum": ["AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI"]
+    },
+    "state_ca_province_or_territory": {
+      "description": "Any of US states, Canadian provinces, or territories",
+      "type": "string",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/state"
+        },
+        {
+          "$ref": "#/definitions/canadian_province"
+        },
+        {
+          "$ref": "#/definitions/territory"
+        }
+      ]
+    },
+    "state_or_territory": {
+      "description": "Any of US states or territories",
+      "type": "string",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/state"
+        },
+        {
+          "$ref": "#/definitions/territory"
+        }
       ]
     }
   },
@@ -324,10 +357,6 @@
       "type": "string",
       "maxLength": 16
     },
-    "can_begin_work_immediately": {
-      "description": "Is the claimant is able to begin work immediately",
-      "type": "boolean"
-    },
     "disability_applied_to_or_received": {
       "description": "What forms of disability has the claimant applied to and/or received",
       "type": "array",
@@ -390,6 +419,63 @@
     },
     "apply_for_increased_payment_for_dependents": {
       "type": "boolean"
+    },
+    "screener_current_country_us": {
+      "type": "boolean",
+      "description": "Screener question: Do you currently live in the United States (including Puerto Rico and the US Virgin Islands)?"
+    },
+    "screener_live_in_canada": {
+      "type": "boolean",
+      "description": "Screener question: Do you currently live in Canada?"
+    },
+    "screener_job_last_eighteen_months": {
+      "type": "boolean",
+      "description": "Screener question: In the last 18 months, have you had a job (including military service)?"
+    },
+    "screener_all_work_nj": {
+      "type": "boolean",
+      "description": "Screener question: Was all of your work (not including military service) performed in New Jersey?"
+    },
+    "screener_any_work_nj": {
+      "type": "boolean",
+      "description": "Screener question: Was any of your work (not including military service) performed in New Jersey?"
+    },
+    "screener_currently_disabled": {
+      "type": "boolean",
+      "description": "Screener question: Are you currently disabled and unable to work?"
+    },
+    "screener_military_service_eighteen_months": {
+      "type": "boolean",
+      "description": "Screener question: In the last 18 months, have you served in the United States Military?"
+    },
+    "screener_maritime_employer_eighteen_months": {
+      "type": "boolean",
+      "description": "Screener question: Have you worked for a maritime employer in the last 18 months (for example, did you work on a ship or in a harbor)?"
+    },
+    "filed_in_last_12mo": {
+      "description": "Claimant has filed for unemployment in the past 12 months",
+      "type": "boolean"
+    },
+    "state_province_territory_where_filed": {
+      "description": "The US state or territory or Canadian province where claimant filed",
+      "type": "string",
+      "enum": { "$ref": "#/definitions/state_ca_province_or_territory" }
+    },
+    "lived_outside_nj_when_working_nj": {
+      "description": "Worked outside of NJ when working in NJ",
+      "type": "boolean"
+    },
+    "will_look_for_work_in_nj": {
+      "description": "Will continue to look for work in NJ in addition to other states",
+      "type": "boolean"
+    },
+    "can_begin_work_immediately": {
+      "description": "Claimant can begin full-time work immediately",
+      "type": "boolean"
+    },
+    "federal_work_in_last_18mo": {
+      "description": "Worked for the federal government in the past 18months (excluding military service)",
+      "type": "boolean"
     }
   },
   "required": [
@@ -413,7 +499,10 @@
     "can_begin_work_immediately",
     "payment_method",
     "federal_income_tax_withheld",
-    "apply_for_increased_payment_for_dependents"
+    "apply_for_increased_payment_for_dependents",
+    "filed_in_last_12mo",
+    "lived_outside_nj_when_working_nj",
+    "federal_work_in_last_18mo"
   ],
   "allOf": [
     {
@@ -565,6 +654,52 @@
       },
       "then": {
         "required": ["alien_registration_number"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "work_authorization": {
+            "type": "string",
+            "enum": [
+              "permanent_resident",
+              "H1B_visa",
+              "employment_authorization_or_card_or_doc"
+            ]
+          }
+        },
+        "then": {
+          "required": [
+            "employment_authorization_start_date",
+            "employment_authorization_end_date"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "filed_in_last_12mo": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "then": {
+          "required": ["state_province_territory_where_filed"]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lived_outside_nj_when_working_nj": {
+            "type": "boolean",
+            "const": false
+          }
+        },
+        "then": {
+          "required": ["will_look_for_work_in_nj"]
+        }
       }
     }
   ]

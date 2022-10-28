@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://unemployment.nj.gov/schemas/claim-v1.0.json",
   "title": "UI Claimant Intake Form",
-  "description": "NJ unemployment insurance claimant application form schema",
+  "description": "NJ Unemployment Insurance claimant application form schema",
   "type": "object",
   "definitions": {
     "person_name": {
@@ -46,7 +46,7 @@
           "maxLength": 64
         },
         "state": {
-          "$ref": "#/definitions/state"
+          "$ref": "#/definitions/state_or_territory"
         },
         "zipcode": {
           "type": "string",
@@ -72,7 +72,7 @@
           "maxLength": 64
         },
         "state": {
-          "$ref": "#/definitions/state"
+          "$ref": "#/definitions/state_or_territory"
         },
         "zipcode": {
           "type": "string",
@@ -93,7 +93,7 @@
           "maxLength": 64
         },
         "state": {
-          "$ref": "#/definitions/state"
+          "$ref": "#/definitions/state_or_territory"
         },
         "zipcode": {
           "type": "string",
@@ -149,7 +149,6 @@
         "AK",
         "AL",
         "AR",
-        "AS",
         "AZ",
         "CA",
         "CO",
@@ -157,9 +156,7 @@
         "DC",
         "DE",
         "FL",
-        "FM",
         "GA",
-        "GU",
         "HI",
         "IA",
         "ID",
@@ -171,11 +168,9 @@
         "MA",
         "MD",
         "ME",
-        "MH",
         "MI",
         "MN",
         "MO",
-        "MP",
         "MS",
         "MT",
         "NC",
@@ -190,8 +185,6 @@
         "OK",
         "OR",
         "PA",
-        "PR",
-        "PW",
         "RI",
         "SC",
         "SD",
@@ -199,7 +192,6 @@
         "TX",
         "UT",
         "VA",
-        "VI",
         "VT",
         "WA",
         "WI",
@@ -212,21 +204,17 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "$anchor": "#/definitions/canadian_province",
       "type": "string",
-      "enum": [
-        "Alberta",
-        "British Columbia",
-        "Manitoba",
-        "New Brunswick",
-        "Newfoundland and Labrador",
-        "Nova Scotia",
-        "Ontario",
-        "Prince Edward Island",
-        "Quebec",
-        "Saskatchewan"
-      ]
+      "enum": ["AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK"]
     },
-    "state_or_ca_province": {
-      "description": "Any of US states, territories, or Canadian provinces",
+    "territory": {
+      "$id": "/definitions/territory",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/territory",
+      "type": "string",
+      "enum": ["AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI"]
+    },
+    "state_ca_province_or_territory": {
+      "description": "Any of US states, Canadian provinces, or territories",
       "type": "string",
       "anyOf": [
         {
@@ -234,6 +222,21 @@
         },
         {
           "$ref": "#/definitions/canadian_province"
+        },
+        {
+          "$ref": "#/definitions/territory"
+        }
+      ]
+    },
+    "state_or_territory": {
+      "description": "Any of US states or territories",
+      "type": "string",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/state"
+        },
+        {
+          "$ref": "#/definitions/territory"
         }
       ]
     },
@@ -993,10 +996,10 @@
       "description": "Claimant has filed for unemployment in the past 12 months",
       "type": "boolean"
     },
-    "state_province_where_filed": {
-      "description": "The US state or territory or Canadian province where claimant filed",
+    "state_province_territory_where_filed": {
+      "description": "The US state or Canadian province or territory where claimant filed",
       "type": "string",
-      "enum": { "$ref": "#/definitions/state_or_ca_province" }
+      "enum": { "$ref": "#/definitions/state_ca_province_or_territory" }
     },
     "lived_outside_nj_when_working_nj": {
       "description": "Worked outside of NJ when working in NJ",
@@ -1231,7 +1234,7 @@
           }
         },
         "then": {
-          "required": ["state_province_where_filed"]
+          "required": ["state_province_territory_where_filed"]
         }
       }
     },

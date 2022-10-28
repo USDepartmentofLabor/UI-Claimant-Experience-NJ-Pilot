@@ -7,6 +7,53 @@ const claimForm = {
     save_and_exit: 'Save and exit',
     submit: 'Submit',
   },
+  prequal: {
+    heading: "Let's get started",
+    filed_in_last_12mo: {
+      label:
+        'Have you filed for unemployment benefits during the last 12 months?',
+      errors: {
+        required:
+          'Please indicate whether you have filed for unemployment benefits during the last 12 months',
+      },
+    },
+    state_province_territory_where_filed: {
+      label: 'Where did you file?',
+      errors: {
+        required:
+          'Please indicate the location you filed for unemployment benefits during the last 12 months',
+      },
+    },
+    lived_outside_nj_when_working_nj: {
+      label: 'When you worked in New Jersey, did you live out of state?',
+      errors: {
+        required:
+          'Please indicate when you worked in New Jersey, if you lived out of state',
+      },
+    },
+    will_look_for_work_in_nj: {
+      label: 'Will you continue looking for work in New Jersey?',
+      errors: {
+        required:
+          'Please indicate whether you will continue looking for work in New Jersey',
+      },
+    },
+    can_begin_work_immediately: {
+      label: 'Can you begin full-time work immediately?',
+      errors: {
+        required:
+          'Please indicate whether you can begin full-time work immediately',
+      },
+    },
+    federal_work_in_last_18mo: {
+      label:
+        'In the last 18 months, have you worked for the federal government (not including military service)?',
+      errors: {
+        required:
+          'Please indicate whether in the last 18 months, have you worked for the federal government (not including military service)',
+      },
+    },
+  },
   personal: {
     heading: 'Personal information',
     verified_legal_name: { label: 'Legal name' },
@@ -361,24 +408,17 @@ const claimForm = {
     },
     no_results: 'No results. Try another search.',
   },
-  able_and_available: {
-    heading: 'Able and available',
+  disability: {
+    heading: 'Disability',
     info_alert: {
       title:
-        'For unemployment insurance, you are “disabled” if any of the following are true:',
+        'For Unemployment Insurance, you are “disabled” if any of the following are true:',
       items: {
         doctor_cert:
           'A medical provider certifies you are unable to work due to a physical/mental health condition, pregnancy, or childbirth recovery',
         tdi: 'You are receiving or have applied for temporary disability payments',
         workers_comp:
           'You are receiving or have applied for workers’ compensation payments',
-      },
-    },
-    can_begin_work_immediately: {
-      label: 'Can you begin full-time work immediately?',
-      errors: {
-        required:
-          'You must indicate whether you can begin full-time work immediately',
       },
     },
     disability_applied_to_or_received: {
@@ -592,7 +632,7 @@ const claimForm = {
     federal_income_tax_withheld: {
       header: '<strong>Taxes and deductions</strong>',
       description:
-        'Unemployment insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts required to be deducted and withheld by law.',
+        'Unemployment Insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts required to be deducted and withheld by law.',
       label:
         'Would you like to withhold 10% of your benefits for federal taxes?',
       help_text:

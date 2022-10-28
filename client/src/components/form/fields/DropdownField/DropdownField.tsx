@@ -21,6 +21,7 @@ const EMPTY_OPTION_VALUE = ''
 interface IDropdownFieldProps {
   id?: string
   name: string
+  formGroupClassName?: string
   label: React.ReactNode
   labelClassName?: string
   labelHint?: string
@@ -41,6 +42,7 @@ interface IDropdownFieldProps {
 const DropdownField = ({
   name,
   id: idProp,
+  formGroupClassName,
   label,
   labelClassName,
   labelHint,
@@ -70,7 +72,7 @@ const DropdownField = ({
   const id = idProp || name
 
   return (
-    <FormGroup error={showError}>
+    <FormGroup className={formGroupClassName} error={showError}>
       <Label
         className={labelClassName}
         hint={labelHint}
