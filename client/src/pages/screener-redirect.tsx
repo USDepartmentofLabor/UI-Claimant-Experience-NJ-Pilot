@@ -29,7 +29,17 @@ const ScreenerRedirect: NextPage = () => {
     setQueryParams(params)
   }, [])
 
-  const convertBoolStrToBool = (val: string | undefined) => val === 'true'
+  const convertBoolStrToBool = (val: string | undefined) => {
+    if (val === 'true') {
+      return true
+    } else if (val === 'false') {
+      return false
+    }
+    return undefined
+  }
+  const screener_current_country_us = convertBoolStrToBool(
+    queryParams?.screener_current_country_us
+  )
   const screener_live_in_canada = convertBoolStrToBool(
     queryParams?.screener_live_in_canada
   )
@@ -70,30 +80,34 @@ const ScreenerRedirect: NextPage = () => {
                 </Link>
               </li>
             )}
-            {screener_live_in_canada && (
-              <li>
-                {t('info_alert.items.canada')}
-                <Link variant="nav" href={'#canada'}>
-                  {t('read_more')}
-                </Link>
-              </li>
-            )}
-            {!screener_live_in_canada && (
-              <li>
-                {t('info_alert.items.non_resident')}
-                <Link variant="nav" href={'#non_resident'}>
-                  {t('read_more')}
-                </Link>
-              </li>
-            )}
-            {!screener_any_work_nj && (
-              <li>
-                {t('info_alert.items.other_state')}
-                <Link variant="nav" href={'#other_state'}>
-                  {t('read_more')}
-                </Link>
-              </li>
-            )}
+            {typeof screener_live_in_canada === 'boolean' &&
+              screener_live_in_canada && (
+                <li>
+                  {t('info_alert.items.canada')}
+                  <Link variant="nav" href={'#canada'}>
+                    {t('read_more')}
+                  </Link>
+                </li>
+              )}
+            {typeof screener_current_country_us === 'boolean' &&
+              !screener_current_country_us &&
+              !screener_live_in_canada && (
+                <li>
+                  {t('info_alert.items.non_resident')}
+                  <Link variant="nav" href={'#non_resident'}>
+                    {t('read_more')}
+                  </Link>
+                </li>
+              )}
+            {typeof screener_any_work_nj === 'boolean' &&
+              !screener_any_work_nj && (
+                <li>
+                  {t('info_alert.items.other_state')}
+                  <Link variant="nav" href={'#other_state'}>
+                    {t('read_more')}
+                  </Link>
+                </li>
+              )}
             {screener_currently_disabled && (
               <li>
                 {t('info_alert.items.disability')}
@@ -149,14 +163,16 @@ const ScreenerRedirect: NextPage = () => {
         </div>
       )}
 
-      {!screener_live_in_canada && (
-        <div className={styles.bottom_horizontal_line}>
-          <h2 id="non_resident">{t('non_resident.heading')}</h2>
-          <p>{t('non_resident.label')}</p>
-        </div>
-      )}
+      {typeof screener_current_country_us === 'boolean' &&
+        !screener_current_country_us &&
+        !screener_live_in_canada && (
+          <div className={styles.bottom_horizontal_line}>
+            <h2 id="non_resident">{t('non_resident.heading')}</h2>
+            <p>{t('non_resident.label')}</p>
+          </div>
+        )}
 
-      {!screener_any_work_nj && (
+      {typeof screener_any_work_nj === 'boolean' && !screener_any_work_nj && (
         <div className={styles.bottom_horizontal_line}>
           <h2 id="other_state">{t('other_state.heading')}</h2>
           <p>{t('other_state.label')}</p>
