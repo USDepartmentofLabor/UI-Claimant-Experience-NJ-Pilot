@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
+import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,14 @@ public class CompletedClaimController {
 
     private final ClaimStorageService claimStorageService;
     private final ClaimValidatorService claimValidatorService;
+    private final ExternalClaimFormatterService externalClaimFormatterService;
 
     @Autowired
     public CompletedClaimController(
             ClaimStorageService claimStorageService, ClaimValidatorService claimValidatorService) {
         this.claimStorageService = claimStorageService;
         this.claimValidatorService = claimValidatorService;
+        this.externalClaimFormatterService = new ExternalClaimFormatterService();
     }
 
     @PostMapping()
@@ -38,9 +41,11 @@ public class CompletedClaimController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            Map<String, Object> externalClaim =
+                    externalClaimFormatterService.formatClaim(completedClaimPayload);
             Set<ValidationMessage> errorSet =
                     claimValidatorService.validateAgainstSchema(
-                            objectMapper.writeValueAsString(completedClaimPayload));
+                            objectMapper.writeValueAsString(externalClaim));
             if (errorSet.size() > 0) {
                 // TODO - change here when detailed error msgs are desired on the frontend
                 return new ResponseEntity<>(
