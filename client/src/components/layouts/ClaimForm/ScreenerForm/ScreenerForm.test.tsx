@@ -113,18 +113,16 @@ describe('ScreenerForm Layout', () => {
         }
       }
     }
-    it('when they say they are not in the US', async () => {
+
+    const testSubmitWithValues = async (disqualifyingValues: {
+      [p: string]: boolean
+    }) => {
       const mockPush = jest.fn(async () => true)
       mockRouter.mockImplementation(() => ({
         push: mockPush,
       }))
-      jest.requireActual('constants/pages/pageDefinitions')
-      jest.requireActual('pages/screener')
+
       const user = userEvent.setup()
-      const disqualifyingValues = {
-        screener_current_country_us: false,
-        screener_live_in_canada: true,
-      }
 
       render(
         <ScreenerForm>
@@ -142,11 +140,60 @@ describe('ScreenerForm Layout', () => {
       expect(mockPush).toHaveBeenCalledWith(
         expect.stringMatching(/^\/screener-redirect/)
       )
+    }
+
+    it('when they say they are not in the US', async () => {
+      const disqualifyingValues = {
+        screener_current_country_us: false,
+        screener_live_in_canada: true,
+      }
+
+      await testSubmitWithValues(disqualifyingValues)
     })
 
-    // it.skip('when no work was done in NJ', () => {})
-    // it.skip('when they mark yes to having a disability', () => {})
-    // it.skip('when they mark yes to military service', () => {})
-    // it.skip('when they mark yes to maritime work', () => {})
+    it('when no work was done in NJ', async () => {
+      const disqualifyingValues = {
+        screener_all_work_nj: false,
+        screener_any_work_nj: false,
+      }
+      await testSubmitWithValues(disqualifyingValues)
+    })
+    it('when they mark yes to having a disability', async () => {
+      const disqualifyingValues = {
+        screener_currently_disabled: true,
+      }
+      await testSubmitWithValues(disqualifyingValues)
+    })
+    it('when they mark yes to military service', async () => {
+      const disqualifyingValues = {
+        screener_military_service_eighteen_months: true,
+      }
+      await testSubmitWithValues(disqualifyingValues)
+    })
+    it('when they mark yes to maritime work', async () => {
+      const disqualifyingValues = {
+        screener_maritime_employer_eighteen_months: true,
+      }
+      await testSubmitWithValues(disqualifyingValues)
+    })
+    it('does not redirect when qualifying values are selected', async () => {
+      const mockPush = jest.fn(async () => true)
+      mockRouter.mockImplementation(() => ({
+        push: mockPush,
+      }))
+
+      const user = userEvent.setup()
+
+      render(
+        <ScreenerForm>
+          <Screener />
+        </ScreenerForm>
+      )
+
+      await fillScreenerFields(user, canUseFormValues)
+
+      await user.click(screen.getByRole('button', { name: /next/i }))
+      expect(mockPush).toHaveBeenCalledWith(expect.stringMatching(/^\//))
+    })
   })
 })
