@@ -1,6 +1,6 @@
 import { useMutation } from 'react-query'
 import { Claim } from 'types/Claim'
-import httpclient from 'utils/http/httpclient'
+import httpclient from 'utils/httpclient'
 import { APIResponseType } from '../types/ResponseTypes'
 
 const savePartialClaim = (claim: Partial<Claim>) => {

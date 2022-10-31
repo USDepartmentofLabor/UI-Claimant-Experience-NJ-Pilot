@@ -9,46 +9,27 @@
 // -------------------------------------
 // USWDS SCSS - Individual Imports
 @import 'node_modules/uswds/src/stylesheets/packages/global';
-
 @import 'node_modules/uswds/src/stylesheets/packages/form-controls';
 @import 'node_modules/uswds/src/stylesheets/packages/form-templates';
-// @import 'packages/layout-grid';
-// @import 'packages/typography';
-// @import 'packages/validation';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-accordion';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-alert';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-banner';
-// @import 'packages/usa-breadcrumb';
-// @import 'packages/usa-button-group';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-button';
-// @import 'packages/usa-card';
-// @import 'packages/usa-checklist';
-// @import 'packages/usa-collection';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-footer';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-header';
-// @import 'packages/usa-hero';
-// @import 'packages/usa-icon-list';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-icon';
-// @import 'packages/usa-identifier';
-// @import 'packages/usa-layout';
-// @import 'packages/usa-link';
-// @import 'packages/usa-media-block';
-// @import 'packages/usa-megamenu';
-// @import 'packages/usa-modal';
-// @import 'packages/usa-nav-container';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-nav';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-navbar';
-// @import 'packages/usa-process-list';
-// @import 'packages/usa-search';
-// @import "node_modules/uswds/src/stylesheets/packages/usa-section";
 @import 'node_modules/uswds/src/stylesheets/packages/usa-sidenav';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-site-alert';
-// @import 'packages/usa-skipnav';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-step-indicator';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-summary-box';
 @import 'node_modules/uswds/src/stylesheets/packages/usa-table';
-// @import 'packages/usa-tag';
 @import 'node_modules/uswds/src/stylesheets/packages/uswds-utilities';
+
+// -------------------------------------
+// NJWDS themes
+@import '@newjersey/njwds/dist/css/styles';
 
 // -------------------------------------
 // global style overrides
@@ -57,7 +38,6 @@
   margin-top: units(3);
   margin-bottom: units(3);
 }
-
 .dol-fieldset .usa-legend {
   margin-top: 0;
   margin-bottom: 8px;
@@ -128,12 +108,15 @@
   display: block;
   @extend .line-height-sans-3, .text-base-light;
 }
+
 .usa-sidenav .nav-future {
   padding: units(1) units(2);
 }
+
 .usa-step-indicator__segment-label {
   display: none;
 }
+
 @media all and (max-width: units('desktop')) {
   #appMenu .nav-future {
     padding: units(1) units(2) units(1) units(4);
@@ -147,4 +130,25 @@
   .usa-step-indicator {
     display: none;
   }
+}
+
+// -------------------------------------
+// Overrides for the NJWDS setting
+//remove when NJWDS updates
+.usa-summary-box {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.line-height-sans-3,
+.nav-future {
+  line-height: 1.3;
+}
+
+.text-base-light,
+.nav-future {
+  color: #72777a;
+}
+.usa-sidenav {
+  font-size: 1.06rem;
+  line-height: 1.3;
 }

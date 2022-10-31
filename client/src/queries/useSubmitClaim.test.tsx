@@ -1,11 +1,10 @@
 import { renderHook } from '@testing-library/react'
-import { useSavePartialClaim } from './useSavePartialClaim'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Claim } from 'types/Claim'
+import { useSubmitClaim } from './useSubmitClaim'
 
 jest.mock('utils/httpclient', () => ({
   post: jest.fn().mockImplementation((url, claim: Claim) => {
-    console.log('got in post mock')
     if (claim.email === 'good data') {
       return true
     } else {
@@ -22,11 +21,9 @@ const wrapper = ({ children }: any) => {
   )
 }
 
-describe('use save partial claim', () => {
-  it('calls the onSuccess callback if the partial claim was successfully saved', async () => {
-    const hooky = renderHook(() => useSavePartialClaim(), { wrapper })
-    hooky.result.current.mutate({ email: 'good data' })
-
-    //lost here
+describe('use submit complete claim', () => {
+  it('calls the onSuccess callback if the completed claim was successfully submitted', async () => {
+    const hook = renderHook(() => useSubmitClaim(), { wrapper })
+    hook.result.current.mutate({ email: 'good data' })
   })
 })

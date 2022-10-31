@@ -27,7 +27,7 @@ import { yupDate } from 'validations/yup/custom'
 import { useClearFields } from 'hooks/useClearFields'
 import formStyles from 'components/form/form.module.scss'
 
-export const AbleAndAvailable: NextPage = () => {
+export const Disability: NextPage = () => {
   const { values, setFieldValue } = useFormikContext<ClaimantInput>()
   const { t } = useTranslation('claimForm')
   const { clearFields } = useClearFields()
@@ -50,28 +50,24 @@ export const AbleAndAvailable: NextPage = () => {
     <>
       <SummaryBox>
         <SummaryBoxHeading headingLevel="h2">
-          {t('able_and_available.info_alert.title')}
+          {t('disability.info_alert.title')}
         </SummaryBoxHeading>
         <SummaryBoxContent>
           <ul>
-            <li>{t('able_and_available.info_alert.items.doctor_cert')}</li>
-            <li>{t('able_and_available.info_alert.items.tdi')}</li>
-            <li>{t('able_and_available.info_alert.items.workers_comp')}</li>
+            <li>{t('disability.info_alert.items.doctor_cert')}</li>
+            <li>{t('disability.info_alert.items.tdi')}</li>
+            <li>{t('disability.info_alert.items.workers_comp')}</li>
           </ul>
         </SummaryBoxContent>
       </SummaryBox>
-      <YesNoQuestion
-        name={'can_begin_work_immediately'}
-        question={t('able_and_available.can_begin_work_immediately.label')}
-      />
       <Fieldset
-        legend={t('able_and_available.disability_applied_to_or_received.label')}
+        legend={t('disability.disability_applied_to_or_received.label')}
       >
         <CheckboxGroupField
           name="disability_applied_to_or_received"
           options={disabilityPaymentTypeOptions.map((paymentOption) => ({
             label: t(
-              `able_and_available.disability_applied_to_or_received.options.${paymentOption}`
+              `disability.disability_applied_to_or_received.options.${paymentOption}`
             ),
             value: paymentOption,
             checkboxProps: {
@@ -95,20 +91,18 @@ export const AbleAndAvailable: NextPage = () => {
       {hasCollectedDisability && (
         <>
           <YesNoQuestion
-            question={t('able_and_available.disabled_immediately_before.label')}
+            question={t('disability.disabled_immediately_before.label')}
             name="disabled_immediately_before"
           />
           <Fieldset
-            legend={t('able_and_available.type_of_disability.label')}
+            legend={t('disability.type_of_disability.label')}
             className={formStyles.field}
           >
             <RadioField
               name="type_of_disability"
               options={disabilityTypeOptions.map((option) => {
                 return {
-                  label: t(
-                    `able_and_available.type_of_disability.options.${option}`
-                  ),
+                  label: t(`disability.type_of_disability.options.${option}`),
                   value: option,
                 }
               })}
@@ -116,16 +110,16 @@ export const AbleAndAvailable: NextPage = () => {
           </Fieldset>
           <DateInputField
             name="date_disability_began"
-            legend={t('able_and_available.date_disability_began.label')}
+            legend={t('disability.date_disability_began.label')}
           />
           <DateInputField
             name="recovery_date"
-            legend={t('able_and_available.recovery_date.label')}
-            hint={t('able_and_available.recovery_date.help_text')}
+            legend={t('disability.recovery_date.label')}
+            hint={t('disability.recovery_date.help_text')}
           />
           <YesNoQuestion
             question={t(
-              'able_and_available.contacted_last_employer_after_recovery.label'
+              'disability.contacted_last_employer_after_recovery.label'
             )}
             name="contacted_last_employer_after_recovery"
           />
@@ -136,11 +130,6 @@ export const AbleAndAvailable: NextPage = () => {
 }
 
 const validationSchema = object().shape({
-  can_begin_work_immediately: boolean().required(
-    i18n_claimForm.t(
-      'able_and_available.can_begin_work_immediately.errors.required'
-    )
-  ),
   disability_applied_to_or_received: array()
     .of(mixed().oneOf([...disabilityPaymentTypeOptions]))
     .when({
@@ -149,19 +138,19 @@ const validationSchema = object().shape({
       then: array().max(
         1,
         i18n_claimForm.t(
-          'able_and_available.disability_applied_to_or_received.errors.none_only'
+          'disability.disability_applied_to_or_received.errors.none_only'
         )
       ),
       otherwise: array().min(
         1,
         i18n_claimForm.t(
-          'able_and_available.disability_applied_to_or_received.errors.required'
+          'disability.disability_applied_to_or_received.errors.required'
         )
       ),
     })
     .required(
       i18n_claimForm.t(
-        'able_and_available.disability_applied_to_or_received.errors.required'
+        'disability.disability_applied_to_or_received.errors.required'
       )
     ),
   disabled_immediately_before: boolean().when(
@@ -173,7 +162,7 @@ const validationSchema = object().shape({
       then: (schema) =>
         schema.required(
           i18n_claimForm.t(
-            'able_and_available.disabled_immediately_before.errors.required'
+            'disability.disabled_immediately_before.errors.required'
           )
         ),
     }
@@ -186,19 +175,15 @@ const validationSchema = object().shape({
         disabilityPaymentType?.includes('family_leave'),
       then: (schema) =>
         schema.required(
-          i18n_claimForm.t(
-            'able_and_available.type_of_disability.errors.required'
-          )
+          i18n_claimForm.t('disability.type_of_disability.errors.required')
         ),
     }),
   date_disability_began: yupDate(
-    i18n_claimForm.t('able_and_available.date_disability_began.label')
+    i18n_claimForm.t('disability.date_disability_began.label')
   )
     .max(
       dayjs(new Date()).format('YYYY-MM-DD'),
-      i18n_claimForm.t(
-        'able_and_available.date_disability_began.errors.maxDate'
-      )
+      i18n_claimForm.t('disability.date_disability_began.errors.maxDate')
     )
     .when('disability_applied_to_or_received', {
       is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
@@ -206,18 +191,14 @@ const validationSchema = object().shape({
         disabilityPaymentType?.includes('family_leave'),
       then: (schema) =>
         schema.required(
-          i18n_claimForm.t(
-            'able_and_available.date_disability_began.errors.required'
-          )
+          i18n_claimForm.t('disability.date_disability_began.errors.required')
         ),
     }),
 
-  recovery_date: yupDate(
-    i18n_claimForm.t('able_and_available.recovery_date.label')
-  )
+  recovery_date: yupDate(i18n_claimForm.t('disability.recovery_date.label'))
     .max(
       dayjs(new Date()).format('YYYY-MM-DD'),
-      i18n_claimForm.t('able_and_available.recovery_date.errors.maxDate')
+      i18n_claimForm.t('disability.recovery_date.errors.maxDate')
     )
     .when('date_disability_began', {
       is: (dateValue: string | undefined) => {
@@ -226,7 +207,7 @@ const validationSchema = object().shape({
       then: (schema) =>
         schema.min(
           ref('date_disability_began'),
-          i18n_claimForm.t('able_and_available.recovery_date.errors.minDate')
+          i18n_claimForm.t('disability.recovery_date.errors.minDate')
         ),
     })
     .when('disability_applied_to_or_received', {
@@ -235,7 +216,7 @@ const validationSchema = object().shape({
         disabilityPaymentType?.includes('family_leave'),
       then: (schema) =>
         schema.required(
-          i18n_claimForm.t('able_and_available.recovery_date.errors.required')
+          i18n_claimForm.t('disability.recovery_date.errors.required')
         ),
     }),
   contacted_last_employer_after_recovery: boolean().when(
@@ -247,18 +228,18 @@ const validationSchema = object().shape({
       then: (schema) =>
         schema.required(
           i18n_claimForm.t(
-            'able_and_available.contacted_last_employer_after_recovery.errors.required'
+            'disability.contacted_last_employer_after_recovery.errors.required'
           )
         ),
     }
   ),
 })
 
-export const AbleAndAvailablePageDefinition: PageDefinition = {
-  heading: i18n_claimForm.t('able_and_available.heading'),
-  path: Routes.CLAIM.ABLE_AND_AVAILABLE,
+export const DisabilityPageDefinition: PageDefinition = {
+  heading: i18n_claimForm.t('disability.heading'),
+  path: Routes.CLAIM.DISABILITY,
   initialValues: {},
   validationSchema,
 }
 
-export default AbleAndAvailable
+export default Disability

@@ -10,10 +10,12 @@ export const Routes = {
 
   // Claim Form
   CLAIM: {
+    PREQUAL: makeClaimFormRoute('prequal'),
     PERSONAL: makeClaimFormRoute('personal'),
     CONTACT: makeClaimFormRoute('contact'),
     DEMOGRAPHICS: makeClaimFormRoute('demographics'),
     IDENTITY: makeClaimFormRoute('identity'),
+    RECENT_EMPLOYERS: makeClaimFormRoute('recent-employers'),
     EMPLOYER: makeClaimFormRoute('employer'),
     EMPLOYER_REVIEW: makeClaimFormRoute('employer-review'),
     SELF_EMPLOYMENT: makeClaimFormRoute('self-employment'),
@@ -21,7 +23,7 @@ export const Routes = {
     OCCUPATION: makeClaimFormRoute('occupation'),
     EDUCATION_VOCATIONAL_REHAB: makeClaimFormRoute('education-and-training'),
     UNION: makeClaimFormRoute('union'),
-    ABLE_AND_AVAILABLE: makeClaimFormRoute('able-and-available'),
+    DISABILITY: makeClaimFormRoute('disability'),
     AVAILABILITY: makeClaimFormRoute('availability'),
     PAYMENT: makeClaimFormRoute('payment'),
     REVIEW: makeClaimFormRoute('review'),

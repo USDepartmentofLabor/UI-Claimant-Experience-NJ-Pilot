@@ -1,13 +1,14 @@
 import TextField from '../fields/TextField/TextField'
 import { useTranslation } from 'react-i18next'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
-import { ReactNode } from 'react'
+import { ChangeEventHandler, ReactNode } from 'react'
 
 type PhoneNumberFieldProps = {
   id?: string
   name: string
   label: ReactNode
   showSMS?: boolean
+  onChange?: ChangeEventHandler<HTMLInputElement>
 }
 
 export const PhoneNumberField = ({
@@ -15,6 +16,7 @@ export const PhoneNumberField = ({
   name,
   label,
   showSMS = true,
+  onChange,
 }: PhoneNumberFieldProps) => {
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'contact',
@@ -29,6 +31,7 @@ export const PhoneNumberField = ({
         name={`${name}.number`}
         label={label}
         type="tel"
+        onChange={onChange}
       />
       {showSMS && (
         <YesNoQuestion

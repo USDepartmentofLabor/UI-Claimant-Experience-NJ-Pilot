@@ -25,6 +25,7 @@ import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
 import { useWhoAmI } from 'queries/whoami'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
+import { useSubmitClaim } from 'queries/useSubmitClaim'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -36,6 +37,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const headingRef = useRef<HTMLHeadingElement>(null)
   const savePartialClaim = useSavePartialClaim()
   const saveCompleteClaim = useSaveCompleteClaim()
+  const submitClaim = useSubmitClaim()
   const currentPath = router.pathname
   const currentPageDefinition = pageDefinitions.find(
     (pageDefinition) => pageDefinition.path == currentPath
@@ -59,8 +61,8 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const previousPageDefinition =
     previousPageIndex >= 0 ? pageDefinitions.at(previousPageIndex) : undefined
   const nextPageDefinition = pageDefinitions.at(nextPageIndex)
-  const isComplete = false // TODO register when claim is completed
-  const isLoading = false // TODO From useSubmitClaim.isLoading
+  const isComplete = saveCompleteClaim.isSuccess
+  const isLoading = submitClaim.isLoading
 
   const step = currentPageIndex + 1
   const totalSteps = pageDefinitions.length
@@ -122,6 +124,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
 
   const saveFormValues = (values: ClaimantInput) => {
     saveCompleteClaim.reset()
+    submitClaim.reset()
     savePartialClaim.mutate(values)
   }
 
@@ -172,7 +175,11 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         > = async () => {
           saveFormValues(values)
           if (previousPageDefinition) {
-            router.push(previousPageDefinition.path).then(() => {
+            const previousPage = currentPageDefinition.previousPage
+              ? currentPageDefinition.previousPage(values)
+              : previousPageDefinition.path
+
+            router.push(previousPage).then(() => {
               setFormikState((previousState) => ({
                 ...previousState,
                 submitCount: 0,
@@ -185,8 +192,11 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
           if (isValid && nextPageDefinition) {
             saveFormValues(values)
+            const nextPage = currentPageDefinition.nextPage
+              ? currentPageDefinition.nextPage(values)
+              : nextPageDefinition.path
 
-            router.push(nextPageDefinition.path).then(() => {
+            router.push(nextPage).then(() => {
               setFormikState((previousState) => ({
                 ...previousState,
                 submitCount: 0,
@@ -211,11 +221,14 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
             saveFormValues(values)
             const response = await saveCompleteClaim.mutateAsync(values)
             if (response.status === 200) {
-              await submitForm()
-              await router.push({
-                pathname: Routes.HOME,
-                query: { completed: true },
-              })
+              const submitResponse = await submitClaim.mutateAsync(values)
+              if (submitResponse.status === 200) {
+                await submitForm()
+                await router.push({
+                  pathname: Routes.HOME,
+                  query: { completed: true },
+                })
+              }
             }
           } else {
             setFormikState((previousState) => ({
@@ -259,7 +272,7 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                 className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
                 id="main-content"
               >
-                {saveCompleteClaim.isError && (
+                {(saveCompleteClaim.isError || submitClaim.isError) && (
                   <Alert
                     type="error"
                     headingLevel="h4"

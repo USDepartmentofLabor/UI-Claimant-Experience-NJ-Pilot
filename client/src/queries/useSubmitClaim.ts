@@ -3,8 +3,8 @@ import { Claim } from 'types/Claim'
 import httpclient from 'utils/httpclient'
 import { APIResponseType } from '../types/ResponseTypes'
 
-const saveCompleteClaim = (claim: Partial<Claim>) => {
-  return httpclient.post<APIResponseType>('/intake-api/complete-claim', claim, {
+const submitClaim = (claim: Partial<Claim>) => {
+  return httpclient.post<APIResponseType>('/intake-api/submit', claim, {
     withCredentials: false,
     headers: {
       'Content-Type': 'application/json',
@@ -12,6 +12,6 @@ const saveCompleteClaim = (claim: Partial<Claim>) => {
   })
 }
 
-export const useSaveCompleteClaim = () => {
-  return useMutation((claim: Partial<Claim>) => saveCompleteClaim(claim))
+export const useSubmitClaim = () => {
+  return useMutation((claim: Partial<Claim>) => submitClaim(claim))
 }

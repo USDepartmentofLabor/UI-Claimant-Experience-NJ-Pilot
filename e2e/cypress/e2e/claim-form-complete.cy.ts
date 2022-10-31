@@ -1,14 +1,16 @@
 import fillScreenerFields from './formPageFilling/screener'
 import homePage from './formPageFilling/home'
+import fillPrequalFields from './formPageFilling/prequal'
 import fillPersonalFields from './formPageFilling/personal'
 import fillDemographicsFields from './formPageFilling/demographics'
 import fillContactFields from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
-import fillAbleAndAvailableFields from './formPageFilling/able_and_available'
+import fillDisabilityFields from './formPageFilling/disability'
 import fillPaymentFields from './formPageFilling/payment'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
+import fillRecentEmployersFields from './formPageFilling/recent-employers'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -20,6 +22,11 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Home page
     homePage()
+
+    // Prequal page
+    fillPrequalFields()
+    cy.checkA11y()
+    cy.clickNext()
 
     // Personal page
     fillPersonalFields(
@@ -60,6 +67,11 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.checkA11y()
     cy.clickNext()
 
+    //Recent Employers
+    fillRecentEmployersFields()
+    cy.checkA11y()
+    cy.clickNext()
+
     fillIdentityFields({
       drivers_license: 'D12345678912345',
       work_authorization: {
@@ -87,9 +99,8 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.checkA11y()
     cy.clickNext()
 
-    // Able and available page
-    fillAbleAndAvailableFields({
-      can_begin_work_immediately: 'yes',
+    // Disability page
+    fillDisabilityFields({
       disability_applied_to_or_received: 'disability',
       disabled_immediately_before: 'no',
       type_of_disability: 'state_plan',
