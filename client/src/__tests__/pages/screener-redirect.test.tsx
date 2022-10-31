@@ -35,13 +35,14 @@ describe('Screener-redirect page', () => {
     ) => {
       const queryString = makeQueryString(searchString)
       Object.defineProperty(window, 'location', {
+        writable: true,
         value: {
           search: `?${queryString}`,
         },
       })
     }
 
-    it.skip('when resident of Canada', () => {
+    it('when resident of Canada', () => {
       const searchString = {
         screener_current_country_us: false,
         screener_live_in_canada: true,
@@ -63,7 +64,7 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
-    it.skip('when not a resident of US or Canada', () => {
+    it('when not a resident of US or Canada', () => {
       const searchString = {
         screener_current_country_us: false,
         screener_live_in_canada: false,
@@ -108,7 +109,7 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
-    it.skip('when on disability', () => {
+    it('when on disability', () => {
       const searchString = {
         screener_currently_disabled: true,
       }
@@ -131,7 +132,8 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
-    it.skip('when worked in the military', () => {
+
+    it('when worked in the military', () => {
       const searchString = {
         screener_military_service_eighteen_months: true,
       }
@@ -153,7 +155,7 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
-    it.skip('when had maritime employment', () => {
+    it('when had maritime employment', () => {
       const searchString = {
         screener_maritime_employer_eighteen_months: true,
       }
