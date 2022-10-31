@@ -20,16 +20,26 @@ export type ClaimantInput = ScreenerInput &
   ContactInput &
   DemographicsInput &
   IdentityInput &
-  // EmployerInput &
+  EmployerInput &
   // EmployerReviewInput &
-  // SelfEmploymentInput &
-  // OtherPayInput &
   // OccupationInput &
   EducationAndTrainingInput &
   UnionInput &
   DisabilityStatusInput &
   PaymentInput &
   ReviewInput
+
+export type EmployerInput = {
+  employers?: Employer[]
+}
+
+type Employer = {
+  isImported?: boolean
+  isEmployer?: boolean
+  index?: number
+
+  name?: string
+}
 
 export type ScreenerInput = {
   screener_current_country_us?: boolean

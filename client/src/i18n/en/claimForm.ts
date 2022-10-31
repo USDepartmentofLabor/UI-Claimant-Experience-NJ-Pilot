@@ -65,6 +65,22 @@ const claimForm = {
       "Your answers to these questions won't affect your application or potential payment amount. " +
       'We are working on our systems to support more inclusive options.',
   },
+  recent_employers: {
+    heading: 'Recent employers',
+    preamble:
+      'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount. Please confirm our records of your employers below.',
+    question:
+      'In the last 18 months (since {{date}}), did you work at the following employers?',
+    work_at: 'Did you work at {{employer}}',
+    confirm_employer:
+      'Are you sure? Check your pay stubs or W2 to confirm your employer name.',
+    isEmployer: {
+      errors: {
+        required:
+          'Please indicate whether you were employed by this employer within the last 18 months',
+      },
+    },
+  },
   identity: {
     heading: 'Identity Information',
   },
@@ -733,6 +749,7 @@ const claimForm = {
       },
     },
   },
+
   other_pay_detail: {
     pay_type: {
       label:

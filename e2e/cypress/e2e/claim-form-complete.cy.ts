@@ -10,6 +10,7 @@ import fillDisabilityFields from './formPageFilling/disability'
 import fillPaymentFields from './formPageFilling/payment'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
+import fillRecentEmployersFields from './formPageFilling/recent-employers'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -63,6 +64,11 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       races: ['asian'],
       education_level: 'bachelors',
     })
+    cy.checkA11y()
+    cy.clickNext()
+
+    //Recent Employers
+    fillRecentEmployersFields()
     cy.checkA11y()
     cy.clickNext()
 

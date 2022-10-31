@@ -10,12 +10,15 @@ import { DisabilityPageDefinition } from 'pages/claim/disability'
 import { PaymentPageDefinition } from 'pages/claim/payment'
 import { EducationAndTrainingPageDefinition } from 'pages/claim/education-and-training'
 import { ReviewPageDefinition } from 'pages/claim/review'
+import { RecentEmployersPageDefinition } from 'pages/claim/recent-employers'
 
 export type PageDefinition = {
   heading: string
   path: string
   initialValues: ClaimantInput
   validationSchema: AnySchema
+  previousPage?: (values: ClaimantInput) => string
+  nextPage?: (values: ClaimantInput) => string
 }
 
 export const pageDefinitions: PageDefinition[] = [
@@ -23,6 +26,7 @@ export const pageDefinitions: PageDefinition[] = [
   PersonalPageDefinition,
   ContactPageDefinition,
   DemographicsPageDefinition,
+  RecentEmployersPageDefinition,
   IdentityPageDefinition,
   // EmployerPageDefinition,
   // EmployerReviewPageDefinition,

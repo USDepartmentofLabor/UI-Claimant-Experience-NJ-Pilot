@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { AxiosError } from 'axios'
 import { useQuery } from 'react-query'
-import httpclient from '../utils/httpclient'
+import httpclient from 'utils/httpclient'
 
 import { PartialClaimResponseType } from '../types/ResponseTypes'
 
