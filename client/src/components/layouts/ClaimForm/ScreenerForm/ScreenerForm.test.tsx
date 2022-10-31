@@ -8,14 +8,6 @@ const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => mockRouter(),
 }))
-jest.mock('constants/pages/pageDefinitions')
-// jest.mock('pages/screener', () => ({
-//   ScreenerPageDefinition: {
-//     initialValues: {},
-//     validationSchema: undefined,
-//     heading: 'Test heading',
-//   },
-// }))
 
 describe('ScreenerForm Layout', () => {
   const SomePage = () => <div>Some Page!</div>
