@@ -63,31 +63,7 @@ describe('ScreenerForm Layout', () => {
     expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
   })
 
-  it.skip('clicking next navigates to the next page', async () => {
-    const user = userEvent.setup()
-    const mockPush = jest.fn(async () => true)
-    mockRouter.mockImplementation(() => ({
-      push: mockPush,
-    }))
-
-    render(
-      <ScreenerForm>
-        <SomePage />
-      </ScreenerForm>
-    )
-
-    await screen.findByText('Some Page!')
-
-    const nextButton = screen.getByText('pagination.next')
-
-    expect(nextButton).toBeInTheDocument()
-
-    await user.click(nextButton)
-
-    expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
-  })
-  describe('redirects to the screener-redirect page', () => {
+  describe('redirects to the correct page', () => {
     const canUseFormValues = {
       screener_current_country_us: true,
       screener_live_in_canada: undefined,
@@ -142,7 +118,7 @@ describe('ScreenerForm Layout', () => {
       )
     }
 
-    it('when they say they are not in the US', async () => {
+    it('screener-redirect: when they say they are not in the US', async () => {
       const disqualifyingValues = {
         screener_current_country_us: false,
         screener_live_in_canada: true,
@@ -151,32 +127,32 @@ describe('ScreenerForm Layout', () => {
       await testSubmitWithValues(disqualifyingValues)
     })
 
-    it('when no work was done in NJ', async () => {
+    it('screener-redirect:when no work was done in NJ', async () => {
       const disqualifyingValues = {
         screener_all_work_nj: false,
         screener_any_work_nj: false,
       }
       await testSubmitWithValues(disqualifyingValues)
     })
-    it('when they mark yes to having a disability', async () => {
+    it('screener-redirect:when they mark yes to having a disability', async () => {
       const disqualifyingValues = {
         screener_currently_disabled: true,
       }
       await testSubmitWithValues(disqualifyingValues)
     })
-    it('when they mark yes to military service', async () => {
+    it('screener-redirect:when they mark yes to military service', async () => {
       const disqualifyingValues = {
         screener_military_service_eighteen_months: true,
       }
       await testSubmitWithValues(disqualifyingValues)
     })
-    it('when they mark yes to maritime work', async () => {
+    it('screener-redirect:when they mark yes to maritime work', async () => {
       const disqualifyingValues = {
         screener_maritime_employer_eighteen_months: true,
       }
       await testSubmitWithValues(disqualifyingValues)
     })
-    it('does not redirect when qualifying values are selected', async () => {
+    it('home page: when qualifying values are selected', async () => {
       const mockPush = jest.fn(async () => true)
       mockRouter.mockImplementation(() => ({
         push: mockPush,
@@ -193,7 +169,7 @@ describe('ScreenerForm Layout', () => {
       await fillScreenerFields(user, canUseFormValues)
 
       await user.click(screen.getByRole('button', { name: /next/i }))
-      expect(mockPush).toHaveBeenCalledWith(expect.stringMatching(/^\//))
+      expect(mockPush).toHaveBeenCalledWith(expect.stringMatching(/^\/$/))
     })
   })
 })
