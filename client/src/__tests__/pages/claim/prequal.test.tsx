@@ -29,6 +29,68 @@ describe('Prequal page', () => {
     ).toBeInTheDocument()
   })
 
+  it('check clear state, province, and territory dropdown', async () => {
+    const user = userEvent.setup()
+
+    await user.click(
+      within(
+        screen.getByRole('group', { name: 'filed_in_last_12mo.label' })
+      ).getByLabelText('yes')
+    )
+    expect(
+      screen.getByText('state_province_territory_where_filed.label')
+    ).toBeInTheDocument()
+
+    await user.click(
+      within(
+        screen.getByRole('group', { name: 'filed_in_last_12mo.label' })
+      ).getByLabelText('no')
+    )
+    await user.click(
+      within(
+        screen.getByRole('group', {
+          name: 'filed_in_last_12mo.label',
+        })
+      ).getByLabelText('yes')
+    )
+    expect(
+      screen.getByText('state_province_territory_where_filed.label')
+    ).toBeInTheDocument()
+  })
+
+  it('check clear "will look for work in NJ"', async () => {
+    const user = userEvent.setup()
+
+    await user.click(
+      within(
+        screen.getByRole('group', {
+          name: 'lived_outside_nj_when_working_nj.label',
+        })
+      ).getByLabelText('yes')
+    )
+    expect(
+      screen.getByText('will_look_for_work_in_nj.label')
+    ).toBeInTheDocument()
+
+    await user.click(
+      within(
+        screen.getByRole('group', {
+          name: 'lived_outside_nj_when_working_nj.label',
+        })
+      ).getByLabelText('no')
+    )
+    await user.click(
+      within(
+        screen.getByRole('group', {
+          name: 'lived_outside_nj_when_working_nj.label',
+        })
+      ).getByLabelText('yes')
+    )
+    expect(
+      screen.getByText('will_look_for_work_in_nj.label')
+    ).toBeInTheDocument()
+  })
+
   it('can fill out all questions on page', async () => {
     const user = userEvent.setup()
 
