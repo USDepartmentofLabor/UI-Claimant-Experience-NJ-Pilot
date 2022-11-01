@@ -13,7 +13,7 @@ const whoAmI: WhoAmI = {
   email: 'test@example.com',
   phone: '555-555-5555',
 }
-jest.mock('../utils/httpclient')
+jest.mock('utils/httpclient')
 const mockedGet = httpclient.get as jest.Mock & typeof httpclient
 
 describe('should use whoami', () => {

@@ -14,6 +14,7 @@ export const Routes = {
     CONTACT: makeClaimFormRoute('contact'),
     DEMOGRAPHICS: makeClaimFormRoute('demographics'),
     IDENTITY: makeClaimFormRoute('identity'),
+    RECENT_EMPLOYERS: makeClaimFormRoute('recent-employers'),
     EMPLOYER: makeClaimFormRoute('employer'),
     EMPLOYER_REVIEW: makeClaimFormRoute('employer-review'),
     SELF_EMPLOYMENT: makeClaimFormRoute('self-employment'),

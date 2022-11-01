@@ -175,7 +175,11 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         > = async () => {
           saveFormValues(values)
           if (previousPageDefinition) {
-            router.push(previousPageDefinition.path).then(() => {
+            const previousPage = currentPageDefinition.previousPage
+              ? currentPageDefinition.previousPage(values)
+              : previousPageDefinition.path
+
+            router.push(previousPage).then(() => {
               setFormikState((previousState) => ({
                 ...previousState,
                 submitCount: 0,
@@ -188,8 +192,11 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
           if (isValid && nextPageDefinition) {
             saveFormValues(values)
+            const nextPage = currentPageDefinition.nextPage
+              ? currentPageDefinition.nextPage(values)
+              : nextPageDefinition.path
 
-            router.push(nextPageDefinition.path).then(() => {
+            router.push(nextPage).then(() => {
               setFormikState((previousState) => ({
                 ...previousState,
                 submitCount: 0,
