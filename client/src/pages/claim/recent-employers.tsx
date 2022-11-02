@@ -24,7 +24,6 @@ const RecentEmployers: NextPage = () => {
 
   if (!values.employers?.length) {
     values.employers = data
-    console.log(values)
   }
 
   return (
