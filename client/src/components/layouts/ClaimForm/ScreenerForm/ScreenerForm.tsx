@@ -73,6 +73,7 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
         }
 
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
+          console.log('isValud', isValid)
           if (isValid) {
             const queryString = Object.entries(values)
               .filter(([, val]) => val !== undefined)
@@ -82,7 +83,7 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
             submitForm().then(async () => {
               getIsRedirect(values)
                 ? await router.push(
-                    Routes.SCREENER_REDIRECT + '?' + queryString
+                    Routes.SCREENER_REDIRECT + `?${queryString}`
                   )
                 : await router.push(Routes.HOME)
             })

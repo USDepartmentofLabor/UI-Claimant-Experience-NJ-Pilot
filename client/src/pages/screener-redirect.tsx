@@ -9,7 +9,6 @@ import {
   SummaryBoxContent,
   Link,
 } from '@trussworks/react-uswds'
-import styles from 'styles/pages/redirect.module.scss'
 import {
   OUTSIDE_US_AGENT_NUMBER,
   DISABILITY_BENEFITS_AGENT_NUMBER,
@@ -53,6 +52,8 @@ const ScreenerRedirect: NextPage = () => {
 
   const ipInUS = true // temporary until we pull IP addresses
   const ipInNJ = true // temporary until we pull IP addresses
+
+  const borderStyle = 'border-bottom-1px border-base-lighter padding-bottom-4'
   return (
     <>
       <Head>
@@ -140,14 +141,14 @@ const ScreenerRedirect: NextPage = () => {
       </SummaryBox>
 
       {!ipInUS && (
-        <div className={styles.bottom_horizontal_line}>
+        <div className={borderStyle}>
           <h2 id="ip_deny">{t('ip_deny.heading')}</h2>
           <p>{t('ip_deny.label')}</p>
         </div>
       )}
 
       {screener_live_in_canada && (
-        <div className={styles.bottom_horizontal_line}>
+        <div className={borderStyle}>
           <h2 id="canada">{t('canada.heading')}</h2>
           <Trans t={t} i18nKey="canada.label.line1">
             <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`}>
@@ -161,14 +162,14 @@ const ScreenerRedirect: NextPage = () => {
       {typeof screener_current_country_us === 'boolean' &&
         !screener_current_country_us &&
         !screener_live_in_canada && (
-          <div className={styles.bottom_horizontal_line}>
+          <div className={borderStyle}>
             <h2 id="non_resident">{t('non_resident.heading')}</h2>
             <p>{t('non_resident.label')}</p>
           </div>
         )}
 
       {typeof screener_any_work_nj === 'boolean' && !screener_any_work_nj && (
-        <div className={styles.bottom_horizontal_line}>
+        <div className={borderStyle}>
           <h2 id="other_state">{t('other_state.heading')}</h2>
           <p>{t('other_state.label')}</p>
           <p>
@@ -186,7 +187,7 @@ const ScreenerRedirect: NextPage = () => {
       )}
 
       {screener_currently_disabled && (
-        <div className={styles.bottom_horizontal_line}>
+        <div className={borderStyle}>
           <h2 id="disability">{t('disability.heading')}</h2>
           <p>{t('disability.label.line1')}</p>
           <p>
@@ -211,7 +212,7 @@ const ScreenerRedirect: NextPage = () => {
       )}
 
       {screener_military_service_eighteen_months && (
-        <div className={styles.bottom_horizontal_line}>
+        <div className={borderStyle}>
           <h2 id="military_mvp">{t('military_mvp.heading')}</h2>
           <p>{t('military_mvp.label.line1')}</p>
           <p>
@@ -230,7 +231,7 @@ const ScreenerRedirect: NextPage = () => {
       )}
 
       {!ipInNJ && (
-        <div className={styles.bottom_horizontal_line}>
+        <div className={borderStyle}>
           <h2 id="military_ip">{t('military_ip.heading')}</h2>
           <p>{t('military_ip.label.line1')}</p>
           <Trans t={t} i18nKey="military_ip.label.line2">

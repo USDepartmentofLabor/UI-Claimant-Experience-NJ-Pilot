@@ -3,6 +3,7 @@ import { ScreenerForm } from 'components/layouts/ClaimForm/ScreenerForm/Screener
 import { makeClaimFormRoute, Routes } from 'constants/routes'
 import userEvent from '@testing-library/user-event'
 import Screener from 'pages/screener'
+import { UserEvent } from '@testing-library/user-event/setup/setup'
 
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
@@ -68,8 +69,8 @@ describe('ScreenerForm Layout', () => {
     }
 
     const fillScreenerFields = async (
-      user: { [p: string]: any },
-      formValues: { [p: string]: boolean | undefined }
+      user: UserEvent,
+      formValues: { [key: string]: boolean | undefined }
     ) => {
       for (const k of Object.keys(formValues)) {
         if (formValues[`${k}`] !== undefined) {
@@ -83,7 +84,7 @@ describe('ScreenerForm Layout', () => {
     }
 
     const testSubmitWithValues = async (disqualifyingValues: {
-      [p: string]: boolean
+      [key: string]: boolean
     }) => {
       const mockPush = jest.fn(async () => true)
       mockRouter.mockImplementation(() => ({
@@ -98,7 +99,7 @@ describe('ScreenerForm Layout', () => {
         </ScreenerForm>
       )
 
-      const formValues: { [p: string]: boolean | undefined } = {
+      const formValues: { [key: string]: boolean | undefined } = {
         ...canUseFormValues,
         ...disqualifyingValues,
       }
