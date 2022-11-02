@@ -31,8 +31,10 @@ public class ExternalClaimFormatterServiceTest {
                         "middle_initial": "J"
                       },
                       "residence_address":"1234 something drive",
+                      "mailing_address":"1234 something drive",
                       "LOCAL_mailing_address_same":"true",
-                      "LOCAL_claimant_has_alternate_names":"true"
+                      "LOCAL_claimant_has_alternate_names":"true",
+                      "union_local_number":"12344"
                     }
                     """,
                                 new TypeReference<>() {});
@@ -47,7 +49,8 @@ public class ExternalClaimFormatterServiceTest {
                                         "middle_initial": "J"
                                       },
                                       "residence_address":"1234 something drive",
-                                      "mailing_address":"1234 something drive"
+                                      "mailing_address":"1234 something drive",
+                                      "union_local_number":"12344"
                                     }
                                     """,
                                 new TypeReference<>() {});
@@ -67,49 +70,12 @@ public class ExternalClaimFormatterServiceTest {
                     "last_name": "Potter",
                     "middle_initial": "J"
                   },
-                  "residence_address":"1234 something drive"
+                  "residence_address":"1234 something drive",
+                  "union_local_number":"12344"
                 }
                 """,
                                 new TypeReference<>() {});
         Map<String, Object> alteredClaim = externalClaimFormatterService.formatClaim(validClaim);
         assertEquals(validClaim, alteredClaim);
-    }
-
-    @Test
-    void formatClaimWithDifferentMailingAddress() throws Exception {
-        Map<String, Object> validClaim =
-                (new ObjectMapper())
-                        .readValue(
-                                """
-                {
-                  "claimant_name": {
-                    "first_name": "Harry",
-                    "last_name": "Potter",
-                    "middle_initial": "J"
-                  },
-                  "residence_address":"1234 something drive",
-                  "LOCAL_mailing_address_same":"false",
-                  "LOCAL_claimant_has_alternate_names":"true",
-                  "mailing_address":"PO BOX 123"
-                }
-                """,
-                                new TypeReference<>() {});
-        Map<String, Object> expectedResult =
-                (new ObjectMapper())
-                        .readValue(
-                                """
-                                {
-                                  "claimant_name": {
-                                    "first_name": "Harry",
-                                    "last_name": "Potter",
-                                    "middle_initial": "J"
-                                  },
-                                  "residence_address":"1234 something drive",
-                                  "mailing_address":"PO BOX 123"
-                                }
-                                """,
-                                new TypeReference<>() {});
-        Map<String, Object> alteredClaim = externalClaimFormatterService.formatClaim(validClaim);
-        assertEquals(expectedResult, alteredClaim);
     }
 }
