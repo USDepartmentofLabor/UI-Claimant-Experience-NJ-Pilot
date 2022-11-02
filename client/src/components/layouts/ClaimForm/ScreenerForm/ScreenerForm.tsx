@@ -73,18 +73,18 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
         }
 
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
-          console.log('isValud', isValid)
           if (isValid) {
-            const queryString = Object.entries(values)
+            const query: { [key: string]: boolean | undefined } = {}
+            Object.entries(values)
               .filter(([, val]) => val !== undefined)
-              .map(([key, val]) => `${key}=${val}`)
-              .join('&')
+              .map(([key, val]) => Object.assign(query, { [key]: val }))
 
             submitForm().then(async () => {
               getIsRedirect(values)
-                ? await router.push(
-                    Routes.SCREENER_REDIRECT + `?${queryString}`
-                  )
+                ? await router.push({
+                    pathname: Routes.SCREENER_REDIRECT,
+                    query: query,
+                  })
                 : await router.push(Routes.HOME)
             })
           } else {
