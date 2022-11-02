@@ -106,9 +106,10 @@ describe('ScreenerForm Layout', () => {
       await fillScreenerFields(user, formValues)
 
       await user.click(screen.getByRole('button', { name: /next/i }))
-      expect(mockPush).toHaveBeenCalledWith(
-        expect.stringMatching(/^\/screener-redirect/)
-      )
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/screener-redirect',
+        query: formValues,
+      })
     }
 
     it('screener-redirect: when they say they are not in the US', async () => {
