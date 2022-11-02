@@ -55,6 +55,7 @@ public class S3Service {
         String endpointUrl = environment.getProperty("aws.s3.endpoint-url");
         if (endpointUrl != null) {
             builder.endpointOverride(URI.create(endpointUrl));
+            builder.forcePathStyle(true);
         }
 
         this.s3Client = builder.build();
