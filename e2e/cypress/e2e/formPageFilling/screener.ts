@@ -1,6 +1,5 @@
 const fillScreenerFields = () => {
-  cy.get('input[id=screener_current_country_us\\.no]').parent().click()
-  cy.get('input[id=screener_live_in_canada\\.no]').parent().click()
+  cy.get('input[id=screener_current_country_us\\.yes]').parent().click()
   cy.get('input[id=screener_military_service_eighteen_months\\.no]')
     .parent()
     .click()
