@@ -51,8 +51,16 @@ Cypress.Commands.add('checkA11y', (options: Options = {}) => {
 })
 
 Cypress.Commands.add('clickNext', () => {
-  cy.get("button[type='submit']")
+  cy.get('[data-testid=next-button]')
     .contains('Next')
+    .scrollIntoView()
+    .should('be.visible')
+    .click()
+})
+
+Cypress.Commands.add('clickSubmit', () => {
+  cy.get('[data-testid=submit-button]')
+    .contains('Submit')
     .scrollIntoView()
     .should('be.visible')
     .click()

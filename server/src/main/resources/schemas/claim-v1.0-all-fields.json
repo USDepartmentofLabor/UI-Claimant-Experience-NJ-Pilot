@@ -997,9 +997,9 @@
       "type": "boolean"
     },
     "state_province_territory_where_filed": {
-      "description": "The US state or Canadian province or territory where claimant filed",
+      "description": "The US state or territory or Canadian province where claimant filed",
       "type": "string",
-      "enum": { "$ref": "#/definitions/state_ca_province_or_territory" }
+      "$ref": "#/definitions/state_ca_province_or_territory"
     },
     "lived_outside_nj_when_working_nj": {
       "description": "Worked outside of NJ when working in NJ",

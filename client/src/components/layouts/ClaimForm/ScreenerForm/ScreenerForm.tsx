@@ -84,7 +84,10 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
                     <FormGroup>
                       <div className="text-center">
                         <PreviousPageButton onClick={handleClickPrevious} />
-                        <SubmitButton onClick={handleClickNext}>
+                        <SubmitButton
+                          onClick={handleClickNext}
+                          data-testid="next-button"
+                        >
                           {t('pagination.next')}
                         </SubmitButton>
                       </div>
