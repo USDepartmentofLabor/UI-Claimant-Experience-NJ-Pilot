@@ -115,11 +115,13 @@ jobs:
         run: make ci-down
 
       - name: Scan server image
+        if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/image-scan
         with:
           image: dol-ui-server:latest
 
       - name: Scan client image
+        if: ${{ github.event_name == 'pull_request' }}
         uses: ./.github/actions/image-scan
         with:
           image: dol-ui-client:latest
