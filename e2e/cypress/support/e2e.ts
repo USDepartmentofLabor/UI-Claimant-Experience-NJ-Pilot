@@ -26,6 +26,7 @@ declare global {
        */
       checkA11y(options?: Options): Chainable<Element>
       clickNext(): Chainable<Element>
+      clickSubmit(): Chainable<Element>
     }
   }
 }

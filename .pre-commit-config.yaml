@@ -73,7 +73,7 @@ repos:
       - id: check-jsonschema
         name: "Check UI schema"
         language: python
-        files: ^server/src/main/resources/schemas
+        files: ^server/src/main/resources/schemas/.*\.json$
         args: ["--schemafile", "https://json-schema.org/draft/2020-12/schema"]
 
   - repo: https://github.com/ambv/black

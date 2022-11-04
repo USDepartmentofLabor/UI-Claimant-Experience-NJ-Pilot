@@ -319,6 +319,9 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                               ? handleClickNext
                               : handleClickComplete
                           }
+                          data-testid={
+                            nextPageDefinition ? 'next-button' : 'submit-button'
+                          }
                         >
                           {nextPageDefinition
                             ? t('pagination.next')
