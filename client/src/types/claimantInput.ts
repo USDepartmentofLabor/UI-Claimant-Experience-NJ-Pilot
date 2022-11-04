@@ -39,6 +39,7 @@ type Employer = {
   index?: number
 
   name?: string
+  isFullTime?: boolean
 }
 
 export type ScreenerInput = {
