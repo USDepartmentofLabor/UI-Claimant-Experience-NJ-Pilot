@@ -52,12 +52,19 @@
 
 #### Validated user-facing changes ([detailed instructions)](https://github.com/newjersey/dol-ui-claimant-intake/tree/main/docs/a11y-testing-instructions.md):
 
+- [ ] Requested a design review for user-facing changes
 - [ ] Checked responsiveness in mobile, tablet, and desktop
 - [ ] Checked keyboard navigability
-- [ ] Tested with [VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) in Safari
-- [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/wiki/How-to-use-the-rotor-menu-in-VoiceOver) for landmarks, page heading structure and links
-- [ ] Used a browser a11y tool to check for issues (WAVE, axe, or Accessibility addon tab for Storybook)
-- [ ] Requested a design review for user-facing changes
+
+* Tested general usability, landmarks, page header structure, and links with a screen reader (one per reviewer, min 2 across reviewers):
+  - [ ] [VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) in Safari
+  - [ ] [JAWS](https://docs.google.com/document/d/1YGVMAbQgBVYaPhTgzJeMer1iMpBsOSVCshyyu-vmGi4/edit#heading=h.4ufpsgyrhe3p) in Chrome
+  - [ ] [NVDA](https://www.nvaccess.org/files/nvda/documentation/userGuide.html) in Chrome
+* Used a browser a11y tool to check for issues
+  - [ ] [WAVE](https://wave.webaim.org/)
+  - [ ] [axe](https://www.deque.com/axe/devtools/)
+  - [ ] [ANDI](https://www.ssa.gov/accessibility/andi/help/install.html#install)
+  - [ ] For storybook-only components, use the accessibility tab in Storybook.
 
 ### As code reviewer(s), I have
 
@@ -74,9 +81,16 @@
 
 - [ ] Checked responsiveness in mobile, tablet, and desktop
 - [ ] Checked keyboard navigability
-- [ ] Tested with [VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) in Safari
-- [ ] Checked VO's [rotor menu](https://github.com/trussworks/accessibility/wiki/How-to-use-the-rotor-menu-in-VoiceOver) for landmarks, page heading structure and links
-- [ ] Used a browser a11y tool to check for issues (WAVE, axe or Accessibility addon tab for Storybook)
+
+* Tested general usability, landmarks, page header structure, and links with a screen reader (one per reviewer, min 2 across reviewers):
+  - [ ] [VoiceOver](https://dequeuniversity.com/screenreaders/voiceover-keyboard-shortcuts) in Safari
+  - [ ] [JAWS](https://docs.google.com/document/d/1YGVMAbQgBVYaPhTgzJeMer1iMpBsOSVCshyyu-vmGi4/edit#heading=h.4ufpsgyrhe3p) in Chrome
+  - [ ] [NVDA](https://www.nvaccess.org/files/nvda/documentation/userGuide.html) in Chrome
+* Used a browser a11y tool to check for issues
+  - [ ] [WAVE](https://wave.webaim.org/)
+  - [ ] [axe](https://www.deque.com/axe/devtools/)
+  - [ ] [ANDI](https://www.ssa.gov/accessibility/andi/help/install.html#install)
+  - [ ] For storybook-only components, use the accessibility tab in Storybook.
 
 ### As a designer reviewer, I have
 

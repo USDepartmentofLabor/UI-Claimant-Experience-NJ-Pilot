@@ -56,7 +56,7 @@ const redirect = {
     label: {
       line1:
         "You answered 'Yes' to the question 'Are you currently disabled and unable to work?' By law, unemployment benefits are only payable if you are able to work. Instead, please file a claim for Temporary Disability Benefits.",
-      line2: `Click “Start” below or call <0>${DISABILITY_BENEFITS_AGENT_NUMBER}</0> during our normal business hours from 8:30 AM to 4:30 PM for more information.`,
+      line2: `Click the button below or call <0>${DISABILITY_BENEFITS_AGENT_NUMBER}</0> during our normal business hours from 8:30 AM to 4:30 PM for more information.`,
     },
     button: 'File a claim',
   },
