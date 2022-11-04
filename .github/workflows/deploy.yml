@@ -85,7 +85,7 @@ jobs:
       - name: Scan server image
         uses: ./.github/actions/image-scan
         with:
-          image: dol-ui-server:latest
+          image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy server
         uses: ./.github/actions/deploy-server

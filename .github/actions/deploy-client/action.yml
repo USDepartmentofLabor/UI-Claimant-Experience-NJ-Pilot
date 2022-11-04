@@ -61,7 +61,7 @@ runs:
     - name: Scan client image
       uses: ./.github/actions/image-scan
       with:
-        image: dol-ui-client:latest
+        image: ${{ steps.build-image.outputs.image }}
 
     - name: Set environment name in ECS task definition template
       shell: bash
