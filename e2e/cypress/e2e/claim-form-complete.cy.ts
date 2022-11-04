@@ -125,5 +125,9 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Review page
     fillReviewFields()
+    cy.clickSubmit()
+
+    // User lands on home page on successful completion
+    cy.url().should('eq', `${Cypress.config().baseUrl}/?completed=true`)
   })
 })

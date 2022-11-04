@@ -27,6 +27,9 @@ dev-down: ## Shut down all local docker services
 dev-clean: ## Shut down all local docker services and remove volumes
 	docker compose down --volumes
 
+dev-destroy: ## Prune system of all containers and volumes. Useful when running into resource issues or if you truly want a clean slate
+	docker system prune -af --volumes
+
 dev-reset: dev-clean dev-up ## Runs dev-clean and dev-up
 
 dev-logs: ## View the local docker service logs

@@ -31,6 +31,22 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
   ) => {
     helpers.setSubmitting(false)
   }
+  const getIsRedirect = (values: ScreenerInput) => {
+    const {
+      screener_live_in_canada,
+      screener_any_work_nj,
+      screener_currently_disabled,
+      screener_military_service_eighteen_months,
+      screener_maritime_employer_eighteen_months,
+    } = values
+    return (
+      screener_live_in_canada !== undefined ||
+      screener_any_work_nj === false ||
+      screener_currently_disabled === true ||
+      screener_military_service_eighteen_months === true ||
+      screener_maritime_employer_eighteen_months === true
+    )
+  }
 
   return (
     <Formik
@@ -39,20 +55,37 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
       validateOnMount
       onSubmit={handleSubmit}
     >
-      {({ errors, submitCount, isValid, submitForm, setFormikState }) => {
+      {({
+        errors,
+        submitCount,
+        isValid,
+        submitForm,
+        setFormikState,
+        values,
+      }) => {
         const showErrorSummary =
           submitCount > 0 && Object.keys(errors).length > 0
 
         const handleClickPrevious: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
-          router.push(Routes.HOME)
+          await router.push(Routes.HOME)
         }
 
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
           if (isValid) {
+            const query: { [key: string]: boolean | undefined } = {}
+            Object.entries(values)
+              .filter(([, val]) => val !== undefined)
+              .map(([key, val]) => Object.assign(query, { [key]: val }))
+
             submitForm().then(async () => {
-              router.push(Routes.HOME)
+              getIsRedirect(values)
+                ? await router.push({
+                    pathname: Routes.SCREENER_REDIRECT,
+                    query: query,
+                  })
+                : await router.push(Routes.HOME)
             })
           } else {
             setFormikState((previousState) => ({
@@ -84,7 +117,10 @@ export const ScreenerForm = ({ children }: ScreenerFormProps) => {
                     <FormGroup>
                       <div className="text-center">
                         <PreviousPageButton onClick={handleClickPrevious} />
-                        <SubmitButton onClick={handleClickNext}>
+                        <SubmitButton
+                          onClick={handleClickNext}
+                          data-testid="next-button"
+                        >
                           {t('pagination.next')}
                         </SubmitButton>
                       </div>
