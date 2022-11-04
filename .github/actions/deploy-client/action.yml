@@ -58,6 +58,11 @@ runs:
         docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+    - name: Scan client image
+      uses: ./.github/actions/image-scan
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+
     - name: Set environment name in ECS task definition template
       shell: bash
       run: |
