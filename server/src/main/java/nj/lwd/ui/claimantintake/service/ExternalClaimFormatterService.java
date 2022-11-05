@@ -42,18 +42,18 @@ public class ExternalClaimFormatterService {
 
     public Map<String, Object> _formatClaimHelper(Map<String, Object> claimPayload) {
         claimPayload.keySet().removeIf(key -> key.contains("LOCAL"));
-        for (String key : claimPayload.keySet()) {
+        for (Map.Entry<String, Object> entry : claimPayload.entrySet()) {
 
-            Object value = claimPayload.get(key);
-            if (value instanceof ArrayList) {
-                List<Object> list = convertObjectToList(value);
+            if (entry.getValue() instanceof ArrayList) {
+                List<Object> list = convertObjectToList(entry.getValue());
                 for (int i = 0; i < list.size(); i++) {
                     list.set(i, removeLocalValuesFromMap(list.get(i)));
                 }
-                claimPayload.put(key, list);
+                claimPayload.put(entry.getKey(), list);
 
-            } else if (!(value instanceof String) && !(value instanceof Boolean)) {
-                claimPayload.put(key, removeLocalValuesFromMap(value));
+            } else if (!(entry.getValue() instanceof String)
+                    && !(entry.getValue() instanceof Boolean)) {
+                claimPayload.put(entry.getKey(), removeLocalValuesFromMap(entry.getValue()));
             }
         }
         return claimPayload;
