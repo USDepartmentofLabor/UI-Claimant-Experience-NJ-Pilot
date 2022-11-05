@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
@@ -16,10 +15,9 @@ public class ExternalClaimFormatterService {
 
     private Object removeLocalValuesFromMap(Object possibleMapObject) {
         Object returnVObject;
-        Map<String, Object> map = new HashMap<>();
         try {
             ObjectMapper oMapper = new ObjectMapper();
-            map = oMapper.convertValue(possibleMapObject, Map.class);
+            Map<String, Object> map = oMapper.convertValue(possibleMapObject, Map.class);
             map = _formatClaimHelper(map);
             returnVObject = oMapper.convertValue(map, Object.class);
         } catch (IllegalArgumentException e) {
