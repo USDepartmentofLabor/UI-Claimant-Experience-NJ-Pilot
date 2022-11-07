@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SubmissionService {
     private final ClaimantRepository claimantRepository;
+    private final ExternalClaimFormatterService externalClaimFormatterService;
     private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
     @Autowired
@@ -22,6 +23,7 @@ public class SubmissionService {
         // TODO -Nava api connection info here
 
         this.claimantRepository = claimantRepository;
+        this.externalClaimFormatterService = new ExternalClaimFormatterService();
     }
 
     private boolean saveInitiatedSubmission(String claimantIdpId) {
@@ -113,9 +115,11 @@ public class SubmissionService {
         boolean submissionSuccess = false;
         boolean isSubmitEventSaved = false;
         boolean isInitiatedEventSaved = saveInitiatedSubmission(claimantIdpId);
+        Map<String, Object> externalClaimPayload =
+                externalClaimFormatterService.formatClaim(validatedClaimPayload);
 
         if (isInitiatedEventSaved) {
-            submissionSuccess = sendClaim(validatedClaimPayload);
+            submissionSuccess = sendClaim(externalClaimPayload);
             isSubmitEventSaved = saveFinishedSubmission(claimantIdpId, submissionSuccess);
         }
 
