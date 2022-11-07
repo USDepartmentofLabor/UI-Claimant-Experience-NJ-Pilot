@@ -98,6 +98,12 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
 
+      - name: Run OWASP ZAP Baseline scan to find vulnerabilities
+        run: zaproxy/action-baseline@7cea08522cd386f6c675776d5e4296aecf61f33b
+        with:
+          target: https://sandbox-claimant-intake:8443
+          fail-action: false
+
       - name: Run Cypress tests
         run: make e2e-ci-test
 
