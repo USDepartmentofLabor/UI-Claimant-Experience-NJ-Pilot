@@ -215,17 +215,11 @@
       "type": "array",
       "items": { "$ref": "#/definitions/person_name" }
     },
-    "LOCAL_claimant_has_alternate_names": {
-      "type": "boolean"
-    },
     "residence_address": {
       "$ref": "#/definitions/addressWithoutPOBox"
     },
     "mailing_address": {
       "$ref": "#/definitions/address"
-    },
-    "LOCAL_mailing_address_same": {
-      "type": "boolean"
     },
     "claimant_phone": {
       "$ref": "#/definitions/phoneWithSMS"
@@ -505,19 +499,6 @@
     "federal_work_in_last_18mo"
   ],
   "allOf": [
-    {
-      "if": {
-        "properties": {
-          "LOCAL_mailing_address_same": {
-            "type": "boolean",
-            "const": false
-          }
-        }
-      },
-      "then": {
-        "required": ["mailing_address"]
-      }
-    },
     {
       "if": {
         "properties": {
