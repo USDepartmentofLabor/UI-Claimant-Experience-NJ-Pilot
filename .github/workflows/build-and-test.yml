@@ -103,6 +103,7 @@ jobs:
         with:
           target: https://sandbox-claimant-intake:8443
           fail_action: false
+          allow_issue_writing: false
 
       - name: Run Cypress tests
         run: make e2e-ci-test
