@@ -95,6 +95,7 @@ jobs:
           server-image: ${{ steps.build-image.outputs.image }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
+          image-tag: ${{ steps.construct-image-tag.outputs.image-tag }}
 
       - name: Write server image tag to file
         env:
@@ -165,3 +166,4 @@ jobs:
           server-image: ${{ secrets.ECR_REGISTRY_DEV}}/dol-ui-claimant-intake-server-dev:${{ steps.get-image-tag.outputs.image-tag }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_TEST }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_TEST }}
+          image-tag: ${{ steps.get-image-tag.outputs.image-tag }}
