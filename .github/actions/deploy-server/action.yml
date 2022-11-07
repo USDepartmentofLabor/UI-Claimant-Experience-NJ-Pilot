@@ -79,6 +79,7 @@ runs:
         make server-task-definition environment=${{ inputs.deploy-env }}
 
     - name: Snapshot RDS
+      shell: bash
       env:
         RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
         IMAGE_TAG: ${{ inputs.image-tag }}
