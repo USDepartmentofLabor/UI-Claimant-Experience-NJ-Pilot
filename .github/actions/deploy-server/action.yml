@@ -80,7 +80,7 @@ runs:
 
     - name: Snapshot RDS
       env:
-        RDS_INSTANCE: ${{ secrets.RDS_INSTANCE }}
+        RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
         IMAGE_TAG: ${{ inputs.image-tag }}
       run: |
         scripts/snapshot-rds.sh
