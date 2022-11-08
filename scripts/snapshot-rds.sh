@@ -5,7 +5,7 @@
 set -eu
 
 # Snapshot ID `rdsss-epoch`
-SSID=rdsss-$(date +"%s")
+SSID="${RDS_INSTANCE}"-$(date +"%s")
 
 # Create Snapshot
 aws rds create-db-snapshot \
