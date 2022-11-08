@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next'
 describe('Footer Component', () => {
   render(<Footer />)
   const { t } = useTranslation('common', { keyPrefix: 'footer' })
-  const footer = screen.getByRole('footer')
-  const top = within(footer).getByLabelText(t('return_top'))
+  const footer = screen.getByRole('contentinfo')
+  const top = within(footer).getByRole('link', { name: t('return_top') })
   const logo = within(footer).getByAltText(t('logo_alt'))
-  const legal = within(footer).getByLabelText(t('legal'))
+  const legal = within(footer).getByRole('link', { name: t('legal') })
 
   it('Renders', () => {
     expect(footer).toBeInTheDocument()
-    expect(top).toBeInTheDocument()
+    expect(top).toHaveAttribute('href', '#')
     expect(logo).toBeInTheDocument()
     expect(legal).toBeInTheDocument()
   })

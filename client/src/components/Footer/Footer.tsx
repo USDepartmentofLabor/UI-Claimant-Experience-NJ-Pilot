@@ -19,7 +19,7 @@ export const Footer = () => {
   const { t } = useTranslation('common', { keyPrefix: 'footer' })
 
   return (
-    <footer>
+    <footer role="contentinfo">
       <GridContainer className="usa-footer__return-to-top">
         <Link href="#">{t('return_top')}</Link>
       </GridContainer>
