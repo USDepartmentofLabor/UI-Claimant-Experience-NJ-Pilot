@@ -82,3 +82,4 @@ jobs:
           server-image: ${{ steps.build-image.outputs.image }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
+          image-tag: ${{ steps.construct-image-tag.outputs.image-tag }}
