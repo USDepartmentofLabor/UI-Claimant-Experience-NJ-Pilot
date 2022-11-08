@@ -17,6 +17,7 @@ RDSSS=$(aws rds describe-db-snapshots --db-snapshot-identifier "$SSID" |jq -r '.
 
 # Don't do anything else until it's available
 # aws docdb does not have a `wait`
+DBSS = "unavailable"
 until [ "$DBSS" = "available" ]
     do
       DBSS=$(aws rds describe-db-snapshots --db-snapshot-identifier "$SSID" |jq -r '.DBSnapshots[]' | jq -r '.Status')
