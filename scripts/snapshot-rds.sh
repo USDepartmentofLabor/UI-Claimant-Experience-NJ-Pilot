@@ -2,7 +2,7 @@
 #
 # Snapshots current state of RDS
 
-set -e
+set -eu
 
 # Snapshot ID `rdsss-epoch`
 SSID=rdsss-$(date +"%s")
