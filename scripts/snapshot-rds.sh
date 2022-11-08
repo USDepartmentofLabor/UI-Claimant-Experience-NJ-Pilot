@@ -10,7 +10,7 @@ SSID="${RDS_INSTANCE}"-$(date +"%s")
 # Create Snapshot
 aws rds create-db-snapshot \
   --db-instance-identifier "${RDS_INSTANCE}" \
-  --db-snapshot-identifier "$SSID" --tags Key=sha,Value="${IMAGE_TAG}"
+  --db-snapshot-identifier "$SSID" --tags Key=sha,Value="${IMAGE_TAG}" >/dev/null
 
 # RDS Snapshot
 RDSSS=$(aws rds describe-db-snapshots --db-snapshot-identifier "$SSID" |jq -r '.DBSnapshots[]' | jq -r '.Status')
