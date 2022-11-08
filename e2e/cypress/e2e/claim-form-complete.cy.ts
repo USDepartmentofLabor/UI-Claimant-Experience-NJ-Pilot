@@ -43,13 +43,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       }
     )
     cy.checkA11y()
-    cy.lighthouse({
-      accessibility: 100,
-      'best-practices': 90,
-      seo: 90,
-      pwa: 20,
-      performance: 30,
-    })
+    cy.lighthouse()
     cy.clickNext()
 
     // Contact page
