@@ -9,11 +9,11 @@ export default defineConfig({
   // @ts-ignore
   lighthouse: {
     thresholds: {
-      performance: 0,
-      accessibility: 89,
-      'best-practices': 50,
+      accessibility: 100,
+      'best-practices': 90,
       seo: 90,
-      pwa: 0,
+      pwa: 20,
+      performance: 30,
     },
   },
   e2e: {
