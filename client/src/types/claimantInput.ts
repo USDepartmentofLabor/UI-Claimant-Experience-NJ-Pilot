@@ -78,7 +78,7 @@ type ContactInput = {
 }
 
 export type PhoneInput = {
-  number: string
+  number?: string
   sms?: boolean
 }
 
@@ -157,11 +157,10 @@ type ReviewInput = {
 }
 
 export type WhoAmI = {
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   middleInitial?: string
-  birthdate: string
-  ssn: string
-  email: string
-  phone: string
+  birthdate?: string
+  email?: string
+  phone?: string
 }

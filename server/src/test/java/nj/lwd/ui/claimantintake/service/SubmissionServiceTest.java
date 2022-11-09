@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class SubmissionServiceTest {
+class SubmissionServiceTest {
     @Mock private ClaimantRepository claimantRepository;
     // TODO - both testcases should be changed when the NAVA api is connected
 
@@ -65,7 +65,7 @@ public class SubmissionServiceTest {
     }
 
     @Test
-    void submitWithoutPreExisitingClaim() throws Exception {
+    void submitWithoutPreExistingClaim() throws Exception {
         var claimant = mock(Claimant.class);
         var claim = mock(Claim.class);
 

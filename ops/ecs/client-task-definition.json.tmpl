@@ -31,7 +31,32 @@
       "dnsServers": null,
       "mountPoints": [],
       "workingDirectory": null,
-      "secrets": null,
+      "secrets": [
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/cognito-client-id",
+          "name": "COGNITO_CLIENT_ID"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/cognito-client-secret",
+          "name": "COGNITO_CLIENT_SECRET"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/cognito-issuer",
+          "name": "COGNITO_ISSUER"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/cognito-domain",
+          "name": "COGNITO_DOMAIN"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/nextauth-secret",
+          "name": "NEXTAUTH_SECRET"
+        },
+        {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/nextauth-url",
+          "name": "NEXTAUTH_URL"
+        }
+      ],
       "dockerSecurityOptions": null,
       "memory": null,
       "memoryReservation": null,

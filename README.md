@@ -159,6 +159,42 @@ OR run all of the above dependencies:
 make all-deps
 ```
 
+## Configuring your environment
+
+Locally, the client and the server make use of .env files to store environment secrets that should not be committed
+to version control. You will not be able to run the applications locally without a properly configured environment.
+
+To set up .env files locally:
+
+Make a copy of [`client/.env-template`](/client/.env-template) and name it `.env`:
+
+```
+cp client/.env-template client/.env
+```
+
+Make a copy of [`server/.env-template`](/server/.env-template) and name it `.env`:
+
+```
+cp server/.env-template server/.env
+```
+
+Make a copy of [`e2e/cypress.env.json-template`](/e2e/cypress.env.json-template) and name it `cypress.env.json`
+
+```
+cp e2e/cypress.env.json-template e2e/cypress.env.json
+```
+
+In your copies of the env files, you should remove comments/references about not adding secrets which would have been carried
+over from the `.env-template` files, since you _will_ be adding secrets there.
+
+Add values for the environment variables. Note some variables in the .env-template include instructions for what values
+to use. For variables including specific secrets, the Truss team uses a 1Password vault to securely store/retrieve
+.env secrets. Reach out to another engineer to determine the best way to get the correct values for each environment
+variable.
+
+Reminder: These values are sensitive and should not be committed to version control, therefore, `.env` files are
+.gitignore'd. Take care not to accidentally expose these variables via other means.
+
 ## Web client
 
 To run the client server locally:
@@ -321,8 +357,34 @@ To run Jest unit tests that will run with every change:
 make client-test-watch
 ```
 
-To run Cypress (e2e) tests:
+### Server tests
+
+To run the JUnit tests:
 
 ```
-make e2e-test
+make server-test
+```
+
+### End-to-end tests (Cypress)
+
+To run Cypress (e2e) tests locally there are a few considerations:
+
+- You must run the server app with the 'e2e' profile active for mocked authentication to work
+- The app should be run dockerized when running end-to-end tests. Running the app in "dev mode" will fail Lighthouse performance thresholds
+- Make sure your .env files are updated with the right URL (sandbox vs localhost) if running the app dockerized
+
+The easiest way to run e2e tests locally satisfying the above requirements is through the following commands:
+
+```
+make ci-up
+```
+
+```
+make e2e-ci-test
+```
+
+Or, if you want to use the Cypress GUI
+
+```
+make e2e-test-local-docker
 ```

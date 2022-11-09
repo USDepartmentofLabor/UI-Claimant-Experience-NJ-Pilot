@@ -5,11 +5,9 @@ import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
 
 describe('Identity Information Page', () => {
-  const ssn = '123-45-6789'
   const birthdate = '1980-07-31'
   const initialValues = {
     ...IdentityPageDefinition.initialValues,
-    ssn,
     birthdate,
   }
   const displayedBirthdate = 'July 31, 1980'
@@ -22,11 +20,6 @@ describe('Identity Information Page', () => {
     )
 
     const verifiedFieldsSection = screen.getByTestId('verified-fields')
-
-    const verifiedSsnLabel = within(verifiedFieldsSection).getByText(
-      'ssn.label'
-    )
-    const verifiedSsnValue = within(verifiedFieldsSection).getByText(ssn)
 
     const verifiedBirthdateLabel = within(verifiedFieldsSection).getByText(
       'birthdate.label'
@@ -46,9 +39,6 @@ describe('Identity Information Page', () => {
     const noAuthorizedToWorkInUS = within(
       authorizedToWorkInUSRadioGroup
     ).queryByLabelText('no')
-
-    expect(verifiedSsnLabel).toBeInTheDocument()
-    expect(verifiedSsnValue).toBeInTheDocument()
 
     expect(verifiedBirthdateLabel).toBeInTheDocument()
     expect(verifiedBirthdateValue).toBeInTheDocument()

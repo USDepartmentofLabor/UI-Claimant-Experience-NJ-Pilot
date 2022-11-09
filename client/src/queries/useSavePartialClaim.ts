@@ -1,15 +1,10 @@
 import { useMutation } from 'react-query'
 import { Claim } from 'types/Claim'
-import httpclient from 'utils/httpclient'
-import { APIResponseType } from '../types/ResponseTypes'
+import serverHttpClient from 'utils/http/serverHttpClient'
+import { APIResponseType } from 'types/ResponseTypes'
 
 const savePartialClaim = (claim: Partial<Claim>) => {
-  return httpclient.post<APIResponseType>('/intake-api/partial-claim', claim, {
-    withCredentials: false,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  return serverHttpClient.post<APIResponseType>('/partial-claim', claim)
 }
 
 export const useSavePartialClaim = () => {
@@ -17,10 +12,10 @@ export const useSavePartialClaim = () => {
     onSuccess: () => {
       //This is where you will update the get partial claim query
       //Should update the useGetPartialClaim result
-      console.log('Looks like the partial claim API was implemented! We saved!')
+      console.log('Claim was successfully saved')
     },
     onError: () => {
-      console.log('The partial claim API was not implemented :(')
+      console.log('Failed to save claim')
     },
   })
 }
