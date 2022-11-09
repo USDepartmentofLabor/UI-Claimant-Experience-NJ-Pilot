@@ -215,17 +215,11 @@
       "type": "array",
       "items": { "$ref": "#/definitions/person_name" }
     },
-    "LOCAL_claimant_has_alternate_names": {
-      "type": "boolean"
-    },
     "residence_address": {
       "$ref": "#/definitions/addressWithoutPOBox"
     },
     "mailing_address": {
       "$ref": "#/definitions/address"
-    },
-    "LOCAL_mailing_address_same": {
-      "type": "boolean"
     },
     "claimant_phone": {
       "$ref": "#/definitions/phoneWithSMS"
@@ -459,7 +453,7 @@
     "state_province_territory_where_filed": {
       "description": "The US state or territory or Canadian province where claimant filed",
       "type": "string",
-      "enum": { "$ref": "#/definitions/state_ca_province_or_territory" }
+      "$ref": "#/definitions/state_ca_province_or_territory"
     },
     "lived_outside_nj_when_working_nj": {
       "description": "Worked outside of NJ when working in NJ",
@@ -489,7 +483,6 @@
     "ethnicity",
     "race",
     "education_level",
-    "ssn",
     "birthdate",
     "drivers_license_or_state_id_number",
     "authorized_to_work",
@@ -505,19 +498,6 @@
     "federal_work_in_last_18mo"
   ],
   "allOf": [
-    {
-      "if": {
-        "properties": {
-          "LOCAL_mailing_address_same": {
-            "type": "boolean",
-            "const": false
-          }
-        }
-      },
-      "then": {
-        "required": ["mailing_address"]
-      }
-    },
     {
       "if": {
         "properties": {

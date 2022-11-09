@@ -2,7 +2,11 @@ import dayjs from 'dayjs'
 import quarterYear from 'dayjs/plugin/quarterOfYear'
 dayjs.extend(quarterYear)
 
-import { DATE_FORMAT, ISO_8601_DATE } from 'constants/date/format'
+import {
+  DATE_FORMAT,
+  ISO_8601_DATE,
+  USER_POOL_DATE_FORMAT,
+} from 'constants/date/format'
 
 export const formatUserInputDate = (
   initialValue?: string
@@ -32,4 +36,9 @@ export const formatLast18monthsEmployersDate = (initialValue?: string) => {
     .subtract(5, 'quarter')
     .startOf('quarter')
   return dayjsValue.isValid() ? dayjsValue.format(DATE_FORMAT) : initialValue
+}
+
+export const formatUserPoolDate = (userPoolDate: string) => {
+  const dayJsValue = dayjs(userPoolDate, USER_POOL_DATE_FORMAT)
+  return dayJsValue.format(ISO_8601_DATE)
 }

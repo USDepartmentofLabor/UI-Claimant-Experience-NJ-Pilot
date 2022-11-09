@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,8 @@ public class SubmitClaimController {
 
     @PostMapping()
     public ResponseEntity<String> submitClaim(
-            @RequestBody Map<String, Object> completedClaimPayload) {
-        // TODO - change to get ID from the session
-        String claimantIdpId = "test_id";
+            @RequestBody Map<String, Object> completedClaimPayload, Authentication authentication) {
+        String claimantIdpId = authentication.getName();
 
         logger.debug("Initiating submit event for claimant: {}", claimantIdpId);
         boolean externalSubmissionSuccess =

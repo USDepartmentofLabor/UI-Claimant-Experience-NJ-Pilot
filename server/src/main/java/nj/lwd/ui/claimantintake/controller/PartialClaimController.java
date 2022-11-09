@@ -2,10 +2,13 @@ package nj.lwd.ui.claimantintake.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import nj.lwd.ui.claimantintake.exception.ClaimDataRetrievalException;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,10 +24,8 @@ public class PartialClaimController {
 
     @PostMapping()
     public ResponseEntity<String> savePartialClaim(
-            @RequestBody Map<String, Object> partialClaimPayload) {
-        // TODO: Get claimant id from session and use that instead of the idp_id when auth is in
-        //       place. For now, just make up a static IdpId and use that for all claims
-        String claimantIdpId = "test_id";
+            @RequestBody Map<String, Object> partialClaimPayload, Authentication authentication) {
+        String claimantIdpId = authentication.getName();
 
         var saveStatus = claimStorageService.saveClaim(claimantIdpId, partialClaimPayload);
 
@@ -36,13 +37,11 @@ public class PartialClaimController {
     }
 
     @GetMapping()
-    public ResponseEntity<Map<String, Object>> getPartialClaim() {
-        String claimantId = "test_id";
-
-        var claimData = claimStorageService.getClaim(claimantId);
-
-        return claimData
-                .map(data -> new ResponseEntity<>(data, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(new HashMap<>(), HttpStatus.OK));
+    public ResponseEntity<Map<String, Object>> getPartialClaim(Authentication authentication)
+            throws ClaimDataRetrievalException {
+        String claimantIdpId = authentication.getName();
+        Optional<Map<String, Object>> claimData =
+                claimStorageService.getPartialClaim(claimantIdpId);
+        return ResponseEntity.ok().body(claimData.orElse(new HashMap<>()));
     }
 }

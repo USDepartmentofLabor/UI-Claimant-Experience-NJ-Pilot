@@ -10,6 +10,9 @@ inputs:
   server-image:
     description: The server image to deploy
     required: true
+  image-tag:
+    description: The tag for the server image to deploy
+    required: true
   db-migrations-subnet:
     description: The subnet to run db migrations in
     required: true
@@ -74,6 +77,14 @@ runs:
       shell: bash
       run: |
         make server-task-definition environment=${{ inputs.deploy-env }}
+
+    - name: Snapshot RDS
+      shell: bash
+      env:
+        RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        IMAGE_TAG: ${{ inputs.image-tag }}
+      run: |
+        scripts/snapshot-rds.sh
 
     - name: Fill in the new image ID in the Amazon ECS task definition (server)
       id: task-def-server

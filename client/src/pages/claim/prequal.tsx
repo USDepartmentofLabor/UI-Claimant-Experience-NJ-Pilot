@@ -6,7 +6,7 @@ import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { useClearFields } from 'hooks/useClearFields'
 import { ClaimantInput } from 'types/claimantInput'
 import { PageDefinition } from 'constants/pages/pageDefinitions'
-import { boolean, mixed, object } from 'yup'
+import { boolean, object, string } from 'yup'
 import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
 import styles from 'styles/pages/claim/prequal.module.scss'
@@ -89,9 +89,9 @@ export const PrequalPageDefinition: PageDefinition = {
     filed_in_last_12mo: boolean().required(
       i18n_claimForm.t('prequal.filed_in_last_12mo.errors.required')
     ),
-    state_province_territory_where_filed: mixed().when('filed_in_last_12mo', {
+    state_province_territory_where_filed: string().when('filed_in_last_12mo', {
       is: true,
-      then: mixed()
+      then: string()
         .oneOf([
           ...stateProvincesTerritoriesDropdownOptions.map(({ value }) => value),
         ])

@@ -1,0 +1,19 @@
+---
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/localdev-postgres
+    username: localdev-postgres
+    password: localdev-postgres
+  liquibase:
+    enabled: true
+
+logging:
+  level:
+    nj.lwd.ui: DEBUG
+
+aws:
+  accessKeyId: test
+  secretKey: test
+  region: ${AWS_REGION}
+  s3:
+    endpoint-url: ${AWS_S3_ENDPOINT_URL}

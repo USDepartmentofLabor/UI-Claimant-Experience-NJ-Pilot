@@ -15,6 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import { JWTPayload } from 'jose'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -26,6 +27,8 @@ declare global {
        */
       checkA11y(options?: Options): Chainable<Element>
       clickNext(): Chainable<Element>
+      clickSubmit(): Chainable<Element>
+      login(userObj: JWTPayload)
     }
   }
 }

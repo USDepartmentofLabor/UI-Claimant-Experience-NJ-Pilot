@@ -22,10 +22,12 @@ import PageLoader from 'components/loaders/PageLoader'
 import styles from './ClaimForm.module.scss'
 import Head from 'next/head'
 import { ClaimFormSideNav } from './ClaimFormSideNav/ClaimFormSideNav'
-import { useWhoAmI } from 'queries/whoami'
+import { useWhoAmI } from 'hooks/useWhoAmI'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
 import { useSubmitClaim } from 'queries/useSubmitClaim'
+import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
+import { merge } from 'lodash'
 
 type ClaimFormProps = {
   children: ReactNode
@@ -67,38 +69,14 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
   const step = currentPageIndex + 1
   const totalSteps = pageDefinitions.length
 
-  const { data: getPartialClaim, isLoading: isLoadingGetPartialClaim } =
+  const { data: partialClaim, isLoading: isLoadingGetPartialClaim } =
     useGetPartialClaim()
   const { data: whoAmI, isLoading: isLoadingWhoAmI } = useWhoAmI()
 
   const initialValues = useMemo(
     // TODO merge with previously saved values for all pages (When API and persistence are added)
     () => {
-      let initialWhoAmIValues = {}
-      if (whoAmI) {
-        const {
-          firstName,
-          lastName,
-          middleInitial,
-          email,
-          ssn,
-          birthdate,
-          phone,
-        } = whoAmI
-        initialWhoAmIValues = {
-          claimant_name: {
-            first_name: firstName,
-            last_name: lastName,
-            middle_initial: middleInitial,
-          },
-          email,
-          ssn,
-          birthdate,
-          claimant_phone: {
-            number: phone,
-          },
-        }
-      }
+      const initialValues = {}
 
       const initialDefinitionValues = pageDefinitions
         .flatMap((pageDefinition) => pageDefinition.initialValues)
@@ -107,13 +85,50 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
           ...currentValue,
         }))
 
-      return {
-        ...initialDefinitionValues,
-        ...initialWhoAmIValues,
-        ...getPartialClaim,
-      }
+      const partialClaimValues = isLoadingGetPartialClaim ? {} : partialClaim
+
+      // Claimants can alter their phone number.
+      // If a phone number is present in the partial claim already, it is either
+      // from the whoami on a previous session or a value the claimant previously edited,
+      // so don't overwrite it.
+      // TODO: Advocate for design change. Claimants should not be able to change
+      //  the information from their forgerock account within the intake app.
+      //  If they can edit a phone number field in the intake app, it should be
+      //  separate from what we collect from forgerock.
+      // Reason: Bug:
+      // - Claimant initiates a claim, their FR phone number is loaded
+      // - Claimant changes phone number in FR
+      // - Claimant returns to claim app, phone number is still their old phone number (we don't overwrite it)
+      const previouslyEnteredPhone = partialClaimValues?.claimant_phone?.number
+      const overwriteClaimantPhone = !previouslyEnteredPhone
+
+      const initialWhoAmIValues = whoAmI
+        ? {
+            claimant_name: {
+              first_name: whoAmI.firstName,
+              last_name: whoAmI.lastName,
+              middle_initial: whoAmI.middleInitial,
+            },
+            email: whoAmI.email,
+            birthdate: whoAmI.birthdate,
+            claimant_phone: {
+              number: overwriteClaimantPhone
+                ? whoAmI.phone
+                : previouslyEnteredPhone,
+            },
+          }
+        : {}
+
+      merge(
+        initialValues,
+        initialDefinitionValues,
+        partialClaimValues,
+        initialWhoAmIValues
+      )
+
+      return initialValues
     },
-    [pageDefinitions, whoAmI, getPartialClaim]
+    [pageDefinitions, whoAmI, partialClaim]
   )
 
   const validationSchema = currentPageDefinition.validationSchema
@@ -122,15 +137,15 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
     headingRef.current && headingRef.current.focus()
   }
 
-  const saveFormValues = (values: ClaimantInput) => {
+  const saveFormValues = async (values: ClaimantInput) => {
     saveCompleteClaim.reset()
     submitClaim.reset()
-    savePartialClaim.mutate(values)
+    await savePartialClaim.mutateAsync(values)
   }
 
   const handleSaveAndExit = async (values: ClaimantInput) => {
-    saveFormValues(values)
-    await router.push(Routes.HOME)
+    await saveFormValues(values)
+    await cognitoSignOut()
   }
 
   const handleSubmit = async (
@@ -318,6 +333,9 @@ export const ClaimForm = ({ children }: ClaimFormProps) => {
                             nextPageDefinition
                               ? handleClickNext
                               : handleClickComplete
+                          }
+                          data-testid={
+                            nextPageDefinition ? 'next-button' : 'submit-button'
                           }
                         >
                           {nextPageDefinition
