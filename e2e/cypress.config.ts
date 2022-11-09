@@ -41,7 +41,9 @@ export default defineConfig({
       )
 
       on('task', {
-        lighthouse: lighthouse(),
+        lighthouse: lighthouse((lighthouseReport) => {
+          console.log(lighthouseReport) // raw lighthouse reports
+        }),
         pa11y: pa11y((pa11yReport: any) => {
           console.log(pa11yReport) // raw pa11y report
         }),

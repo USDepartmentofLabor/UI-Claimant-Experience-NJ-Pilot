@@ -145,6 +145,14 @@ jobs:
             /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/cypress/videos/
           retention-days: 1
 
+      - name: Upload Lighthouse artifact
+        if: failure()
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb
+        with:
+          name: lighthouse-artifact
+          path: /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/cypress/screenshots/
+          retention-days: 7
+
       - name: Stop CI docker container
         run: make ci-down
 
