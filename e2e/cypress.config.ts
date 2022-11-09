@@ -44,8 +44,7 @@ export default defineConfig({
 
       on('task', {
         lighthouse: lighthouse((lighthouseReport) => {
-          console.log('---- Writing lighthouse report to disk ----')
-          console.log(process.cwd())
+          console.log('---- Creating lighthouse report ----')
 
           fs.writeFile(
             'lighthouse.json',
@@ -53,7 +52,9 @@ export default defineConfig({
             (error: any) => {
               error
                 ? console.log(error)
-                : console.log('Report created successfully')
+                : console.log(
+                    '---- Successfully created lighthouse report ----'
+                  )
             }
           )
         }),
