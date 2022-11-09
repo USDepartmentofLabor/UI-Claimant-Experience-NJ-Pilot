@@ -16,11 +16,14 @@ services:
   client:
     build:
       context: client
+      args:
+        - NEXT_PUBLIC_SERVER_BASE_URL=https://sandbox-claimant-intake:8443
     image: dol-ui-client:latest
     container_name: dol-ui-client
     networks:
       - front-tier
     read_only: true
+    env_file: client/.env
     ports:
       - "3000:3000"
   server:
@@ -35,11 +38,13 @@ services:
       - "8080:8080"
     volumes:
       - server:/tmp/app
+    env_file: server/.env
     environment:
       AWS_REGION: us-east-1
       AWS_S3_ENDPOINT_URL: http://localstack:4566
-      SPRING_PROFILES_ACTIVE: local
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
       DB_HOST: db
+      DB_PORT: 5432
   db:
     image: postgres:14.3
     container_name: dol-ui-db

@@ -1,10 +1,10 @@
 import { useMutation } from 'react-query'
 import { Claim } from 'types/Claim'
-import httpclient from 'utils/httpclient'
-import { APIResponseType } from '../types/ResponseTypes'
+import serverHttpclient from 'utils/http/serverHttpClient'
+import { APIResponseType } from 'types/ResponseTypes'
 
 const submitClaim = (claim: Partial<Claim>) => {
-  return httpclient.post<APIResponseType>('/intake-api/submit', claim, {
+  return serverHttpclient.post<APIResponseType>('/submit', claim, {
     withCredentials: false,
     headers: {
       'Content-Type': 'application/json',

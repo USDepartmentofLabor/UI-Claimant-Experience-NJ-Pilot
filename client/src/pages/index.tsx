@@ -3,10 +3,15 @@ import Head from 'next/head'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@trussworks/react-uswds'
 import { useRouter } from 'next/router'
+import { useSession, signIn } from 'next-auth/react'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
-import { Alert } from '@trussworks/react-uswds'
+import PageLoader from 'components/loaders/PageLoader'
+import { Alert, Table } from '@trussworks/react-uswds'
+import { WhoAmI } from 'types/claimantInput'
+import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
 
 const Home: NextPage = () => {
+  const session = useSession()
   const router = useRouter()
   const { t } = useTranslation('home')
   const goToFirstPageOfClaimForm = () => router.push(pageDefinitions[0].path)
@@ -16,16 +21,62 @@ const Home: NextPage = () => {
       <Head>
         <title>{t('page_title')}</title>
       </Head>
-      <h1>{t('heading')}</h1>
+      <h1 data-testid="home-page-heading">{t('heading')}</h1>
       {router?.query?.completed && (
         <Alert type="success" headingLevel="h4" className="margin-bottom-3">
           {t('complete_claim_success')}
         </Alert>
       )}
-
-      <Button type="button" onClick={goToFirstPageOfClaimForm}>
-        Press Me
-      </Button>
+      {session.status === 'loading' ? (
+        <PageLoader />
+      ) : session.data?.user && session.data?.whoAmI ? (
+        <>
+          <div className="margin-bottom-1">
+            <h3>Signed in as:</h3>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(session.data.whoAmI as WhoAmI).map(
+                  ([key, value], i) => (
+                    <tr key={`${i}-${key}-${value}`}>
+                      <td>{key}</td>
+                      <td>{value}</td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </Table>
+          </div>
+          <div className="margin-bottom-1">
+            <Button
+              id="signOut"
+              type="button"
+              data-testid="sign-out"
+              onClick={() => cognitoSignOut()}
+            >
+              Sign out
+            </Button>
+          </div>
+          <div>
+            <Button
+              type="button"
+              onClick={goToFirstPageOfClaimForm}
+              data-testid="go-to-claim-form"
+            >
+              File a claim
+            </Button>
+          </div>
+        </>
+      ) : (
+        <Button id="signIn" type="button" onClick={() => signIn('cognito')}>
+          Sign in with Cognito
+        </Button>
+      )}
     </div>
   )
 }

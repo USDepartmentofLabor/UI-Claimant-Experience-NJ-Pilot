@@ -11,6 +11,7 @@ import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,10 +35,8 @@ public class CompletedClaimController {
 
     @PostMapping()
     public ResponseEntity<String> saveCompletedClaim(
-            @RequestBody Map<String, Object> completedClaimPayload) {
-        // TODO: Get claimant id from session and use that instead of the idp_id when auth is in
-        //       place. For now, just make up a static IdpId and use that for all claims
-        String claimantIdpId = "test_id";
+            @RequestBody Map<String, Object> completedClaimPayload, Authentication authentication) {
+        String claimantIdpId = authentication.getName();
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {

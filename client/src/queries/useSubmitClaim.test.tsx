@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { Claim } from 'types/Claim'
 import { useSubmitClaim } from './useSubmitClaim'
 
-jest.mock('utils/httpclient', () => ({
+jest.mock('utils/http/serverHttpClient', () => ({
   post: jest.fn().mockImplementation((url, claim: Claim) => {
     if (claim.email === 'good data') {
       return true

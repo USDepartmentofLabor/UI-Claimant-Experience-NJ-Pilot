@@ -1,16 +1,15 @@
 import axios from 'axios'
 import { AxiosError } from 'axios'
 import { useQuery } from 'react-query'
-import httpclient from 'utils/httpclient'
+import serverHttpClient from 'utils/http/serverHttpClient'
 
-import { PartialClaimResponseType } from '../types/ResponseTypes'
+import { PartialClaimResponseType } from 'types/ResponseTypes'
 
 const getPartialClaim = async () => {
   try {
-    const { data } = await httpclient.get<PartialClaimResponseType>(
-      '/intake-api/partial-claim',
+    const { data } = await serverHttpClient.get<PartialClaimResponseType>(
+      '/partial-claim',
       {
-        withCredentials: false,
         headers: { 'X-DOL': 'axios' },
       }
     )

@@ -3,9 +3,8 @@ import { useSavePartialClaim } from './useSavePartialClaim'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Claim } from 'types/Claim'
 
-jest.mock('utils/httpclient', () => ({
+jest.mock('utils/http/serverHttpClient', () => ({
   post: jest.fn().mockImplementation((url, claim: Claim) => {
-    console.log('got in post mock')
     if (claim.email === 'good data') {
       return true
     } else {

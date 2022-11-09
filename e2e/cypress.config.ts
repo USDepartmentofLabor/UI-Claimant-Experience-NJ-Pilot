@@ -5,6 +5,17 @@ const { lighthouse, prepareAudit } = require('@cypress-audit/lighthouse')
 const { pa11y } = require('@cypress-audit/pa11y')
 
 export default defineConfig({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  lighthouse: {
+    thresholds: {
+      accessibility: 100,
+      'best-practices': 90,
+      seo: 90,
+      pwa: 20,
+      performance: 30,
+    },
+  },
   e2e: {
     baseUrl: 'http://localhost:3000',
     setupNodeEvents(on) {

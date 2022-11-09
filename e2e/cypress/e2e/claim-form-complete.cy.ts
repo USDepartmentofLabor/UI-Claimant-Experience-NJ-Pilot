@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker'
+
 import fillScreenerFields from './formPageFilling/screener'
 import homePage from './formPageFilling/home'
 import fillPrequalFields from './formPageFilling/prequal'
@@ -11,9 +13,25 @@ import fillPaymentFields from './formPageFilling/payment'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
 import fillRecentEmployersFields from './formPageFilling/recent-employers'
+import { generateWhoAmI } from './utils/generateWhoAmI'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
+    const whoAmI = generateWhoAmI()
+    cy.login({
+      sub: faker.datatype.uuid(),
+      whoAmI,
+    })
+
+    // Verify that the user is "signed in"
+    // This can be removed when the user flow is ironed out and we know:
+    //  - Where a user lands in our app?
+    //  - What will the app do if the user is not logged in already?
+    //  - What will the app do if the user is logged in already?
+    //  - How will the user know that they are logged in?
+    cy.visit('/')
+    cy.get('[data-testid=sign-out]').should('be.visible')
+
     // Screener page
     cy.visit('/screener')
     fillScreenerFields()
@@ -48,7 +66,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       'best-practices': 90,
       seo: 90,
       pwa: 20,
-      performance: 40,
+      performance: 30,
     })
     cy.clickNext()
 
