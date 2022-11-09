@@ -39,6 +39,7 @@ export type Employer = {
 
   isInitiated?: boolean
   name?: string
+  isFullTime?: boolean
 }
 
 export type ScreenerInput = {

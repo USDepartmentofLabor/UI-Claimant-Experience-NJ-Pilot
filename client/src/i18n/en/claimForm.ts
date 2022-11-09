@@ -834,6 +834,20 @@ const claimForm = {
     to_edit_visit: 'To edit your information, visit',
     idp_url_text: 'login.gov',
   },
+  your_employer: {
+    heading: 'Your employer',
+    is_full_time: {
+      help_text:
+        'Full-time means working more (even 1 minute more) than 32 hours a week. Part-time means working exactly 32 hours or less a week.',
+
+      label: 'Was this a full-time or part-time job?',
+      options: {
+        full_time: 'Full-time',
+        part_time: 'Part-time or intermittent',
+      },
+      required: 'This field is required',
+    },
+  },
   review: {
     heading: 'Review application',
     preamble: {
