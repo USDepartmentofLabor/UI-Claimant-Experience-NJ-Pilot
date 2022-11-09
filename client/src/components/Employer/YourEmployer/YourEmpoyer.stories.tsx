@@ -7,7 +7,7 @@ import { i18n_claimForm } from '../../../i18n/i18n'
 import { yupEditEmployers } from '../../form/EditEmployer/EditEmployer'
 
 export default {
-  title: 'Components/Employer/YourEmployer',
+  title: 'Components/form/Employer/YourEmployer',
   component: YourEmployer,
 } as ComponentMeta<typeof YourEmployer>
 
