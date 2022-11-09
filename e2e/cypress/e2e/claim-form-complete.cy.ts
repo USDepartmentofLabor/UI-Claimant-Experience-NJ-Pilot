@@ -76,7 +76,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     )
     cy.checkA11y()
     cy.lighthouse({
-      accessibility: 100,
+      accessibility: 90,
       'best-practices': 90,
       seo: 90,
       pwa: 20,
