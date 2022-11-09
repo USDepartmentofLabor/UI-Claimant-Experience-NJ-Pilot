@@ -33,11 +33,11 @@ export type EmployerInput = {
   employers?: Employer[]
 }
 
-type Employer = {
+export type Employer = {
   isImported?: boolean
   isEmployer?: boolean
-  index?: number
 
+  isInitiated?: boolean
   name?: string
 }
 
