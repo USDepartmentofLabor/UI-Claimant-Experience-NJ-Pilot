@@ -2,11 +2,12 @@ import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { Form, Formik } from 'formik'
 import { Button } from '@trussworks/react-uswds'
 import { YourEmployer } from './YourEmployer'
-import * as yup from 'yup'
 import { noop } from 'helpers/noop/noop'
+import { i18n_claimForm } from '../../../i18n/i18n'
+import { yupEditEmployers } from '../../form/EditEmployer/EditEmployer'
 
 export default {
-  title: 'Components/YourEmployer',
+  title: 'Components/Employer/YourEmployer',
   component: YourEmployer,
 } as ComponentMeta<typeof YourEmployer>
 
@@ -16,13 +17,12 @@ const initialValues = {
     { name: 'Apple', is_full_time: undefined },
   ],
 }
-const validationSchema = yup.object().shape({})
 
 const Template: ComponentStory<typeof YourEmployer> = (args) => {
   return (
     <Formik initialValues={initialValues} onSubmit={noop}>
       <Form>
-        <YourEmployer employerIndex={args.employerIndex} />
+        <YourEmployer index={args.index} />
       </Form>
     </Formik>
   )
@@ -30,19 +30,18 @@ const Template: ComponentStory<typeof YourEmployer> = (args) => {
 
 export const Default = Template.bind({})
 Default.args = {
-  employerIndex: undefined,
+  index: '0',
 }
 
 const onSubmit = () => {
   console.log('Submitted!')
 }
 
-//TODO-once validation is added, then add to this logic flow
 const WithFormikValueTemplate: ComponentStory<typeof YourEmployer> = (args) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={yupEditEmployers(i18n_claimForm.t)}
       onSubmit={onSubmit}
     >
       {() => (
@@ -57,5 +56,5 @@ const WithFormikValueTemplate: ComponentStory<typeof YourEmployer> = (args) => {
 
 export const ShowFormikValue = WithFormikValueTemplate.bind({})
 ShowFormikValue.args = {
-  employerIndex: 1,
+  index: '1',
 }

@@ -9,7 +9,7 @@ const mockUseField = useField as typeof useField & jest.Mock
 const mockUseFormikContext = useFormikContext as typeof useFormikContext &
   jest.Mock
 
-const employerIndex = 1
+const employerIndex = '1'
 
 describe('Your Employer component', () => {
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe('Your Employer component', () => {
 
   it('renders labels and radio buttons', () => {
     const { container } = render(
-      <YourEmployer employerIndex={employerIndex}></YourEmployer>
+      <YourEmployer index={employerIndex}></YourEmployer>
     )
     expect(container.getElementsByClassName('usa-radio__input').length).toBe(2)
     expect(container.getElementsByClassName('usa-hint').length).toBe(1)

@@ -845,10 +845,7 @@ const claimForm = {
         full_time: 'Full-time',
         part_time: 'Part-time or intermittent',
       },
-      errors: {
-        required:
-          'Please indicate whether this was a full-time or part-time job',
-      },
+      required: 'This field is required',
     },
   },
   review: {
