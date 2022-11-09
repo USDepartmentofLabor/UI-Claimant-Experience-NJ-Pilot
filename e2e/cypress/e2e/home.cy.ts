@@ -8,7 +8,7 @@ describe('The Home Page', () => {
     cy.lighthouse({
       accessibility: 100,
       'best-practices': 90,
-      seo: 90,
+      seo: 80,
       pwa: 20,
       performance: 30,
     })
