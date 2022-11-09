@@ -47,7 +47,7 @@ export default defineConfig({
           console.log('---- Writing lighthouse report to disk ----')
 
           fs.writeFile(
-            'tmp/artifact/lighthouse.json',
+            'lighthouse.json',
             lighthouseReport.report,
             (error: any) => {
               error
