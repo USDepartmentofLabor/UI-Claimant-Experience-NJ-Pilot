@@ -156,7 +156,6 @@ export const IdentityPageDefinition: PageDefinition = {
   path: Routes.CLAIM.IDENTITY,
   initialValues: {
     birthdate: '',
-    ssn: '',
     authorized_to_work: undefined,
     not_authorized_to_work_explanation: undefined,
     authorization_type: undefined,

@@ -21,6 +21,8 @@ const customJestConfig: Config.InitialOptions = {
     '!**/*.stories.*',
     '!./src/pages/_app.tsx',
     '!./src/constants/**',
+    '!./src/pages/api/auth/\\[...nextauth\\].ts',
+    '!./src/middleware.ts',
   ],
   coverageThreshold: {
     global: {

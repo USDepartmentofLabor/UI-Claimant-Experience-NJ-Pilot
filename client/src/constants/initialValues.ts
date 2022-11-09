@@ -15,7 +15,7 @@ export const ADDRESS_SKELETON: AddressInput = {
 // skeleton shapes with which to initialize form fields
 export const PERSON_NAME_SKELETON: PersonNameInput = {
   first_name: '',
-  middle_initial: '',
+  middle_initial: undefined,
   last_name: '',
   suffix: undefined,
 }

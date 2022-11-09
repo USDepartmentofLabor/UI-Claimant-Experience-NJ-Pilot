@@ -92,6 +92,8 @@ public class Claimant {
      *     claim
      */
     public Optional<Claim> getActivePartialClaim() {
+        // TODO: what does this return if there is no active partial claim? Might need to handle a
+        // null pointer
         return getPartialClaims().stream()
                 .max(
                         (claim1, claim2) -> {
@@ -117,25 +119,26 @@ public class Claimant {
     /**
      * As there can be more than one partial claim, allowing multiple complete claims
      *
-     * @return the completed claim from the most recent save that has yet to be submitted externally
+     * @return the most recently completed claim that has yet to be submitted externally
      */
     public Optional<Claim> getActiveCompletedClaim() {
         return getCompletedClaims().stream()
                 .max(
                         (claim1, claim2) -> {
-                            Optional<ClaimEvent> claim1LatestSave =
-                                    claim1.getLatestEventByCategory(ClaimEventCategory.SAVED);
-                            Optional<ClaimEvent> claim2LatestSave =
-                                    claim2.getLatestEventByCategory(ClaimEventCategory.SAVED);
+                            Optional<ClaimEvent> claim1LatestComplete =
+                                    claim1.getLatestEventByCategory(ClaimEventCategory.COMPLETED);
+                            Optional<ClaimEvent> claim2LatestComplete =
+                                    claim2.getLatestEventByCategory(ClaimEventCategory.COMPLETED);
 
-                            if (claim1LatestSave.isPresent() && claim2LatestSave.isPresent()) {
-                                return claim1LatestSave
+                            if (claim1LatestComplete.isPresent()
+                                    && claim2LatestComplete.isPresent()) {
+                                return claim1LatestComplete
                                         .get()
                                         .getUpdatedAt()
-                                        .compareTo(claim2LatestSave.get().getUpdatedAt());
-                            } else if (claim1LatestSave.isPresent()) {
+                                        .compareTo(claim2LatestComplete.get().getUpdatedAt());
+                            } else if (claim1LatestComplete.isPresent()) {
                                 return -1;
-                            } else if (claim2LatestSave.isPresent()) {
+                            } else if (claim2LatestComplete.isPresent()) {
                                 return 1;
                             } else {
                                 return 0;

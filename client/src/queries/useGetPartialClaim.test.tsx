@@ -1,13 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { useGetPartialClaim } from './useGetPartialClaim'
-import httpclient from '../utils/httpclient'
+import serverHttpClient from 'utils/http/serverHttpClient'
 import axios from 'axios'
 
 jest.spyOn(axios, 'isAxiosError').mockReturnValue(true)
 
-jest.mock('utils/httpclient')
-const mockedGet = httpclient.get as jest.Mock & typeof httpclient
+jest.mock('utils/http/serverHttpClient')
+const mockedGet = serverHttpClient.get as jest.Mock & typeof serverHttpClient
 
 const wrapper = ({ children }: any) => {
   return (
