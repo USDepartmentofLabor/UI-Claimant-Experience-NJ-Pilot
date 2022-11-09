@@ -45,6 +45,7 @@ export default defineConfig({
       on('task', {
         lighthouse: lighthouse((lighthouseReport) => {
           console.log('---- Writing lighthouse report to disk ----')
+          console.log(process.cwd())
 
           fs.writeFile(
             'lighthouse.json',
