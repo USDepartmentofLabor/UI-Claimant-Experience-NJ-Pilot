@@ -14,6 +14,7 @@ import 'i18n/i18n'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 import { NewJerseyBanner } from 'components/NewJerseyBanner/NewJerseyBanner'
+import { Footer } from 'components/Footer/Footer'
 
 import 'styles/styles.scss'
 
@@ -70,6 +71,7 @@ function MyApp({
               getLayout(page)
             )}
           </GridContainer>
+          <Footer />
         </LiveAnnouncer>
       </QueryClientProvider>
     </SessionProvider>
