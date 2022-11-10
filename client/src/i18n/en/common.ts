@@ -1,4 +1,5 @@
 const common = {
+  skip_nav: 'Skip to main content',
   yes: 'Yes',
   no: 'No',
   date: {
@@ -59,6 +60,7 @@ const common = {
     lock_title: 'Lock',
     lock_description: 'A locked padlock',
   },
+  test_banner: ' Test Site - do not use real personal information',
   verified_fields: {
     default_heading:
       'The following information has been added to your application:',
