@@ -36,6 +36,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.visit('/screener')
     fillScreenerFields()
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Home page
@@ -44,6 +45,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Prequal page
     fillPrequalFields()
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Personal page
@@ -73,6 +75,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Contact page
     fillContactFields()
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Demographics page
@@ -83,11 +86,13 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       education_level: 'bachelors',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     //Recent Employers
     fillRecentEmployersFields()
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     fillIdentityFields({
@@ -98,6 +103,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       },
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Education and training page
@@ -106,6 +112,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       enrollment: 'yes',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Union page
@@ -115,6 +122,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       union_local_number: '12345',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Disability page
@@ -127,6 +135,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       contacted_last_employer_after_recovery: 'yes',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Payment page
@@ -139,6 +148,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       apply_for_increased_payment_for_dependents: 'yes',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Review page
