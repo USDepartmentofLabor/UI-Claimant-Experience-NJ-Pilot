@@ -15,7 +15,7 @@ export default defineConfig({
       'best-practices': 90,
       seo: 90,
       pwa: 20,
-      performance: 20,
+      performance: 0,
     },
   },
   e2e: {
