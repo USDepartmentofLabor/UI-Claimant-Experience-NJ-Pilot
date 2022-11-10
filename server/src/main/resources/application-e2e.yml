@@ -1,0 +1,5 @@
+---
+spring:
+  security:
+    self-signed-access-tokens-enabled: true
+    self-signed-access-token-secret: DevOrCypressLoginSecretNotUsedInProduction

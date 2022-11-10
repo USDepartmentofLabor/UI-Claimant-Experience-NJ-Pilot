@@ -40,8 +40,8 @@ describe('Address component', () => {
     expect(stateField).toHaveAttribute('id', `${basename}.state`)
     expect(stateField).toHaveAttribute('name', `${basename}.state`)
     expect(stateField.children.length).toBe(stateSlice.length + 1)
-    expect(within(stateField).getByText('AL'))
-    expect(within(stateField).getByText('WY'))
+    expect(within(stateField).getByText('Alabama'))
+    expect(within(stateField).getByText('Wyoming'))
   })
 
   it('renders all states by default', () => {

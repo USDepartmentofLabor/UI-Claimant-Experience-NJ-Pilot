@@ -1,4 +1,8 @@
-import { formatUserInputDate, formatStoredDateToDisplayDate } from './format'
+import {
+  formatUserInputDate,
+  formatStoredDateToDisplayDate,
+  formatLast18monthsEmployersDate,
+} from './format'
 
 describe('formatUserInputDate', () => {
   it('returns the expected date', () => {
@@ -27,5 +31,22 @@ describe('formatStoredDate', () => {
     const storedDate = undefined
     const result = formatStoredDateToDisplayDate(storedDate)
     expect(result).toEqual(undefined)
+  })
+})
+
+describe('formatLast18monthsEmployersDate', () => {
+  it('returns the first day of the first month in the quarter that is five quarters prior to the quarter passed in', () => {
+    const initialDate = '2015-06-15'
+    const result = formatLast18monthsEmployersDate(initialDate)
+    expect(result).toEqual('January 1, 2014')
+  })
+
+  it('returns undefined if initialValue is undefined', () => {
+    expect(formatLast18monthsEmployersDate(undefined)).toBeUndefined()
+  })
+
+  it('returns the initial value if the date format string is invalid', () => {
+    const initialValue = '22-22-22'
+    expect(formatLast18monthsEmployersDate(initialValue)).toEqual(initialValue)
   })
 })

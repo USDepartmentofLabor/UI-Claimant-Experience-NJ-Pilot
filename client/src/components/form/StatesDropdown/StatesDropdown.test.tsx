@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import states from 'fixtures/states.json'
+import { statesAndTerritories } from 'fixtures/states_and_territories'
 import { StateAbbrev, StatesDropdown } from './StatesDropdown'
 import { Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
@@ -13,7 +13,9 @@ describe('StatesDropdown Component', () => {
     )
 
     const statesDropdown = screen.getByLabelText('test-label')
-    expect(statesDropdown.children.length).toBe(Object.keys(states).length + 1)
+    expect(statesDropdown.children.length).toBe(
+      Object.keys(statesAndTerritories).length + 1
+    )
   })
 
   it('renders a state slice', () => {
@@ -32,7 +34,7 @@ describe('StatesDropdown Component', () => {
 
     const statesDropdown = screen.getByLabelText('test-label')
     expect(statesDropdown.children.length).toBe(stateSlice.length + 1)
-    expect(within(statesDropdown).queryByText('GA')).toBeInTheDocument()
-    expect(within(statesDropdown).queryByText('CA')).toBeInTheDocument()
+    expect(within(statesDropdown).queryByText('Georgia')).toBeInTheDocument()
+    expect(within(statesDropdown).queryByText('California')).toBeInTheDocument()
   })
 })

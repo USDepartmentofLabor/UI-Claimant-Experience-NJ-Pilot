@@ -15,20 +15,32 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type ClaimantInput = ScreenerInput &
+  PrequalInput &
   PersonalInput &
   ContactInput &
   DemographicsInput &
   IdentityInput &
-  // EmployerInput &
+  EmployerInput &
   // EmployerReviewInput &
-  // SelfEmploymentInput &
-  // OtherPayInput &
   // OccupationInput &
   EducationAndTrainingInput &
   UnionInput &
-  AbleAndAvailableStatusInput &
+  DisabilityStatusInput &
   PaymentInput &
   ReviewInput
+
+export type EmployerInput = {
+  employers?: Employer[]
+}
+
+export type Employer = {
+  isImported?: boolean
+  isEmployer?: boolean
+
+  isInitiated?: boolean
+  name?: string
+  isFullTime?: boolean
+}
 
 export type ScreenerInput = {
   screener_current_country_us?: boolean
@@ -39,6 +51,15 @@ export type ScreenerInput = {
   screener_currently_disabled?: boolean
   screener_military_service_eighteen_months?: boolean
   screener_maritime_employer_eighteen_months?: boolean
+}
+
+export type PrequalInput = {
+  filed_in_last_12mo?: boolean
+  state_province_territory_where_filed?: string
+  lived_outside_nj_when_working_nj?: boolean
+  will_look_for_work_in_nj?: boolean
+  can_begin_work_immediately?: boolean
+  federal_work_in_last_18mo?: boolean
 }
 
 type DemographicsInput = {
@@ -58,7 +79,7 @@ type ContactInput = {
 }
 
 export type PhoneInput = {
-  number: string
+  number?: string
   sms?: boolean
 }
 
@@ -68,7 +89,7 @@ type UnionInput = {
   required_to_seek_work_through_hiring_hall?: boolean
 }
 
-type AbleAndAvailableStatusInput = {
+type DisabilityStatusInput = {
   disability_applied_to_or_received?: DisabilityPaymentTypeOption[]
   disabled_immediately_before?: boolean
   type_of_disability?: DisabilityTypeOption
@@ -137,11 +158,10 @@ type ReviewInput = {
 }
 
 export type WhoAmI = {
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   middleInitial?: string
-  birthdate: string
-  ssn: string
-  email: string
-  phone: string
+  birthdate?: string
+  email?: string
+  phone?: string
 }

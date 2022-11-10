@@ -14,10 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
+import nj.lwd.ui.claimantintake.exception.ClaimDataRetrievalException;
 import nj.lwd.ui.claimantintake.model.Claim;
 import nj.lwd.ui.claimantintake.model.Claimant;
 import nj.lwd.ui.claimantintake.repository.ClaimRepository;
@@ -38,6 +38,7 @@ class ClaimStorageServiceTest {
     @Mock private ClaimantRepository claimantRepository;
     @Mock private ClaimRepository claimRepository;
     @Mock private S3Service s3Service;
+    @Mock private ClaimantStorageService claimantStorageService;
 
     private ClaimStorageService claimStorageService;
 
@@ -49,7 +50,8 @@ class ClaimStorageServiceTest {
                         CLAIMS_BUCKET_KMS_KEY,
                         s3Service,
                         claimRepository,
-                        claimantRepository);
+                        claimantRepository,
+                        claimantStorageService);
     }
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -70,18 +72,6 @@ class ClaimStorageServiceTest {
     ClaimStorageServiceTest() throws JsonProcessingException {}
 
     @Test
-    void completeClaimFailsIfNoClaimantExists() throws Exception {
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.empty());
-
-        var result = claimStorageService.completeClaim("test-id", validClaim);
-
-        assertFalse(result);
-
-        verify(claimantRepository, times(1)).findClaimantByIdpId("test-id");
-        verify(s3Service, times(0)).upload(anyString(), anyString(), any(), anyString());
-    }
-
-    @Test
     void completeClaimFailsWhenCannotSaveToS3() throws Exception {
         var claimant = mock(Claimant.class);
         var claim = mock(Claim.class);
@@ -92,7 +82,7 @@ class ClaimStorageServiceTest {
         when(claimant.getId()).thenReturn(claimantId);
         when(claim.getId()).thenReturn(claimId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
         doThrow(AwsServiceException.builder().build())
                 .when(s3Service)
@@ -102,7 +92,7 @@ class ClaimStorageServiceTest {
 
         assertFalse(result);
 
-        verify(claimantRepository, times(1)).findClaimantByIdpId("test-id");
+        verify(claimantStorageService, times(1)).getOrCreateClaimant("test-id");
         verify(s3Service, times(1))
                 .upload(CLAIMS_BUCKET, expectedS3Key, validClaim, CLAIMS_BUCKET_KMS_KEY);
 
@@ -135,7 +125,7 @@ class ClaimStorageServiceTest {
         when(claimant.getId()).thenReturn(claimantId);
         when(claim.getId()).thenReturn(claimId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
         var result = claimStorageService.completeClaim("test-id", validClaim);
 
@@ -170,7 +160,7 @@ class ClaimStorageServiceTest {
         when(claimant.getId()).thenReturn(claimantId);
         when(claim.getId()).thenReturn(claimId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.empty());
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
         when(claimRepository.save(any())).thenReturn(claim);
 
         var result = claimStorageService.completeClaim("test-id", validClaim);
@@ -203,7 +193,7 @@ class ClaimStorageServiceTest {
         var claimantId = UUID.randomUUID();
         when(claimant.getId()).thenReturn(claimantId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.empty());
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
         // and: a new claim that will be created and saved
         var claim = mock(Claim.class);
@@ -256,7 +246,7 @@ class ClaimStorageServiceTest {
         var claimantId = UUID.randomUUID();
         when(claimant.getId()).thenReturn(claimantId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
         var expectedS3Key = "%s/%s.json".formatted(claimantId, claimId);
 
@@ -292,18 +282,17 @@ class ClaimStorageServiceTest {
     }
 
     @Test
-    void getClaimReturnsPartialClaimData() throws Exception {
-        Claimant claimant = mock(Claimant.class);
+    void getPartialClaimReturnsPartialClaimData() throws ClaimDataRetrievalException {
         Claim claim = mock(Claim.class);
+        UUID claimId = UUID.randomUUID();
+        when(claim.getId()).thenReturn(claimId);
 
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
+        Claimant claimant = mock(Claimant.class);
+        UUID claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
 
-        UUID claimantId = UUID.randomUUID();
-        UUID claimId = UUID.randomUUID();
-
-        when(claimant.getId()).thenReturn(claimantId);
-        when(claim.getId()).thenReturn(claimId);
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
         InputStream inputStream =
                 new ByteArrayInputStream(
@@ -311,70 +300,52 @@ class ClaimStorageServiceTest {
         when(s3Service.get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId)))
                 .thenReturn(inputStream);
 
-        Optional<Map<String, Object>> claimDataMapOptional = claimStorageService.getClaim("fakeid");
+        Optional<Map<String, Object>> retrievedData = claimStorageService.getPartialClaim("fakeId");
 
-        assertTrue(claimDataMapOptional.isPresent());
-        Map<String, Object> claimDataMap = claimDataMapOptional.get();
+        assertTrue(retrievedData.isPresent());
+        Map<String, Object> claimData = retrievedData.get();
 
-        assertTrue(claimDataMap.containsKey("ssn"));
-        assertEquals("123456789", claimDataMap.get("ssn"));
+        assertTrue(claimData.containsKey("ssn"));
+        assertEquals("123456789", claimData.get("ssn"));
 
         verify(s3Service, times(1)).get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId));
     }
 
     @Test
-    void getClaimReturnsNoDataWhenObjectDoesNotExistInS3() {
-        Claimant claimant = mock(Claimant.class);
+    void getPartialClaimReturnsNoDataWhenObjectDoesNotExistInS3()
+            throws ClaimDataRetrievalException {
         Claim claim = mock(Claim.class);
-
-        when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
-        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
-
-        UUID claimantId = UUID.randomUUID();
         UUID claimId = UUID.randomUUID();
-
-        when(claimant.getId()).thenReturn(claimantId);
         when(claim.getId()).thenReturn(claimId);
 
+        Claimant claimant = mock(Claimant.class);
+        UUID claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
+
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
         when(s3Service.get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId)))
                 .thenThrow(AwsServiceException.class);
-        assertTrue(claimStorageService.getClaim("fakeid").isEmpty());
+
+        assertThrows(
+                ClaimDataRetrievalException.class,
+                () -> {
+                    claimStorageService.getPartialClaim("fakeId");
+                });
 
         verify(s3Service, times(1)).get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId));
     }
 
     @Test
-    void getClaimReturnsNoDataWhenNoClaimant() throws Exception {
-        Optional<Claimant> optionalEmpty = spy(Optional.empty());
-        when(claimantRepository.findClaimantByIdpId("fake id")).thenReturn(optionalEmpty);
-
-        assertTrue(claimStorageService.getClaim("fake id").isEmpty());
-
-        verify(optionalEmpty, times(1))
-                .orElseThrow(
-                        argThat(
-                                (event) -> {
-                                    return event.get().getClass() == NoSuchElementException.class;
-                                }));
-
-        verify(s3Service, times(0)).get(anyString(), anyString());
-    }
-
-    @Test
-    void getClaimReturnsNoDataWhenNoExistingPartialClaim() throws Exception {
+    void getPartialClaimReturnsNoDataWhenNoExistingPartialClaimRecord()
+            throws ClaimDataRetrievalException {
         Claimant claimant = mock(Claimant.class);
-        Optional<Claim> optionalEmpty = spy(Optional.empty());
-        when(claimantRepository.findClaimantByIdpId("fake id")).thenReturn(Optional.of(claimant));
-        when(claimant.getActivePartialClaim()).thenReturn(optionalEmpty);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.empty());
+        when(claimantStorageService.getOrCreateClaimant("fakeId")).thenReturn(claimant);
 
-        assertTrue(claimStorageService.getClaim("fake id").isEmpty());
+        Optional<Map<String, Object>> retrievedData = claimStorageService.getPartialClaim("fakeId");
 
-        verify(optionalEmpty, times(1))
-                .orElseThrow(
-                        argThat(
-                                (event) -> {
-                                    return event.get().getClass() == NoSuchElementException.class;
-                                }));
+        assertTrue(retrievedData.isEmpty());
 
         verify(s3Service, times(0)).get(anyString(), anyString());
     }

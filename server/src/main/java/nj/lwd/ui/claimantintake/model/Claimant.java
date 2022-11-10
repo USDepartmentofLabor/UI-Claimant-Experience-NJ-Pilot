@@ -78,6 +78,12 @@ public class Claimant {
         return claims.stream().filter(claim -> !claim.isComplete()).toList();
     }
 
+    List<Claim> getCompletedClaims() {
+        return claims.stream()
+                .filter(claim -> claim.isComplete())
+                .filter(claim -> !claim.isSubmitted())
+                .toList();
+    }
     /**
      * Initial business logic only allows for a single active claim, though the architecture
      * supports more than one.
@@ -86,6 +92,8 @@ public class Claimant {
      *     claim
      */
     public Optional<Claim> getActivePartialClaim() {
+        // TODO: what does this return if there is no active partial claim? Might need to handle a
+        // null pointer
         return getPartialClaims().stream()
                 .max(
                         (claim1, claim2) -> {
@@ -108,8 +116,41 @@ public class Claimant {
                             }
                         });
     }
+    /**
+     * As there can be more than one partial claim, allowing multiple complete claims
+     *
+     * @return the most recently completed claim that has yet to be submitted externally
+     */
+    public Optional<Claim> getActiveCompletedClaim() {
+        return getCompletedClaims().stream()
+                .max(
+                        (claim1, claim2) -> {
+                            Optional<ClaimEvent> claim1LatestComplete =
+                                    claim1.getLatestEventByCategory(ClaimEventCategory.COMPLETED);
+                            Optional<ClaimEvent> claim2LatestComplete =
+                                    claim2.getLatestEventByCategory(ClaimEventCategory.COMPLETED);
+
+                            if (claim1LatestComplete.isPresent()
+                                    && claim2LatestComplete.isPresent()) {
+                                return claim1LatestComplete
+                                        .get()
+                                        .getUpdatedAt()
+                                        .compareTo(claim2LatestComplete.get().getUpdatedAt());
+                            } else if (claim1LatestComplete.isPresent()) {
+                                return -1;
+                            } else if (claim2LatestComplete.isPresent()) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        });
+    }
 
     public Boolean hasPartialClaim() {
         return !getPartialClaims().isEmpty();
+    }
+
+    public Boolean hasCompleteClaim() {
+        return !getCompletedClaims().isEmpty();
     }
 }

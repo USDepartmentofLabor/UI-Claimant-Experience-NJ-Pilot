@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
+import nj.lwd.ui.claimantintake.exception.ClaimDataRetrievalException;
 import nj.lwd.ui.claimantintake.model.Claim;
 import nj.lwd.ui.claimantintake.model.ClaimEvent;
 import nj.lwd.ui.claimantintake.model.Claimant;
@@ -34,6 +34,7 @@ public class ClaimStorageService {
     private final S3Service s3Service;
     private final ClaimRepository claimRepository;
     private final ClaimantRepository claimantRepository;
+    private final ClaimantStorageService claimantStorageService;
 
     @Autowired
     ClaimStorageService(
@@ -41,37 +42,21 @@ public class ClaimStorageService {
             @Value("${aws.s3.claims-bucket-kms-key}") String claimsBucketKmsKey,
             S3Service s3Service,
             ClaimRepository claimRepository,
-            ClaimantRepository claimantRepository) {
+            ClaimantRepository claimantRepository,
+            ClaimantStorageService claimantStorageService) {
         this.claimsBucket = claimsBucket;
         this.claimsBucketKmsKey = claimsBucketKmsKey;
         this.s3Service = s3Service;
         this.claimRepository = claimRepository;
         this.claimantRepository = claimantRepository;
+        this.claimantStorageService = claimantStorageService;
     }
 
     public boolean completeClaim(String claimantIdpId, Map<String, Object> claimPayload) {
-        logger.debug("Attempting to complete claim for claimant with IDP ID: {}", claimantIdpId);
+        logger.info("Attempting to complete claim for claimant with IDP ID: {}", claimantIdpId);
 
-        Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
-
-        if (existingClaimant.isEmpty()) {
-            logger.debug("No claimant exists with idp id: {}", claimantIdpId);
-            return false;
-        }
-        Claimant claimant = existingClaimant.get();
-
-        Claim claim =
-                claimant.getActivePartialClaim()
-                        .orElseGet(
-                                () -> {
-                                    logger.info(
-                                            "No active partial claim found for claimant {}."
-                                                    + " Creating a new partial claim...",
-                                            claimant.getId());
-                                    Claim newClaim = new Claim();
-                                    claimant.addClaim(newClaim);
-                                    return claimRepository.save(newClaim);
-                                });
+        Claimant claimant = claimantStorageService.getOrCreateClaimant(claimantIdpId);
+        Claim claim = getOrCreatePartialClaim(claimant);
 
         claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_COMPLETE));
 
@@ -86,8 +71,8 @@ public class ClaimStorageService {
                     claim.getId(),
                     claimant.getId(),
                     s3Key);
-            claimantRepository.save(claimant);
             claim.addEvent(new ClaimEvent(ClaimEventCategory.COMPLETED));
+            claimantRepository.save(claimant);
             return true;
         } catch (JsonProcessingException e) {
             logger.error(
@@ -120,34 +105,10 @@ public class ClaimStorageService {
         }
     }
 
-    // TODO: Use claimantId instead of claimantIdpId
     public boolean saveClaim(String claimantIdpId, Map<String, Object> claimPayload) {
-        // TODO: Persist a claimant on login instead of here (when that functionality exists)
-        logger.debug("Attempting to find claimant by IDP Id: {}", claimantIdpId);
-        Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(claimantIdpId);
-        Claimant claimant =
-                existingClaimant.orElseGet(
-                        () -> {
-                            logger.info(
-                                    "No existing claimant found by IDP id. Adding a new"
-                                            + " claimant...");
-
-                            return claimantRepository.save(new Claimant(claimantIdpId));
-                        });
-
-        // Get or create the corresponding claim
-        Optional<Claim> existingClaim = claimant.getActivePartialClaim();
-        Claim claim =
-                existingClaim.orElseGet(
-                        () -> {
-                            logger.info(
-                                    "No active partial claim found for claimant {}. Creating a new"
-                                            + " partial claim...",
-                                    claimant.getId());
-                            var newClaim = new Claim();
-                            claimant.addClaim(newClaim);
-                            return claimRepository.save(newClaim);
-                        });
+        logger.info("Saving claim data associated with user {}", claimantIdpId);
+        Claimant claimant = claimantStorageService.getOrCreateClaimant(claimantIdpId);
+        Claim claim = getOrCreatePartialClaim(claimant);
 
         logger.info(
                 "Initiating partial claim save for claim {} and claimant {}",
@@ -156,7 +117,7 @@ public class ClaimStorageService {
         claim.addEvent(new ClaimEvent(ClaimEventCategory.INITIATED_SAVE));
 
         try {
-            String s3Key = "%s/%s.json".formatted(claimant.getId(), claim.getId());
+            String s3Key = getS3Location(claimant, claim);
             s3Service.upload(claimsBucket, s3Key, claimPayload, this.claimsBucketKmsKey);
 
             claim.addEvent(new ClaimEvent(ClaimEventCategory.SAVED));
@@ -196,53 +157,74 @@ public class ClaimStorageService {
         }
     }
 
-    public Optional<Map<String, Object>> getClaim(String claimantIdpId) {
-        Claimant claimant;
-        Claim claim;
-        try {
-            Optional<Claimant> existingClaimant =
-                    claimantRepository.findClaimantByIdpId(claimantIdpId);
+    public Optional<Map<String, Object>> getPartialClaim(String claimantIdpId)
+            throws ClaimDataRetrievalException {
+        logger.info("Checking for partial claim data associated with user {}", claimantIdpId);
+        Claimant claimant = claimantStorageService.getOrCreateClaimant(claimantIdpId);
+        Optional<Claim> existingClaim = claimant.getActivePartialClaim();
 
-            claimant =
-                    existingClaimant.orElseThrow(
-                            () -> {
-                                logger.error("No claimant found with ID {}", claimantIdpId);
-                                return new NoSuchElementException();
-                            });
-
-            claim =
-                    claimant.getActivePartialClaim()
-                            .orElseThrow(
-                                    () -> {
-                                        logger.error(
-                                                "No claim found for claimant ID {}", claimantIdpId);
-                                        return new NoSuchElementException();
-                                    });
-        } catch (NoSuchElementException ex) {
+        if (existingClaim.isPresent()) {
+            Claim claim = existingClaim.get();
+            logger.info(
+                    "Getting partial claim data for claimant {} and claim {}",
+                    claimant.getId(),
+                    claim.getId());
+            try {
+                String s3Key = getS3Location(claimant, claim);
+                InputStream stream = s3Service.get(claimsBucket, s3Key);
+                var claimData = deserializeToClaimData(stream);
+                logger.info(
+                        "Successfully retrieved partial claim data for claim {} and claimant {}"
+                                + " from {} in S3",
+                        claim.getId(),
+                        claimant.getId(),
+                        s3Key);
+                return Optional.of(claimData);
+            } catch (AwsServiceException e) {
+                var errorMessage =
+                        String.format(
+                                "Amazon S3 unable to process request to get claim data for claim"
+                                        + " %s",
+                                claim.getId());
+                throw new ClaimDataRetrievalException(errorMessage, e);
+            } catch (SdkClientException e) {
+                var errorMessage =
+                        String.format(
+                                "Unable to contact Amazon S3 or unable to parse the response while"
+                                        + " trying to get claim %s from S3",
+                                claim.getId());
+                throw new ClaimDataRetrievalException(errorMessage, e);
+            } catch (IOException e) {
+                var errorMessage =
+                        String.format(
+                                "Unable to process S3 object data for claim %s", claim.getId());
+                throw new ClaimDataRetrievalException(errorMessage, e);
+            }
+        } else {
+            logger.info(
+                    "Claimant {} does not yet have an active claim to retrieve", claimant.getId());
             return Optional.empty();
         }
+    }
 
-        logger.info(
-                "Starting getClaim for claim id {} and claim {}", claimant.getId(), claim.getId());
-        // Get claim data from s3
-        try {
-            InputStream stream =
-                    s3Service.get(
-                            claimsBucket, "%s/%s.json".formatted(claimant.getId(), claim.getId()));
-            return Optional.of(deserializeToClaimData(stream));
-        } catch (AwsServiceException | SdkClientException ex) {
-            logger.error(
-                    "S3 service is not available for claimId {} : {}",
-                    claimantIdpId,
-                    ex.getMessage());
-            return Optional.empty();
-        } catch (IOException ex) {
-            logger.error(
-                    "Unable to process s3 object data from claimId {} : {}",
-                    claimantIdpId,
-                    ex.getMessage());
-            return Optional.empty();
-        }
+    private Claim getOrCreatePartialClaim(Claimant claimant) {
+        logger.info("Checking for active partial claim for claimant {}", claimant.getId());
+        Optional<Claim> existingClaim = claimant.getActivePartialClaim();
+        return existingClaim.orElseGet(
+                () -> {
+                    logger.info(
+                            "No active partial claim found for claimant {}. Creating a new"
+                                    + " partial claim...",
+                            claimant.getId());
+                    var newClaim = new Claim();
+                    claimant.addClaim(newClaim);
+                    var savedClaim = claimRepository.save(newClaim);
+                    logger.info(
+                            "New claim created with id {} for claimant {}",
+                            savedClaim.getId(),
+                            claimant.getId());
+                    return savedClaim;
+                });
     }
 
     private Map<String, Object> deserializeToClaimData(InputStream stream) throws IOException {

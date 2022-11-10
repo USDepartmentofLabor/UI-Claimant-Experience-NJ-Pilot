@@ -1,6 +1,8 @@
+import { Session } from 'next-auth'
+import { SessionProvider } from 'next-auth/react'
 import { GridContainer } from '@trussworks/react-uswds'
 import type { AppProps } from 'next/app'
-import { appWithTranslation } from 'next-i18next'
+import { appWithTranslation, SSRConfig } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { LiveAnnouncer } from 'react-aria-live'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -12,21 +14,27 @@ import 'i18n/i18n'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 import { NewJerseyBanner } from 'components/NewJerseyBanner/NewJerseyBanner'
+import { Footer } from 'components/Footer/Footer'
 
 import 'styles/styles.scss'
 
-export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
+export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,
   IP
 > & {
   getLayout?: (page: ReactNode) => ReactNode
 }
 
-type AppPropsWithLayout = AppProps & {
+type CustomPageProps = SSRConfig & { session: Session }
+
+type CustomAppProps = AppProps<CustomPageProps> & {
   Component: NextPageWithLayout
 }
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}: CustomAppProps) {
   const router = useRouter()
 
   const getLayout = Component.getLayout ?? ((page) => page)
@@ -51,20 +59,23 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   //       a layout for, but this is not a good long term solution
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <LiveAnnouncer>
-        <NewJerseyBanner />
-        <ReactQueryDevtools initialIsOpen={false} />
-        <GridContainer>
-          {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
-            <ClaimForm>{page}</ClaimForm>
-          ) : (
-            getLayout(page)
-          )}
-        </GridContainer>
-      </LiveAnnouncer>
-    </QueryClientProvider>
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient}>
+        <LiveAnnouncer>
+          <NewJerseyBanner />
+          <ReactQueryDevtools initialIsOpen={false} />
+          <GridContainer>
+            {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
+              <ClaimForm>{page}</ClaimForm>
+            ) : (
+              getLayout(page)
+            )}
+          </GridContainer>
+          <Footer />
+        </LiveAnnouncer>
+      </QueryClientProvider>
+    </SessionProvider>
   )
 }
 
-export default appWithTranslation(MyApp)
+export default appWithTranslation<CustomAppProps>(MyApp)

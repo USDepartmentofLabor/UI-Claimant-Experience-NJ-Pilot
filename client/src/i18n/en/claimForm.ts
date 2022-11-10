@@ -7,6 +7,53 @@ const claimForm = {
     save_and_exit: 'Save and exit',
     submit: 'Submit',
   },
+  prequal: {
+    heading: "Let's get started",
+    filed_in_last_12mo: {
+      label:
+        'Have you filed for unemployment benefits during the last 12 months?',
+      errors: {
+        required:
+          'Please indicate whether you have filed for unemployment benefits during the last 12 months',
+      },
+    },
+    state_province_territory_where_filed: {
+      label: 'Where did you file?',
+      errors: {
+        required:
+          'Please indicate the location you filed for unemployment benefits during the last 12 months',
+      },
+    },
+    lived_outside_nj_when_working_nj: {
+      label: 'When you worked in New Jersey, did you live out of state?',
+      errors: {
+        required:
+          'Please indicate when you worked in New Jersey, if you lived out of state',
+      },
+    },
+    will_look_for_work_in_nj: {
+      label: 'Will you continue looking for work in New Jersey?',
+      errors: {
+        required:
+          'Please indicate whether you will continue looking for work in New Jersey',
+      },
+    },
+    can_begin_work_immediately: {
+      label: 'Can you begin full-time work immediately?',
+      errors: {
+        required:
+          'Please indicate whether you can begin full-time work immediately',
+      },
+    },
+    federal_work_in_last_18mo: {
+      label:
+        'In the last 18 months, have you worked for the federal government (not including military service)?',
+      errors: {
+        required:
+          'Please indicate whether in the last 18 months, have you worked for the federal government (not including military service)',
+      },
+    },
+  },
   personal: {
     heading: 'Personal information',
     verified_legal_name: { label: 'Legal name' },
@@ -17,6 +64,22 @@ const claimForm = {
       'We ask for the following information only for our reporting requirements. ' +
       "Your answers to these questions won't affect your application or potential payment amount. " +
       'We are working on our systems to support more inclusive options.',
+  },
+  recent_employers: {
+    heading: 'Recent employers',
+    preamble:
+      'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount. Please confirm our records of your employers below.',
+    question:
+      'In the last 18 months (since {{date}}), did you work at the following employers?',
+    work_at: 'Did you work at {{employer}}',
+    confirm_employer:
+      'Are you sure? Check your pay stubs or W2 to confirm your employer name.',
+    isEmployer: {
+      errors: {
+        required:
+          'Please indicate whether you were employed by this employer within the last 18 months',
+      },
+    },
   },
   identity: {
     heading: 'Identity Information',
@@ -361,8 +424,8 @@ const claimForm = {
     },
     no_results: 'No results. Try another search.',
   },
-  able_and_available: {
-    heading: 'Able and available',
+  disability: {
+    heading: 'Disability',
     info_alert: {
       title:
         'For Unemployment Insurance, you are “disabled” if any of the following are true:',
@@ -372,13 +435,6 @@ const claimForm = {
         tdi: 'You are receiving or have applied for temporary disability payments',
         workers_comp:
           'You are receiving or have applied for workers’ compensation payments',
-      },
-    },
-    can_begin_work_immediately: {
-      label: 'Can you begin full-time work immediately?',
-      errors: {
-        required:
-          'You must indicate whether you can begin full-time work immediately',
       },
     },
     disability_applied_to_or_received: {
@@ -693,6 +749,7 @@ const claimForm = {
       },
     },
   },
+
   other_pay_detail: {
     pay_type: {
       label:
@@ -776,6 +833,20 @@ const claimForm = {
     heading: 'The following information has been added to your application:',
     to_edit_visit: 'To edit your information, visit',
     idp_url_text: 'login.gov',
+  },
+  your_employer: {
+    heading: 'Your employer',
+    is_full_time: {
+      help_text:
+        'Full-time means working more (even 1 minute more) than 32 hours a week. Part-time means working exactly 32 hours or less a week.',
+
+      label: 'Was this a full-time or part-time job?',
+      options: {
+        full_time: 'Full-time',
+        part_time: 'Part-time or intermittent',
+      },
+      required: 'This field is required',
+    },
   },
   review: {
     heading: 'Review application',

@@ -1,3 +1,4 @@
+import { ChangeEventHandler } from 'react'
 import { NextPage } from 'next'
 import { useTranslation } from 'react-i18next'
 import { useFormikContext } from 'formik'
@@ -26,9 +27,16 @@ const Contact: NextPage = () => {
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'contact',
   })
-  const { values, initialValues } = useFormikContext<ClaimantInput>()
+  const { values, initialValues, setValues } = useFormikContext<ClaimantInput>()
   const { clearField } = useClearFields()
 
+  const handleAlternatePhoneChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.currentTarget.value === '') {
+      setValues({ ...values, alternate_phone: undefined })
+    }
+  }
   const handleInterpreterRequiredChange = () => {
     if (values.interpreter_required !== 'no_interpreter_tty') {
       clearField('preferred_language')
@@ -64,6 +72,7 @@ const Contact: NextPage = () => {
         name="alternate_phone"
         label={t('alternate_phone.label')}
         showSMS={false}
+        onChange={handleAlternatePhoneChange}
       />
       <Fieldset
         legend={t('interpreter_required.label')}

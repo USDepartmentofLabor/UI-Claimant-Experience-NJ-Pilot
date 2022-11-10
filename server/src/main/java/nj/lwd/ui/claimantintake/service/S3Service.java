@@ -38,7 +38,10 @@ public class S3Service {
         S3ClientBuilder builder = S3Client.builder();
 
         if (Arrays.stream(environment.getActiveProfiles())
-                .anyMatch(profile -> profile.equalsIgnoreCase("local"))) {
+                .anyMatch(
+                        profile ->
+                                profile.equalsIgnoreCase("local")
+                                        || profile.equalsIgnoreCase("local-docker"))) {
             String accessKeyId = environment.getProperty("aws.accessKeyId");
             String secretKey = environment.getProperty("aws.secretKey");
             AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKeyId, secretKey);
@@ -55,6 +58,7 @@ public class S3Service {
         String endpointUrl = environment.getProperty("aws.s3.endpoint-url");
         if (endpointUrl != null) {
             builder.endpointOverride(URI.create(endpointUrl));
+            builder.forcePathStyle(true);
         }
 
         this.s3Client = builder.build();
@@ -83,7 +87,7 @@ public class S3Service {
 
     public InputStream get(String bucket, String key) {
         logger.debug("S3 Get bucket: {}", bucket);
-        logger.debug("s3 Get key: {}", key);
+        logger.debug("S3 Get key: {}", key);
 
         GetObjectRequest req = GetObjectRequest.builder().bucket(bucket).key(key).build();
 

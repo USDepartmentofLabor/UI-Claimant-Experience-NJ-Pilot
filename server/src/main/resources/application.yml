@@ -15,6 +15,12 @@ server:
     context-path: /intake-api
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${env.COGNITO_ISSUER} # `env` retrieves values from the .env file
+    self-signed-access-tokens-enabled: false
   liquibase:
     change-log: "classpath:/db/changelog/changelog.yaml"
     enabled: false

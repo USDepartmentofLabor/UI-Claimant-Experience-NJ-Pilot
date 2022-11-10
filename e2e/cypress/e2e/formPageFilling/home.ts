@@ -1,9 +1,10 @@
 const homePage = () => {
-  cy.wait(4000)
-  cy.get('h1').contains('Apply for Unemployment Insurance')
+  cy.get("h1[data-testid='home-page-heading']").contains(
+    'Apply for Unemployment Insurance'
+  )
   cy.checkA11y()
-  cy.get("button[type='button']")
-    .contains('Press Me')
+  cy.lighthouse()
+  cy.get("button[data-testid='go-to-claim-form']")
     .scrollIntoView()
     .should('be.visible')
     .click()

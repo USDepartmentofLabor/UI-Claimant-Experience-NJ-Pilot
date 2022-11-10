@@ -1,25 +1,52 @@
+import { faker } from '@faker-js/faker'
+
 import fillScreenerFields from './formPageFilling/screener'
 import homePage from './formPageFilling/home'
+import fillPrequalFields from './formPageFilling/prequal'
 import fillPersonalFields from './formPageFilling/personal'
 import fillDemographicsFields from './formPageFilling/demographics'
 import fillContactFields from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
-import fillAbleAndAvailableFields from './formPageFilling/able_and_available'
+import fillDisabilityFields from './formPageFilling/disability'
 import fillPaymentFields from './formPageFilling/payment'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
+import fillRecentEmployersFields from './formPageFilling/recent-employers'
+import { generateWhoAmI } from './utils/generateWhoAmI'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
+    const whoAmI = generateWhoAmI()
+    cy.login({
+      sub: faker.datatype.uuid(),
+      whoAmI,
+    })
+
+    // Verify that the user is "signed in"
+    // This can be removed when the user flow is ironed out and we know:
+    //  - Where a user lands in our app?
+    //  - What will the app do if the user is not logged in already?
+    //  - What will the app do if the user is logged in already?
+    //  - How will the user know that they are logged in?
+    cy.visit('/')
+    cy.get('[data-testid=sign-out]').should('be.visible')
+
     // Screener page
     cy.visit('/screener')
     fillScreenerFields()
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Home page
     homePage()
+
+    // Prequal page
+    fillPrequalFields()
+    cy.checkA11y()
+    cy.lighthouse()
+    cy.clickNext()
 
     // Personal page
     fillPersonalFields(
@@ -41,13 +68,14 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       'best-practices': 90,
       seo: 90,
       pwa: 20,
-      performance: 40,
+      performance: 30,
     })
     cy.clickNext()
 
     // Contact page
     fillContactFields()
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Demographics page
@@ -58,6 +86,13 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       education_level: 'bachelors',
     })
     cy.checkA11y()
+    cy.lighthouse()
+    cy.clickNext()
+
+    //Recent Employers
+    fillRecentEmployersFields()
+    cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     fillIdentityFields({
@@ -68,6 +103,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       },
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Education and training page
@@ -76,6 +112,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       enrollment: 'yes',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Union page
@@ -85,11 +122,11 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       union_local_number: '12345',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
-    // Able and available page
-    fillAbleAndAvailableFields({
-      can_begin_work_immediately: 'yes',
+    // Disability page
+    fillDisabilityFields({
       disability_applied_to_or_received: 'disability',
       disabled_immediately_before: 'no',
       type_of_disability: 'state_plan',
@@ -98,6 +135,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       contacted_last_employer_after_recovery: 'yes',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Payment page
@@ -110,9 +148,14 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       apply_for_increased_payment_for_dependents: 'yes',
     })
     cy.checkA11y()
+    cy.lighthouse()
     cy.clickNext()
 
     // Review page
     fillReviewFields()
+    cy.clickSubmit()
+
+    // User lands on home page on successful completion
+    cy.url().should('eq', `${Cypress.config().baseUrl}/?completed=true`)
   })
 })

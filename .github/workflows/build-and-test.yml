@@ -41,13 +41,13 @@ jobs:
         run: make e2e-deps
 
       - name: Set up Java
-        uses: actions/setup-java@a18c333f3f14249953dab3e186e5e21bf3390f1d
+        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc
         with:
           java-version: "17.0.4+8"
           distribution: "temurin"
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+        uses: gradle/wrapper-validation-action@55e685c48d84285a5b0418cd094606e199cca3b6
 
       - name: Install server dependencies
         run: make server-deps
@@ -93,13 +93,76 @@ jobs:
       - name: Make nginx cert
         run: make nginx-cert
 
+      - name: Create client/.env file
+        working-directory: ./client
+        env:
+          COGNITO_CLIENT_ID: ${{secrets.COGNITO_CLIENT_ID}}
+          COGNITO_CLIENT_SECRET: ${{secrets.COGNITO_CLIENT_SECRET}}
+          COGNITO_ISSUER: ${{secrets.COGNITO_ISSUER}}
+          COGNITO_DOMAIN: ${{secrets.COGNITO_DOMAIN}}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        run: |
+          echo "COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID" >> .env
+          echo "COGNITO_CLIENT_SECRET=$COGNITO_CLIENT_SECRET" >> .env
+          echo "COGNITO_ISSUER=$COGNITO_ISSUER" >> .env
+          echo "COGNITO_DOMAIN=$COGNITO_DOMAIN" >> .env
+          echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env
+          echo "NEXTAUTH_URL=https://sandbox-claimant-intake:8443" >> .env
+
+      - name: Create server/.env file
+        working-directory: ./server
+        env:
+          COGNITO_ISSUER: ${{secrets.COGNITO_ISSUER}}
+        run: |
+          echo "COGNITO_ISSUER=$COGNITO_ISSUER" >> .env
+
       - name: Start CI docker container
         run: make ci-up
         env:
           DOCKER_BUILDKIT: 1
 
+      - name: Run OWASP ZAP Baseline scan to find vulnerabilities
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: zaproxy/action-baseline@7cea08522cd386f6c675776d5e4296aecf61f33b
+        with:
+          target: https://sandbox-claimant-intake:8443
+          fail_action: false
+          allow_issue_writing: false
+
       - name: Run Cypress tests
+        env:
+          CYPRESS_SERVER_BASE_URL: https://sandbox-claimant-intake:8443
+          CYPRESS_NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
         run: make e2e-ci-test
+
+      - name: Upload Cypress artifacts
+        if: failure()
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb
+        with:
+          name: cypress-artifacts
+          path: |
+            /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/cypress/screenshots/
+            /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/cypress/videos/
+          retention-days: 1
+
+      - name: Upload Lighthouse artifact
+        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb
+        with:
+          name: lighthouse-artifact
+          path: /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/lighthouse.json
+          retention-days: 7
 
       - name: Stop CI docker container
         run: make ci-down
+
+      - name: Scan server image
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: ./.github/actions/image-scan
+        with:
+          image: dol-ui-server:latest
+
+      - name: Scan client image
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: ./.github/actions/image-scan
+        with:
+          image: dol-ui-client:latest

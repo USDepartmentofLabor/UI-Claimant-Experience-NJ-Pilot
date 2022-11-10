@@ -2,7 +2,12 @@ import { render, screen, within } from '@testing-library/react'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { makeClaimFormRoute, Routes } from 'constants/routes'
 import userEvent from '@testing-library/user-event'
-import { useWhoAmI } from 'queries/whoami'
+import { useWhoAmI } from 'hooks/useWhoAmI'
+import { SIGN_OUT_REDIRECT } from 'utils/signout/cognitoSignOut'
+import { signOut } from 'next-auth/react'
+
+jest.mock('next-auth/react')
+const mockSignOut = signOut as jest.Mock
 
 const useRouter = jest.fn()
 jest.mock('next/router', () => ({
@@ -12,13 +17,18 @@ jest.mock('constants/pages/pageDefinitions')
 
 const useSavePartialClaim = jest.fn()
 const useSaveCompleteClaim = jest.fn()
+const useSubmitClaim = jest.fn()
 jest.mock('queries/useSavePartialClaim', () => ({
   useSavePartialClaim: () => useSavePartialClaim(),
 }))
 jest.mock('queries/useSaveCompleteClaim', () => ({
   useSaveCompleteClaim: () => useSaveCompleteClaim(),
 }))
-const mutate = jest.fn()
+jest.mock('queries/useSubmitClaim', () => ({
+  useSubmitClaim: () => useSubmitClaim(),
+}))
+
+const savePartialMutateAsync = jest.fn()
 const mutateAsync = jest.fn()
 const reset = jest.fn()
 
@@ -26,13 +36,18 @@ useSaveCompleteClaim.mockImplementation(() => ({
   mutateAsync: mutateAsync,
   reset: reset,
 }))
+
+useSubmitClaim.mockImplementation(() => ({
+  mutateAsync: mutateAsync,
+  reset: reset,
+}))
 useSavePartialClaim.mockImplementation(() => ({
-  mutate: mutate,
+  mutateAsync: savePartialMutateAsync,
 }))
 
 const useGetPartialClaim = jest.fn()
 jest.mock('queries/useGetPartialClaim', () => ({
-  useGetPartialClaim: () => useSavePartialClaim(),
+  useGetPartialClaim: () => useGetPartialClaim(),
 }))
 useGetPartialClaim.mockImplementation(() => ({
   data: {},
@@ -40,10 +55,10 @@ useGetPartialClaim.mockImplementation(() => ({
 }))
 
 beforeEach(() => {
-  mutate.mockClear()
+  savePartialMutateAsync.mockClear()
 })
-jest.mock('queries/whoami')
-const mockedUseWhoAmI = useWhoAmI as any
+jest.mock('hooks/useWhoAmI')
+const mockedUseWhoAmI = useWhoAmI as jest.Mock
 
 describe('ClaimForm Layout', () => {
   const FirstPage = () => <div>First Page!</div>
@@ -56,20 +71,14 @@ describe('ClaimForm Layout', () => {
   describe('first page', () => {
     mockedUseWhoAmI.mockImplementation(() => ({
       data: {
-        claimant_name: {
-          first_name: 'Dori',
-          last_name: 'Coxen',
-          middle_initial: 'D',
-        },
-        claimant_phone: { number: '555-555-4321' },
-        ssn: '900-99-9923',
-        email: 'dori@test.com',
+        firstName: 'Dori',
+        lastName: 'Coxen',
+        middleInitial: 'D',
         birthdate: '1999-08-20',
+        email: 'dori@test.com',
+        phone: '555-555-4321',
       },
       isLoading: false,
-      error: null,
-      isError: false,
-      isSuccess: true,
     }))
     it('renders properly with next page button', async () => {
       useRouter.mockImplementation(() => ({
@@ -95,7 +104,7 @@ describe('ClaimForm Layout', () => {
       expect(saveAndExitLink).toBeInTheDocument()
       expect(claimFormPageHeading).toBeInTheDocument()
 
-      expect(mutate).not.toHaveBeenCalled()
+      expect(savePartialMutateAsync).not.toHaveBeenCalled()
       const steps = within(screen.getByTestId('step-indicator')).getAllByRole(
         'listitem'
       )
@@ -227,7 +236,7 @@ describe('ClaimForm Layout', () => {
 
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith(firstPageRoute)
-      expect(mutate).toHaveBeenCalledTimes(1)
+      expect(savePartialMutateAsync).toHaveBeenCalledTimes(1)
       expect(claimFormPageHeading).toHaveFocus()
     })
   })
@@ -277,6 +286,10 @@ describe('ClaimForm Layout', () => {
       mutateAsync.mockImplementation(() => ({
         status: 200,
       }))
+
+      mutateAsync.mockImplementation(() => ({
+        status: 200,
+      }))
       useRouter.mockImplementation(() => ({
         pathname: mockGetPathName(),
         push: mockPush,
@@ -295,8 +308,8 @@ describe('ClaimForm Layout', () => {
 
       await user.click(completeButton)
 
-      expect(mutate).toHaveBeenCalledTimes(1)
-      expect(mutateAsync).toHaveBeenCalledTimes(1)
+      expect(savePartialMutateAsync).toHaveBeenCalledTimes(1)
+      expect(mutateAsync).toHaveBeenCalledTimes(2)
       expect(mockPush).toHaveBeenCalledTimes(1)
       expect(mockPush).toHaveBeenCalledWith({
         pathname: Routes.HOME,
@@ -352,9 +365,9 @@ describe('ClaimForm Layout', () => {
 
     await user.click(saveAndExitLink)
 
-    expect(mutate).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
+    expect(savePartialMutateAsync).toHaveBeenCalledTimes(1)
+    expect(mockSignOut).toHaveBeenCalledWith({ callbackUrl: SIGN_OUT_REDIRECT })
+    expect(mockSignOut).toHaveBeenCalledTimes(1)
   })
   describe('when ClaimForm is loading', () => {
     it('shows PageLoader while loading', () => {
