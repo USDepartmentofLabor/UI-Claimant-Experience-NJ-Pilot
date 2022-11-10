@@ -11,6 +11,7 @@ import { NextPage } from 'next'
 import { ClaimantInput } from 'types/claimantInput'
 const EditEmployerPage: NextPage = () => {
   const initialValues: ClaimantInput = {
+    /*edit the below employer with initial values as needed */
     employers: [{ name: 'Apple', isFullTime: undefined }],
   }
   return (
