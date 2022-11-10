@@ -13,7 +13,7 @@ import { ReactNode } from 'react'
 import 'i18n/i18n'
 import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
 import { CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
-import { NewJerseyBanner } from 'components/NewJerseyBanner/NewJerseyBanner'
+import { DefaultLayout } from 'components/layouts/DefaultLayout/DefaultLayout'
 
 import 'styles/styles.scss'
 
@@ -30,7 +30,7 @@ type CustomAppProps = AppProps<CustomPageProps> & {
   Component: NextPageWithLayout
 }
 
-function MyApp({
+function ClaimApp({
   Component,
   pageProps: { session, ...pageProps },
 }: CustomAppProps) {
@@ -61,19 +61,20 @@ function MyApp({
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <LiveAnnouncer>
-          <NewJerseyBanner />
           <ReactQueryDevtools initialIsOpen={false} />
-          <GridContainer>
-            {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
-              <ClaimForm>{page}</ClaimForm>
-            ) : (
-              getLayout(page)
-            )}
-          </GridContainer>
+          <DefaultLayout>
+            <GridContainer className="margin-top-2">
+              {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
+                <ClaimForm>{page}</ClaimForm>
+              ) : (
+                getLayout(page)
+              )}
+            </GridContainer>
+          </DefaultLayout>
         </LiveAnnouncer>
       </QueryClientProvider>
     </SessionProvider>
   )
 }
 
-export default appWithTranslation<CustomAppProps>(MyApp)
+export default appWithTranslation<CustomAppProps>(ClaimApp)
