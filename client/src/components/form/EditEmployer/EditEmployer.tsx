@@ -4,6 +4,8 @@ import { TFunction } from 'react-i18next'
 import * as yup from 'yup'
 import { array, string } from 'yup'
 import { useEffect } from 'react'
+import { YourEmployer } from '../../Employer/YourEmployer/YourEmployer'
+import { i18n_claimForm } from '../../../i18n/i18n'
 
 type EditEmployerType = {
   index: string
@@ -24,7 +26,6 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
       }
     }
   })
-
   return (
     <>
       {
@@ -33,7 +34,10 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
         values.employers && values.employers[parseInt(index)] ? (
           /* Add employer form values here */
           <div>
-            This is the employer name {values.employers[parseInt(index)].name}
+            <div>
+              This is the employer name {values.employers[parseInt(index)].name}
+            </div>
+            <YourEmployer index={index} />
           </div>
         ) : (
           /* Invalid Index */ <div>No employer defined for index {index}</div>
@@ -48,13 +52,17 @@ export const editEmployerInitialValues = () => {
   return {
     name: '',
     isInitiated: true,
+    is_full_time: undefined,
   }
 }
 
 const yupEditEmployer = (t: TFunction<'claimForm'>) => {
   return yup.object().shape({
-    name: string().required(t('employers.name.required')),
     /* THIS IS WHERE WE DEFINE THE SCHEMA FOR THE EDIT EMPLOYER PAGE */
+    name: string().required(t('employers.name.required')),
+    is_full_time: yup
+      .boolean()
+      .required(i18n_claimForm.t('your_employer.is_full_time.required')),
   })
 }
 

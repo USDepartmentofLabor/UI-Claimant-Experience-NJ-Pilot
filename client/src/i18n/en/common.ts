@@ -64,6 +64,27 @@ const common = {
       'The following information has been added to your application:',
   },
   page_loader: 'Loading...',
+  footer: {
+    return_top: 'Return to top',
+    logo_alt: 'The State of New Jersey logo',
+    identifier_aria: 'Agency identifier',
+    official: 'An official website of the ',
+    state: 'State of New Jersey',
+    links: 'Important links',
+    gov: 'Governor Phil Murphy',
+    ltgov: 'Lt. Governor Sheila Oliver',
+    home: 'NJ Home',
+    services: 'Services A to Z',
+    departments: 'Departments/Agencies',
+    faqs: 'FAQs',
+    contact: 'Contact Us',
+    privacy: 'Privacy Notice',
+    legal: 'Legal Statement & Disclaimers',
+    accessibility: 'Accessibility',
+    opra: 'Open Public Records Act (OPRA)',
+    gov_aria: 'U.S. government information and services',
+    copyright: 'Copyright © 2020 State of New Jersey',
+  },
 }
 
 export default common
