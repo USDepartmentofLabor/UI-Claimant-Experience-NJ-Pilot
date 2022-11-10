@@ -34,7 +34,7 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
         values.employers && values.employers[parseInt(index)] ? (
           /* Add employer form values here */
           <div>
-            <div>
+            <div data-testid="edit-employer-test-subheader">
               This is the employer name {values.employers[parseInt(index)].name}
             </div>
             <YourEmployer index={index} />
