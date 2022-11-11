@@ -11,6 +11,7 @@ interface IBooleanRadioProps {
   name: string
   yesLabel?: string
   noLabel?: string
+  is_stacked?: boolean
   onChange?: ChangeEventHandler<HTMLInputElement>
 }
 
@@ -19,6 +20,7 @@ export const BooleanRadio = ({
   name,
   yesLabel,
   noLabel,
+  is_stacked,
   onChange,
   ...inputProps
 }: IBooleanRadioProps & JSX.IntrinsicElements['input']) => {
@@ -58,6 +60,7 @@ export const BooleanRadio = ({
         {...inputProps}
         inputRef={radioRef}
       />
+      {is_stacked && <br></br>}
       <Radio
         {...fieldProps}
         key={`${id}.0.no`}
