@@ -54,7 +54,7 @@
     "eslint-plugin-security": "^1.5.0",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^29.2.1",
-    "postcss": "^8.4.16",
+    "postcss": "^8.4.19",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.8.2",
     "prettier": "^2.7.1",
