@@ -209,7 +209,12 @@ const claimForm = {
           required: 'More detail about the separation reason is required',
         },
       },
-
+      expect_to_be_recalled: {
+        label: 'Do you expect to be recalled by this employer?',
+        errors: {
+          required: 'This field is required.',
+        },
+      },
       reasons: {
         heading: 'Change in Employment',
         laid_off: {
@@ -317,11 +322,11 @@ const claimForm = {
       required:
         'Please indicate whether you have worked for any other employers in the last 18 months',
     },
-    first_work_date: {
+    employment_start_date: {
       label: 'Start date for this employer:',
       required: 'Start date is required',
     },
-    last_work_date: {
+    employment_last_date: {
       label: 'Last day of work for this employer:',
       required: 'Last day of work is required',
     },

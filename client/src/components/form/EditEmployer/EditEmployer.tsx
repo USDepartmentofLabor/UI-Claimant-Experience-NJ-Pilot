@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import { YourEmployer } from '../../Employer/YourEmployer/YourEmployer'
 import { i18n_claimForm } from '../../../i18n/i18n'
 
+import { yupDate } from 'validations/yup/custom'
 type EditEmployerType = {
   index: string
 }
@@ -53,6 +54,9 @@ export const editEmployerInitialValues = () => {
     name: '',
     isInitiated: true,
     is_full_time: undefined,
+    expect_to_be_recalled: undefined,
+    employment_start_date: undefined,
+    employment_last_date: undefined,
   }
 }
 
@@ -63,6 +67,19 @@ const yupEditEmployer = (t: TFunction<'claimForm'>) => {
     is_full_time: yup
       .boolean()
       .required(i18n_claimForm.t('your_employer.is_full_time.required')),
+    expect_to_be_recalled: yup
+      .boolean()
+      .required(
+        i18n_claimForm.t(
+          'employers.separation.expect_to_be_recalled.errors.required'
+        )
+      ),
+    employment_start_date: yupDate(
+      String('employers.separation.employment_start_date.required')
+    ),
+    employment_last_date: yupDate(
+      String('employers.separation.employment_last_date.required')
+    ),
   })
 }
 

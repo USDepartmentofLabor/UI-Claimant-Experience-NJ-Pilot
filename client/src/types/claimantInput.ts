@@ -40,6 +40,10 @@ export type Employer = {
   isInitiated?: boolean
   name?: string
   isFullTime?: boolean
+  separation_circumstance?: string
+  expect_to_be_recalled?: boolean
+  employment_start_date?: string
+  employment_last_date?: string
 }
 
 export type ScreenerInput = {
