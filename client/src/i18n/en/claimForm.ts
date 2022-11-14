@@ -209,7 +209,9 @@ const claimForm = {
           required: 'More detail about the separation reason is required',
         },
       },
+
       reasons: {
+        heading: 'Change in Employment',
         laid_off: {
           label: 'Laid off',
           description:
@@ -256,9 +258,10 @@ const claimForm = {
             holiday_vacation: 'Holiday/vacation',
           },
         },
-        quit: {
-          label: 'Quit',
-          description: 'You left your job (this does not include retirement).',
+        quit_or_retired: {
+          label: 'Quit, resigned, or retired',
+          description:
+            'You left your job entirely by your own decision (this does not include forced resignation)',
           option_heading: 'Why did you quit your job?',
           options: {
             personal: 'Personal',
@@ -268,22 +271,23 @@ const claimForm = {
             quit_terminated: 'Quit instead of being terminated',
           },
         },
-        strike: {
+        strike_or_lock_out_by_employer: {
           label: 'Strike or lock out by employer',
           description:
             'During a labor dispute, you chose to stop work or your employer stopped work.',
           // unconventional to have a null translation but it's because we leverage this file also for TS types
           option_heading: null,
         },
-        retired: {
-          label: 'Retired',
+
+        unsatisfactory_work_performance: {
+          label: 'Unsatisfactory work performance',
           description:
-            'You have concluded your working career. Retiring can be voluntary or mandatory.',
-          option_heading: null,
+            'Your Employer ended your job due to performance, such as not meeitng a quota',
         },
-        shutdown: {
-          label: 'Federal or State shutdown',
-          description: 'Your job ended due to lack of government funding.',
+        federal_or_state_shutdown: {
+          label: 'Strike or lock out by employer',
+          description:
+            'During a labor dispute, you decided to stop work or your employer stopped work.',
           option_heading: null,
         },
       },
