@@ -25,6 +25,7 @@ jobs:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+          app-env: development
 
   server-deploy:
     runs-on: ubuntu-latest

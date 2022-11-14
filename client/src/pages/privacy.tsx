@@ -10,9 +10,14 @@ const Privacy: NextPage = () => {
       <Head>
         <title>{t('page_title')}</title>
       </Head>
-      <h1>{t('heading')}</h1>
-      <p>{t('p1')}</p>
-      <p>{t('p2')}</p>
+      <main
+        className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
+        id="main-content"
+      >
+        <h1>{t('heading')}</h1>
+        <p>{t('p1')}</p>
+        <p>{t('p2')}</p>
+      </main>
     </>
   )
 }
