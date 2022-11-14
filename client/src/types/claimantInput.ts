@@ -40,6 +40,12 @@ export type Employer = {
   isInitiated?: boolean
   name?: string
   isFullTime?: boolean
+
+  self_employed?: boolean
+  is_owner?: boolean
+  corporate_officer_or_stock_ownership?: boolean
+  employer_is_sole_proprietorship?: boolean
+  related_to_owner_or_child_of_owner_under_18?: boolean
 }
 
 export type ScreenerInput = {

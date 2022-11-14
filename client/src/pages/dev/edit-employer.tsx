@@ -6,7 +6,6 @@ import {
 import { Form, Formik } from 'formik'
 import { Button } from '@trussworks/react-uswds'
 import { noop } from 'helpers/noop/noop'
-import { i18n_claimForm } from '../../i18n/i18n'
 import { NextPage } from 'next'
 import { ClaimantInput } from 'types/claimantInput'
 const EditEmployerPage: NextPage = () => {
@@ -17,7 +16,7 @@ const EditEmployerPage: NextPage = () => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={yupEditEmployers(i18n_claimForm.t)}
+      validationSchema={yupEditEmployers}
       onSubmit={noop}
     >
       <div>

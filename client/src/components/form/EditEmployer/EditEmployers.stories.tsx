@@ -4,10 +4,9 @@ import { Form, Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import { ClaimantInput } from 'types/claimantInput'
 import { Button } from '@trussworks/react-uswds'
-import { i18n_claimForm } from '../../../i18n/i18n'
 
 export default {
-  title: 'Components/Form/EditEmployer',
+  title: 'Components/Form/Employer/EditEmployer',
   component: EditEmployer,
 } as ComponentMeta<typeof EditEmployer>
 
@@ -47,19 +46,43 @@ const WithValidation: ComponentStory<typeof EditEmployer> = (args) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={yupEditEmployers(i18n_claimForm.t)}
+      validationSchema={yupEditEmployers}
       onSubmit={noop}
     >
-      <Form>
-        <EditEmployer index={args.index} />
-        <Button type="submit">Validate</Button>
-      </Form>
+      {({ errors, setFormikState, submitCount }) => (
+        <Form>
+          <EditEmployer index={args.index} />
+          <Button
+            type="submit"
+            onClick={() =>
+              setFormikState((previousState) => ({
+                ...previousState,
+                submitCount: submitCount + 1,
+              }))
+            }
+          >
+            Validate
+          </Button>
+          {errors?.employers?.[parseInt(args.index)] &&
+            Object.keys(errors.employers[parseInt(args.index)]).length > 0 && (
+              <div>
+                <pre>
+                  {JSON.stringify(
+                    errors.employers[parseInt(args.index)],
+                    null,
+                    2
+                  )}
+                </pre>
+              </div>
+            )}
+        </Form>
+      )}
     </Formik>
   )
 }
 
 export const FirstEmployer = WithValidation.bind({})
-Default.args = {
+FirstEmployer.args = {
   index: '0',
 }
 
