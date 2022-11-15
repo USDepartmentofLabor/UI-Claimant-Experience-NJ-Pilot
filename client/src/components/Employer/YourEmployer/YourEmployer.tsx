@@ -19,7 +19,7 @@ export const YourEmployer = ({ index }: IEmployer) => {
             hint={t('is_full_time.help_text')}
             yesLabel={t('is_full_time.options.full_time')}
             noLabel={t('is_full_time.options.part_time')}
-            is_stacked={true}
+            isStacked={true}
           />
         </Fieldset>
       </div>

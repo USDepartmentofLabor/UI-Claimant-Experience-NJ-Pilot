@@ -8,7 +8,7 @@ describe('Edit employer checks', () => {
   })
   it('fills out edit employer completely', () => {
     const employerIndexString = '0'
-    fillYourEmployerFields(employerIndexString, true)
+    fillYourEmployerFields(employerIndexString, { is_full_time: true })
     /* add other edit employer cypress tests here */
   })
 })

@@ -1,4 +1,12 @@
-const fillYourEmployerFields = (employerIndex, is_full_time) => {
+type YourEmployerOptions = {
+  is_full_time?: boolean
+}
+
+const fillYourEmployerFields = (
+  employerIndex,
+  options: YourEmployerOptions = {}
+) => {
+  const is_full_time = options?.is_full_time
   cy.get(
     `input[id=employers\\[${employerIndex}\\]\\.is_full_time\\.${
       is_full_time ? 'yes' : 'no'
