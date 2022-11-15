@@ -7,21 +7,16 @@ set -eu
 # Snapshot ID `rdsss-epoch`
 SSID="${RDS_INSTANCE}"-$(date +"%s")
 
+# Wait for DB instance to be available
+aws rds wait db-instance-available \
+  --db-instance-identifier "${RDS_INSTANCE}"
+
 # Create Snapshot
 aws rds create-db-snapshot \
   --db-instance-identifier "${RDS_INSTANCE}" \
   --db-snapshot-identifier "$SSID" --tags Key=sha,Value="${IMAGE_TAG}" >/dev/null
 
-# RDS Snapshot
-RDSSS=$(aws rds describe-db-snapshots --db-snapshot-identifier "$SSID" |jq -r '.DBSnapshots[]' | jq -r '.Status')
-
-# Don't do anything else until it's available
-# aws docdb does not have a `wait`
-DBSS="unavailable"
-until [ "$DBSS" = "available" ]
-    do
-      DBSS=$(aws rds describe-db-snapshots --db-snapshot-identifier "$SSID" |jq -r '.DBSnapshots[]' | jq -r '.Status')
-      echo "$RDSSS"
-      sleep 30
-    done
-    echo "$SSID available!"
+# Wait for DB snapshot to be available
+aws rds wait db-snapshot-available \
+  --db-instance-identifier "${RDS_INSTANCE}" \
+  --db-snapshot-identifier "$SSID"
