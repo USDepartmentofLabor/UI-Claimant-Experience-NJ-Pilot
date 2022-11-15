@@ -2,7 +2,7 @@
 name: Chore
 about: Something needs to be done, but it might not be core-team user story territory
 title: "[chore]: "
-labels: 'type: chore'
+labels: 'triage, type: chore'
 assignees: ''
 
 ---
