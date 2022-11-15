@@ -13,8 +13,16 @@ export default {
 
 const initialValues = {
   employers: [
-    { name: 'Tesla', is_full_time: undefined },
-    { name: 'Apple', is_full_time: undefined },
+    {
+      name: 'Tesla',
+      is_full_time: undefined,
+      separation_circumstance: undefined,
+    },
+    {
+      name: 'Apple',
+      is_full_time: undefined,
+      separation_circumstance: undefined,
+    },
   ],
 }
 
@@ -33,10 +41,6 @@ Default.args = {
   index: '0',
 }
 
-const onSubmit = () => {
-  console.log('Submitted!')
-}
-
 const WithFormikValueTemplate: ComponentStory<typeof ChangeInEmployment> = (
   args
 ) => {
@@ -44,7 +48,7 @@ const WithFormikValueTemplate: ComponentStory<typeof ChangeInEmployment> = (
     <Formik
       initialValues={initialValues}
       validationSchema={yupEditEmployers(i18n_claimForm.t)}
-      onSubmit={onSubmit}
+      onSubmit={noop}
     >
       {() => (
         <Form>

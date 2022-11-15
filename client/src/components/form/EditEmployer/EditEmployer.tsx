@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import { array, string } from 'yup'
 import { useEffect } from 'react'
 import { YourEmployer } from '../../Employer/YourEmployer/YourEmployer'
+import { changeInEmploymentOptions } from 'constants/formOptions'
 import { i18n_claimForm } from '../../../i18n/i18n'
 
 import { yupDate } from 'validations/yup/custom'
@@ -67,6 +68,10 @@ const yupEditEmployer = (t: TFunction<'claimForm'>) => {
     is_full_time: yup
       .boolean()
       .required(i18n_claimForm.t('your_employer.is_full_time.required')),
+
+    separation_circumstance: string()
+      .oneOf([...changeInEmploymentOptions])
+      .required(i18n_claimForm.t('employers.separation.reason.required')),
     expect_to_be_recalled: yup
       .boolean()
       .required(

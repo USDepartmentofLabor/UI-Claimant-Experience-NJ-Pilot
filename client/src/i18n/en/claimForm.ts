@@ -194,10 +194,10 @@ const claimForm = {
   },
   employers: {
     separation: {
-      heading: 'Separation',
+      heading: 'Change in Employment',
       reason: {
-        label: 'Why did your job end/your hours change?',
-        required: 'Separation reason is required',
+        label: 'Why did your job end or your hours change?',
+        required: 'Change in employment reason is required',
       },
       option: {
         required: 'Please select a separation option',
@@ -216,7 +216,6 @@ const claimForm = {
         },
       },
       reasons: {
-        heading: 'Change in Employment',
         laid_off: {
           label: 'Laid off',
           description:
