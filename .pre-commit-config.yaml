@@ -86,3 +86,10 @@ repos:
     rev: 5.0.4
     hooks:
       - id: flake8
+
+  - repo: https://github.com/detailyang/pre-commit-shell
+    rev: v1.0.6
+    hooks:
+      - id: shell-lint
+        exclude: server/gradlew
+        args: [--format=json]
