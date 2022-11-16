@@ -14,35 +14,34 @@ const claimForm = {
         'Have you filed for unemployment benefits during the last 12 months?',
       errors: {
         required:
-          'Please indicate whether you have filed for unemployment benefits during the last 12 months',
+          'Please say whether you have filed for unemployment benefits during the last 12 months',
       },
     },
     state_province_territory_where_filed: {
       label: 'Where did you file?',
       errors: {
         required:
-          'Please indicate the location you filed for unemployment benefits during the last 12 months',
+          'Please say the location you filed for unemployment benefits during the last 12 months',
       },
     },
     lived_outside_nj_when_working_nj: {
       label: 'When you worked in New Jersey, did you live out of state?',
       errors: {
         required:
-          'Please indicate when you worked in New Jersey, if you lived out of state',
+          'Please say when you worked in New Jersey, if you lived out of state',
       },
     },
     will_look_for_work_in_nj: {
       label: 'Will you continue looking for work in New Jersey?',
       errors: {
         required:
-          'Please indicate whether you will continue looking for work in New Jersey',
+          'Please say whether you will continue looking for work in New Jersey',
       },
     },
     can_begin_work_immediately: {
       label: 'Can you begin full-time work immediately?',
       errors: {
-        required:
-          'Please indicate whether you can begin full-time work immediately',
+        required: 'Please say whether you can begin full-time work immediately',
       },
     },
     federal_work_in_last_18mo: {
@@ -50,7 +49,7 @@ const claimForm = {
         'In the last 18 months, have you worked for the federal government (not including military service)?',
       errors: {
         required:
-          'Please indicate whether in the last 18 months, have you worked for the federal government (not including military service)',
+          'Please say whether in the last 18 months, have you worked for the federal government (not including military service)',
       },
     },
   },
@@ -61,7 +60,7 @@ const claimForm = {
   demographics: {
     heading: 'Demographics',
     preamble:
-      'We ask for the following information only for our reporting requirements. ' +
+      'We ask for the following information only for our reporting needs. ' +
       "Your answers to these questions won't affect your application or potential payment amount. " +
       'We are working on our systems to support more inclusive options.',
   },
@@ -77,7 +76,7 @@ const claimForm = {
     isEmployer: {
       errors: {
         required:
-          'Please indicate whether you were employed by this employer within the last 18 months',
+          'Please say whether you were employed by this employer within the last 18 months',
       },
     },
   },
@@ -108,7 +107,7 @@ const claimForm = {
       unspecified: 'X (unspecified)',
     },
     errors: {
-      required: 'Sex is a required field',
+      required: 'You must select a sex',
     },
   },
   race: {
@@ -122,7 +121,7 @@ const claimForm = {
       opt_out: 'Choose not to answer',
     },
     errors: {
-      required: 'Race is a required field',
+      required: 'You must select a race',
     },
   },
   ethnicity: {
@@ -133,7 +132,7 @@ const claimForm = {
       opt_out: 'Choose not to answer',
     },
     errors: {
-      required: 'Ethnicity is a required field',
+      required: 'You must say whether you are Hispanic or Latino',
     },
   },
   education_level: {
@@ -156,7 +155,7 @@ const claimForm = {
     authorized_to_work: {
       label: 'Are you legally allowed to work in the United States?',
       errors: {
-        required: 'Please indicate whether you are authorized to work',
+        required: 'Please say whether you are authorized to work',
       },
     },
     not_authorized_to_work_explanation: {
@@ -232,7 +231,7 @@ const claimForm = {
             attendance: 'Attendance',
             violation: 'Violation of employer policy',
             other: 'Other reason',
-            none: 'No reason provided',
+            none: 'No reason given',
           },
         },
         still_employed: {
@@ -311,7 +310,7 @@ const claimForm = {
       label:
         'Have you worked for any other employers in the last 18 months (including part-time, seasonal, and self-employment)?',
       required:
-        'Please indicate whether you have worked for any other employers in the last 18 months',
+        'Please say whether you have worked for any other employers in the last 18 months',
     },
     first_work_date: {
       label: 'Start date for this employer:',
@@ -325,7 +324,7 @@ const claimForm = {
       label:
         'Is the phone number of your physical workplace the same as the number listed above?',
       required:
-        'Please indicate if this is the phone number of your physical workplace',
+        'Please say if this is the phone number of your physical workplace',
     },
     phones: {
       number: {
@@ -339,7 +338,7 @@ const claimForm = {
       label:
         'Did you work at the physical location you listed for your employer?',
       required:
-        'Please indicate if you worked at the physical location you listed for your employer',
+        'Please say if you worked at the physical location you listed for your employer',
     },
     work_site_address: {
       heading: 'What physical address did you work at?',
@@ -353,7 +352,7 @@ const claimForm = {
     no_different_address: 'No, I worked at a different location',
     fein: {
       label: 'FEIN, or Federal Employer Identification Number (optional)',
-      hint: "You can usually find your employer's FEIN on your W2 or other tax documents your employer provides.",
+      hint: "You can usually find your employer's FEIN on your W2 or other tax documents your employer gives.",
       pattern: 'The FEIN must match the pattern 12-1234567',
     },
     state_employer_payroll_number: {
@@ -366,7 +365,7 @@ const claimForm = {
         label: 'Were you self employed at this business?',
         errors: {
           required:
-            'You must indicate whether you are self-employed at this business',
+            'You must say whether you are self-employed at this business',
         },
       },
       is_owner: {
@@ -374,7 +373,7 @@ const claimForm = {
           'Were you, or are you now, the owner or part-owner of this business?',
         errors: {
           required:
-            'You must indicate whether you have/had ownership in this business',
+            'You must say whether you have/had ownership in this business',
         },
       },
       corporate_officer_or_stock_ownership: {
@@ -382,7 +381,7 @@ const claimForm = {
           'Are/Were you a corporate officer, or did you own more than 5% interest for this business?',
         errors: {
           required:
-            'You must indicate whether you are a corporate officer or own stock in your company',
+            'You must say whether you are a corporate officer or own stock in your company',
         },
       },
       employer_is_sole_proprietorship: {
@@ -390,7 +389,7 @@ const claimForm = {
         hint: 'Answer yes if there was only one owner, or if the business would file a Schedule C (Form 1040). Answer no if it was a corporation, which usually has “Inc” in the name.',
         errors: {
           required:
-            'You must indicate whether this business was a sole proprietorship',
+            'You must say whether this business was a sole proprietorship',
         },
       },
       related_to_owner_or_child_of_owner_under_18: {
@@ -412,7 +411,7 @@ const claimForm = {
         },
         errors: {
           required:
-            'You must indicate whether you are related to the owner of this business',
+            'You must say whether you are related to the owner of this business',
         },
       },
     },
@@ -468,8 +467,7 @@ const claimForm = {
       label:
         'Were you disabled in the last 4 weeks before filling out this application?',
       errors: {
-        required:
-          'You must indicate whether you were disabled in the last 4 weeks',
+        required: 'You must say whether you were disabled in the last 4 weeks',
       },
     },
     type_of_disability: {
@@ -477,21 +475,21 @@ const claimForm = {
       options: {
         state_plan:
           'State insurance plan (temporary disability or family leave)',
-        private_plan: 'Private insurance plan provided by your employer',
+        private_plan: 'Private insurance plan from your employer',
         workers_compensation:
           "Workers' compensation due to being injured on the job",
       },
       errors: {
         required:
-          'You must indicate from which plan you get your disability payment',
+          'You must say from which plan you get your disability payment',
       },
     },
     date_disability_began: {
       label: 'Date disability or family leave began',
       errors: {
-        required: 'You must indicate the date disability or family leave began',
+        required: 'You must give the date disability or family leave began',
         maxDate:
-          "Date disability or family leave began cannot be after today's date",
+          "Date disability or family leave began can't be after today's date",
       },
     },
     recovery_date: {
@@ -499,10 +497,10 @@ const claimForm = {
       help_text:
         'If you have not yet recovered, type the current date below and we will request more information from you at a later date by email.',
       errors: {
-        required: 'You must indicate a Recovery/release/end date',
+        required: 'You must give a recovery/release/end date',
         minDate:
           'Recovery/release/end date has to be after the date of disability',
-        maxDate: "Recovery/release/end date cannot be after today's date",
+        maxDate: "Recovery/release/end date can't be after today's date",
       },
     },
     contacted_last_employer_after_recovery: {
@@ -510,7 +508,7 @@ const claimForm = {
         'After recovering, did you contact your last employer for more work?',
       errors: {
         required:
-          'You must indicate if you contacted your employer after recovering',
+          'You must say if you contacted your employer after recovering',
       },
     },
   },
@@ -520,7 +518,7 @@ const claimForm = {
       label:
         'Are you currently attending school, college, or unpaid job training?',
       required:
-        'You must indicate whether you are currently attending school, college, or job training',
+        'You must say whether you are currently attending school, college, or job training',
       help_text:
         'If you are in union-required training or paid job training, choose "No."',
     },
@@ -535,7 +533,7 @@ const claimForm = {
     full_time_student: {
       label: 'Have you been a full-time student during the last 18 months?',
       required:
-        'You must indicate whether you have been a full-time student during the last 18 months',
+        'You must say whether you have been a full-time student during the last 18 months',
     },
   },
   union: {
@@ -543,13 +541,13 @@ const claimForm = {
     union_name: {
       label: 'Name of your union',
       errors: {
-        required: 'You must indicate the name of your union',
+        required: 'You must give the name of your union',
       },
     },
     union_local_number: {
       label: 'Union local number',
       errors: {
-        required: 'You must indicate your union local number',
+        required: 'You must give your union local number',
       },
     },
     required_to_seek_work_through_hiring_hall: {
@@ -557,7 +555,7 @@ const claimForm = {
         'Are you required to seek work through a union hiring hall (a job placement office operated by your union)?',
       errors: {
         required:
-          'You must indicate whether you are required to seek work through a union hiring hall',
+          'You must say whether you are required to seek work through a union hiring hall',
       },
     },
   },
@@ -577,8 +575,7 @@ const claimForm = {
       label: 'Can we send text messages to this number?',
       help_text: 'Your mobile plan’s message and data rates may apply.',
       errors: {
-        required:
-          'Please indicate if we are able to send text messages to this number',
+        required: 'Please say if we can send text messages to this number',
       },
     },
     email: {
@@ -591,7 +588,7 @@ const claimForm = {
         tty: 'Yes, TTY',
         no_interpreter_tty: 'No',
       },
-      required: 'You must indicate whether you need an interpreter or TTY',
+      required: 'You must say whether you need an interpreter or TTY',
     },
     preferred_language: {
       label: 'What language do you speak?',
@@ -605,7 +602,7 @@ const claimForm = {
         vietnamese: 'Tiếng Việt (Vietnamese)',
         other: 'Other',
       },
-      required: 'Please indicate the language you speak',
+      required: 'Please specify the language you speak',
     },
     other_language: 'Enter the language you speak',
   },
@@ -648,7 +645,7 @@ const claimForm = {
       label:
         'In the last 18 months, have you worked under a name different from your legal name?',
       required:
-        'You must indicate if you have worked under a different name in the past 18 months',
+        'You must say if you have worked under a different name in the past 18 months',
     },
   },
   payment: {
@@ -661,11 +658,11 @@ const claimForm = {
     federal_income_tax_withheld: {
       header: '<strong>Taxes and deductions</strong>',
       description:
-        'Unemployment Insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts required to be deducted and withheld by law.',
+        'Unemployment Insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts that must be deducted and withheld by law.',
       label:
         'Would you like to withhold 10% of your benefits for federal taxes?',
       help_text:
-        'If you don’t withhold now, you may be required to pay them later on when you file your taxes.',
+        "If you don't withhold now, you may need to pay them later on when you file your taxes.",
       errors: {
         required: 'Your tax withholding preference is required',
       },
@@ -700,7 +697,7 @@ const claimForm = {
         'Are you interested in applying for an increased payment based on your dependents?',
       description: {
         line1:
-          'You may qualify for an increase to your benefit amount based on your family’s situation. If you are not receiving the max benefit amount, and you are interested in an increased rate for Dependency Benefits, you will be required to provide proof of the dependents you are claiming along with supporting legal documentation. To be eligible, your spouse/civil union partner cannot be employed during the week you establish your claim or already be collecting dependency benefits. <0>Read more about additional eligibility requirements here</0>.',
+          "You may qualify for an increase to your benefit amount based on your family’s situation. If you are not receiving the max benefit amount, and you are interested in an increased rate for Dependency Benefits, you will need to give proof of the dependents you are claiming along with supporting legal documentation. To be eligible, your spouse/civil union partner can't be employed during the week you start your claim or already be collecting dependency benefits. <0>Read more about eligibility here</0>.",
         line2:
           'If interested, within a few business days you will receive two emails—one explaining who could be eligible for dependency benefits, and a second with a link to an online application where you will be asked to answer a few questions and submit further information.',
       },
@@ -826,7 +823,7 @@ const claimForm = {
     note: {
       label: 'Please share more about your {{- payType }} received',
       errors: {
-        required: 'Please provide further details',
+        required: 'Please give further details',
       },
     },
   },
@@ -866,7 +863,7 @@ const claimForm = {
     preamble: {
       heading: 'Before you submit',
       line1:
-        'Be sure that all of your answers are correct. You will not be able to change any of your answers after you click submit below.',
+        "Be sure that all of your answers are correct. You can't change any of your answers after you click submit below.",
       line2:
         'Remember, the law provides penalties for false statements to obtain benefits.',
       line3:
