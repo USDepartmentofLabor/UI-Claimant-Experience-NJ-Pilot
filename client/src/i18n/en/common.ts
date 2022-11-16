@@ -1,4 +1,5 @@
 const common = {
+  skip_nav: 'Skip to main content',
   yes: 'Yes',
   no: 'No',
   date: {
@@ -24,7 +25,7 @@ const common = {
       label: 'Address',
       required: 'Address is required',
       pobox:
-        'PO boxes can only be used as a mailing address, not a residential address',
+        'P.O. boxes can only be used as a mailing address, not a residential address. If you do not have another address, then please contact us.',
     },
     city: { label: 'City', required: 'City is required' },
     state: { label: 'State', required: 'State is required' },
@@ -59,6 +60,7 @@ const common = {
     lock_title: 'Lock',
     lock_description: 'A locked padlock',
   },
+  test_banner: ' Test Site - do not use real personal information',
   verified_fields: {
     default_heading:
       'The following information has been added to your application:',

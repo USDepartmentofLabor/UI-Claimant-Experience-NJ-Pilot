@@ -10,6 +10,9 @@ inputs:
   server-base-url:
     description: The backend server base url
     required: true
+  app-env:
+    description: The application environment (e.g., development, test, production)
+    required: true
 runs:
   using: "composite"
   steps:
@@ -50,10 +53,12 @@ runs:
         ECR_REPOSITORY: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
         IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
         NEXT_PUBLIC_SERVER_BASE_URL: ${{ inputs.server-base-url }}
+        NEXT_PUBLIC_APP_ENV: ${{ inputs.app-env }}
       shell: bash
       run: |
         docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
           --build-arg NEXT_PUBLIC_SERVER_BASE_URL=${NEXT_PUBLIC_SERVER_BASE_URL} \
+          --build-arg NEXT_PUBLIC_APP_ENV=${NEXT_PUBLIC_APP_ENV} \
           client
         docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT

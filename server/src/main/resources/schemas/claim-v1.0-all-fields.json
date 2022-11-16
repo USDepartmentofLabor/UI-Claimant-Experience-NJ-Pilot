@@ -418,19 +418,8 @@
           "type": "boolean"
         },
         "is_owner": {
-          "description": "Claimant was an owner of this business",
-          "type": "boolean",
-          "if": {
-            "properties": {
-              "self_employed": {
-                "type": "boolean",
-                "const": false
-              }
-            }
-          },
-          "then": {
-            "required": ["is_owner"]
-          }
+          "description": "Claimant is/was an owner of this business",
+          "type": "boolean"
         },
         "corporate_officer_or_stock_ownership": {
           "description": "Claimant was a corporate officer or owned more than 5% in stock for this business",
@@ -629,6 +618,7 @@
         "fein",
         "worked_at_employer_address",
         "self_employed",
+        "is_owner",
         "corporate_officer_or_stock_ownership",
         "separate_circumstance",
         "employment_start_date",

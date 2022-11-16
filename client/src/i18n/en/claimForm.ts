@@ -360,48 +360,61 @@ const claimForm = {
       label: 'State employer payroll number (optional)',
       hint: 'You can find the state employer payroll number on line 15 of your W2.',
     },
-    self_employed: {
-      label: 'Were you self-employed at this job?',
-      required: 'You must indicate whether you were self-employed at this job',
-    },
-  },
-  self_employment: {
-    label: 'Self-employment',
-    self_employed: {
-      label: 'Are you currently self-employed?',
-      required: 'You must indicate whether you are self-employed',
-    },
-    business_ownership: {
-      label: 'Do you have ownership in a business of any kind?',
-      required: 'You must indicate whether you have ownership in a business',
-    },
-    business_name: {
-      label: 'Name of business',
-      required: 'You must indicate the name of the business',
-    },
-    business_interests: { label: 'Your business interests' },
-    corporate_officer: {
-      label:
-        'Are you a corporate officer, or do you own more than 5% of the stock for the company you worked for?',
-      required:
-        'You must indicate whether you are a corporate officer or own stock in your company',
-    },
-    corporation_name: {
-      label: 'Name of corporation',
-      required: 'You must indicate the name of the corporation',
-    },
-    related_to_owner: {
-      label:
-        'Are you related to the owner of any business you worked for during the last 18 months?',
-      help_text:
-        'Choose "No" unless the business owner is your spouse or child, or if you are a child under 18 working for a parent',
-      required:
-        'You must indicate whether you are related to the owner of any business you worked for during the last 18 months',
-    },
-    corporation_or_partnership: {
-      label: 'Is this business a corporation or partnership?',
-      required:
-        'You must indicate whether the business is a corporation or a partnership',
+    business_interests: {
+      section_title: 'Your business interests',
+      self_employed: {
+        label: 'Were you self employed at this business?',
+        errors: {
+          required:
+            'You must indicate whether you are self-employed at this business',
+        },
+      },
+      is_owner: {
+        label:
+          'Were you, or are you now, the owner or part-owner of this business?',
+        errors: {
+          required:
+            'You must indicate whether you have/had ownership in this business',
+        },
+      },
+      corporate_officer_or_stock_ownership: {
+        label:
+          'Are/Were you a corporate officer, or did you own more than 5% interest for this business?',
+        errors: {
+          required:
+            'You must indicate whether you are a corporate officer or own stock in your company',
+        },
+      },
+      employer_is_sole_proprietorship: {
+        label: 'Was this business a sole proprietorship?',
+        hint: 'Answer yes if there was only one owner, or if the business would file a Schedule C (Form 1040). Answer no if it was a corporation, which usually has “Inc” in the name.',
+        errors: {
+          required:
+            'You must indicate whether this business was a sole proprietorship',
+        },
+      },
+      related_to_owner_or_child_of_owner_under_18: {
+        label:
+          'Are you the spouse, parent, or child of the owner of this business?',
+        options: {
+          no: {
+            label: 'No',
+          },
+          spouse: {
+            label: 'Yes, spouse',
+          },
+          parent: {
+            label: 'Yes, parent',
+          },
+          child: {
+            label: 'Yes, child',
+          },
+        },
+        errors: {
+          required:
+            'You must indicate whether you are related to the owner of this business',
+        },
+      },
     },
   },
   occupation: {

@@ -2,7 +2,7 @@
 name: Bug report
 about: Something isn't quite right, create a bug report!
 title: "[bug]: "
-labels: 'priority: low, type: bug'
+labels: 'priority: low, triage, type: bug'
 assignees: ''
 
 ---
