@@ -13,15 +13,21 @@ import { useShowErrors } from 'hooks/useShowErrors'
  * ReactUSWDS components directly.
  */
 
+type CheckboxFieldProps = {
+  showsErrors?: boolean
+}
+
 export const CheckboxField = ({
   name,
   id,
   onChange,
+  showsErrors = true,
   ...inputProps
-}: Optional<React.ComponentProps<typeof Checkbox>, 'id'>) => {
+}: CheckboxFieldProps &
+  Optional<React.ComponentProps<typeof Checkbox>, 'id'>) => {
   const [fieldProps, metaProps] = useField({ name, type: 'checkbox' })
 
-  const showError = useShowErrors(name)
+  const showError = showsErrors && useShowErrors(name)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     fieldProps.onChange(e)
