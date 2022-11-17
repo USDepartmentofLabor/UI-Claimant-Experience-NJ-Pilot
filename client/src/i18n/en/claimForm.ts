@@ -194,6 +194,8 @@ const claimForm = {
   employers: {
     separation: {
       heading: 'Change in Employment',
+      info_alert:
+        'If you were treated unfairly, harassed, or discriminated against on the job, please also visit the <0>EOC website</0> for help.',
       reason: {
         label: 'Why did your job end or your hours change?',
         required: 'Change in employment reason is required',

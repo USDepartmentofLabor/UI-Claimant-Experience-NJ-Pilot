@@ -3,11 +3,11 @@ import { Form, Formik } from 'formik'
 import { Button } from '@trussworks/react-uswds'
 import { ChangeInEmployment } from './ChangeInEmployment'
 import { noop } from 'helpers/noop/noop'
-import { i18n_claimForm } from '../../../i18n/i18n'
+
 import { yupEditEmployers } from '../../form/EditEmployer/EditEmployer'
 
 export default {
-  title: 'Components/form/Employer/Change In Employment',
+  title: 'Components/form/Employer/Sections/Change In Employment',
   component: ChangeInEmployment,
 } as ComponentMeta<typeof ChangeInEmployment>
 
@@ -47,7 +47,7 @@ const WithFormikValueTemplate: ComponentStory<typeof ChangeInEmployment> = (
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={yupEditEmployers(i18n_claimForm.t)}
+      validationSchema={yupEditEmployers}
       onSubmit={noop}
     >
       {() => (

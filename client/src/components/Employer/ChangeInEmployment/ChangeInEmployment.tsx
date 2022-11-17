@@ -1,4 +1,4 @@
-import { Fieldset } from '@trussworks/react-uswds'
+import { Fieldset, Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import { changeInEmploymentOptions } from 'constants/formOptions'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,7 @@ import { ClaimantInput } from 'types/claimantInput'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
 import { ChangeEventHandler } from 'react'
+import { Trans } from 'next-i18next'
 
 interface IEmployer {
   index: string
@@ -69,6 +70,19 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             onChange={handleReasonChange}
           />
         </Fieldset>
+        <div className="usa-alert usa-alert--info usa-alert--validation">
+          <div className="usa-alert__body">
+            {/* <span>{t(`separation.info_alert`)}</span> */}
+            <Trans t={t} i18nKey="separation.info_alert">
+              <Link
+                variant="external"
+                href={'https://www.eeoc.gov/youth/filing-complaint'}
+              >
+                New Jersey career services
+              </Link>
+            </Trans>
+          </div>
+        </div>
         <DateInputField
           name={`employers[${index}].employment_start_date`}
           legend={t('employment_start_date.label')}
