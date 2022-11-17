@@ -10,7 +10,7 @@ import {
   employerRelationOptions,
 } from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
-import { ChangeInEmployment } from 'components/Employer/ChangeInEmployment/ChangeInEmployment'
+import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
 
 type EditEmployerType = {
   index: string

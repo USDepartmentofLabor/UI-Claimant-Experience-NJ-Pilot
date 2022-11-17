@@ -3,12 +3,14 @@ import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import { changeInEmploymentOptions } from 'constants/formOptions'
 import { useTranslation } from 'react-i18next'
 import { useFormikContext } from 'formik'
-import { useClearFields } from 'hooks/useClearFields'
+
 import { ClaimantInput } from 'types/claimantInput'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
-import { ChangeEventHandler } from 'react'
 import { Trans } from 'next-i18next'
+
+// import { ChangeEventHandler } from 'react'
+// import { useClearFields } from 'hooks/useClearFields'
 
 interface IEmployer {
   index: string
@@ -20,21 +22,19 @@ interface IChangeInEmploymentOptionText {
 
 export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { values } = useFormikContext<ClaimantInput>()
-  const { clearField } = useClearFields()
-
-  const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (e.target.value === 'yes') {
-      clearField(`employers[${index}].employer_is_sole_proprietorship`)
-
-      clearField('preferred_language')
-      clearField('preferred_language_other')
-    }
-    console.log('fill this in')
-  }
+  //TODO - Uncomment clearfields and this seciton when completing
+  //    the story for Still Emmployed or any others with conditionals
+  // const { clearField } = useClearFields()
+  // const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  //   if (e.target.value === 'still_employed') {
+  //     clearField(`employers[${index}].employment_last_date`)
+  //   }
+  // }
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
-  const employer = values.employers[parseInt(index)]
-  const showExpectRecall = employer.separation_circumstance === 'laid_off'
+  const employer = values.employers?.[parseInt(index)]
+  const showExpectRecall =
+    employer?.separation_circumstance !== 'still_employed'
 
   const SeparationReasonLabel = (reason: IChangeInEmploymentOptionText) => {
     return (
@@ -67,7 +67,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
                 value: option,
               }
             })}
-            onChange={handleReasonChange}
+            // onChange={handleReasonChange} //uncomment when adding in additional fields
           />
         </Fieldset>
         <div className="usa-alert usa-alert--info usa-alert--validation">
@@ -75,7 +75,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             <Trans t={t} i18nKey="separation.info_alert">
               <Link
                 variant="external"
-                href={'https://www.eeoc.gov/youth/filing-complaint'}
+                href="https://www.eeoc.gov/youth/filing-complaint"
               ></Link>
             </Trans>
           </div>

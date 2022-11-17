@@ -4,7 +4,7 @@ import { Button } from '@trussworks/react-uswds'
 import { ChangeInEmployment } from './ChangeInEmployment'
 import { noop } from 'helpers/noop/noop'
 
-import { yupEditEmployers } from '../../form/EditEmployer/EditEmployer'
+import { yupEditEmployers } from '../../EditEmployer/EditEmployer'
 
 export default {
   title: 'Components/form/Employer/Sections/Change In Employment',
