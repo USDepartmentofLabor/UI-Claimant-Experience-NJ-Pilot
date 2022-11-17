@@ -25,7 +25,7 @@ const common = {
       label: 'Address',
       required: 'Address is required',
       pobox:
-        'PO boxes can only be used as a mailing address, not a residential address',
+        'P.O. boxes can only be used as a mailing address, not a residential address. If you do not have another address, then please contact us.',
     },
     city: { label: 'City', required: 'City is required' },
     state: { label: 'State', required: 'State is required' },

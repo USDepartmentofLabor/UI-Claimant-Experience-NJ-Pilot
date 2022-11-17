@@ -94,3 +94,11 @@ export const suffixOptions = [
   'senior',
 ] as const
 export type SuffixOption = typeof suffixOptions[number]
+
+export const employerRelationOptions = [
+  'no',
+  'spouse',
+  'parent',
+  'child',
+] as const
+export type EmployerRelationOption = typeof employerRelationOptions[number]

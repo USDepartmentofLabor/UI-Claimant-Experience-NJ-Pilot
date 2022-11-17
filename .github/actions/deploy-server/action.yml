@@ -60,6 +60,14 @@ runs:
         task-definition: ${{ steps.task-def-migrations.outputs.task-definition }}
         cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
 
+    - name: Snapshot RDS
+      shell: bash
+      env:
+        RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        IMAGE_TAG: ${{ inputs.image-tag }}
+      run: |
+        scripts/snapshot-rds.sh
+
     - name: Run DB migrations ECS task
       env:
         TASK_DEFINITION: ${{ steps.deploy-task-def-migrations.outputs.task-definition-arn }}
@@ -77,14 +85,6 @@ runs:
       shell: bash
       run: |
         make server-task-definition environment=${{ inputs.deploy-env }}
-
-    - name: Snapshot RDS
-      shell: bash
-      env:
-        RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
-        IMAGE_TAG: ${{ inputs.image-tag }}
-      run: |
-        scripts/snapshot-rds.sh
 
     - name: Fill in the new image ID in the Amazon ECS task definition (server)
       id: task-def-server
