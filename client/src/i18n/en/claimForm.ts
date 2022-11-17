@@ -219,7 +219,7 @@ const claimForm = {
         laid_off: {
           label: 'Laid off',
           description:
-            'Your job ended due to lack of work, downsizing, your contract ending, or your place of work closing or moving.',
+            'Your job ended due to your work location closing or moving, lack of work, downsizing, reorganization, or your contract ending.',
           option_heading: 'What was the reason you were laid off?',
           options: {
             lack_of_work: 'Lack of work, including seasonal',

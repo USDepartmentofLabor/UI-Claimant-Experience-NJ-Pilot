@@ -81,9 +81,13 @@ const yupEditEmployer = (t: TFunction<'claimForm'>) => {
       ),
     employment_start_date: yupDate(
       String('employers.separation.employment_start_date.required')
+    ).required(
+      i18n_claimForm.t('employers.separation.employment_start_date.required')
     ),
     employment_last_date: yupDate(
       String('employers.separation.employment_last_date.required')
+    ).required(
+      i18n_claimForm.t('employers.separation.employment_last_date.required')
     ),
   })
 }
