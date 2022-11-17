@@ -105,3 +105,11 @@ export const changeInEmploymentOptions = [
   // 'federal_or_state_shutdown',
 ] as const
 export type ChangeInEmploymentOption = typeof changeInEmploymentOptions[number]
+
+export const employerRelationOptions = [
+  'no',
+  'spouse',
+  'parent',
+  'child',
+] as const
+export type EmployerRelationOption = typeof employerRelationOptions[number]

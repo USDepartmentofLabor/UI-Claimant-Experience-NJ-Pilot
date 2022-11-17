@@ -12,13 +12,13 @@ const screener = {
       'Do you currently live in the United States (including Puerto Rico and the US Virgin Islands)?',
     errors: {
       required:
-        'Please indicate whether you currently live in the United States (including Puerto Rico and the US Virgin Islands)',
+        'Please say whether you currently live in the United States (including Puerto Rico and the US Virgin Islands)',
     },
   },
   screener_live_in_canada: {
     label: 'Do you currently live in Canada?',
     errors: {
-      required: 'Please indicate whether you currently live in Canada',
+      required: 'Please say whether you currently live in Canada',
     },
   },
   screener_job_last_eighteen_months: {
@@ -29,7 +29,7 @@ const screener = {
       military_id_wage_data_plural:
         'Are you sure? We have {{count}} employers who have listed you as an employee in the last 18 months',
       required:
-        'Please indicate whether you had a job in the last 18 months, including military service',
+        'Please say whether you had a job in the last 18 months, including military service',
     },
   },
   screener_military_service_eighteen_months: {
@@ -38,7 +38,7 @@ const screener = {
       job_conflict:
         'If you served in the military, please change your answer above to say that you did have a job',
       required:
-        'Please indicate whether you served in the United States military in the last 18 months',
+        'Please say whether you served in the United States military in the last 18 months',
     },
   },
   screener_all_work_nj: {
@@ -46,7 +46,7 @@ const screener = {
       'Was <strong>all</strong> your work (not including military service) performed in New Jersey?',
     errors: {
       required:
-        'Please indicate whether all of your work (not including military service) was performed in New Jersey',
+        'Please say whether all of your work (not including military service) was performed in New Jersey',
     },
   },
   screener_any_work_nj: {
@@ -54,14 +54,14 @@ const screener = {
       'Was <strong>any</strong> of your work (not including military service) performed in New Jersey?',
     errors: {
       required:
-        'Please indicate whether any of your work (not including military service) was performed outside New Jersey',
+        'Please say whether any of your work (not including military service) was performed outside New Jersey',
     },
   },
   screener_currently_disabled: {
     label: 'Are you currently disabled and unable to work?',
     errors: {
       required:
-        'Please indicate whether you are currently disabled and unable to work',
+        'Please say whether you are currently disabled and unable to work',
     },
   },
   screener_maritime_employer_eighteen_months: {
@@ -69,7 +69,7 @@ const screener = {
       'Have you worked for a maritime employer in the last 18 months (for example, did you work on a ship or in a harbor)?',
     errors: {
       required:
-        'Please indicate whether you worked for a maritime employer in the last 18 months (for example, did you work on a ship or in a harbor)',
+        'Please say whether you worked for a maritime employer in the last 18 months (for example, did you work on a ship or in a harbor)',
     },
   },
 }

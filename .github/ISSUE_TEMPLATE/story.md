@@ -2,7 +2,7 @@
 name: User Story
 about: As a ___, I want ___, so that ___
 title: "[story]: "
-labels: 'type: story'
+labels: 'triage, type: story'
 assignees: ''
 
 ---

@@ -12,6 +12,7 @@ interface IYesNoQuestionProps {
   hint?: ReactNode
   yesLabel?: string
   noLabel?: string
+  isStacked?: boolean
   onChange?: ChangeEventHandler<HTMLInputElement>
 }
 

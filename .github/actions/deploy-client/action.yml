@@ -10,6 +10,9 @@ inputs:
   server-base-url:
     description: The backend server base url
     required: true
+  app-env:
+    description: The application environment (e.g., development, test, production)
+    required: true
 runs:
   using: "composite"
   steps:

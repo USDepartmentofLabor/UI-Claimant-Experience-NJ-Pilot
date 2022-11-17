@@ -9,7 +9,7 @@ import {
 const redirect = {
   page_title: 'Let’s try another way',
   info_alert: {
-    title: 'You are unable to use our new form due to the following reasons:',
+    title: 'You cannot use our new form due to the following reasons:',
     items: {
       ip_deny: 'You must be in the U.S. to file. ',
       canada:
@@ -19,11 +19,11 @@ const redirect = {
         'You have not worked in New Jersey within the last 18 months. ',
       disability: 'You might need to file for disability instead. ',
       military_mvp:
-        "Because you indicated you had military employment, you'll need to apply with our standard form. ",
+        "Because you said you had military employment, you'll need to apply with our standard form. ",
       military_ip:
-        "Because you indicated you had military employment, you'll need to apply with an agent. ",
+        "Because you said you had military employment, you'll need to apply with an agent. ",
       maritime:
-        "Because you indicated you had maritime employment, you'll need to apply with an agent. ",
+        "Because you said you had maritime employment, you'll need to apply with an agent. ",
     },
   },
   read_more: 'Read more.',

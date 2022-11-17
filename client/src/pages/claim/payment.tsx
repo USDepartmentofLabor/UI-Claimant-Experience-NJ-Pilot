@@ -219,7 +219,7 @@ const PaymentInformation: NextPage = () => {
                 'https://nj.gov/labor/myunemployment/before/about/howtoapply/dependencybenefits.shtml/'
               }
             >
-              Learn more about eligibility requirements here
+              Learn more about eligibility here
             </Link>
           </Trans>
         </p>
