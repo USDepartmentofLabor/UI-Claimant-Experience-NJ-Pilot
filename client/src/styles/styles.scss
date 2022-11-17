@@ -106,7 +106,7 @@
 .nav-future {
   cursor: not-allowed;
   display: block;
-  @extend .line-height-sans-3, .text-base-light;
+  @extend .line-height-sans-3, .text-disabled-dark;
 }
 
 .usa-sidenav .nav-future {
@@ -144,10 +144,6 @@
   line-height: 1.3;
 }
 
-.text-base-light,
-.nav-future {
-  color: #72777a;
-}
 .usa-sidenav {
   font-size: 1.06rem;
   line-height: 1.3;
