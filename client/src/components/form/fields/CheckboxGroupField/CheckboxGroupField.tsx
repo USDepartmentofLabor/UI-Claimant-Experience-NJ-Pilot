@@ -44,6 +44,7 @@ export const CheckboxGroupField = ({
           checked={!!fieldProps?.value?.includes(option.value)}
           {...option.checkboxProps}
           inputRef={index === 0 ? checkboxRef : undefined}
+          showsErrors={false}
         />
       ))}
       {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
