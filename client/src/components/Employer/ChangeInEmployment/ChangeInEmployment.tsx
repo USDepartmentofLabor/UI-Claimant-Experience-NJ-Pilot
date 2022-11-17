@@ -40,9 +40,9 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
     return (
       <>
         <span>{reason.name}</span>
-        <div className="usa-checkbox__label-description">
+        <span className="usa-checkbox__label-description">
           {reason.description}
-        </div>
+        </span>
       </>
     )
   }
@@ -72,14 +72,11 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         </Fieldset>
         <div className="usa-alert usa-alert--info usa-alert--validation">
           <div className="usa-alert__body">
-            {/* <span>{t(`separation.info_alert`)}</span> */}
             <Trans t={t} i18nKey="separation.info_alert">
               <Link
                 variant="external"
                 href={'https://www.eeoc.gov/youth/filing-complaint'}
-              >
-                New Jersey career services
-              </Link>
+              ></Link>
             </Trans>
           </div>
         </div>
@@ -93,13 +90,10 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             legend={t('employment_last_date.label')}
           />
         )}
-
-        <Fieldset>
-          <YesNoQuestion
-            question={t('separation.expect_to_be_recalled.label')}
-            name={`employers[${index}].expect_to_be_recalled`}
-          />
-        </Fieldset>
+        <YesNoQuestion
+          question={t('separation.expect_to_be_recalled.label')}
+          name={`employers[${index}].expect_to_be_recalled`}
+        />
       </div>
     </>
   )

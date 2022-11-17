@@ -1,14 +1,17 @@
 import { useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
 import { array, boolean, object, string } from 'yup'
+import { yupDate } from 'validations/yup/custom'
 import { useEffect } from 'react'
 import { i18n_claimForm } from 'i18n/i18n'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
-import { changeInEmploymentOptions } from 'constants/formOptions'
+import {
+  changeInEmploymentOptions,
+  employerRelationOptions,
+} from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
-import { employerRelationOptions } from 'constants/formOptions'
+import { ChangeInEmployment } from 'components/Employer/ChangeInEmployment/ChangeInEmployment'
 
-import { yupDate } from 'validations/yup/custom'
 type EditEmployerType = {
   index: string
 }
@@ -41,6 +44,7 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
             </div>
             <YourEmployer index={index} />
             <BusinessInterests index={index} />
+            <ChangeInEmployment index={index} />
           </div>
         ) : (
           /* Invalid Index */ <div>No employer defined for index {index}</div>
