@@ -1,7 +1,5 @@
 import { defineConfig } from 'cypress'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs')
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { lighthouse, prepareAudit } = require('@cypress-audit/lighthouse')
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { pa11y } = require('@cypress-audit/pa11y')
@@ -43,21 +41,7 @@ export default defineConfig({
       )
 
       on('task', {
-        lighthouse: lighthouse((lighthouseReport) => {
-          console.log('---- Creating lighthouse report ----')
-
-          fs.writeFile(
-            'lighthouse.json',
-            lighthouseReport.report,
-            (error: any) => {
-              error
-                ? console.log(error)
-                : console.log(
-                    '---- Successfully created lighthouse report ----'
-                  )
-            }
-          )
-        }),
+        lighthouse: lighthouse(),
         pa11y: pa11y((pa11yReport: any) => {
           console.log(pa11yReport) // raw pa11y report
         }),
