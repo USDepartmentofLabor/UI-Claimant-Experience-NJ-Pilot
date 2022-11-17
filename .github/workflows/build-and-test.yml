@@ -58,6 +58,9 @@ jobs:
       - name: Run JUnit tests
         run: make server-test
 
+      - name: Verify server test coverage
+        run: make server-test-coverage-check
+
       - name: Run server checks
         run: make server-check
 

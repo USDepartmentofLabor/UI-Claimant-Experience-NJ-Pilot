@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
 import java.util.*;
 import javax.persistence.*;
+import nj.lwd.ui.claimantintake.annotation.ExcludeFromGeneratedCodeCoverage;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -41,14 +42,17 @@ public class Claimant {
         this.idpId = idpId;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public UUID getId() {
         return id;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public String getIdpId() {
         return idpId;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public List<Claim> getClaims() {
         return claims;
     }
@@ -63,10 +67,12 @@ public class Claimant {
         claim.setClaimant(null);
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public Instant getCreatedAt() {
         return createdAt;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public Instant getUpdatedAt() {
         return updatedAt;
     }
@@ -84,6 +90,7 @@ public class Claimant {
                 .filter(claim -> !claim.isSubmitted())
                 .toList();
     }
+
     /**
      * Initial business logic only allows for a single active claim, though the architecture
      * supports more than one.
@@ -92,8 +99,8 @@ public class Claimant {
      *     claim
      */
     public Optional<Claim> getActivePartialClaim() {
-        // TODO: what does this return if there is no active partial claim? Might need to handle a
-        // null pointer
+        // TODO: what does this return if there is no active partial claim?
+        // Might need to handle a null pointer
         return getPartialClaims().stream()
                 .max(
                         (claim1, claim2) -> {
@@ -116,6 +123,7 @@ public class Claimant {
                             }
                         });
     }
+
     /**
      * As there can be more than one partial claim, allowing multiple complete claims
      *

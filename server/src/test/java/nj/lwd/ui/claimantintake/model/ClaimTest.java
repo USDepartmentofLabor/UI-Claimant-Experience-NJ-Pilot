@@ -35,6 +35,21 @@ class ClaimTest {
     }
 
     @Test
+    void isSubmittedReturnsFalseWhenNotAssociatedWithASubmittedEvent() {
+        var claim = new Claim();
+        assertFalse(claim.isSubmitted());
+    }
+
+    @Test
+    void isSubmittedReturnsTrueWhenAssociatedWithASubmittedEvent() {
+        var claim = new Claim();
+
+        claim.addEvent(new ClaimEvent(ClaimEventCategory.SUBMITTED));
+
+        assertTrue(claim.isSubmitted());
+    }
+
+    @Test
     void getLatestEventByCategory() {
         var claim = new Claim();
 
