@@ -99,8 +99,6 @@ public class Claimant {
      *     claim
      */
     public Optional<Claim> getActivePartialClaim() {
-        // TODO: what does this return if there is no active partial claim?
-        // Might need to handle a null pointer
         return getPartialClaims().stream()
                 .max(
                         (claim1, claim2) -> {

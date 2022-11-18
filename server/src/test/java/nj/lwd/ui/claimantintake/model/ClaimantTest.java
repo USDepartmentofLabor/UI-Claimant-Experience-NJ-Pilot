@@ -157,9 +157,4 @@ class ClaimantTest {
         assertTrue(activePartialClaim.isPresent());
         assertEquals(recentPartialClaim, activePartialClaim.get());
     }
-
-    // @Test
-    // void getActivePartialClaimReturnsEmptyOptionalIfThereIsNoPartialClaim() {
-    // TODO: fill this test out
-    // }
 }
