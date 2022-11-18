@@ -15,10 +15,6 @@ import { Trans } from 'next-i18next'
 interface IEmployer {
   index: string
 }
-interface IChangeInEmploymentOptionText {
-  description: string
-  name: string
-}
 
 export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { values } = useFormikContext<ClaimantInput>()
@@ -33,37 +29,23 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
-  const showExpectRecall =
-    employer?.separation_circumstance !== 'still_employed'
+  const showExpectRecall = employer?.separation_circumstance !== undefined
+  employer?.separation_circumstance !== 'still_employed'
 
-  const SeparationReasonLabel = (reason: IChangeInEmploymentOptionText) => {
-    return (
-      <>
-        <span>{reason.name}</span>
-        <span className="usa-checkbox__label-description">
-          {reason.description}
-        </span>
-      </>
-    )
-  }
   return (
     <>
       <div>
-        {<b>{t('separation.heading')} </b>}
+        <p>
+          <strong>{t('separation.heading')}</strong>
+        </p>
         <Fieldset legend={t('separation.reason.label')}>
           <RadioField
             name={`employers[${index}].separation_circumstance`}
             tile={true}
             options={changeInEmploymentOptions.map((option) => {
               return {
-                label: (
-                  <SeparationReasonLabel
-                    name={t(`separation.reasons.${option}.label`)}
-                    description={t(`separation.reasons.${option}.description`)}
-                  />
-                ),
-                labelDescription: index,
-                tile: true,
+                label: t(`separation.reasons.${option}.label`),
+                labelDescription: t(`separation.reasons.${option}.description`),
                 value: option,
               }
             })}

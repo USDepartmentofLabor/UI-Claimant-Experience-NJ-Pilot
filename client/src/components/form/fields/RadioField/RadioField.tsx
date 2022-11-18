@@ -8,6 +8,7 @@ import { useFocusFirstError } from 'hooks/useFocusFirstError'
 interface IRadioOption {
   label: ReactNode
   value: string
+  labelDescription?: string
 }
 
 type RadioInputProps = Optional<
@@ -51,6 +52,7 @@ export const RadioField = ({
           id={`${id}.${option.value}`}
           data-testid={`${id}.${option.value}`}
           label={option.label}
+          labelDescription={option?.labelDescription}
           value={option.value}
           checked={metaProps.value === option.value}
           onChange={handleChange}
