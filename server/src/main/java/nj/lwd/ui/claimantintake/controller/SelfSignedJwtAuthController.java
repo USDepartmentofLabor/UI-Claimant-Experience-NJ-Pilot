@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import nj.lwd.ui.claimantintake.annotation.ExcludeFromGeneratedCodeCoverage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @ConditionalOnProperty(
         name = "spring.security.self-signed-access-tokens-enabled",
         havingValue = "true")
+@ExcludeFromGeneratedCodeCoverage
 public class SelfSignedJwtAuthController {
 
     private final Logger logger = LoggerFactory.getLogger(SelfSignedJwtAuthController.class);

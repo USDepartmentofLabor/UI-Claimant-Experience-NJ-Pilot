@@ -122,6 +122,12 @@ server-bootRun-e2e: ## Runs the SpringBoot development server with local and e2e
 server-test: ## run server unit tests
 	cd server && ./gradlew test
 
+server-test-coverage-report: ## generate server test coverage report
+	cd server && ./gradlew jacocoTestReport
+
+server-test-coverage-check: ## verify server test coverage
+	cd server && ./gradlew jacocoTestCoverageVerification
+
 server-migration: server-deps ## generate database migrations based on a diff between the current database and the model entities. Use description="a_short_description_of_the_changes"
 	cd server && ./gradlew liquibaseDiffChangeLog -PrunList=diffChangeLog -PmigrationDescription="$(description)"
 

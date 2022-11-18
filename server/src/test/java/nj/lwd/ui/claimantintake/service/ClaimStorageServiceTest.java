@@ -28,6 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.core.exception.SdkClientException;
 
 @ExtendWith(MockitoExtension.class)
 class ClaimStorageServiceTest {
@@ -58,21 +59,21 @@ class ClaimStorageServiceTest {
     private final Map<String, Object> validClaim =
             objectMapper.readValue(
                     """
-                            {
-                              "claimant_name": {
-                                "first_name": "Joan",
-                                "last_name": "Jett",
-                                "middle_name": "Rockstar",
-                                "suffix": "Jr."
-                              }
-                            }
-                            """,
+                                        {
+                                          "claimant_name": {
+                                            "first_name": "Joan",
+                                            "last_name": "Jett",
+                                            "middle_name": "Rockstar",
+                                            "suffix": "Jr."
+                                          }
+                                        }
+                                        """,
                     new TypeReference<>() {});
 
     ClaimStorageServiceTest() throws JsonProcessingException {}
 
     @Test
-    void completeClaimFailsWhenCannotSaveToS3() throws Exception {
+    void completeClaimFailsWhenAwsServiceException() throws Exception {
         var claimant = mock(Claimant.class);
         var claim = mock(Claim.class);
         var claimantId = UUID.randomUUID();
@@ -90,6 +91,88 @@ class ClaimStorageServiceTest {
 
         var result = claimStorageService.completeClaim("test-id", validClaim);
 
+        assertFalse(result);
+
+        verify(claimantStorageService, times(1)).getOrCreateClaimant("test-id");
+        verify(s3Service, times(1))
+                .upload(CLAIMS_BUCKET, expectedS3Key, validClaim, CLAIMS_BUCKET_KMS_KEY);
+
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                event ->
+                                        event.getCategory()
+                                                == ClaimEventCategory.INITIATED_COMPLETE));
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(event -> event.getCategory() == ClaimEventCategory.INITIATED_SAVE));
+        verify(claim, times(1))
+                .addEvent(argThat(event -> event.getCategory() == ClaimEventCategory.SAVE_FAILED));
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                event ->
+                                        event.getCategory() == ClaimEventCategory.COMPLETE_FAILED));
+    }
+
+    @Test
+    void completeClaimFailsWhenJsonProcessingException() throws Exception {
+        var claimant = mock(Claimant.class);
+        var claim = mock(Claim.class);
+        var claimantId = UUID.randomUUID();
+        var claimId = UUID.randomUUID();
+        var expectedS3Key = "%s/%s.json".formatted(claimantId, claimId);
+
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claim.getId()).thenReturn(claimId);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
+
+        doThrow(JsonProcessingException.class)
+                .when(s3Service)
+                .upload(anyString(), anyString(), any(), anyString());
+        var result = claimStorageService.completeClaim("test-id", validClaim);
+        assertFalse(result);
+
+        verify(claimantStorageService, times(1)).getOrCreateClaimant("test-id");
+        verify(s3Service, times(1))
+                .upload(CLAIMS_BUCKET, expectedS3Key, validClaim, CLAIMS_BUCKET_KMS_KEY);
+
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                event ->
+                                        event.getCategory()
+                                                == ClaimEventCategory.INITIATED_COMPLETE));
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(event -> event.getCategory() == ClaimEventCategory.INITIATED_SAVE));
+        verify(claim, times(1))
+                .addEvent(argThat(event -> event.getCategory() == ClaimEventCategory.SAVE_FAILED));
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                event ->
+                                        event.getCategory() == ClaimEventCategory.COMPLETE_FAILED));
+    }
+
+    @Test
+    void completeClaimFailsWhenSdkClientException() throws Exception {
+        var claimant = mock(Claimant.class);
+        var claim = mock(Claim.class);
+        var claimantId = UUID.randomUUID();
+        var claimId = UUID.randomUUID();
+        var expectedS3Key = "%s/%s.json".formatted(claimantId, claimId);
+
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claim.getId()).thenReturn(claimId);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
+
+        doThrow(SdkClientException.class)
+                .when(s3Service)
+                .upload(anyString(), anyString(), any(), anyString());
+        var result = claimStorageService.completeClaim("test-id", validClaim);
         assertFalse(result);
 
         verify(claimantStorageService, times(1)).getOrCreateClaimant("test-id");
@@ -232,6 +315,31 @@ class ClaimStorageServiceTest {
                                                 .equals(ClaimEventCategory.SAVE_FAILED)));
 
         verify(claimantRepository, times(1)).save(claimant);
+    }
+
+    @Test
+    void saveClaimFailsWhenJsonProcessingException() throws Exception {
+        // given: an existing claimant that does not have a partial claim
+        var claimant = mock(Claimant.class);
+        var claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.empty());
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
+
+        // and: a new claim that will be created and saved
+        var claim = mock(Claim.class);
+        var claimId = UUID.randomUUID();
+        when(claim.getId()).thenReturn(claimId);
+        when(claimRepository.save(any(Claim.class))).thenReturn(claim);
+
+        doThrow(JsonProcessingException.class)
+                .when(s3Service)
+                .upload(anyString(), anyString(), any(), anyString());
+
+        // when: saveClaim is called
+        var result = claimStorageService.saveClaim("some-id", validClaim);
+
+        assertFalse(result);
     }
 
     @Test

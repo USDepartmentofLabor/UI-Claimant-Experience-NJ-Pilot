@@ -3,6 +3,7 @@ package nj.lwd.ui.claimantintake.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
 import javax.persistence.*;
+import nj.lwd.ui.claimantintake.annotation.ExcludeFromGeneratedCodeCoverage;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EntityListeners(AuditingEntityListener.class)
+@ExcludeFromGeneratedCodeCoverage
 public class ClaimEvent {
 
     @Id
