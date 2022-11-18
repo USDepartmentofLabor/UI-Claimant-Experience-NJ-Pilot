@@ -72,11 +72,13 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         </Fieldset>
         <div className="usa-alert usa-alert--info usa-alert--validation">
           <div className="usa-alert__body">
-            <Trans t={t} i18nKey="separation.info_alert">
+            <Trans t={t} i18nKey="separation.info_alert.description">
               <Link
                 variant="external"
-                href="https://www.eeoc.gov/youth/filing-complaint"
-              ></Link>
+                href={t('separation.info_alert.website')}
+              >
+                {''}
+              </Link>
             </Trans>
           </div>
         </div>
