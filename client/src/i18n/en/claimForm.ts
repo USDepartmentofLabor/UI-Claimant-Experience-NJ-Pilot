@@ -329,14 +329,14 @@ const claimForm = {
       label: 'Start date for this employer',
       errors: {
         required: 'Start date is required',
-        maxDate: "Start date can't be later than today's date",
+        maxDate: "Start date can't be in the future",
       },
     },
     employment_last_date: {
       label: 'Last day of work for this employer',
       errors: {
         required: 'Last day of work is required',
-        maxDate: "Last day of work can't be later than today's date",
+        maxDate: "Last day of work can't be in the future",
         minDate: "Last day can't be before employment start date",
       },
     },
