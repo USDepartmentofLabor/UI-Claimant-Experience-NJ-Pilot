@@ -196,7 +196,7 @@ const claimForm = {
       heading: 'Change in Employment',
       info_alert: {
         description:
-          'If you were treated unfairly, harassed, or discriminated against on the job, please also visit the <0>EOC website</0> for help.',
+          'If you were treated unfairly, harassed, or discriminated against on the job, please also visit the <0>EEOC website</0> for help.',
         website: 'https://www.eeoc.gov/youth/filing-complaint',
       },
       reason: {
