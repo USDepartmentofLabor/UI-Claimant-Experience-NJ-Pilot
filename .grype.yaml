@@ -24,10 +24,3 @@ ignore:
   - vulnerability: GHSA-9w3m-gqgf-c4p9
     package:
       name: snakeyaml
-  # Ignore the following jackson-databind vulnerability. There is not
-  # a proper release available at this time fixing the vulnerability.
-  # The claimant intake application does not use UNWRAP_SINGLE_VALUE_ARRAYS.
-  # See the discussion at https://github.com/spring-projects/spring-boot/issues/32583
-  - vulnerability: GHSA-jjjh-jjxp-wpff
-    package:
-      name: jackson-databind
