@@ -365,6 +365,15 @@ To run the JUnit tests:
 make server-test
 ```
 
+To generate the test code coverage report:
+
+```
+make server-test-coverage-report
+```
+
+To view the report, open `server/build/reports/jacoco/test/html/index.html` in
+your browser.
+
 ### End-to-end tests (Cypress)
 
 To run Cypress (e2e) tests locally there are a few considerations:

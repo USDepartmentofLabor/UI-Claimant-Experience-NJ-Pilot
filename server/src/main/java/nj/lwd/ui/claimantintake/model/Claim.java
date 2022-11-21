@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 import javax.persistence.*;
+import nj.lwd.ui.claimantintake.annotation.ExcludeFromGeneratedCodeCoverage;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -36,14 +37,17 @@ public class Claim {
 
     public Claim() {}
 
+    @ExcludeFromGeneratedCodeCoverage
     public UUID getId() {
         return id;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public Claimant getClaimant() {
         return claimant;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public void setClaimant(Claimant claimant) {
         this.claimant = claimant;
     }
@@ -53,14 +57,17 @@ public class Claim {
         event.setClaim(this);
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public List<ClaimEvent> getEvents() {
         return events;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public Instant getCreatedAt() {
         return createdAt;
     }
 
+    @ExcludeFromGeneratedCodeCoverage
     public Instant getUpdatedAt() {
         return updatedAt;
     }
@@ -75,6 +82,7 @@ public class Claim {
                 .map(ClaimEvent::getCategory)
                 .anyMatch(event -> event.equals(ClaimEventCategory.COMPLETED));
     }
+
     /**
      * Whether a claim is submitted
      *

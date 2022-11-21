@@ -13,6 +13,7 @@ plugins {
     id "com.diffplug.spotless" version "6.11.0"
     id "com.github.spotbugs" version "5.0.13"
     id "org.liquibase.gradle" version "2.1.1"
+    id "jacoco"
 }
 
 group = 'nj.lwd.ui'
@@ -63,6 +64,21 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80
+            }
+        }
+    }
 }
 
 configurations {
