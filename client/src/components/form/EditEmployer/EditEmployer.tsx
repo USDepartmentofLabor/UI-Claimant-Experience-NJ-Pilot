@@ -1,16 +1,18 @@
 import { useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
-import { array, boolean, object, string } from 'yup'
+import { array, boolean, object, ref, string } from 'yup'
 import { yupDate } from 'validations/yup/custom'
 import { useEffect } from 'react'
 import { i18n_claimForm } from 'i18n/i18n'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
 import {
+  ChangeInEmploymentOption,
   changeInEmploymentOptions,
   employerRelationOptions,
 } from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
+import dayjs from 'dayjs'
 
 type EditEmployerType = {
   index: string
@@ -126,15 +128,40 @@ const yupEditEmployer = object().shape({
     )
   ),
   employment_start_date: yupDate(
-    String('employers.separation.employment_start_date.required')
-  ).required(
-    i18n_claimForm.t('employers.separation.employment_start_date.required')
-  ),
+    i18n_claimForm.t('employers.employment_start_date.label')
+  )
+    .max(
+      dayjs(new Date()).format('YYYY-MM-DD'),
+      i18n_claimForm.t('employers.employment_start_date.errors.maxDate')
+    )
+    .required(
+      i18n_claimForm.t('employers.employment_start_date.errors.required')
+    ),
   employment_last_date: yupDate(
-    String('employers.separation.employment_last_date.required')
-  ).required(
-    i18n_claimForm.t('employers.separation.employment_last_date.required')
-  ),
+    i18n_claimForm.t('employers.employment_last_date.label')
+  )
+    .max(
+      dayjs(new Date()).format('YYYY-MM-DD'),
+      i18n_claimForm.t('employers.employment_last_date.errors.maxDate')
+    )
+    .when('employment_start_date', {
+      is: (dateValue: string | undefined) => {
+        return !!dateValue
+      },
+      then: (schema) =>
+        schema.min(
+          ref('employment_start_date'),
+          i18n_claimForm.t('employers.employment_last_date.errors.minDate')
+        ),
+    })
+    .when('separation_circumstance', {
+      is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+        changeInEmploymentReason?.includes('laid_off'),
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t('employers.employment_last_date.errors.required')
+        ),
+    }),
 })
 
 export const yupEditEmployers = object().shape({

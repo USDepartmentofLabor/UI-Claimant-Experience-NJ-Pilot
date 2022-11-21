@@ -326,12 +326,19 @@ const claimForm = {
         'Please say whether you have worked for any other employers in the last 18 months',
     },
     employment_start_date: {
-      label: 'Start date for this employer:',
-      required: 'Start date is required',
+      label: 'Start date for this employer',
+      errors: {
+        required: 'Start date is required',
+        maxDate: "Start date can't be later than today's date",
+      },
     },
     employment_last_date: {
-      label: 'Last day of work for this employer:',
-      required: 'Last day of work is required',
+      label: 'Last day of work for this employer',
+      errors: {
+        required: 'Last day of work is required',
+        maxDate: "Last day of work can't be later than today's date",
+        minDate: "Last day can't be before employment start date",
+      },
     },
     same_phone: {
       label:
