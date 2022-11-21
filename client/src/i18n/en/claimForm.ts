@@ -233,9 +233,9 @@ const claimForm = {
           },
         },
         fired_discharged_terminated: {
-          label: 'Fired, discharged, or terminated',
+          label: 'Fired, discharged, or suspended',
           description:
-            'Your employer ended your job, claiming you had performance or behavior issues.',
+            'Your employer ended your job, suspended you, or forced you to resign for a reason other than lack of work or assignment ending.',
           option_heading:
             'What was the reason you were fired, discharged, or terminated?',
           options: {
@@ -290,7 +290,7 @@ const claimForm = {
         unsatisfactory_work_performance: {
           label: 'Unsatisfactory work performance',
           description:
-            'Your Employer ended your job due to performance, such as not meeitng a quota',
+            'Your employer ended your job due to performance, such as not meeting a quota',
         },
         federal_or_state_shutdown: {
           label: 'Strike or lock out by employer',
