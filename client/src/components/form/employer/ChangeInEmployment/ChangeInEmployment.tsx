@@ -7,7 +7,7 @@ import { useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
-import { Trans } from 'next-i18next'
+import { Trans } from 'react-i18next'
 
 // import { ChangeEventHandler } from 'react'
 // import { useClearFields } from 'hooks/useClearFields'
