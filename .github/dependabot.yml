@@ -17,15 +17,15 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "github-actions"
-    directory: "/actions/deploy-client"
+    directory: "/.github/actions/deploy-client"
     schedule:
       interval: "weekly"
   - package-ecosystem: "github-actions"
-    directory: "/actions/deploy-server"
+    directory: "/.github/actions/deploy-server"
     schedule:
       interval: "weekly"
   - package-ecosystem: "github-actions"
-    directory: "/actions/image-scan"
+    directory: "/.github/actions/image-scan"
     schedule:
       interval: "weekly"
   - package-ecosystem: "pip"
