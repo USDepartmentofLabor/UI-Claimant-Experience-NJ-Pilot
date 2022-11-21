@@ -16,6 +16,18 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/actions/deploy-client"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/actions/deploy-server"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/actions/image-scan"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
