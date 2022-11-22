@@ -45,6 +45,9 @@ export type Employer = {
   expect_to_be_recalled?: boolean
   employment_start_date?: string
   employment_last_date?: string
+  definite_recall?: boolean
+  definite_recall_date?: string
+  is_seasonal_work?: boolean
 
   self_employed?: boolean
   is_owner?: boolean

@@ -29,7 +29,12 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
-  const showLastDay = employer?.separation_circumstance !== undefined
+  const showLastDay =
+    employer?.separation_circumstance !== undefined &&
+    employer?.separation_circumstance !== 'still_employed'
+  const showRecallQuestions = employer?.expect_to_be_recalled
+  const showDefiniteRecall = employer?.definite_recall
+
   employer?.separation_circumstance !== 'still_employed'
 
   return (
@@ -74,10 +79,29 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             legend={t('employment_last_date.label')}
           />
         )}
+
         <YesNoQuestion
           question={t('separation.expect_to_be_recalled.label')}
           name={`employers[${index}].expect_to_be_recalled`}
         />
+        {showRecallQuestions && (
+          <YesNoQuestion
+            question={t('separation.definite_recall.label')}
+            name={`employers[${index}].definite_recall`}
+          />
+        )}
+        {showDefiniteRecall && (
+          <DateInputField
+            name={`employers[${index}].employment_last_date`}
+            legend={t('separation.definite_recall.label')}
+          />
+        )}
+        {showRecallQuestions && (
+          <YesNoQuestion
+            question={t('separation.is_seasonal_work.label')}
+            name={`employers[${index}].expect_to_be_recalled`}
+          />
+        )}
       </div>
     </>
   )

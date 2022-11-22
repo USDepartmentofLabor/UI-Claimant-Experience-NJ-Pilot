@@ -219,6 +219,24 @@ const claimForm = {
           required: 'This field is required.',
         },
       },
+      definite_recall: {
+        label: 'Do you have a definite date of recall?',
+        errors: {
+          minDate: 'The date of recall must be after you last day of work',
+        },
+      },
+      definite_recall_date: {
+        label: 'Definite date of recall',
+        errors: {
+          required: 'This field is required.',
+        },
+      },
+      is_seasonal_work: {
+        label: 'Is your work seasonal?',
+        errors: {
+          required: 'This field is required.',
+        },
+      },
       reasons: {
         laid_off: {
           label: 'Laid off',
