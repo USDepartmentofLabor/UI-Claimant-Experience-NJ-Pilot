@@ -193,10 +193,15 @@ const claimForm = {
   },
   employers: {
     separation: {
-      heading: 'Separation',
+      heading: 'Change in Employment',
+      info_alert: {
+        description:
+          'If you were treated unfairly, harassed, or discriminated against on the job, please also visit the <0>EEOC website</0> for help.',
+        website: 'https://www.eeoc.gov/youth/filing-complaint',
+      },
       reason: {
-        label: 'Why did your job end/your hours change?',
-        required: 'Separation reason is required',
+        label: 'Why did your job end or your hours change?',
+        required: 'Change in employment reason is required',
       },
       option: {
         required: 'Please select a separation option',
@@ -208,11 +213,17 @@ const claimForm = {
           required: 'More detail about the separation reason is required',
         },
       },
+      expect_to_be_recalled: {
+        label: 'Do you expect to be recalled by this employer?',
+        errors: {
+          required: 'This field is required.',
+        },
+      },
       reasons: {
         laid_off: {
           label: 'Laid off',
           description:
-            'Your job ended due to lack of work, downsizing, your contract ending, or your place of work closing or moving.',
+            'Your job ended due to your work location closing or moving, lack of work, downsizing, reorganization, or your contract ending.',
           option_heading: 'What was the reason you were laid off?',
           options: {
             lack_of_work: 'Lack of work, including seasonal',
@@ -222,9 +233,9 @@ const claimForm = {
           },
         },
         fired_discharged_terminated: {
-          label: 'Fired, discharged, or terminated',
+          label: 'Fired, discharged, or suspended',
           description:
-            'Your employer ended your job, claiming you had performance or behavior issues.',
+            'Your employer ended your job, suspended you, or forced you to resign for a reason other than lack of work or assignment ending.',
           option_heading:
             'What was the reason you were fired, discharged, or terminated?',
           options: {
@@ -255,9 +266,10 @@ const claimForm = {
             holiday_vacation: 'Holiday/vacation',
           },
         },
-        quit: {
-          label: 'Quit',
-          description: 'You left your job (this does not include retirement).',
+        quit_or_retired: {
+          label: 'Quit, resigned, or retired',
+          description:
+            'You left your job entirely by your own decision (this does not include forced resignation)',
           option_heading: 'Why did you quit your job?',
           options: {
             personal: 'Personal',
@@ -267,22 +279,23 @@ const claimForm = {
             quit_terminated: 'Quit instead of being terminated',
           },
         },
-        strike: {
+        strike_or_lock_out_by_employer: {
           label: 'Strike or lock out by employer',
           description:
             'During a labor dispute, you chose to stop work or your employer stopped work.',
           // unconventional to have a null translation but it's because we leverage this file also for TS types
           option_heading: null,
         },
-        retired: {
-          label: 'Retired',
+
+        unsatisfactory_work_performance: {
+          label: 'Unsatisfactory work performance',
           description:
-            'You have concluded your working career. Retiring can be voluntary or mandatory.',
-          option_heading: null,
+            'Your employer ended your job due to performance, such as not meeting a quota',
         },
-        shutdown: {
-          label: 'Federal or State shutdown',
-          description: 'Your job ended due to lack of government funding.',
+        federal_or_state_shutdown: {
+          label: 'Strike or lock out by employer',
+          description:
+            'During a labor dispute, you decided to stop work or your employer stopped work.',
           option_heading: null,
         },
       },
@@ -312,13 +325,20 @@ const claimForm = {
       required:
         'Please say whether you have worked for any other employers in the last 18 months',
     },
-    first_work_date: {
-      label: 'Start date for this employer:',
-      required: 'Start date is required',
+    employment_start_date: {
+      label: 'Start date for this employer',
+      errors: {
+        required: 'Start date is required',
+        maxDate: "Start date can't be in the future",
+      },
     },
-    last_work_date: {
-      label: 'Last day of work for this employer:',
-      required: 'Last day of work is required',
+    employment_last_date: {
+      label: 'Last day of work for this employer',
+      errors: {
+        required: 'Last day of work is required',
+        maxDate: "Last day of work can't be in the future",
+        minDate: "Last day can't be before employment start date",
+      },
     },
     same_phone: {
       label:

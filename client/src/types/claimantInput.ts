@@ -43,6 +43,11 @@ export type Employer = {
   name?: string
   isFullTime?: boolean
 
+  separation_circumstance?: string
+  expect_to_be_recalled?: boolean
+  employment_start_date?: string
+  employment_last_date?: string
+
   worked_at_employer_address?: boolean
   alternate_physical_work_address?: AddressWithoutStreetInput
   is_employer_phone_accurate?: boolean

@@ -1,3 +1,4 @@
+import fillChangeInEmployment from './formPageFilling/changeInEmployment'
 import fillYourEmployerFields from './formPageFilling/yourEmployer'
 import fillWorkLocationSection from '../e2e/formPageFilling/employer/workLocation'
 import { fillBusinessInterests } from '../e2e/formPageFilling/employer/businessInterests'
@@ -24,6 +25,13 @@ describe('Edit employer checks', () => {
       work_location_phone: '123-456-7890',
     })
     fillBusinessInterests(employerIndex)
+    fillChangeInEmployment(employerIndexString, {
+      separation_circumstance: 'laid_off',
+
+      employment_start_date: { mo: '02', day: '20', yr: '2014' },
+      employment_last_date: { mo: '02', day: '24', yr: '2022' },
+      expect_to_be_recalled: false,
+    })
     /* add other edit employer cypress tests here */
   })
 })

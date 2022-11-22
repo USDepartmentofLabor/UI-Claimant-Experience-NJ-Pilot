@@ -1,17 +1,27 @@
 import { useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
-import { array, boolean, mixed, object, string } from 'yup'
+import { array, boolean, object, mixed, ref, string } from 'yup'
+import {
+  yupDate,
+  yupAddressWithoutStreet,
+  yupPhone,
+} from 'validations/yup/custom'
 import { useEffect } from 'react'
 import { i18n_claimForm } from 'i18n/i18n'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
+import {
+  ChangeInEmploymentOption,
+  changeInEmploymentOptions,
+  employerRelationOptions,
+} from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
+import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
+import dayjs from 'dayjs'
 import { WorkLocation } from '../employer/WorkLocation/WorkLocation'
 import {
   ADDRESS_WITHOUT_STREET_SKELETON,
   PHONE_SKELETON,
 } from 'constants/initialValues'
-import { yupAddressWithoutStreet, yupPhone } from 'validations/yup/custom'
-import { employerRelationOptions } from 'constants/formOptions'
 
 type EditEmployerType = {
   index: string
@@ -46,6 +56,7 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
             <YourEmployer index={index} />
             <WorkLocation index={index} />
             <BusinessInterests index={index} />
+            <ChangeInEmployment index={index} />
           </div>
         ) : (
           /* Invalid Index */ <div>No employer defined for index {index}</div>
@@ -73,9 +84,12 @@ export const editEmployerInitialValues = () => {
     corporate_officer_or_stock_ownership: undefined,
     employer_is_sole_proprietorship: undefined,
     related_to_owner_or_child_of_owner_under_18: undefined,
+    // Change in Employment
+    expect_to_be_recalled: undefined,
+    employment_start_date: undefined,
+    employment_last_date: undefined,
   }
 }
-
 const yupEditEmployer = object().shape({
   /* THIS IS WHERE WE DEFINE THE SCHEMA FOR THE EDIT EMPLOYER PAGE */
   name: string().required(i18n_claimForm.t('employers.name.required')),
@@ -139,6 +153,49 @@ const yupEditEmployer = object().shape({
           ),
     }
   ),
+  separation_circumstance: string()
+    .oneOf([...changeInEmploymentOptions])
+    .required(i18n_claimForm.t('employers.separation.reason.required')),
+  expect_to_be_recalled: boolean().required(
+    i18n_claimForm.t(
+      'employers.separation.expect_to_be_recalled.errors.required'
+    )
+  ),
+  employment_start_date: yupDate(
+    i18n_claimForm.t('employers.employment_start_date.label')
+  )
+    .max(
+      dayjs(new Date()).format('YYYY-MM-DD'),
+      i18n_claimForm.t('employers.employment_start_date.errors.maxDate')
+    )
+    .required(
+      i18n_claimForm.t('employers.employment_start_date.errors.required')
+    ),
+  employment_last_date: yupDate(
+    i18n_claimForm.t('employers.employment_last_date.label')
+  )
+    .max(
+      dayjs(new Date()).format('YYYY-MM-DD'),
+      i18n_claimForm.t('employers.employment_last_date.errors.maxDate')
+    )
+    .when('employment_start_date', {
+      is: (dateValue: string | undefined) => {
+        return !!dateValue
+      },
+      then: (schema) =>
+        schema.min(
+          ref('employment_start_date'),
+          i18n_claimForm.t('employers.employment_last_date.errors.minDate')
+        ),
+    })
+    .when('separation_circumstance', {
+      is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+        changeInEmploymentReason?.includes('laid_off'),
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t('employers.employment_last_date.errors.required')
+        ),
+    }),
 })
 
 export const yupEditEmployers = object().shape({
