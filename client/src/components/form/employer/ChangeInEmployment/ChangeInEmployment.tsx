@@ -29,7 +29,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
-  const showExpectRecall = employer?.separation_circumstance !== undefined
+  const showLastDay = employer?.separation_circumstance !== undefined
   employer?.separation_circumstance !== 'still_employed'
 
   return (
@@ -68,7 +68,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           name={`employers[${index}].employment_start_date`}
           legend={t('employment_start_date.label')}
         />
-        {showExpectRecall && (
+        {showLastDay && (
           <DateInputField
             name={`employers[${index}].employment_last_date`}
             legend={t('employment_last_date.label')}
