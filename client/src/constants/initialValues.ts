@@ -1,4 +1,9 @@
-import { PhoneInput, AddressInput, PersonNameInput } from 'types/claimantInput'
+import {
+  PhoneInput,
+  AddressInput,
+  AddressWithoutStreetInput,
+  PersonNameInput,
+} from 'types/claimantInput'
 
 export const PHONE_SKELETON: PhoneInput = {
   number: '',
@@ -7,6 +12,12 @@ export const PHONE_SKELETON: PhoneInput = {
 
 export const ADDRESS_SKELETON: AddressInput = {
   address: '',
+  city: '',
+  state: '',
+  zipcode: '',
+}
+
+export const ADDRESS_WITHOUT_STREET_SKELETON: AddressWithoutStreetInput = {
   city: '',
   state: '',
   zipcode: '',

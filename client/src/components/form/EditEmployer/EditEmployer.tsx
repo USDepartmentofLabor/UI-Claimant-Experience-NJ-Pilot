@@ -1,7 +1,11 @@
 import { useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
-import { array, boolean, object, ref, string } from 'yup'
-import { yupDate } from 'validations/yup/custom'
+import { array, boolean, object, mixed, ref, string } from 'yup'
+import {
+  yupDate,
+  yupAddressWithoutStreet,
+  yupPhone,
+} from 'validations/yup/custom'
 import { useEffect } from 'react'
 import { i18n_claimForm } from 'i18n/i18n'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
@@ -13,6 +17,11 @@ import {
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
 import dayjs from 'dayjs'
+import { WorkLocation } from '../employer/WorkLocation/WorkLocation'
+import {
+  ADDRESS_WITHOUT_STREET_SKELETON,
+  PHONE_SKELETON,
+} from 'constants/initialValues'
 
 type EditEmployerType = {
   index: string
@@ -45,6 +54,7 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
               This is the employer name {values.employers[parseInt(index)].name}
             </div>
             <YourEmployer index={index} />
+            <WorkLocation index={index} />
             <BusinessInterests index={index} />
             <ChangeInEmployment index={index} />
           </div>
@@ -63,6 +73,11 @@ export const editEmployerInitialValues = () => {
     isInitiated: true,
     // Your Employer
     is_full_time: undefined,
+    // Work Location
+    worked_at_employer_address: undefined,
+    alternate_physical_work_address: { ...ADDRESS_WITHOUT_STREET_SKELETON },
+    is_employer_phone_accurate: undefined,
+    work_location_phone: { ...PHONE_SKELETON },
     // Business Interests
     self_employed: undefined,
     is_owner: undefined,
@@ -82,6 +97,25 @@ const yupEditEmployer = object().shape({
   is_full_time: boolean().required(
     i18n_claimForm.t('your_employer.is_full_time.required')
   ),
+  // Work Location
+  worked_at_employer_address: boolean().required(
+    i18n_claimForm.t(
+      'employers.work_location.worked_at_employer_address.required'
+    )
+  ),
+  alternate_physical_work_address: mixed().when('worked_at_employer_address', {
+    is: false,
+    then: yupAddressWithoutStreet(),
+  }),
+  is_employer_phone_accurate: boolean().required(
+    i18n_claimForm.t(
+      'employers.work_location.is_employer_phone_accurate.required'
+    )
+  ),
+  work_location_phone: mixed().when('is_employer_phone_accurate', {
+    is: false,
+    then: yupPhone,
+  }),
   // Business Interests
   self_employed: boolean().required(
     i18n_claimForm.t(
