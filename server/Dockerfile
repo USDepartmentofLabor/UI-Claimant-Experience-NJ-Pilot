@@ -1,12 +1,13 @@
-# FROM debian:stable AS certs
+FROM debian:stable AS certs
 
-# RUN apt-get update \
-#     && apt-get install -y --no-install-recommends \
-#     ca-certificates \
-#     curl \
-#     && curl -sS https://truststore.pki.rds.amazonaws.com/us-east-1/us-east-1-bundle.pem -o /usr/local/share/ca-certificates/us-east-1-bundle.crt
+# hadolint ignore=DL3008
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    && curl -sS https://truststore.pki.rds.amazonaws.com/us-east-1/us-east-1-bundle.pem -o /usr/local/share/ca-certificates/us-east-1-bundle.crt
 
-# RUN update-ca-certificates
+RUN update-ca-certificates
 
 FROM eclipse-temurin:17.0.4_8-jdk AS builder
 
@@ -30,8 +31,7 @@ WORKDIR /app
 
 COPY --from=builder --chown=65532:65532 /tmp/app /tmp/app
 COPY --from=builder /app/build/libs/ui-claimant-intake-0.0.1-SNAPSHOT.jar .
-
-# COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert
 
 VOLUME ["/tmp/app"]
 
