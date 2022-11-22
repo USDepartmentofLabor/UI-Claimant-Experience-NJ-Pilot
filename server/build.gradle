@@ -42,7 +42,7 @@ dependencies {
     liquibaseRuntime sourceSets.main.output
 
     // AWS
-    implementation platform('software.amazon.awssdk:bom:2.18.16')
+    implementation platform('software.amazon.awssdk:bom:2.18.22')
     implementation 'software.amazon.awssdk:s3'
 
     // Swagger
