@@ -31,7 +31,7 @@ WORKDIR /app
 
 COPY --from=builder --chown=65532:65532 /tmp/app /tmp/app
 COPY --from=builder /app/build/libs/ui-claimant-intake-0.0.1-SNAPSHOT.jar .
-COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert/ca-certificates.crt
 
 VOLUME ["/tmp/app"]
 
