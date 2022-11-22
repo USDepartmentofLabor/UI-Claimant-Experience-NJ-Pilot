@@ -8,7 +8,7 @@ runs:
   using: "composite"
   steps:
     - name: Run Trivy vulnerability scan
-      uses: aquasecurity/trivy-action@d63413b0a4a4482237085319f7f4a1ce99a8f2ac
+      uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5
       with:
         scan-type: "image"
         image-ref: ${{inputs.image}}
@@ -18,7 +18,7 @@ runs:
         vuln-type: "os"
         security-checks: "vuln,secret"
     - name: Run Anchore vulnerability scan
-      uses: anchore/scan-action@d5aa5b6cb9414b0c7771438046ff5bcfa2854ed7
+      uses: anchore/scan-action@9a22e4caae42db0d4c687ab5431e1c3699d0def1
       with:
         image: ${{inputs.image}}
         severity-cutoff: "negligible"

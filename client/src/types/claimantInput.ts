@@ -36,6 +36,8 @@ export type EmployerInput = {
 export type Employer = {
   isImported?: boolean
   isEmployer?: boolean
+  employer_address?: AddressInput
+  employer_phone?: string
 
   isInitiated?: boolean
   name?: string
@@ -48,6 +50,11 @@ export type Employer = {
   definite_recall?: boolean
   definite_recall_date?: string
   is_seasonal_work?: boolean
+
+  worked_at_employer_address?: boolean
+  alternate_physical_work_address?: AddressWithoutStreetInput
+  is_employer_phone_accurate?: boolean
+  work_location_phone?: PhoneInput
 
   self_employed?: boolean
   is_owner?: boolean
@@ -135,6 +142,12 @@ export type PersonNameInput = {
 
 export type AddressInput = {
   address: string
+  city: string
+  state: string
+  zipcode: string
+}
+
+export type AddressWithoutStreetInput = {
   city: string
   state: string
   zipcode: string

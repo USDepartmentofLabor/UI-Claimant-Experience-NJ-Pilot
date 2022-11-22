@@ -44,6 +44,18 @@ export const yupAddressWithoutPOBox = () =>
       .required(i18n_common.t('address.zipcode.required')),
   })
 
+export const yupAddressWithoutStreet = () =>
+  object().shape({
+    city: string().max(64).required(i18n_common.t('address.city.required')),
+    state: string()
+      .oneOf(Object.keys(states))
+      .required(i18n_common.t('address.state.required')),
+    zipcode: string()
+      // eslint-disable-next-line security/detect-unsafe-regex
+      .matches(/^\d{5}(-\d{4})?$/, i18n_common.t('address.zipcode.format'))
+      .required(i18n_common.t('address.zipcode.required')),
+  })
+
 export const yupDate = (fieldName: string) =>
   date()
     .transform((value, originalValue) => {
@@ -97,11 +109,11 @@ export const yupPhone = object().shape({
   number: string()
     .matches(
       /^[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}$/,
-      i18n_common.t('phone.number.errors.matches')
+      i18n_claimForm.t('contact.claimant_phone.errors.matches')
     )
     .min(10)
     .max(13)
-    .required(i18n_common.t('phone.number.errors.required')),
+    .required(i18n_claimForm.t('contact.claimant_phone.errors.required')),
   sms: boolean(),
 })
 
