@@ -359,6 +359,33 @@ const claimForm = {
       label: 'State employer payroll number (optional)',
       hint: 'You can find the state employer payroll number on line 15 of your W2.',
     },
+    work_location: {
+      section_title: 'Work location',
+      worked_at_employer_address: {
+        label: 'Did you work in <0>City</0>, <1>State</1> for this employer?',
+        required:
+          "Please say whether you worked at the employer's address shown above",
+      },
+      alternate_physical_work_address: {
+        city: {
+          label: 'Work city',
+        },
+        state: {
+          label: 'Work state',
+        },
+        zipcode: {
+          label: 'Work ZIP',
+        },
+      },
+      is_employer_phone_accurate: {
+        label:
+          'Was <0>employer phone</0> the phone number of the location where you worked?',
+        required: "Please check that the employer's phone number is right",
+      },
+      work_location_phone: {
+        label: 'Work location phone number',
+      },
+    },
     business_interests: {
       section_title: 'Your business interests',
       self_employed: {

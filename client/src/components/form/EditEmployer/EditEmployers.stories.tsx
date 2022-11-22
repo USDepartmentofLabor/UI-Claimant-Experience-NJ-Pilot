@@ -13,7 +13,38 @@ export default {
 const Template: ComponentStory<typeof EditEmployer> = (args) => {
   /* Add input from child components here */
   const initialValues: ClaimantInput = {
-    employers: [{ name: 'Apple' }, { name: 'Microsoft' }, { name: 'Wendys' }],
+    employers: [
+      {
+        name: 'Apple',
+        employer_address: {
+          address: '123 Main St',
+          city: 'Seattle',
+          state: 'WA',
+          zipcode: '01234',
+        },
+        employer_phone: '123-456-7890',
+      },
+      {
+        name: 'Microsoft',
+        employer_address: {
+          address: '456 First St',
+          city: 'Manhattan',
+          state: 'NY',
+          zipcode: '12345',
+        },
+        employer_phone: '987-654-3210',
+      },
+      {
+        name: 'Wendys',
+        employer_address: {
+          address: '789 Rick Rd',
+          city: 'Trenton',
+          state: 'NJ',
+          zipcode: '23456',
+        },
+        employer_phone: '555-123-9870',
+      },
+    ],
   }
 
   return (
@@ -40,7 +71,38 @@ InvalidIndex.args = {
 const WithValidation: ComponentStory<typeof EditEmployer> = (args) => {
   /* Add input from child components here */
   const initialValues: ClaimantInput = {
-    employers: [{ name: 'Apple' }, { name: 'Microsoft' }, { name: 'Wendys' }],
+    employers: [
+      {
+        name: 'Apple',
+        employer_address: {
+          address: '123 Main St',
+          city: 'Seattle',
+          state: 'WA',
+          zipcode: '01234',
+        },
+        employer_phone: '123-456-7890',
+      },
+      {
+        name: 'Microsoft',
+        employer_address: {
+          address: '456 First St',
+          city: 'Manhattan',
+          state: 'NY',
+          zipcode: '12345',
+        },
+        employer_phone: '987-654-3210',
+      },
+      {
+        name: 'Wendys',
+        employer_address: {
+          address: '789 Rick Rd',
+          city: 'Trenton',
+          state: 'NJ',
+          zipcode: '23456',
+        },
+        employer_phone: '555-123-9870',
+      },
+    ],
   }
 
   return (
