@@ -96,8 +96,10 @@ Cypress.Commands.add('login', (userObj: JWTPayload) => {
     })
 })
 
+// TODO: remove hideElements when pa11y uses WCAG 3
 Cypress.Commands.add('checkA11y', (options: Options = {}) => {
   cy.pa11y({
+    hideElements: '.nav-future',
     runners: ['htmlcs'],
     standard: 'WCAG2AA',
     actions: ['wait for element #page-loading to be hidden'],
