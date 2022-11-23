@@ -2,7 +2,8 @@ FROM eclipse-temurin:17.0.4_8-jdk AS builder
 
 WORKDIR /app
 
-RUN mkdir -p /tmp/app
+RUN mkdir -p /tmp/app /app/certs \
+  && curl -sSo /app/certs/us-east-1-bundle.pem https://truststore.pki.rds.amazonaws.com/us-east-1/us-east-1-bundle.pem
 
 COPY ./gradle/wrapper ./gradle/wrapper
 COPY ./gradlew .
@@ -20,6 +21,7 @@ WORKDIR /app
 
 COPY --from=builder --chown=65532:65532 /tmp/app /tmp/app
 COPY --from=builder /app/build/libs/ui-claimant-intake-0.0.1-SNAPSHOT.jar .
+COPY --from=builder /app/certs/us-east-1-bundle.pem /app/certs/us-east-1-bundle.pem
 
 VOLUME ["/tmp/app"]
 
