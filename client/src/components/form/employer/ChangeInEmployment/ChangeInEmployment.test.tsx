@@ -106,7 +106,12 @@ describe('Change in Employment component', () => {
     const queryForRecallDate = () =>
       screen.queryByText('definite_recall_date.label', { exact: false })
 
-    //employers[0].definite_recall_date.parent-div
+    const queryForStartDateParent = () =>
+      screen.getByTestId('employers[0].employment_start_date.parent-div')
+
+    const queryForLastDateParent = () =>
+      screen.getByTestId('employers[0].employment_last_date.parent-div')
+
     const queryForRecallDateParent = () =>
       screen.getByTestId('employers[0].definite_recall_date.parent-div')
 
@@ -118,6 +123,24 @@ describe('Change in Employment component', () => {
       within(queryForRecallDateParent()).getByRole('textbox', { name: /day/i })
     const getYearRecallDate = () =>
       within(queryForRecallDateParent()).getByRole('textbox', { name: /year/i })
+
+    const getMonthStartDate = () =>
+      within(queryForStartDateParent()).getByRole('textbox', {
+        name: /month/i,
+      })
+    const getDayStartDate = () =>
+      within(queryForStartDateParent()).getByRole('textbox', { name: /day/i })
+    const getYearStartDate = () =>
+      within(queryForStartDateParent()).getByRole('textbox', { name: /year/i })
+
+    const getMonthLastDate = () =>
+      within(queryForLastDateParent()).getByRole('textbox', {
+        name: /month/i,
+      })
+    const getDayLastDate = () =>
+      within(queryForLastDateParent()).getByRole('textbox', { name: /day/i })
+    const getYearLastDate = () =>
+      within(queryForLastDateParent()).getByRole('textbox', { name: /year/i })
 
     return {
       sectionTitle,
@@ -136,6 +159,12 @@ describe('Change in Employment component', () => {
       getMonthRecallDate,
       getDayRecallDate,
       getYearRecallDate,
+      getDayStartDate,
+      getMonthStartDate,
+      getYearStartDate,
+      getDayLastDate,
+      getMonthLastDate,
+      getYearLastDate,
     }
   }
   it('renders without errors', async () => {
@@ -198,6 +227,54 @@ describe('Change in Employment component', () => {
     expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
     expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
     expect(queryForRecallDate()).toBeInTheDocument()
+  })
+  it('user can fill the base fields that are non-conditional to the main field', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonLaidOffAnswer,
+      queryForExpectRecallNoAnswer,
+      queryForExpectRecallYesAnswer,
+      getDayStartDate,
+      getMonthStartDate,
+      getYearStartDate,
+    } = renderChangeInEmployment()
+    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+    const startDateDayField = getDayStartDate()
+    const startDateMonthField = getMonthStartDate()
+    const startDateYearField = getYearStartDate()
+    const expectRecallNoAnswer = queryForExpectRecallNoAnswer()
+    const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
+
+    //radio fields can be clicked
+    //TODO - fill in for other radio fields when they are added as well?
+    expect(changeReasonLaidOffAnswer).not.toBeChecked()
+    await user.click(changeReasonLaidOffAnswer as HTMLElement)
+    expect(changeReasonLaidOffAnswer).toBeChecked()
+
+    //enter start date
+    expect(startDateDayField).toHaveValue('')
+    expect(startDateMonthField).toHaveValue('')
+    expect(startDateYearField).toHaveValue('')
+
+    await user.type(startDateDayField, '01')
+    await user.type(startDateMonthField, '06')
+    await user.type(startDateYearField, '2023')
+
+    expect(startDateDayField).toHaveValue('01')
+    expect(startDateMonthField).toHaveValue('06')
+    expect(startDateYearField).toHaveValue('2023')
+
+    //check expect to be recalled (main question)
+    expect(expectRecallNoAnswer).not.toBeChecked()
+    expect(expectRecallYesAnswer).not.toBeChecked()
+
+    await user.click(expectRecallNoAnswer as HTMLElement)
+    expect(expectRecallNoAnswer).toBeChecked()
+    expect(expectRecallYesAnswer).not.toBeChecked()
+
+    await user.click(expectRecallYesAnswer as HTMLElement)
+    expect(expectRecallNoAnswer).not.toBeChecked()
+    expect(expectRecallYesAnswer).toBeChecked()
   })
   it('conditional fields show', async () => {
     const user = userEvent.setup()
