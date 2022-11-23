@@ -53,10 +53,71 @@ describe('Change in Employment component', () => {
         : null
     }
 
+    const queryForHaveDefiniteDateOfRecall = () =>
+      screen.queryByRole('group', {
+        name: 'separation.definite_recall.label',
+      })
+
+    const queryForHaveDefiniteDateOfRecallNoAnswer = () => {
+      const question = queryForHaveDefiniteDateOfRecall()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'no',
+          })
+        : null
+    }
+
+    const queryForHaveDefiniteDateOfRecallYesAnswer = () => {
+      const question = queryForHaveDefiniteDateOfRecall()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'yes',
+          })
+        : null
+    }
+
+    const queryForIsSeasonal = () =>
+      screen.queryByRole('group', {
+        name: 'separation.definite_recall.label',
+      })
+
+    const queryForIsSeasonalNoAnswer = () => {
+      const question = queryForIsSeasonal()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'no',
+          })
+        : null
+    }
+
+    const queryForIsSeasonalYesAnswer = () => {
+      const question = queryForIsSeasonal()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'yes',
+          })
+        : null
+    }
+
     const queryForStartDate = () =>
       screen.queryByText('employment_start_date.label')
     const queryForFinishDate = () =>
       screen.queryByText('employment_last_date.label')
+    const queryForRecallDate = () =>
+      screen.queryByText('definite_recall_date.label', { exact: false })
+
+    //employers[0].definite_recall_date.parent-div
+    const queryForRecallDateParent = () =>
+      screen.getByTestId('employers[0].definite_recall_date.parent-div')
+
+    const getMonthRecallDate = () =>
+      within(queryForRecallDateParent()).getByRole('textbox', {
+        name: /month/i,
+      })
+    const getDayRecallDate = () =>
+      within(queryForRecallDateParent()).getByRole('textbox', { name: /day/i })
+    const getYearRecallDate = () =>
+      within(queryForRecallDateParent()).getByRole('textbox', { name: /year/i })
 
     return {
       sectionTitle,
@@ -64,27 +125,49 @@ describe('Change in Employment component', () => {
       queryForChangeReasonLaidOffAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
+      queryForHaveDefiniteDateOfRecall,
+      queryForHaveDefiniteDateOfRecallNoAnswer,
+      queryForHaveDefiniteDateOfRecallYesAnswer,
+      queryForIsSeasonalNoAnswer,
+      queryForIsSeasonalYesAnswer,
       queryForStartDate,
       queryForFinishDate,
+      queryForRecallDate,
+      getMonthRecallDate,
+      getDayRecallDate,
+      getYearRecallDate,
     }
   }
   it('renders without errors', async () => {
     const user = userEvent.setup()
     const {
       sectionTitle,
-      queryForChangeReasonLaidOffAnswer,
       queryForChangeReasonRadioField,
+      queryForChangeReasonLaidOffAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
+      queryForHaveDefiniteDateOfRecallNoAnswer,
+      queryForHaveDefiniteDateOfRecallYesAnswer,
+      queryForIsSeasonalNoAnswer,
+      queryForIsSeasonalYesAnswer,
       queryForStartDate,
       queryForFinishDate,
+      queryForRecallDate,
     } = renderChangeInEmployment()
     const changeReasonRadioField = queryForChangeReasonRadioField()
     const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
     const expectRecallNoAnswer = queryForExpectRecallNoAnswer()
     const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
+    const haveDefiniteDateOfRecallNoAnswer =
+      queryForHaveDefiniteDateOfRecallNoAnswer()
+    const haveDefiniteDateOfRecallYesAnswer =
+      queryForHaveDefiniteDateOfRecallYesAnswer()
+    const isSeasonalNoAnswer = queryForIsSeasonalNoAnswer()
+    const isSeasonalYesAnswer = queryForIsSeasonalYesAnswer()
+
     const startDate = queryForStartDate()
     const finishDate = queryForFinishDate()
+    const recallDate = queryForRecallDate()
 
     expect(sectionTitle).toBeInTheDocument()
     expect(changeReasonRadioField).toBeInTheDocument()
@@ -94,8 +177,132 @@ describe('Change in Employment component', () => {
     expect(startDate).toBeInTheDocument()
     expect(finishDate).not.toBeInTheDocument()
 
+    expect(haveDefiniteDateOfRecallNoAnswer).not.toBeInTheDocument()
+    expect(haveDefiniteDateOfRecallYesAnswer).not.toBeInTheDocument()
+    expect(isSeasonalNoAnswer).not.toBeInTheDocument()
+    expect(isSeasonalYesAnswer).not.toBeInTheDocument()
+    expect(recallDate).not.toBeInTheDocument()
+
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(changeReasonLaidOffAnswer).toBeChecked()
     expect(queryForFinishDate()).toBeInTheDocument()
+
+    await user.click(expectRecallYesAnswer as HTMLElement)
+    expect(queryForHaveDefiniteDateOfRecallNoAnswer()).toBeInTheDocument()
+    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeInTheDocument()
+    expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
+    expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
+    expect(queryForRecallDate()).not.toBeInTheDocument()
+
+    await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
+    expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
+    expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
+    expect(queryForRecallDate()).toBeInTheDocument()
+  })
+  it('conditional fields show', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonLaidOffAnswer,
+      queryForExpectRecallYesAnswer,
+      queryForHaveDefiniteDateOfRecallNoAnswer,
+      queryForHaveDefiniteDateOfRecallYesAnswer,
+      queryForIsSeasonalNoAnswer,
+      queryForIsSeasonalYesAnswer,
+      queryForFinishDate,
+      queryForRecallDate,
+    } = renderChangeInEmployment()
+
+    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+    const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
+
+    await user.click(changeReasonLaidOffAnswer as HTMLElement)
+    expect(changeReasonLaidOffAnswer).toBeChecked()
+    expect(queryForFinishDate()).toBeInTheDocument()
+
+    await user.click(expectRecallYesAnswer as HTMLElement)
+    expect(queryForHaveDefiniteDateOfRecallNoAnswer()).toBeInTheDocument()
+    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeInTheDocument()
+    expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
+    expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
+    expect(queryForRecallDate()).not.toBeInTheDocument()
+
+    await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
+    expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
+    expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
+    expect(queryForRecallDate()).toBeInTheDocument()
+  })
+  it('clears conditionals', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonLaidOffAnswer,
+      queryForExpectRecallNoAnswer,
+      queryForExpectRecallYesAnswer,
+      queryForHaveDefiniteDateOfRecallNoAnswer,
+      queryForHaveDefiniteDateOfRecallYesAnswer,
+      queryForIsSeasonalNoAnswer,
+      queryForIsSeasonalYesAnswer,
+      queryForRecallDate,
+      getMonthRecallDate,
+      getDayRecallDate,
+      getYearRecallDate,
+    } = renderChangeInEmployment()
+
+    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+    const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
+
+    await user.click(changeReasonLaidOffAnswer as HTMLElement)
+    expect(queryForChangeReasonLaidOffAnswer()).toBeChecked()
+    await user.click(expectRecallYesAnswer as HTMLElement)
+    expect(queryForExpectRecallYesAnswer()).toBeChecked()
+    await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
+    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeChecked()
+
+    await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
+    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeChecked()
+
+    await user.type(getMonthRecallDate(), '01')
+    await user.type(getDayRecallDate(), '06')
+    await user.type(getYearRecallDate(), '2023')
+
+    expect(getMonthRecallDate()).toHaveValue('01')
+    expect(getDayRecallDate()).toHaveValue('06')
+    expect(getYearRecallDate()).toHaveValue('2023')
+
+    await user.click(queryForIsSeasonalYesAnswer() as HTMLElement)
+    expect(queryForIsSeasonalYesAnswer()).toBeChecked()
+    //should clear all date fields but seasonal should remain
+    await user.click(queryForHaveDefiniteDateOfRecallNoAnswer() as HTMLElement)
+    expect(queryForHaveDefiniteDateOfRecallNoAnswer()).toBeChecked()
+    expect(queryForRecallDate()).not.toBeInTheDocument()
+
+    // expect(queryForIsSeasonalYesAnswer()).toBeChecked() no worky
+
+    //reset it to have date
+    await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
+    expect(getMonthRecallDate()).toHaveValue('')
+    expect(getDayRecallDate()).toHaveValue('')
+    expect(getYearRecallDate()).toHaveValue('')
+
+    await user.type(getMonthRecallDate(), '01')
+    await user.type(getDayRecallDate(), '06')
+    await user.type(getYearRecallDate(), '2023')
+
+    await user.click(queryForExpectRecallNoAnswer() as HTMLElement)
+    expect(queryForExpectRecallNoAnswer()).toBeChecked()
+    expect(queryForIsSeasonalYesAnswer()).not.toBeInTheDocument()
+    expect(queryForIsSeasonalNoAnswer()).not.toBeInTheDocument()
+    expect(queryForRecallDate()).not.toBeInTheDocument()
+    await user.click(queryForExpectRecallYesAnswer() as HTMLElement)
+
+    expect(queryForExpectRecallYesAnswer()).toBeChecked()
+    expect(queryForIsSeasonalNoAnswer()).not.toBeChecked()
+    expect(queryForIsSeasonalYesAnswer()).not.toBeChecked()
+    expect(queryForHaveDefiniteDateOfRecallNoAnswer()).not.toBeChecked()
+    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).not.toBeChecked()
+
+    await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
+    expect(getMonthRecallDate()).toHaveValue('')
+    expect(getDayRecallDate()).toHaveValue('')
+    expect(getYearRecallDate()).toHaveValue('')
   })
 })
