@@ -42,11 +42,11 @@ dependencies {
     liquibaseRuntime sourceSets.main.output
 
     // AWS
-    implementation platform('software.amazon.awssdk:bom:2.18.16')
+    implementation platform('software.amazon.awssdk:bom:2.18.22')
     implementation 'software.amazon.awssdk:s3'
 
     // Swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
 
     // Environment Configuration
     implementation 'me.paulschwarz:spring-dotenv:2.5.4'
