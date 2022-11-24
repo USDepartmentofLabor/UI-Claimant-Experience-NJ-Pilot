@@ -30,7 +30,10 @@ describe('Edit employer checks', () => {
 
       employment_start_date: { mo: '02', day: '20', yr: '2014' },
       employment_last_date: { mo: '02', day: '24', yr: '2022' },
-      expect_to_be_recalled: false,
+      expect_to_be_recalled: true,
+      has_definite_recall_date: true,
+      definite_recall_date: { mo: '02', day: '24', yr: '2024' },
+      is_seasonal_work: true,
     })
     /* add other edit employer cypress tests here */
   })
