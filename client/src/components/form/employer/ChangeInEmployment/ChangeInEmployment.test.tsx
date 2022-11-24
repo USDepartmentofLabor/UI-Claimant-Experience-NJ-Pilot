@@ -276,6 +276,7 @@ describe('Change in Employment component', () => {
     expect(expectRecallNoAnswer).not.toBeChecked()
     expect(expectRecallYesAnswer).toBeChecked()
   })
+
   it('conditional fields show', async () => {
     const user = userEvent.setup()
     const {
@@ -291,24 +292,92 @@ describe('Change in Employment component', () => {
 
     const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
     const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
+    let finishDate = queryForFinishDate()
 
+    //laid off should trigger finished date to show
+    expect(finishDate).not.toBeInTheDocument()
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(changeReasonLaidOffAnswer).toBeChecked()
-    expect(queryForFinishDate()).toBeInTheDocument()
 
+    finishDate = queryForFinishDate()
+    expect(finishDate).toBeInTheDocument()
+
+    let haveDefiniteDateOfRecallNoAnswer =
+      queryForHaveDefiniteDateOfRecallNoAnswer()
+    let haveDefiniteDateOfRecallYesAnswer =
+      queryForHaveDefiniteDateOfRecallYesAnswer()
+    let isSeasonalNoAnswer = queryForIsSeasonalNoAnswer()
+    let isSeasonalYesAnswer = queryForIsSeasonalYesAnswer()
+
+    expect(haveDefiniteDateOfRecallNoAnswer).not.toBeInTheDocument()
+    expect(haveDefiniteDateOfRecallYesAnswer).not.toBeInTheDocument()
+    expect(isSeasonalNoAnswer).not.toBeInTheDocument()
+    expect(isSeasonalYesAnswer).not.toBeInTheDocument()
+
+    //definite date of recall yes/no question and seasonal should appear
+    //the definite date of recall date field should still be hidden
     await user.click(expectRecallYesAnswer as HTMLElement)
-    expect(queryForHaveDefiniteDateOfRecallNoAnswer()).toBeInTheDocument()
-    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeInTheDocument()
-    expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
-    expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
-    expect(queryForRecallDate()).not.toBeInTheDocument()
+    haveDefiniteDateOfRecallNoAnswer =
+      queryForHaveDefiniteDateOfRecallNoAnswer()
+    haveDefiniteDateOfRecallYesAnswer =
+      queryForHaveDefiniteDateOfRecallYesAnswer()
+    isSeasonalNoAnswer = queryForIsSeasonalNoAnswer()
+    isSeasonalYesAnswer = queryForIsSeasonalYesAnswer()
 
+    expect(haveDefiniteDateOfRecallNoAnswer).toBeInTheDocument()
+    expect(haveDefiniteDateOfRecallYesAnswer).toBeInTheDocument()
+    expect(isSeasonalNoAnswer).toBeInTheDocument()
+    expect(isSeasonalYesAnswer).toBeInTheDocument()
+
+    //recall date field
+    let definiteRecallDate = queryForRecallDate()
+    expect(definiteRecallDate).not.toBeInTheDocument()
+
+    //should show date field and date field should remain visible
     await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
-    expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
-    expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
-    expect(queryForRecallDate()).toBeInTheDocument()
+    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeChecked()
+    definiteRecallDate = queryForRecallDate()
+    isSeasonalNoAnswer = queryForIsSeasonalNoAnswer()
+    isSeasonalYesAnswer = queryForIsSeasonalYesAnswer()
+
+    expect(isSeasonalNoAnswer).toBeInTheDocument()
+    expect(isSeasonalYesAnswer).toBeInTheDocument()
+    expect(definiteRecallDate).toBeInTheDocument()
   })
-  it('clears conditionals', async () => {
+  it('fills and clears last day of work', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonLaidOffAnswer,
+
+      getMonthRecallDate,
+      getDayRecallDate,
+      getYearRecallDate,
+      getDayLastDate,
+      getMonthLastDate,
+      getYearLastDate,
+    } = renderChangeInEmployment()
+    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+
+    await user.click(changeReasonLaidOffAnswer as HTMLElement)
+    expect(queryForChangeReasonLaidOffAnswer()).toBeChecked()
+    const lastDayOfWorkDayField = getDayLastDate()
+    const lastDayOfWorkMonthField = getMonthLastDate()
+    const lastDayOfWorkYearField = getYearLastDate()
+    await user.type(lastDayOfWorkDayField, '01')
+    await user.type(lastDayOfWorkMonthField, '06')
+    await user.type(lastDayOfWorkYearField, '2023')
+
+    expect(getMonthRecallDate()).toHaveValue('01')
+    expect(getDayRecallDate()).toHaveValue('06')
+    expect(getYearRecallDate()).toHaveValue('2023')
+
+    /*TODO - should be filled in here with reseting the last day field if
+    the radio is unchecked
+    Fill in when still-employed is added in.
+    Change the const values above to be let and reassign
+    */
+  })
+  it('fills and clears recall conditionals', async () => {
     const user = userEvent.setup()
     const {
       queryForChangeReasonLaidOffAnswer,
@@ -325,15 +394,12 @@ describe('Change in Employment component', () => {
     } = renderChangeInEmployment()
 
     const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
-    const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
 
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(queryForChangeReasonLaidOffAnswer()).toBeChecked()
-    await user.click(expectRecallYesAnswer as HTMLElement)
-    expect(queryForExpectRecallYesAnswer()).toBeChecked()
-    await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
-    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeChecked()
 
+    await user.click(queryForExpectRecallYesAnswer() as HTMLElement)
+    expect(queryForChangeReasonLaidOffAnswer()).toBeChecked()
     await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
     expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeChecked()
 
@@ -347,19 +413,20 @@ describe('Change in Employment component', () => {
 
     await user.click(queryForIsSeasonalYesAnswer() as HTMLElement)
     expect(queryForIsSeasonalYesAnswer()).toBeChecked()
-    //should clear all date fields but seasonal should remain
+
+    //should clear all date fields
     await user.click(queryForHaveDefiniteDateOfRecallNoAnswer() as HTMLElement)
     expect(queryForHaveDefiniteDateOfRecallNoAnswer()).toBeChecked()
     expect(queryForRecallDate()).not.toBeInTheDocument()
 
-    // expect(queryForIsSeasonalYesAnswer()).toBeChecked() no worky
-
-    //reset it to have date
     await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
+
+    //check if cleared appropriately
     expect(getMonthRecallDate()).toHaveValue('')
     expect(getDayRecallDate()).toHaveValue('')
     expect(getYearRecallDate()).toHaveValue('')
 
+    //reset values
     await user.type(getMonthRecallDate(), '01')
     await user.type(getDayRecallDate(), '06')
     await user.type(getYearRecallDate(), '2023')
