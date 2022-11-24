@@ -113,7 +113,9 @@ describe('Change in Employment component', () => {
       screen.getByTestId('employers[0].employment_last_date.parent-div')
 
     const queryForRecallDateParent = () =>
-      screen.getByTestId('employers[0].definite_recall_date.parent-div')
+      screen.getByTestId(
+        'employers[0].separation.definite_recall_date.parent-div'
+      )
 
     const getMonthRecallDate = () =>
       within(queryForRecallDateParent()).getByRole('textbox', {
