@@ -113,9 +113,7 @@ describe('Change in Employment component', () => {
       screen.getByTestId('employers[0].employment_last_date.parent-div')
 
     const queryForRecallDateParent = () =>
-      screen.getByTestId(
-        'employers[0].separation.definite_recall_date.parent-div'
-      )
+      screen.getByTestId('employers[0].definite_recall_date.parent-div')
 
     const getMonthRecallDate = () =>
       within(queryForRecallDateParent()).getByRole('textbox', {
@@ -350,10 +348,6 @@ describe('Change in Employment component', () => {
     const user = userEvent.setup()
     const {
       queryForChangeReasonLaidOffAnswer,
-
-      getMonthRecallDate,
-      getDayRecallDate,
-      getYearRecallDate,
       getDayLastDate,
       getMonthLastDate,
       getYearLastDate,
@@ -369,9 +363,9 @@ describe('Change in Employment component', () => {
     await user.type(lastDayOfWorkMonthField, '06')
     await user.type(lastDayOfWorkYearField, '2023')
 
-    expect(getMonthRecallDate()).toHaveValue('01')
-    expect(getDayRecallDate()).toHaveValue('06')
-    expect(getYearRecallDate()).toHaveValue('2023')
+    expect(lastDayOfWorkDayField).toHaveValue('01')
+    expect(lastDayOfWorkMonthField).toHaveValue('06')
+    expect(lastDayOfWorkYearField).toHaveValue('2023')
 
     /*TODO - should be filled in here with reseting the last day field if
     the radio is unchecked
@@ -404,6 +398,7 @@ describe('Change in Employment component', () => {
     expect(queryForChangeReasonLaidOffAnswer()).toBeChecked()
     await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
     expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeChecked()
+    expect(queryForRecallDate()).toBeInTheDocument()
 
     await user.type(getMonthRecallDate(), '01')
     await user.type(getDayRecallDate(), '06')

@@ -45,7 +45,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
       clearField(`employers[${index}].definite_recall_date`)
     }
   }
-  const hasDefiniteRecallDateChange: ChangeEventHandler<HTMLInputElement> = (
+  const handleHasDefiniteRecallChange: ChangeEventHandler<HTMLInputElement> = (
     e
   ) => {
     if (e.target.value === 'no') {
@@ -105,7 +105,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           <YesNoQuestion
             question={t('separation.definite_recall.label')}
             name={`employers[${index}].definite_recall`}
-            onChange={hasDefiniteRecallDateChange}
+            onChange={handleHasDefiniteRecallChange}
           />
         )}
         {showDefiniteRecall && (

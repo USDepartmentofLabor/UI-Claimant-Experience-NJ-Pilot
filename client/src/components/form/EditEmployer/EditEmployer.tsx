@@ -196,6 +196,36 @@ const yupEditEmployer = object().shape({
           i18n_claimForm.t('employers.employment_last_date.errors.required')
         ),
     }),
+  is_seasonal_work: boolean().when('expect_to_be_recalled', {
+    is: true,
+    then: boolean().required(
+      i18n_claimForm.t('employers.separation.is_seasonal_work.errors.required')
+    ),
+  }),
+  definite_recall: boolean().when('expect_to_be_recalled', {
+    is: true,
+    then: boolean().required(
+      i18n_claimForm.t('employers.separation.definite_recall.errors.required')
+    ),
+  }),
+  definite_recall_date: yupDate(
+    i18n_claimForm.t('employers.separation.definite_recall_date.label')
+  )
+    .min(
+      ref('employment_last_date'),
+      i18n_claimForm.t(
+        'employers.separation.definite_recall_date.errors.minDate'
+      )
+    )
+    .when('definite_recall', {
+      is: true,
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.separation.definite_recall_date.errors.required'
+          )
+        ),
+    }),
 })
 
 export const yupEditEmployers = object().shape({

@@ -229,6 +229,7 @@ const claimForm = {
         label: 'Definite date of recall',
         errors: {
           required: 'This field is required.',
+          minDate: 'Recall date must be after last day of employment',
         },
       },
       is_seasonal_work: {
