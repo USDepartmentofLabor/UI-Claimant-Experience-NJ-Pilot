@@ -18,7 +18,7 @@ import { AccordionItemProps } from '@trussworks/react-uswds/lib/components/Accor
 import routing_and_account_numbers from 'assets/img/routing_and_account_numbers.gif'
 import { useClearFields } from 'hooks/useClearFields'
 import CheckboxField from 'components/form/fields/CheckboxField/CheckboxField'
-import { useEffect, useState } from 'react'
+import { ChangeEventHandler, useEffect, useState } from 'react'
 
 const PaymentInformation: NextPage = () => {
   const { values } = useFormikContext<ClaimantInput>()
@@ -72,8 +72,10 @@ const PaymentInformation: NextPage = () => {
     },
   ]
 
-  const handlePaymentMethodChange = () => {
-    if (values.payment_method === 'debit') {
+  const handlePaymentMethodChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.value === 'debit') {
       clearFields([
         'account_type',
         'routing_number',

@@ -16,11 +16,30 @@ import { ClaimantInput } from 'types/claimantInput'
 import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
 import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
 import { formatStoredDateToDisplayDate } from 'utils/date/format'
+import { ChangeEventHandler } from 'react'
 
 export const Identity: NextPage = () => {
   const { t } = useTranslation('claimForm')
   const { values, initialValues } = useFormikContext<ClaimantInput>()
   const { clearField, clearFields } = useClearFields()
+
+  const handleAuthorizedToWorkChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.value === 'no') {
+      clearFields(['authorization_type', 'alien_registration_number'])
+    }
+    if (e.target.value === 'yes') {
+      clearField('not_authorized_to_work_explanation')
+    }
+  }
+  const handleAuthorizationTypeChange: ChangeEventHandler<HTMLSelectElement> = (
+    e
+  ) => {
+    if (e.target.value === 'US_citizen_or_national') {
+      clearField('alien_registration_number')
+    }
+  }
 
   const showWorkAuthorizationFields = values.authorized_to_work
 
@@ -30,21 +49,6 @@ export const Identity: NextPage = () => {
 
   const showNotAllowedToWorkInUSExplanation =
     values.authorized_to_work === false
-
-  const handleAuthorizedToWorkChange = () => {
-    if (!showWorkAuthorizationFields) {
-      clearFields(['authorization_type', 'alien_registration_number'])
-    }
-    if (!showNotAllowedToWorkInUSExplanation) {
-      clearField('not_authorized_to_work_explanation')
-    }
-  }
-
-  const handleAuthorizationTypeChange = () => {
-    if (!showAlienRegistrationNumber) {
-      clearField('alien_registration_number')
-    }
-  }
 
   return (
     <>

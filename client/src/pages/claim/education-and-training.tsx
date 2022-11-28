@@ -11,14 +11,17 @@ import { Routes } from 'constants/routes'
 import { i18n_claimForm } from 'i18n/i18n'
 import { ClaimantInput } from 'types/claimantInput'
 import { Link } from '@trussworks/react-uswds'
+import { ChangeEventHandler } from 'react'
 
 const EducationAndTraining: NextPage = () => {
   const { t } = useTranslation('claimForm')
   const { values } = useFormikContext<ClaimantInput>()
   const { clearField } = useClearFields()
 
-  const handleAttendingCollegeOrTraining = () => {
-    if (!values.attending_college_or_job_training) {
+  const handleAttendingCollegeOrTraining: ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
+    if (e.target.value !== 'yes') {
       clearField('enrollment')
     }
   }

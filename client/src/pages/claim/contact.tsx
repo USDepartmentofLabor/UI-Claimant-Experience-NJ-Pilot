@@ -37,15 +37,19 @@ const Contact: NextPage = () => {
       setValues({ ...values, alternate_phone: undefined })
     }
   }
-  const handleInterpreterRequiredChange = () => {
-    if (values.interpreter_required !== 'no_interpreter_tty') {
+  const handleInterpreterRequiredChange: ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
+    if (e.target.value !== 'no_interpreter_tty') {
       clearField('preferred_language')
       clearField('preferred_language_other')
     }
   }
 
-  const handlePreferredLanguageOtherChange = () => {
-    if (values.preferred_language === 'other') {
+  const handlePreferredLanguageChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.value === 'other') {
       clearField('preferred_language_other')
     }
   }
@@ -102,7 +106,7 @@ const Contact: NextPage = () => {
                 value: option,
               }
             })}
-            onChange={handlePreferredLanguageOtherChange}
+            onChange={handlePreferredLanguageChange}
           />
           {values.preferred_language === 'other' && (
             <TextField

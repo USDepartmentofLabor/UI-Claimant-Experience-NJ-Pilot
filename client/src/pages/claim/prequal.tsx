@@ -12,6 +12,7 @@ import { Routes } from 'constants/routes'
 import styles from 'styles/pages/claim/prequal.module.scss'
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import { statesProvincesAndTerritories } from 'fixtures/states_provinces_territories'
+import { ChangeEventHandler } from 'react'
 
 const stateProvincesTerritoriesDropdownOptions = Object.entries(
   statesProvincesAndTerritories
@@ -22,14 +23,18 @@ export const Prequal: NextPage = () => {
   const { values } = useFormikContext<ClaimantInput>()
   const { clearField } = useClearFields()
 
-  const handleFiledUnemploymentChange = () => {
-    if (values.filed_in_last_12mo === false) {
+  const handleFiledInLast12MonthsChange: ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
+    if (e.target.value === 'no') {
       clearField('state_province_territory_where_filed')
     }
   }
 
-  const handleLiveOutOfStateChange = () => {
-    if (values.lived_outside_nj_when_working_nj === false) {
+  const handleLivedOutsideOfNewJerseyChange: ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
+    if (e.target.value === 'no') {
       clearField('will_look_for_work_in_nj')
     }
   }
@@ -39,7 +44,7 @@ export const Prequal: NextPage = () => {
       <YesNoQuestion
         question={t('filed_in_last_12mo.label')}
         name="filed_in_last_12mo"
-        onChange={handleFiledUnemploymentChange}
+        onChange={handleFiledInLast12MonthsChange}
       />
       {values.filed_in_last_12mo === true && (
         <DropdownField
@@ -54,7 +59,7 @@ export const Prequal: NextPage = () => {
       <YesNoQuestion
         question={t('lived_outside_nj_when_working_nj.label')}
         name="lived_outside_nj_when_working_nj"
-        onChange={handleLiveOutOfStateChange}
+        onChange={handleLivedOutsideOfNewJerseyChange}
       />
       {values.lived_outside_nj_when_working_nj === true && (
         <YesNoQuestion

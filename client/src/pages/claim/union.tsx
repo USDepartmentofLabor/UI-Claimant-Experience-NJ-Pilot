@@ -10,15 +10,18 @@ import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { boolean, object, string } from 'yup'
 import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
+import { ChangeEventHandler } from 'react'
 
 export const Union: NextPage = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'union' })
   const { values } = useFormikContext<ClaimantInput>()
   const { clearFields } = useClearFields()
 
-  const handleSeekWorkThroughHiringHallChange = () => {
+  const handleSeekWorkThroughHiringHallChange: ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
     // Remove conditional data if previous answer is changed
-    if (values.required_to_seek_work_through_hiring_hall === false) {
+    if (e.target.value === 'no') {
       clearFields(['union_name', 'union_local_number'])
     }
   }
