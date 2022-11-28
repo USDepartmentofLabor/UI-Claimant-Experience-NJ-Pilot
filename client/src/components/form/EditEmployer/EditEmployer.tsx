@@ -85,9 +85,12 @@ export const editEmployerInitialValues = () => {
     employer_is_sole_proprietorship: undefined,
     related_to_owner_or_child_of_owner_under_18: undefined,
     // Change in Employment
-    expect_to_be_recalled: undefined,
     employment_start_date: undefined,
     employment_last_date: undefined,
+    expect_to_be_recalled: undefined,
+    definite_recall: undefined,
+    definite_recall_date: undefined,
+    is_seasonal_work: undefined,
   }
 }
 const yupEditEmployer = object().shape({
