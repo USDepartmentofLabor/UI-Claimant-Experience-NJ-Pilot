@@ -26,6 +26,9 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     if (e.target.value === 'still_employed') {
       clearField(`employers[${index}].employment_last_date`)
+    } else {
+      clearField(`employers[${index}].reason_still_employed`)
+      clearField(`employers[${index}].hours_reduced_twenty_percent`)
     }
   }
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
@@ -69,7 +72,9 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           </div>
         </div>
         {showStillEmployed && (
-          <Fieldset legend={t('separation.reasons.still_employed.label')}>
+          <Fieldset
+            legend={t('separation.reasons.still_employed.option_heading')}
+          >
             <RadioField
               name={`employers[${index}].reason_still_employed`}
               options={reasonStillEmployedOptions.map((option) => {
@@ -96,6 +101,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         {showStillEmployed && (
           <YesNoQuestion
             question={t('hours_reduced_twenty_percent.label')}
+            hint={t('hours_reduced_twenty_percent.hint')}
             name={`employers[${index}].hours_reduced_twenty_percent`}
           />
         )}

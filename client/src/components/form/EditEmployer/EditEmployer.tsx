@@ -13,6 +13,7 @@ import {
   ChangeInEmploymentOption,
   changeInEmploymentOptions,
   employerRelationOptions,
+  reasonStillEmployedOptions,
 } from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
@@ -88,6 +89,8 @@ export const editEmployerInitialValues = () => {
     expect_to_be_recalled: undefined,
     employment_start_date: undefined,
     employment_last_date: undefined,
+    reason_still_employed: undefined,
+    hours_reduced_twenty_percent: undefined,
   }
 }
 const yupEditEmployer = object().shape({
@@ -194,6 +197,28 @@ const yupEditEmployer = object().shape({
       then: (schema) =>
         schema.required(
           i18n_claimForm.t('employers.employment_last_date.errors.required')
+        ),
+    }),
+  hours_reduced_twenty_percent: boolean().when('separation_circumstance', {
+    is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+      changeInEmploymentReason === 'still_employed',
+    then: (schema) =>
+      schema.required(
+        i18n_claimForm.t(
+          'employers.hours_reduced_twenty_percent.errors.required'
+        )
+      ),
+  }),
+  reason_still_employed: string()
+    .oneOf([...reasonStillEmployedOptions])
+    .when('separation_circumstance', {
+      is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+        changeInEmploymentReason === 'still_employed',
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.separation.reasons.still_employed.errors.required'
+          )
         ),
     }),
 })

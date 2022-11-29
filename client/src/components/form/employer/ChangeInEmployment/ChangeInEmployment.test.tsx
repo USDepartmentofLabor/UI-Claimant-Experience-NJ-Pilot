@@ -30,6 +30,9 @@ describe('Change in Employment component', () => {
     const queryForChangeReasonLaidOffAnswer = () =>
       screen.getByTestId('employers[0].separation_circumstance.laid_off')
 
+    const queryForChangeReasonStillEmployedAnswer = () =>
+      screen.getByTestId('employers[0].separation_circumstance.still_employed')
+
     const queryForExpectRecall = () =>
       screen.queryByRole('group', {
         name: 'separation.expect_to_be_recalled.label',
@@ -53,17 +56,54 @@ describe('Change in Employment component', () => {
         : null
     }
 
+    const queryForReasonStillEmployedQuestion = () =>
+      screen.queryByRole('group', {
+        name: 'separation.reasons.still_employed.option_heading',
+      })
+    const queryForHoursReducedByEmployerAnswer = () => {
+      const question = queryForReasonStillEmployedQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'separation.reasons.still_employed.options.reduction_in_hours_by_employer',
+          })
+        : null
+    }
+    const queryForReduced20PercentQuestion = () =>
+      screen.queryByRole('group', {
+        name: 'hours_reduced_twenty_percent.label',
+      })
+    const queryForReduced20PercentYesAnswer = () => {
+      const question = queryForReduced20PercentQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'yes',
+          })
+        : null
+    }
+    const queryForReduced20PercentNoAnswer = () => {
+      const question = queryForReduced20PercentQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'yes',
+          })
+        : null
+    }
     const queryForStartDate = () =>
       screen.queryByText('employment_start_date.label')
     const queryForFinishDate = () =>
       screen.queryByText('employment_last_date.label')
-
     return {
       sectionTitle,
       queryForChangeReasonRadioField,
       queryForChangeReasonLaidOffAnswer,
+      queryForChangeReasonStillEmployedAnswer,
+      queryForHoursReducedByEmployerAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
+      queryForReasonStillEmployedQuestion,
+      queryForReduced20PercentQuestion,
+      queryForReduced20PercentYesAnswer,
+      queryForReduced20PercentNoAnswer,
       queryForStartDate,
       queryForFinishDate,
     }
@@ -73,14 +113,19 @@ describe('Change in Employment component', () => {
     const {
       sectionTitle,
       queryForChangeReasonLaidOffAnswer,
+      queryForChangeReasonStillEmployedAnswer,
       queryForChangeReasonRadioField,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
+      queryForReasonStillEmployedQuestion,
+      queryForReduced20PercentQuestion,
       queryForStartDate,
       queryForFinishDate,
     } = renderChangeInEmployment()
     const changeReasonRadioField = queryForChangeReasonRadioField()
     const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+    const changeReasonStillEmployedAnswer =
+      queryForChangeReasonStillEmployedAnswer()
     const expectRecallNoAnswer = queryForExpectRecallNoAnswer()
     const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
     const startDate = queryForStartDate()
@@ -97,5 +142,52 @@ describe('Change in Employment component', () => {
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(changeReasonLaidOffAnswer).toBeChecked()
     expect(queryForFinishDate()).toBeInTheDocument()
+
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+    expect(changeReasonStillEmployedAnswer).toBeChecked()
+    expect(queryForReasonStillEmployedQuestion()).toBeInTheDocument()
+    expect(queryForReduced20PercentQuestion()).toBeInTheDocument()
+  })
+
+  it('shows and clears Still Employed conditionals', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonLaidOffAnswer,
+      queryForChangeReasonStillEmployedAnswer,
+      queryForHoursReducedByEmployerAnswer,
+      queryForReasonStillEmployedQuestion,
+      queryForReduced20PercentQuestion,
+      queryForReduced20PercentYesAnswer,
+      queryForReduced20PercentNoAnswer,
+    } = renderChangeInEmployment()
+    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+    const changeReasonStillEmployedAnswer =
+      queryForChangeReasonStillEmployedAnswer()
+
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+    expect(changeReasonStillEmployedAnswer).toBeChecked()
+
+    let hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
+    let reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    expect(hoursReducedByEmployerAnswer).toBeChecked()
+
+    await user.click(reduced20PercentYesAnswer as HTMLElement)
+    expect(reduced20PercentYesAnswer).toBeChecked()
+
+    await user.click(changeReasonLaidOffAnswer as HTMLElement)
+    expect(changeReasonLaidOffAnswer).toBeChecked()
+    expect(queryForReduced20PercentQuestion()).not.toBeInTheDocument()
+    expect(queryForReasonStillEmployedQuestion()).not.toBeInTheDocument()
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+
+    hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
+    reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
+    const reduced20PercentNoAnswer = queryForReduced20PercentNoAnswer()
+
+    expect(queryForReduced20PercentQuestion()).toBeInTheDocument()
+    expect(reduced20PercentYesAnswer).not.toBeChecked()
+    expect(reduced20PercentNoAnswer).not.toBeChecked()
+    expect(hoursReducedByEmployerAnswer).not.toBeChecked()
   })
 })
