@@ -38,7 +38,7 @@
       "type": "object",
       "properties": {
         "address": { "type": "string", "maxLength": 64 },
-        "city": { "type": "string", "maxLength": 64 },
+        "city": { "type": "string", "maxLength": 64, "pattern": "^([^0-9]*)$" },
         "state": { "$ref": "#/definitions/state_or_territory" },
         "zipcode": {
           "type": "string",
@@ -59,7 +59,7 @@
           "maxLength": 64,
           "pattern": "^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$"
         },
-        "city": { "type": "string", "maxLength": 64 },
+        "city": { "type": "string", "maxLength": 64, "pattern": "^([^0-9]*)$" },
         "state": { "$ref": "#/definitions/state_or_territory" },
         "zipcode": {
           "type": "string",

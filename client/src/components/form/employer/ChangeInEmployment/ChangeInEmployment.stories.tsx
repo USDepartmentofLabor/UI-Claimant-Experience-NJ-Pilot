@@ -3,27 +3,17 @@ import { Form, Formik } from 'formik'
 import { Button } from '@trussworks/react-uswds'
 import { ChangeInEmployment } from './ChangeInEmployment'
 import { noop } from 'helpers/noop/noop'
-
 import { yupEditEmployers } from '../../EditEmployer/EditEmployer'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 export default {
   title: 'Components/form/Employer/Sections/Change In Employment',
   component: ChangeInEmployment,
 } as ComponentMeta<typeof ChangeInEmployment>
 
+const { data } = useGetRecentEmployers()
 const initialValues = {
-  employers: [
-    {
-      name: 'Tesla',
-      is_full_time: undefined,
-      separation_circumstance: undefined,
-    },
-    {
-      name: 'Apple',
-      is_full_time: undefined,
-      separation_circumstance: undefined,
-    },
-  ],
+  employers: data,
 }
 
 const Template: ComponentStory<typeof ChangeInEmployment> = (args) => {

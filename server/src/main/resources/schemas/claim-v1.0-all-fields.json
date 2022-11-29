@@ -43,7 +43,8 @@
         },
         "city": {
           "type": "string",
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^([^0-9]*)$"
         },
         "state": {
           "$ref": "#/definitions/state_or_territory"
@@ -69,7 +70,8 @@
         },
         "city": {
           "type": "string",
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^([^0-9]*)$"
         },
         "state": {
           "$ref": "#/definitions/state_or_territory"
@@ -90,7 +92,8 @@
       "properties": {
         "city": {
           "type": "string",
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^([^0-9]*)$"
         },
         "state": {
           "$ref": "#/definitions/state_or_territory"
