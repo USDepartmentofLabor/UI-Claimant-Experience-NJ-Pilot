@@ -29,6 +29,11 @@ with open(args.taskdef, "r") as f:
         container["name"] = container["name"].replace(
             "ENVIRONMENT_PLACEHOLDER", args.environment
         )
+        if "environment" in container and container["environment"] is not None:
+            for environment_variable in container["environment"]:
+                environment_variable["value"] = environment_variable["value"].replace(
+                    "ENVIRONMENT_PLACEHOLDER", args.environment
+                )
         if "secrets" in container and container["secrets"] is not None:
             for secret in container["secrets"]:
                 secret["valueFrom"] = secret["valueFrom"].replace(
