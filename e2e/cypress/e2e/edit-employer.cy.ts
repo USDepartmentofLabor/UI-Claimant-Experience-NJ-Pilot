@@ -34,4 +34,12 @@ describe('Edit employer checks', () => {
     })
     /* add other edit employer cypress tests here */
   })
+  it('fills still employed-change in employment sections', () => {
+    const employerIndexString = '0'
+    fillChangeInEmployment(employerIndexString, {
+      separation_circumstance: 'still_employed',
+      reason_still_employed: 'temp_lay_off_or_furlough',
+      hours_reduced_twenty_percent: true,
+    })
+  })
 })
