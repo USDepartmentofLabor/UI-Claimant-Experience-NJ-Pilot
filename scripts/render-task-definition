@@ -29,7 +29,7 @@ with open(args.taskdef, "r") as f:
         container["name"] = container["name"].replace(
             "ENVIRONMENT_PLACEHOLDER", args.environment
         )
-        if "environment" in container and container["environment"] is not None:
+        if "environment" in container and len(container["environment"]) > 0:
             container["environment"][0]["value"] = container["environment"][0][
                 "value"
             ].replace("ENVIRONMENT_PLACEHOLDER", args.environment)
