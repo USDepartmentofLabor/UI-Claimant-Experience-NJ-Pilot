@@ -214,12 +214,22 @@ const yupEditEmployer = object().shape({
   definite_recall_date: yupDate(
     i18n_claimForm.t('employers.separation.definite_recall_date.label')
   )
-    .min(
-      ref('employment_last_date'),
-      i18n_claimForm.t(
-        'employers.separation.definite_recall_date.errors.minDate'
-      )
-    )
+    .when('definite_recall', {
+      is: true,
+      then: (schema) =>
+        schema.when('separation_circumstance', {
+          is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+            changeInEmploymentReason !== undefined &&
+            !changeInEmploymentReason?.includes('still_employed'),
+          then: (schema) =>
+            schema.min(
+              ref('employment_last_date'),
+              i18n_claimForm.t(
+                'employers.separation.definite_recall_date.errors.minDate'
+              )
+            ),
+        }),
+    })
     .when('definite_recall', {
       is: true,
       then: (schema) =>

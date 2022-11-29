@@ -216,26 +216,27 @@ const claimForm = {
       expect_to_be_recalled: {
         label: 'Do you expect to be recalled by this employer?',
         errors: {
-          required: 'This field is required.',
+          required: 'You must say whether you expect to be recalled',
         },
       },
       definite_recall: {
         label: 'Do you have a definite date of recall?',
         errors: {
+          required: 'You must say whether you have a definite date of recall',
           minDate: 'The date of recall must be after you last day of work',
         },
       },
       definite_recall_date: {
         label: 'Definite date of recall',
         errors: {
-          required: 'This field is required.',
+          required: 'You must provide the definite recall date',
           minDate: 'Recall date must be after last day of employment',
         },
       },
       is_seasonal_work: {
         label: 'Is your work seasonal?',
         errors: {
-          required: 'This field is required.',
+          required: 'You must say whether your work was seasonal',
         },
       },
       reasons: {
