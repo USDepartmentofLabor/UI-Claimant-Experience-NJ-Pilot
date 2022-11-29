@@ -36,6 +36,9 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const employer = values.employers?.[parseInt(index)]
   const showStillEmployed =
     employer?.separation_circumstance === 'still_employed'
+  const showHoursReducedPercentage =
+    showStillEmployed &&
+    employer?.reason_still_employed === 'reduction_in_hours_by_employer'
   const showLastDay =
     employer?.separation_circumstance !== undefined && !showStillEmployed
 
@@ -98,7 +101,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             legend={t('employment_last_date.label')}
           />
         )}
-        {showStillEmployed && (
+        {showHoursReducedPercentage && (
           <YesNoQuestion
             question={t('hours_reduced_twenty_percent.label')}
             hint={t('hours_reduced_twenty_percent.hint')}

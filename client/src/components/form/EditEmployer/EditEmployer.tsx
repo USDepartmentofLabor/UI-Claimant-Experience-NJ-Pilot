@@ -199,16 +199,7 @@ const yupEditEmployer = object().shape({
           i18n_claimForm.t('employers.employment_last_date.errors.required')
         ),
     }),
-  hours_reduced_twenty_percent: boolean().when('separation_circumstance', {
-    is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
-      changeInEmploymentReason === 'still_employed',
-    then: (schema) =>
-      schema.required(
-        i18n_claimForm.t(
-          'employers.hours_reduced_twenty_percent.errors.required'
-        )
-      ),
-  }),
+
   reason_still_employed: string()
     .oneOf([...reasonStillEmployedOptions])
     .when('separation_circumstance', {
@@ -221,6 +212,20 @@ const yupEditEmployer = object().shape({
           )
         ),
     }),
+  hours_reduced_twenty_percent: boolean().when('separation_circumstance', {
+    is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+      changeInEmploymentReason === 'still_employed',
+    then: (schema) =>
+      schema.when('reason_still_employed', {
+        is: 'reduction_in_hours_by_employer',
+        then: (schema) =>
+          schema.required(
+            i18n_claimForm.t(
+              'employers.hours_reduced_twenty_percent.errors.required'
+            )
+          ),
+      }),
+  }),
 })
 
 export const yupEditEmployers = object().shape({

@@ -409,7 +409,7 @@ const claimForm = {
     },
     hours_reduced_twenty_percent: {
       label: 'Did your employer reduce your hours by 20% or more?',
-      hint: 'For example, if your employer reduced your hours from 40 hours per week to 30 hours, you would choose "Yes."',
+      hint: 'For example, if your employer reduced your hours from 40 hours per week to 30 hours, you would choose "yes."',
       errors: {
         required: 'You must say whether your hours were reduced by 20% or more',
       },

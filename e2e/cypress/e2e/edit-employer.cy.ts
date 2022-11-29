@@ -38,7 +38,7 @@ describe('Edit employer checks', () => {
     const employerIndexString = '0'
     fillChangeInEmployment(employerIndexString, {
       separation_circumstance: 'still_employed',
-      reason_still_employed: 'temp_lay_off_or_furlough',
+      reason_still_employed: 'reduction_in_hours_by_employer',
       hours_reduced_twenty_percent: true,
     })
   })
