@@ -6,4 +6,4 @@ databaseChangeLog:
         - addUniqueConstraint:
             columnNames: idp_id
             constraintName: UC_CLAIMANTIDP_ID_COL
-            tableName: claimantw
+            tableName: claimant
