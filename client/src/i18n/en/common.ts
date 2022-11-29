@@ -66,6 +66,17 @@ const common = {
       'The following information has been added to your application:',
   },
   page_loader: 'Loading...',
+  header: {
+    home: 'Home',
+    my_claim: 'My claim',
+    payments: 'Change payments',
+    contact: 'Change contact information',
+    appeal: 'File an appeal',
+    privacy: 'Data privacy and security',
+    logout: 'Log out',
+    title: 'Unemployment Insurance benefits',
+    menu: 'Menu',
+  },
   footer: {
     return_top: 'Return to top',
     logo_alt: 'The State of New Jersey logo',

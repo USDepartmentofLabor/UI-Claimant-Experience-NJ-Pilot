@@ -6,9 +6,9 @@ const fillIdentityFields = (identity) => {
   if (identity.work_authorization.authorized_to_work) {
     cy.get('input[id=authorized_to_work\\.yes]').parent().click()
 
-    cy.get('select[name=authorization_type').select(
-      identity.work_authorization.authorization_type
-    )
+    cy.get('select[name=authorization_type')
+      .select(identity.work_authorization.authorization_type)
+      .blur()
   } else {
     cy.get('input[id=authorized_to_work\\.no]').parent().click()
 

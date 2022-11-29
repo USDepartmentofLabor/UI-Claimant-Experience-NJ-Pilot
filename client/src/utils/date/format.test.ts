@@ -2,6 +2,7 @@ import {
   formatUserInputDate,
   formatStoredDateToDisplayDate,
   formatLast18monthsEmployersDate,
+  formatUserPoolDate,
 } from './format'
 
 describe('formatUserInputDate', () => {
@@ -48,5 +49,14 @@ describe('formatLast18monthsEmployersDate', () => {
   it('returns the initial value if the date format string is invalid', () => {
     const initialValue = '22-22-22'
     expect(formatLast18monthsEmployersDate(initialValue)).toEqual(initialValue)
+  })
+
+  it('returns a formatted user pool date', () => {
+    const inputDateString1 = '10/18/2020'
+    const inputDateString2 = 'January 11, 2014'
+    const result1 = formatUserPoolDate(inputDateString1)
+    expect(result1).toEqual('2020-10-18')
+    const result2 = formatUserPoolDate(inputDateString2)
+    expect(result2).toEqual('2014-01-11')
   })
 })

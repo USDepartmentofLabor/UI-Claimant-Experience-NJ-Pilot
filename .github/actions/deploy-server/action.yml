@@ -38,7 +38,7 @@ runs:
 
     - name: Login to Amazon ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@9149ade017c57f86dea2f76a01f8b2d5bd06b10f
+      uses: aws-actions/amazon-ecr-login@261a7de32bda11ba01f4d75c4ed6caf3739e54be
 
     - name: Set environment name in ECS task definition template (migrations)
       shell: bash
@@ -47,7 +47,7 @@ runs:
 
     - name: Fill in the new image ID in the Amazon ECS task definition (migrations)
       id: task-def-migrations
-      uses: aws-actions/amazon-ecs-render-task-definition@374ee96751fffe528c09b5f427848da60469bb55
+      uses: aws-actions/amazon-ecs-render-task-definition@f15ed65f9cc12455139db0f8e8ff6f6aaad6dfda
       with:
         task-definition: ops/ecs/db-migrations-task-definition.json
         container-name: dol-ui-claimant-intake-db-migrate-${{ inputs.deploy-env }}
@@ -88,7 +88,7 @@ runs:
 
     - name: Fill in the new image ID in the Amazon ECS task definition (server)
       id: task-def-server
-      uses: aws-actions/amazon-ecs-render-task-definition@374ee96751fffe528c09b5f427848da60469bb55
+      uses: aws-actions/amazon-ecs-render-task-definition@f15ed65f9cc12455139db0f8e8ff6f6aaad6dfda
       with:
         task-definition: ops/ecs/server-task-definition.json
         container-name: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}

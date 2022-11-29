@@ -7,7 +7,7 @@ import { ClaimantInput } from 'types/claimantInput'
 import { i18n_screener } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
 import { useClearFields } from 'hooks/useClearFields'
-import { ReactNode } from 'react'
+import { ChangeEventHandler, ReactNode } from 'react'
 import { NextPageWithLayout } from './_app'
 import { ScreenerForm } from 'components/layouts/ClaimForm/ScreenerForm/ScreenerForm'
 
@@ -16,21 +16,25 @@ const Screener: NextPageWithLayout = () => {
   const { values } = useFormikContext<ClaimantInput>()
   const { clearField } = useClearFields()
 
-  const handleLiveInUSChange = () => {
-    if (values.screener_current_country_us === false) {
+  const handleCurrentCountryUSChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.value === 'no') {
       clearField('screener_live_in_canada')
     }
   }
 
-  const handleWorkInLast18MonthsChange = () => {
-    if (values.screener_job_last_eighteen_months === true) {
+  const handleJobLast18MonthsChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.value === 'yes') {
       clearField('screener_all_work_nj')
     }
     clearField('screener_any_work_nj')
   }
 
-  const handleAllWorkInNJChange = () => {
-    if (values.screener_all_work_nj === false) {
+  const handleAllWorkInNJChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (e.target.value === 'no') {
       clearField('screener_any_work_nj')
     }
   }
@@ -40,7 +44,7 @@ const Screener: NextPageWithLayout = () => {
       <YesNoQuestion
         question={t('screener_current_country_us.label')}
         name="screener_current_country_us"
-        onChange={handleLiveInUSChange}
+        onChange={handleCurrentCountryUSChange}
       />
       {values.screener_current_country_us === false && (
         <YesNoQuestion
@@ -51,7 +55,7 @@ const Screener: NextPageWithLayout = () => {
       <YesNoQuestion
         question={t('screener_job_last_eighteen_months.label')}
         name="screener_job_last_eighteen_months"
-        onChange={handleWorkInLast18MonthsChange}
+        onChange={handleJobLast18MonthsChange}
       />
       <YesNoQuestion
         question={t('screener_military_service_eighteen_months.label')}
