@@ -1,9 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: 1663692332306-1
-      author: laadeha (generated)
-      changes:
-        - addUniqueConstraint:
-            columnNames: idp_id
-            constraintName: UC_CLAIMANTIDP_ID_COL
-            tableName: claimant

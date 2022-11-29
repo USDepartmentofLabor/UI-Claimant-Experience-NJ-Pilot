@@ -46,7 +46,7 @@ runs:
       with:
         filters: |
           changelog:
-            - 'server/src/main/resources/db/changelog'
+            - 'server/src/main/resources/db/changelog/changes'
 
     - name: Set environment name in ECS task definition template (migrations)
       if: steps.migration-changes.outputs.changelog == 'true'
