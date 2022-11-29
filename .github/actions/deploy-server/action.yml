@@ -40,12 +40,22 @@ runs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@261a7de32bda11ba01f4d75c4ed6caf3739e54be
 
+    - name: Check if migration changes have occurred
+      id: migration-changes
+      uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
+      with:
+        filters: |
+          changelog:
+            - 'server/src/main/resources/db/changelog'
+
     - name: Set environment name in ECS task definition template (migrations)
+      if: steps.migration-changes.outputs.changelog == 'true'
       shell: bash
       run: |
         make db-migrations-task-definition environment=${{ inputs.deploy-env }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition (migrations)
+      if: steps.migration-changes.outputs.changelog == 'true'
       id: task-def-migrations
       uses: aws-actions/amazon-ecs-render-task-definition@f15ed65f9cc12455139db0f8e8ff6f6aaad6dfda
       with:
@@ -54,6 +64,7 @@ runs:
         image: ${{ inputs.server-image }}
 
     - name: Deploy Amazon ECS task definition (migrations)
+      if: steps.migration-changes.outputs.changelog == 'true'
       id: deploy-task-def-migrations
       uses: aws-actions/amazon-ecs-deploy-task-definition@3cc43061dd30ad47511af35bca46e2c1435b9035
       with:
@@ -61,6 +72,7 @@ runs:
         cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
 
     - name: Snapshot RDS
+      if: steps.migration-changes.outputs.changelog == 'true'
       shell: bash
       env:
         RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
@@ -69,6 +81,7 @@ runs:
         scripts/snapshot-rds.sh
 
     - name: Run DB migrations ECS task
+      if: steps.migration-changes.outputs.changelog == 'true'
       env:
         TASK_DEFINITION: ${{ steps.deploy-task-def-migrations.outputs.task-definition-arn }}
         SUBNET: ${{ inputs.db-migrations-subnet }}
