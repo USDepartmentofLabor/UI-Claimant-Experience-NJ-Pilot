@@ -9,8 +9,8 @@ import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
 import { Trans } from 'react-i18next'
 
-// import { ChangeEventHandler } from 'react'
-// import { useClearFields } from 'hooks/useClearFields'
+import { ChangeEventHandler } from 'react'
+import { useClearFields } from 'hooks/useClearFields'
 
 interface IEmployer {
   index: string
@@ -18,14 +18,13 @@ interface IEmployer {
 
 export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { values } = useFormikContext<ClaimantInput>()
-  //TODO - Uncomment clearfields and this seciton when completing
-  //    the story for Still Emmployed or any others with conditionals
-  // const { clearField } = useClearFields()
-  // const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-  //   if (e.target.value === 'still_employed') {
-  //     clearField(`employers[${index}].employment_last_date`)
-  //   }
-  // }
+
+  const { clearField } = useClearFields()
+  const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (e.target.value === 'still_employed') {
+      clearField(`employers[${index}].employment_last_date`)
+    }
+  }
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
@@ -49,7 +48,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
                 value: option,
               }
             })}
-            // onChange={handleReasonChange} //uncomment when adding in additional fields
+            onChange={handleReasonChange}
           />
         </Fieldset>
         <div className="usa-alert usa-alert--info usa-alert--validation">

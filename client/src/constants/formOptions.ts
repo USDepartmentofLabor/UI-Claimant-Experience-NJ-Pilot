@@ -100,7 +100,7 @@ export const changeInEmploymentOptions = [
   // 'fired_discharged_terminated',
   // 'unsatisfactory_work_performance',
   // 'quit_or_retired',
-  // 'still_employed',
+  'still_employed',
   // 'strike_or_lock_out_by_employer',
   // 'federal_or_state_shutdown',
 ] as const
