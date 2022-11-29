@@ -29,7 +29,7 @@ with open(args.taskdef, "r") as f:
         container["name"] = container["name"].replace(
             "ENVIRONMENT_PLACEHOLDER", args.environment
         )
-        container["environment"] = container["environment"].replace(
+        container["environment"]["value"] = container["environment"]["value"].replace(
             "ENVIRONMENT_PLACEHOLDER", args.environment
         )
         if "secrets" in container and container["secrets"] is not None:
