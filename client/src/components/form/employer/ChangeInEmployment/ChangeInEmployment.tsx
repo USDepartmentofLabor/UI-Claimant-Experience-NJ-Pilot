@@ -31,6 +31,13 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
       clearField(`employers[${index}].hours_reduced_twenty_percent`)
     }
   }
+  const handleStillEmployedReasonChange: ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
+    if (e.target.value !== 'reduction_in_hours_by_employer') {
+      clearField(`employers[${index}].hours_reduced_twenty_percent`)
+    }
+  }
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
@@ -88,6 +95,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
                   value: option,
                 }
               })}
+              onChange={handleStillEmployedReasonChange}
             />
           </Fieldset>
         )}

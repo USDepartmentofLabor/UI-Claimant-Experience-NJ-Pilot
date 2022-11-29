@@ -203,8 +203,7 @@ const yupEditEmployer = object().shape({
   reason_still_employed: string()
     .oneOf([...reasonStillEmployedOptions])
     .when('separation_circumstance', {
-      is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
-        changeInEmploymentReason === 'still_employed',
+      is: 'still_employed',
       then: (schema) =>
         schema.required(
           i18n_claimForm.t(

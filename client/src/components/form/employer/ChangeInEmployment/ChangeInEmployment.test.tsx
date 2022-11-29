@@ -158,23 +158,28 @@ describe('Change in Employment component', () => {
       queryForReasonStillEmployedQuestion,
       queryForReduced20PercentQuestion,
       queryForReduced20PercentYesAnswer,
-      queryForReduced20PercentNoAnswer,
     } = renderChangeInEmployment()
     const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
     const changeReasonStillEmployedAnswer =
       queryForChangeReasonStillEmployedAnswer()
 
+    //click still employed should show 1 conditional
     await user.click(changeReasonStillEmployedAnswer as HTMLElement)
     expect(changeReasonStillEmployedAnswer).toBeChecked()
 
     let hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
     let reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
+    expect(reduced20PercentYesAnswer).not.toBeInTheDocument()
+
+    // clicking hours_reduced_by_employer reveals 2nd conditional
     await user.click(hoursReducedByEmployerAnswer as HTMLElement)
     expect(hoursReducedByEmployerAnswer).toBeChecked()
 
+    reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
     await user.click(reduced20PercentYesAnswer as HTMLElement)
     expect(reduced20PercentYesAnswer).toBeChecked()
 
+    //clicking laid off should hide fields
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(changeReasonLaidOffAnswer).toBeChecked()
     expect(queryForReduced20PercentQuestion()).not.toBeInTheDocument()
@@ -182,12 +187,11 @@ describe('Change in Employment component', () => {
     await user.click(changeReasonStillEmployedAnswer as HTMLElement)
 
     hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
-    reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
-    const reduced20PercentNoAnswer = queryForReduced20PercentNoAnswer()
 
-    expect(queryForReduced20PercentQuestion()).toBeInTheDocument()
-    expect(reduced20PercentYesAnswer).not.toBeChecked()
-    expect(reduced20PercentNoAnswer).not.toBeChecked()
-    expect(hoursReducedByEmployerAnswer).not.toBeChecked()
+    //hours reduced should appear only after click and be cleared
+    expect(queryForReduced20PercentQuestion()).not.toBeInTheDocument()
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    expect(hoursReducedByEmployerAnswer).toBeChecked()
+    expect(queryForReduced20PercentYesAnswer()).not.toBeChecked()
   })
 })
