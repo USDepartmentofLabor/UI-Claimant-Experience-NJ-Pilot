@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 
 import { TestSiteBanner } from 'components/TestSiteBanner/TestSiteBanner'
 import { NewJerseyBanner } from 'components/NewJerseyBanner/NewJerseyBanner'
+import { NewJerseyHeader } from 'components/NewJerseyHeader/NewJerseyHeader'
 import { Footer } from 'components/Footer/Footer'
 
 export const DefaultLayout = ({ children }: { children: ReactNode }) => {
@@ -17,6 +18,7 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
       <div>
         {showTestBanner && <TestSiteBanner />}
         <NewJerseyBanner />
+        <NewJerseyHeader />
         {children}
         <Footer />
       </div>
