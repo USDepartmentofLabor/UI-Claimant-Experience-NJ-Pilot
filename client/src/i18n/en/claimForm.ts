@@ -249,21 +249,22 @@ const claimForm = {
           label: 'Still employed',
           description:
             "You're still working for your employer, but you may have fewer hours or be on a leave/break.",
-          option_heading: 'What has changed about your job?',
+          option_heading: 'Explain the reason you are still employed',
           options: {
-            still_working_hours_unchanged:
-              'Still working, hours have not changed',
-            hours_reduced_by_employer: 'Hours reduced by employer',
-            hours_reduced_by_me: 'Hours reduced by me',
+            reduction_in_hours_by_employer: 'Hours reduced by employer',
+            reduction_in_hours_by_claimant: 'Hours reduced by me',
+            hours_not_reduced_at_this_employer:
+              'My hours were not reduced at this employer',
+            leave_of_absence: 'On a leave of absence',
+            paid_vacation_holiday_or_pto: 'On a paid vacation, holiday or PTO',
+            temp_lay_off_or_furlough: 'On a temporary layoff or furloughed',
+
+            school_employee_on_break: 'School employee, on a break or holiday',
+            self_employed: 'Self-employed with this employer',
             shared_work_program: 'Shared Work Program',
-            leave_of_absence:
-              'On a leave of absence (personal, medical, or family medical)',
-            temporary: 'On a temporary layoff, furloughed',
-            still_working_self_employed:
-              'Still working, self-employed with this employer',
-            suspended: 'Suspended',
-            school_employee: 'School employee, on a break/holiday',
-            holiday_vacation: 'Holiday/vacation',
+          },
+          errors: {
+            required: 'You must select a reason for why you are still employed',
           },
         },
         quit_or_retired: {
@@ -404,6 +405,13 @@ const claimForm = {
       },
       work_location_phone: {
         label: 'Work location phone number',
+      },
+    },
+    hours_reduced_twenty_percent: {
+      label: 'Did your employer reduce your hours by 20% or more?',
+      hint: 'For example, if your employer reduced your hours from 40 hours per week to 30 hours, you would choose "Yes."',
+      errors: {
+        required: 'You must say whether your hours were reduced by 20% or more',
       },
     },
     business_interests: {

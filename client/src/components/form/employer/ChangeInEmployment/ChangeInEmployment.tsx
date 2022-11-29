@@ -1,6 +1,9 @@
 import { Fieldset, Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
-import { changeInEmploymentOptions } from 'constants/formOptions'
+import {
+  changeInEmploymentOptions,
+  reasonStillEmployedOptions,
+} from 'constants/formOptions'
 import { useTranslation } from 'react-i18next'
 import { useFormikContext } from 'formik'
 
@@ -28,8 +31,10 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
-  const showLastDay = employer?.separation_circumstance !== undefined
-  employer?.separation_circumstance !== 'still_employed'
+  const showStillEmployed =
+    employer?.separation_circumstance === 'still_employed'
+  const showLastDay =
+    employer?.separation_circumstance !== undefined && !showStillEmployed
 
   return (
     <>
@@ -63,6 +68,21 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             </Trans>
           </div>
         </div>
+        {showStillEmployed && (
+          <Fieldset legend={t('separation.reasons.still_employed.label')}>
+            <RadioField
+              name={`employers[${index}].reason_still_employed`}
+              options={reasonStillEmployedOptions.map((option) => {
+                return {
+                  label: t(
+                    `separation.reasons.still_employed.options.${option}`
+                  ),
+                  value: option,
+                }
+              })}
+            />
+          </Fieldset>
+        )}
         <DateInputField
           name={`employers[${index}].employment_start_date`}
           legend={t('employment_start_date.label')}
@@ -71,6 +91,12 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           <DateInputField
             name={`employers[${index}].employment_last_date`}
             legend={t('employment_last_date.label')}
+          />
+        )}
+        {showStillEmployed && (
+          <YesNoQuestion
+            question={t('hours_reduced_twenty_percent.label')}
+            name={`employers[${index}].hours_reduced_twenty_percent`}
           />
         )}
         <YesNoQuestion

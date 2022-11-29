@@ -47,6 +47,8 @@ export type Employer = {
   expect_to_be_recalled?: boolean
   employment_start_date?: string
   employment_last_date?: string
+  reason_still_employed?: string
+  hours_reduced_twenty_percent?: boolean
 
   worked_at_employer_address?: boolean
   alternate_physical_work_address?: AddressWithoutStreetInput

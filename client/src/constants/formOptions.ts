@@ -106,6 +106,20 @@ export const changeInEmploymentOptions = [
 ] as const
 export type ChangeInEmploymentOption = typeof changeInEmploymentOptions[number]
 
+export const reasonStillEmployedOptions = [
+  'reduction_in_hours_by_employer',
+  'reduction_in_hours_by_claimant',
+  'hours_not_reduced_at_this_employer',
+  'leave_of_absence',
+  'paid_vacation_holiday_or_pto',
+  'temp_lay_off_or_furlough',
+  'school_employee_on_break',
+  'self_employed',
+  'shared_work_program',
+] as const
+export type ReasonStillEmployedOptions =
+  typeof reasonStillEmployedOptions[number]
+
 export const employerRelationOptions = [
   'no',
   'spouse',
