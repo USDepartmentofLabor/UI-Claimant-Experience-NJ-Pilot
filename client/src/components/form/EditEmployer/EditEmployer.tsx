@@ -1,9 +1,11 @@
+import dayjs from 'dayjs'
 import { useFormikContext } from 'formik'
-import { ClaimantInput } from 'types/claimantInput'
+import { ClaimantInput, PaymentsReceivedDetailInput } from 'types/claimantInput'
 import { array, boolean, object, mixed, ref, string } from 'yup'
 import {
   yupDate,
   yupAddressWithoutStreet,
+  yupCurrency,
   yupPhone,
 } from 'validations/yup/custom'
 import { useEffect } from 'react'
@@ -13,11 +15,13 @@ import {
   ChangeInEmploymentOption,
   changeInEmploymentOptions,
   employerRelationOptions,
+  PayTypeOption,
+  payTypeOptions,
 } from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
-import dayjs from 'dayjs'
 import { WorkLocation } from '../employer/WorkLocation/WorkLocation'
+import PaymentsReceived from '../employer/PaymentsReceived/PaymentsReceived'
 import {
   ADDRESS_WITHOUT_STREET_SKELETON,
   PHONE_SKELETON,
@@ -41,7 +45,8 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
         ...values.employers[parseInt(index)],
       }
     }
-  })
+  }, [])
+
   return (
     <>
       {
@@ -57,6 +62,7 @@ export const EditEmployer = ({ index }: EditEmployerType) => {
             <WorkLocation index={index} />
             <BusinessInterests index={index} />
             <ChangeInEmployment index={index} />
+            <PaymentsReceived employerIndex={+index} />
           </div>
         ) : (
           /* Invalid Index */ <div>No employer defined for index {index}</div>
@@ -196,6 +202,101 @@ const yupEditEmployer = object().shape({
           i18n_claimForm.t('employers.employment_last_date.errors.required')
         ),
     }),
+  // Payments received
+  LOCAL_pay_types: array().when('payments_received', {
+    is: (paymentsReceived: PaymentsReceivedDetailInput[]) =>
+      !paymentsReceived || !paymentsReceived.length,
+    then: array().min(
+      1,
+      i18n_claimForm.t(
+        'employers.payments_received.payments_received_detail.pay_type.errors.required'
+      )
+    ),
+  }),
+  payments_received: array().of(
+    object({
+      pay_type: mixed().oneOf(payTypeOptions.map((value) => value)),
+      total: yupCurrency(
+        i18n_claimForm.t(
+          'employers.payments_received.payments_received_detail.total.errors.number'
+        )
+      ).when('pay_type', {
+        is: 'none',
+        otherwise: string().required(
+          i18n_claimForm.t(
+            'employers.payments_received.payments_received_detail.total.errors.required'
+          )
+        ),
+      }),
+      date_pay_began: yupDate(
+        i18n_claimForm.t(
+          'employers.payments_received.payments_received_detail.date_pay_began.label'
+        )
+      )
+        .max(
+          dayjs(new Date()).format('YYYY-MM-DD'),
+          i18n_claimForm.t(
+            'employers.payments_received.payments_received_detail.date_pay_began.errors.max'
+          )
+        )
+        .when('pay_type', {
+          is: (payType: PayTypeOption) =>
+            ['vacation_sick_pto', 'severance_or_continuation'].includes(
+              payType
+            ),
+          then: (schema) =>
+            schema.required(
+              i18n_claimForm.t(
+                'employers.payments_received.payments_received_detail.date_pay_began.errors.required'
+              )
+            ),
+        }),
+      date_pay_ended: yupDate(
+        i18n_claimForm.t(
+          'employers.payments_received.payments_received_detail.date_pay_ended.label'
+        )
+      )
+        .max(
+          dayjs(new Date()).format('YYYY-MM-DD'),
+          i18n_claimForm.t(
+            'employers.payments_received.payments_received_detail.date_pay_ended.errors.max'
+          )
+        )
+        .when('date_pay_began', {
+          is: (dateValue: string | undefined) => {
+            return !!dateValue
+          },
+          then: (schema) =>
+            schema.min(
+              ref('date_pay_began'),
+              i18n_claimForm.t(
+                'employers.payments_received.payments_received_detail.date_pay_ended.errors.min'
+              )
+            ),
+        })
+        .when('pay_type', {
+          is: (payType: PayTypeOption) =>
+            ['vacation_sick_pto', 'severance_or_continuation'].includes(
+              payType
+            ),
+          then: (schema) =>
+            schema.required(
+              i18n_claimForm.t(
+                'employers.payments_received.payments_received_detail.date_pay_ended.errors.required'
+              )
+            ),
+        }),
+      note: string().when('pay_type', {
+        is: 'other_pay',
+        then: (schema) =>
+          schema.required(
+            i18n_claimForm.t(
+              'employers.payments_received.payments_received_detail.other_note.errors.required'
+            )
+          ),
+      }),
+    })
+  ),
 })
 
 export const yupEditEmployers = object().shape({

@@ -99,7 +99,7 @@ export const DateInputField = ({
 
   const id = idProp || name
 
-  const updateFormik = () => {
+  const createFormikDateString = () => {
     if (day || month || year) {
       const paddedMonth =
         month && month.length < MONTH_MAX_LENGTH
@@ -109,12 +109,39 @@ export const DateInputField = ({
         day && day.length < DAY_MAX_LENGTH
           ? day.padStart(DAY_MAX_LENGTH, '0')
           : day
-      fieldHelperProps.setValue(`${year}-${paddedMonth}-${paddedDay}`)
+      return `${year}-${paddedMonth}-${paddedDay}`
     } else {
-      fieldHelperProps.setValue('')
+      return ''
+    }
+  }
+  const updateFormik = () => {
+    const value = createFormikDateString()
+    fieldHelperProps.setValue(value)
+  }
+
+  const updateLocalDateInputState = () => {
+    const formikDate = fieldProps.value
+    if (formikDate !== undefined) {
+      const [yearField, monthField, dayField] = formikDate.split('-')
+      // don't include leading zeros
+      setYear(yearField.replace(/^0+(?=\d4)/, ''))
+      setMonth(monthField.replace(/^0+(?=\d)/, ''))
+      setDay(dayField.replace(/^0+(?=\d)/, ''))
+    } else {
+      setYear('')
+      setMonth('')
+      setDay('')
     }
   }
 
+  const getIsEquivalentDate = () => {
+    const formikDate = fieldProps.value
+    const localStateAsFormikDate = createFormikDateString()
+    if (formikDate !== undefined) {
+      return localStateAsFormikDate === formikDate
+    }
+    return false
+  }
   // Update formik value when state values change.
   useEffect(() => {
     if (isMounted.current) {
@@ -123,6 +150,14 @@ export const DateInputField = ({
       isMounted.current = true
     }
   }, [month, day, year])
+
+  useEffect(() => {
+    // Reassign display (state) value if the formik and display dates are not equivalent (ex. this can occur when an item of an array that includes this field is removed)
+    const isEquivalentDate = getIsEquivalentDate()
+    if (!isEquivalentDate) {
+      updateLocalDateInputState()
+    }
+  }, [fieldProps.value])
 
   // Blur the formik field when the target of the blur event is not part of this component
   const handleBlur: FocusEventHandler<HTMLInputElement> = (e) => {

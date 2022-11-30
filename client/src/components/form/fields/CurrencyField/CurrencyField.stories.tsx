@@ -1,4 +1,4 @@
-import CurrencyField from './CurrencyField'
+import { CurrencyField } from './CurrencyField'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { Form, Formik } from 'formik'
 import * as yup from 'yup'

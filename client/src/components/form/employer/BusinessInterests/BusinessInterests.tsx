@@ -50,10 +50,7 @@ export const BusinessInterests = ({ index }: BusinessInterestsProps) => {
   const baseName = `employers[${index}]`
   return (
     <>
-      {/*TODO: SectionTitle component or similar? We do this in a few places and might end up doing it differently*/}
-      <p>
-        <strong>{t('section_title')}</strong>
-      </p>
+      <h2 className="font-heading-sm">{t('section_title')}</h2>
       <YesNoQuestion
         name={`${baseName}.self_employed`}
         question={t('self_employed.label')}

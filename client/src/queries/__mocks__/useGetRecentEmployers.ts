@@ -14,6 +14,8 @@ export const useGetRecentEmployers = () => {
         },
         employer_phone: '123-456-7890',
         isImported: true,
+        LOCAL_pay_types: [],
+        payments_received: [],
       },
       {
         name: 'Microsoft',
@@ -27,6 +29,8 @@ export const useGetRecentEmployers = () => {
         },
         employer_phone: '987-654-3210',
         isImported: true,
+        LOCAL_pay_types: [],
+        payments_received: [],
       },
       {
         name: 'Wendys',
@@ -40,6 +44,8 @@ export const useGetRecentEmployers = () => {
         },
         employer_phone: '555-123-9870',
         isImported: true,
+        LOCAL_pay_types: [],
+        payments_received: [],
       },
     ],
     isLoading: false,

@@ -379,6 +379,20 @@ const claimForm = {
       label: 'State employer payroll number (optional)',
       hint: 'You can find the state employer payroll number on line 15 of your W2.',
     },
+    your_employer: {
+      heading: 'Your employer',
+      is_full_time: {
+        help_text:
+          'Full-time means working more (even 1 minute more) than 32 hours a week. Part-time means working exactly 32 hours or less a week.',
+
+        label: 'Was this a full-time or part-time job?',
+        options: {
+          full_time: 'Full-time',
+          part_time: 'Part-time or intermittent',
+        },
+        required: 'This field is required',
+      },
+    },
     work_location: {
       section_title: 'Work location',
       worked_at_employer_address: {
@@ -459,6 +473,96 @@ const claimForm = {
         errors: {
           required:
             'You must say whether you are related to the owner of this business',
+        },
+      },
+    },
+    payments_received: {
+      heading: 'Payments from this employer',
+      payments_received_detail: {
+        pay_type: {
+          label:
+            'Have you received any payments from this employer since your last day of work?',
+          errors: { required: 'At least one option must be selected' },
+          options: {
+            vacation_sick_pto: {
+              label: 'Vacation, sick, or PTO pay',
+              description:
+                'Pay you received for approved time off or a pay out of unused time off',
+            },
+            final_paycheck: {
+              label: 'Final paycheck',
+              description:
+                'Pay you received for hours you worked prior to your last day of work',
+            },
+            pension_annuity_retirement: {
+              label: 'Pension, annuity, or retirement pay',
+              description:
+                "Pay you received from this employer's retirement plan (not a loan)",
+            },
+            severance_or_continuation: {
+              label:
+                'Severance pay, continuation pay, or payment in lieu of notice',
+              description:
+                'Payment due to separation based on your contract, by law, or as a gift',
+            },
+            other_pay: {
+              label: 'Other type of pay',
+              description: '',
+            },
+            none: {
+              label: 'I have not received any other pay',
+              description: '',
+              ariaDescription:
+                'Selecting this disables all other pay options. Uncheck to re-enable the other options.',
+            },
+          },
+        },
+        total: {
+          label: 'Total of this pay',
+          description: {
+            vacation_sick_pto:
+              'Pay you received for approved time off or a pay out of unused time off',
+            final_paycheck:
+              'Pay you received for hours you worked before your last day of work',
+            pension_annuity_retirement:
+              "Pay you received from this employer's retirement plan (not a loan)",
+            severance_or_continuation:
+              'Payment due to separation based on your contract, by law, or as a gift',
+          },
+          currencyPrefix: '$',
+          errors: {
+            required: 'Total pay is required, in dollars',
+            min: 'Total pay must be greater than 0',
+            number:
+              'Total must be a number in dollars or cents, like 150, or 150.75',
+          },
+        },
+        dates_hint: {
+          vacation_sick_pto:
+            'What was the time period on the paycheck including this pay? If you are not sure or it does not have a set timeframe, put your last day of work.',
+          severance_or_continuation:
+            'If the payment covers a set period of time, for example the next two weeks, enter the start date and end date that period covers. If you are not sure or it does not have a set timeframe, put your last day of work.',
+        },
+        date_pay_began: {
+          label: 'Start date of this pay',
+          errors: {
+            required: 'Start date is required',
+            max: 'Date must be today or in the past',
+          },
+        },
+        date_pay_ended: {
+          label: 'End date of this pay',
+          errors: {
+            required: 'End date is required',
+            max: 'Date must be today or in the past',
+            min: 'Date must be the same or after the start date of this pay',
+          },
+        },
+        other_note: {
+          label: 'Please explain what type of pay you received',
+          errors: {
+            required: 'Please give further details',
+          },
         },
       },
     },
@@ -806,74 +910,6 @@ const claimForm = {
       },
     },
   },
-
-  other_pay_detail: {
-    pay_type: {
-      label:
-        'Have you received any payments from your employer(s) since becoming unemployed?',
-      required: 'At least one option must be selected',
-      options: {
-        vacation_sick_pto: {
-          label: 'Vacation/sick/PTO pay',
-          description:
-            'Pay you received for approved time off or a pay out of unused time off',
-        },
-        final_paycheck: {
-          label: 'Final paycheck',
-          description:
-            'Pay you received for hours you worked prior to your last day of work',
-        },
-        pension_annuity_retirement: {
-          label: 'Pension, annuity, or retirement pay',
-          description:
-            'Pay you received from a retirement plan associated with an employer you listed on this application (not a loan)',
-        },
-        severance: {
-          label: 'Severance pay',
-          description:
-            "Pay you received from your employer when you're dismissed from your job",
-        },
-        profit_sharing: {
-          label: 'Profit sharing',
-          description:
-            "A share in your company's profits based on your yearly salary",
-        },
-        other: {
-          label: 'Other type of pay',
-          description: '',
-        },
-        no_other_pay: {
-          label: 'I have not received any other pay',
-          description: '',
-          ariaDescription: 'Selecting this disables all other pay options',
-        },
-      },
-    },
-    total: {
-      label: 'Total {{- payType }} received',
-      currencyPrefix: '$',
-      errors: {
-        required: 'Total pay is required, in dollars',
-        min: 'Total pay must be greater than 0',
-        number:
-          'Total must be a number in dollars or cents, like 150, or 150.75',
-      },
-    },
-    date_received: {
-      label: 'Date {{- payType }} received',
-      errors: {
-        required: 'Date received is required',
-        max: 'Date must be today or in the past',
-        label: 'Date received',
-      },
-    },
-    note: {
-      label: 'Please share more about your {{- payType }} received',
-      errors: {
-        required: 'Please give further details',
-      },
-    },
-  },
   legal_affirmation: {
     required: 'You must confirm the affirmation statement by checking the box',
     label:
@@ -890,20 +926,6 @@ const claimForm = {
     heading: 'The following information has been added to your application:',
     to_edit_visit: 'To edit your information, visit',
     idp_url_text: 'login.gov',
-  },
-  your_employer: {
-    heading: 'Your employer',
-    is_full_time: {
-      help_text:
-        'Full-time means working more (even 1 minute more) than 32 hours a week. Part-time means working exactly 32 hours or less a week.',
-
-      label: 'Was this a full-time or part-time job?',
-      options: {
-        full_time: 'Full-time',
-        part_time: 'Part-time or intermittent',
-      },
-      required: 'This field is required',
-    },
   },
   review: {
     heading: 'Review application',

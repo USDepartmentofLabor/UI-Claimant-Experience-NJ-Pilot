@@ -653,7 +653,7 @@
           "description": "Total pay (stored in cents) received from employer for a specific type after becoming unemployed.",
           "type": "integer"
         },
-        "start_date_of_pay": {
+        "date_pay_began": {
           "description": "Start date of this pay",
           "type": "string",
           "format": "date",
@@ -666,10 +666,10 @@
             }
           },
           "then": {
-            "required": ["start_date_of_pay"]
+            "required": ["date_pay_began"]
           }
         },
-        "end_date_of_pay": {
+        "date_pay_ended": {
           "description": "End date of this pay",
           "type": "string",
           "if": {
@@ -681,7 +681,7 @@
             }
           },
           "then": {
-            "required": ["end_date_of_pay"]
+            "required": ["date_pay_ended"]
           }
         },
         "note": {
