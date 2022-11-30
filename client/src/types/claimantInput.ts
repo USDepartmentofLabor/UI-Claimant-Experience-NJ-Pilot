@@ -46,8 +46,10 @@ export type Employer = {
 
   separation_circumstance?: string
   expect_to_be_recalled?: boolean
+  separation_circumstance_details?: string
   employment_start_date?: string
   employment_last_date?: string
+  discharge_date?: string
 
   worked_at_employer_address?: boolean
   alternate_physical_work_address?: AddressWithoutStreetInput

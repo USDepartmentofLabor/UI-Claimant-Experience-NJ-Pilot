@@ -35,6 +35,14 @@ describe('Edit employer checks', () => {
       employment_last_date: { mo: '02', day: '24', yr: '2022' },
       expect_to_be_recalled: false,
     })
+    fillChangeInEmployment(employerIndexString, {
+      separation_circumstance: 'fired_discharged_suspended',
+      separation_circumstance_details: 'Test text',
+      employment_start_date: { mo: '03', day: '20', yr: '2014' },
+      employment_last_date: { mo: '03', day: '24', yr: '2022' },
+      discharge_date: { mo: '03', day: '24', yr: '2022' },
+      expect_to_be_recalled: false,
+    })
     fillPaymentsReceived(employerIndex)
     /* add other edit employer cypress tests here */
   })

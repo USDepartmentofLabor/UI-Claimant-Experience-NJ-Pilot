@@ -91,9 +91,12 @@ export const editEmployerInitialValues = () => {
     employer_is_sole_proprietorship: undefined,
     related_to_owner_or_child_of_owner_under_18: undefined,
     // Change in Employment
+    separation_circumstance: undefined,
+    separation_circumstance_details: undefined,
     expect_to_be_recalled: undefined,
     employment_start_date: undefined,
     employment_last_date: undefined,
+    discharge_date: undefined,
   }
 }
 const yupEditEmployer = object().shape({
@@ -159,6 +162,7 @@ const yupEditEmployer = object().shape({
           ),
     }
   ),
+  // Change in Employment
   separation_circumstance: string()
     .oneOf([...changeInEmploymentOptions])
     .required(i18n_claimForm.t('employers.separation.reason.required')),
@@ -167,6 +171,23 @@ const yupEditEmployer = object().shape({
       'employers.separation.expect_to_be_recalled.errors.required'
     )
   ),
+  separation_circumstance_details: string()
+    .trim()
+    .max(
+      255,
+      i18n_claimForm.t(
+        'employers.separation.separation_circumstance_details.errors.max_length'
+      )
+    )
+    .when('separation_circumstance', {
+      is: 'fired_discharged_suspended',
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.separation.separation_circumstance_details.errors.required'
+          )
+        ),
+    }),
   employment_start_date: yupDate(
     i18n_claimForm.t('employers.employment_start_date.label')
   )
@@ -196,10 +217,36 @@ const yupEditEmployer = object().shape({
     })
     .when('separation_circumstance', {
       is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
-        changeInEmploymentReason?.includes('laid_off'),
+        changeInEmploymentReason !== undefined &&
+        !changeInEmploymentReason?.includes('still_employed'),
       then: (schema) =>
         schema.required(
           i18n_claimForm.t('employers.employment_last_date.errors.required')
+        ),
+    }),
+  discharge_date: yupDate(
+    i18n_claimForm.t('employers.discharge_date.errors.date_format')
+  )
+    .max(
+      dayjs(new Date()).format('YYYY-MM-DD'),
+      i18n_claimForm.t('employers.discharge_date.errors.maxDate')
+    )
+    .when('employment_last_date', {
+      is: (dateValue: string | undefined) => {
+        return !!dateValue
+      },
+      then: (schema) =>
+        schema.min(
+          ref('employment_last_date'),
+          i18n_claimForm.t('employers.discharge_date.errors.minDate')
+        ),
+    })
+    .when('separation_circumstance', {
+      is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+        changeInEmploymentReason?.includes('fired_discharged_suspended'),
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t('employers.discharge_date.errors.required')
         ),
     }),
   // Payments received
