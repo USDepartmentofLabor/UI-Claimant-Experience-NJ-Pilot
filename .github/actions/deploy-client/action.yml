@@ -46,27 +46,26 @@ runs:
         IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
         echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Build, tag, and push image to Amazon ECR
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325
+
+    - name: Build & Push image
       id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
-        IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
-        NEXT_PUBLIC_SERVER_BASE_URL: ${{ inputs.server-base-url }}
-        NEXT_PUBLIC_APP_ENV: ${{ inputs.app-env }}
-      shell: bash
-      run: |
-        docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
-          --build-arg NEXT_PUBLIC_SERVER_BASE_URL=${NEXT_PUBLIC_SERVER_BASE_URL} \
-          --build-arg NEXT_PUBLIC_APP_ENV=${NEXT_PUBLIC_APP_ENV} \
-          client
-        docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5
+      with:
+        registry: ${{ steps.login-ecr.outputs.registry }}
+        repository: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
+        push: true
+        context: client
+        tags: ${{ steps.construct-image-tag.outputs.image-tag }}
+        build-args: |
+          NEXT_PUBLIC_SERVER_BASE_URL=${{ inputs.server-base-url }}
+          NEXT_PUBLIC_APP_ENV=${{ inputs.app-env }}
 
     - name: Scan client image
       uses: ./.github/actions/image-scan
       with:
-        image: ${{ steps.build-image.outputs.image }}
+        image: ${{ steps.build-image.outputs.imageid }}
 
     - name: Set environment name in ECS task definition template
       shell: bash
@@ -79,7 +78,7 @@ runs:
       with:
         task-definition: ops/ecs/client-task-definition.json
         container-name: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
-        image: ${{ steps.build-image.outputs.image }}
+        image: ${{ steps.build-image.outputs.imageid }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@3cc43061dd30ad47511af35bca46e2c1435b9035
