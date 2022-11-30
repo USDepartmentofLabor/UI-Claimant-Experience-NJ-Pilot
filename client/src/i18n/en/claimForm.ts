@@ -300,7 +300,6 @@ const claimForm = {
         },
       },
     },
-    heading: 'Your employer',
     reason_for_data_collection:
       'We need the <strong>last 18 months</strong> of your work history to calculate your unemployment benefit amount. List out all your jobs, including jobs you are still working, to avoid delays with your application.',
     errors: {

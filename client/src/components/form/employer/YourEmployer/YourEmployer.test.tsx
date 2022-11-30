@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { useField, useFormikContext } from 'formik' // package will be auto mocked
 jest.mock('formik')
@@ -36,8 +36,8 @@ describe('Your Employer component', () => {
 
   it('renders labels and radio buttons', () => {
     const { container } = render(<YourEmployer index={employerIndex} />)
+    expect(screen.getByRole('heading', { name: 'your_employer.heading' }))
     expect(container.getElementsByClassName('usa-radio__input').length).toBe(2)
     expect(container.getElementsByClassName('usa-hint').length).toBe(1)
-    expect(container.getElementsByTagName('legend').length).toBe(2)
   })
 })
