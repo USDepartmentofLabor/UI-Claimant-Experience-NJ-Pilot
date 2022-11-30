@@ -48,7 +48,7 @@ The code submitter, code reviewer, and design reviewer should go through each of
 
 ## After completion of each milestone/epic:
 
-- [ ] Test all the above with JAWS screenreader on a Windows machine using Chrome or Firefox via [Asstistiv](https://docs.google.com/document/d/1YGVMAbQgBVYaPhTgzJeMer1iMpBsOSVCshyyu-vmGi4/edit#)
+- [ ] Test all the above with JAWS screenreader on a Windows machine using Chrome or Firefox via [Assistiv Labs](https://docs.google.com/document/d/1YGVMAbQgBVYaPhTgzJeMer1iMpBsOSVCshyyu-vmGi4/edit#)
 - [ ] Test all the above for responsiveness when zoomed in at 200%
 - [ ] Test all the above using an Android and an iPhone
 - [ ] Test connection-dependent interactions (inputs, buttons, links, etc) at different connection speeds using built-in throttling simulators in [Firefox](https://firefox-source-docs.mozilla.org/devtools-user/responsive_design_mode/index.html) or [Chrome](https://datawookie.dev/blog/2016/09/chrome-developer-tools-throttling-connection/) developer tools.
