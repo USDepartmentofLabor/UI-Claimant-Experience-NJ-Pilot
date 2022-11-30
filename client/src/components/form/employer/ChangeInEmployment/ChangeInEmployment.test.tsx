@@ -66,6 +66,15 @@ describe('Change in Employment component', () => {
           })
         : null
     }
+    const queryForHoursReducedByClaimantAnswer = () => {
+      const question = queryForReasonStillEmployedQuestion()
+      console.log(question)
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'separation.reasons.still_employed.options.reduction_in_hours_by_claimant',
+          }) //employers[0].reason_still_employed.reduction_in_hours_by_claimant
+        : null
+    }
     const queryForReduced20PercentQuestion = () =>
       screen.queryByRole('group', {
         name: 'hours_reduced_twenty_percent.label',
@@ -96,6 +105,7 @@ describe('Change in Employment component', () => {
       queryForChangeReasonLaidOffAnswer,
       queryForChangeReasonStillEmployedAnswer,
       queryForHoursReducedByEmployerAnswer,
+      queryForHoursReducedByClaimantAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
       queryForReasonStillEmployedQuestion,
@@ -188,5 +198,43 @@ describe('Change in Employment component', () => {
     await user.click(hoursReducedByEmployerAnswer as HTMLElement)
     expect(hoursReducedByEmployerAnswer).toBeChecked()
     expect(queryForReduced20PercentYesAnswer()).not.toBeChecked()
+  })
+  it('Clears Reduced Hours by 20 percent', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonStillEmployedAnswer,
+      queryForHoursReducedByEmployerAnswer,
+      queryForHoursReducedByClaimantAnswer,
+      queryForReduced20PercentQuestion,
+      queryForReduced20PercentYesAnswer,
+      queryForReduced20PercentNoAnswer,
+    } = renderChangeInEmployment()
+    const changeReasonStillEmployedAnswer =
+      queryForChangeReasonStillEmployedAnswer()
+
+    //click still employed to show reduced hours
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+    const hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
+
+    //select hours reduced by employer and no to reduced hours
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    let reduced20PercentNoAnswer = queryForReduced20PercentNoAnswer()
+    await user.click(reduced20PercentNoAnswer as HTMLElement)
+    expect(reduced20PercentNoAnswer).toBeChecked()
+    const hoursReducedByClaimantAnswer = queryForHoursReducedByClaimantAnswer()
+
+    //change still employed reason to hide reduced hours
+    await user.click(hoursReducedByClaimantAnswer as HTMLElement)
+    expect(hoursReducedByClaimantAnswer).toBeChecked()
+    const reduced20PercentQuestion = queryForReduced20PercentQuestion()
+    expect(reduced20PercentQuestion).not.toBeInTheDocument()
+
+    //change reason back to hours reduced by employer, value should be cleared
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    reduced20PercentNoAnswer = queryForReduced20PercentNoAnswer()
+    const reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
+
+    expect(reduced20PercentNoAnswer).not.toBeChecked()
+    expect(reduced20PercentYesAnswer).not.toBeChecked()
   })
 })
