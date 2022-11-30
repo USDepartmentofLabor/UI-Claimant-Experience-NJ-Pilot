@@ -257,9 +257,9 @@ const claimForm = {
               'My hours were not reduced at this employer',
             leave_of_absence: 'On a leave of absence',
             paid_vacation_holiday_or_pto: 'On a paid vacation, holiday or PTO',
-            temp_lay_off_or_furlough: 'On a temporary layoff or furloughed',
+            temp_lay_off_or_furlough: 'On a temporary lay off or furloughed',
 
-            school_employee_on_break: 'School employee, on a break or holiday',
+            school_employee_on_break: 'School employee on a break or holiday',
             self_employed: 'Self-employed with this employer',
             shared_work_program: 'Shared Work Program',
           },
