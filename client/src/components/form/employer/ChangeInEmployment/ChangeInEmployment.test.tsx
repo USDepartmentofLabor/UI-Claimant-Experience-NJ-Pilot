@@ -117,8 +117,6 @@ describe('Change in Employment component', () => {
       queryForChangeReasonRadioField,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
-      queryForReasonStillEmployedQuestion,
-      queryForReduced20PercentQuestion,
       queryForStartDate,
       queryForFinishDate,
     } = renderChangeInEmployment()
@@ -145,8 +143,6 @@ describe('Change in Employment component', () => {
 
     await user.click(changeReasonStillEmployedAnswer as HTMLElement)
     expect(changeReasonStillEmployedAnswer).toBeChecked()
-    expect(queryForReasonStillEmployedQuestion()).toBeInTheDocument()
-    expect(queryForReduced20PercentQuestion()).toBeInTheDocument()
   })
 
   it('shows and clears Still Employed conditionals', async () => {
@@ -165,7 +161,7 @@ describe('Change in Employment component', () => {
 
     //click still employed should show 1 conditional
     await user.click(changeReasonStillEmployedAnswer as HTMLElement)
-    expect(changeReasonStillEmployedAnswer).toBeChecked()
+    expect(queryForReasonStillEmployedQuestion()).toBeInTheDocument()
 
     let hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
     let reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
@@ -174,6 +170,7 @@ describe('Change in Employment component', () => {
     // clicking hours_reduced_by_employer reveals 2nd conditional
     await user.click(hoursReducedByEmployerAnswer as HTMLElement)
     expect(hoursReducedByEmployerAnswer).toBeChecked()
+    expect(queryForReduced20PercentQuestion()).toBeInTheDocument()
 
     reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
     await user.click(reduced20PercentYesAnswer as HTMLElement)

@@ -212,8 +212,7 @@ const yupEditEmployer = object().shape({
         ),
     }),
   hours_reduced_twenty_percent: boolean().when('separation_circumstance', {
-    is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
-      changeInEmploymentReason === 'still_employed',
+    is: 'still_employed',
     then: (schema) =>
       schema.when('reason_still_employed', {
         is: 'reduction_in_hours_by_employer',
