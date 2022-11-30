@@ -3,6 +3,7 @@ import {
   RaceOption,
   SexOption,
   InterpreterTTYOption,
+  PayTypeOption,
   PreferredLanguageOption,
   PaymentMethodOption,
   AccountTypeOption,
@@ -60,6 +61,17 @@ export type Employer = {
   corporate_officer_or_stock_ownership?: boolean
   employer_is_sole_proprietorship?: boolean
   related_to_owner_or_child_of_owner_under_18?: boolean
+
+  LOCAL_pay_types: PayTypeOption[]
+  payments_received: PaymentsReceivedDetailInput[]
+}
+
+export type PaymentsReceivedDetailInput = {
+  pay_type: PayTypeOption
+  note?: string
+  total?: string
+  date_pay_began?: string
+  date_pay_ended?: string
 }
 
 export type ScreenerInput = {

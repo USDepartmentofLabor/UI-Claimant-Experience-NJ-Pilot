@@ -127,3 +127,13 @@ export const employerRelationOptions = [
   'child',
 ] as const
 export type EmployerRelationOption = typeof employerRelationOptions[number]
+
+export const payTypeOptions = [
+  'vacation_sick_pto',
+  'final_paycheck',
+  'pension_annuity_retirement',
+  'severance_or_continuation',
+  'other_pay',
+  'none',
+] as const
+export type PayTypeOption = typeof payTypeOptions[number]

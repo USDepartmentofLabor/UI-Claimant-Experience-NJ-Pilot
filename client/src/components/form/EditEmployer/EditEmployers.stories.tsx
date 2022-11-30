@@ -4,6 +4,7 @@ import { Form, Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import { ClaimantInput } from 'types/claimantInput'
 import { Button } from '@trussworks/react-uswds'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 export default {
   title: 'Components/Form/Employer/EditEmployer',
@@ -12,39 +13,9 @@ export default {
 
 const Template: ComponentStory<typeof EditEmployer> = (args) => {
   /* Add input from child components here */
+  const { data } = useGetRecentEmployers()
   const initialValues: ClaimantInput = {
-    employers: [
-      {
-        name: 'Apple',
-        employer_address: {
-          address: '123 Main St',
-          city: 'Seattle',
-          state: 'WA',
-          zipcode: '01234',
-        },
-        employer_phone: '123-456-7890',
-      },
-      {
-        name: 'Microsoft',
-        employer_address: {
-          address: '456 First St',
-          city: 'Manhattan',
-          state: 'NY',
-          zipcode: '12345',
-        },
-        employer_phone: '987-654-3210',
-      },
-      {
-        name: 'Wendys',
-        employer_address: {
-          address: '789 Rick Rd',
-          city: 'Trenton',
-          state: 'NJ',
-          zipcode: '23456',
-        },
-        employer_phone: '555-123-9870',
-      },
-    ],
+    employers: data,
   }
 
   return (
@@ -70,39 +41,9 @@ InvalidIndex.args = {
 
 const WithValidation: ComponentStory<typeof EditEmployer> = (args) => {
   /* Add input from child components here */
+  const { data } = useGetRecentEmployers()
   const initialValues: ClaimantInput = {
-    employers: [
-      {
-        name: 'Apple',
-        employer_address: {
-          address: '123 Main St',
-          city: 'Seattle',
-          state: 'WA',
-          zipcode: '01234',
-        },
-        employer_phone: '123-456-7890',
-      },
-      {
-        name: 'Microsoft',
-        employer_address: {
-          address: '456 First St',
-          city: 'Manhattan',
-          state: 'NY',
-          zipcode: '12345',
-        },
-        employer_phone: '987-654-3210',
-      },
-      {
-        name: 'Wendys',
-        employer_address: {
-          address: '789 Rick Rd',
-          city: 'Trenton',
-          state: 'NJ',
-          zipcode: '23456',
-        },
-        employer_phone: '555-123-9870',
-      },
-    ],
+    employers: data,
   }
 
   return (
