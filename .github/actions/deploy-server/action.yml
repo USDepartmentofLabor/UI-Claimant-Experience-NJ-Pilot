@@ -44,6 +44,7 @@ runs:
       id: migration-changes
       uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
       with:
+        base: main
         filters: |
           changelog:
             - 'server/src/main/resources/db/changelog/changes/**'
