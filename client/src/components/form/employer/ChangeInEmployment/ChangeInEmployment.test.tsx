@@ -72,7 +72,7 @@ describe('Change in Employment component', () => {
       return question !== null
         ? within(question).queryByRole('radio', {
             name: 'separation.reasons.still_employed.options.reduction_in_hours_by_claimant',
-          }) //employers[0].reason_still_employed.reduction_in_hours_by_claimant
+          })
         : null
     }
     const queryForReduced20PercentQuestion = () =>
