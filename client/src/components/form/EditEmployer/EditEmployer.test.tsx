@@ -15,7 +15,20 @@ describe('Edit Employer Component', () => {
         <EditEmployer index={'2'} />
       </Formik>
     )
-    screen.getByText(/Wendys/i)
+    expect(screen.getByText(/Wendys/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('radio', {
+        name: 'your_employer.is_full_time.options.full_time',
+      })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByTestId('employers[2].self_employed.yes')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('group', {
+        name: 'payments_received.payments_received_detail.pay_type.label',
+      })
+    ).toBeInTheDocument()
   })
 
   it('displays an error if the index is invalid', () => {

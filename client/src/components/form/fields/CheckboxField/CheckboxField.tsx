@@ -15,6 +15,7 @@ import { useShowErrors } from 'hooks/useShowErrors'
 
 type CheckboxFieldProps = {
   showsErrors?: boolean
+  formGroupClassName?: string
 }
 
 export const CheckboxField = ({
@@ -22,6 +23,7 @@ export const CheckboxField = ({
   id,
   onChange,
   showsErrors = true,
+  formGroupClassName,
   ...inputProps
 }: CheckboxFieldProps &
   Optional<React.ComponentProps<typeof Checkbox>, 'id'>) => {
@@ -38,7 +40,7 @@ export const CheckboxField = ({
 
   /* eslint-disable-next-line react/jsx-props-no-spreading */
   return (
-    <FormGroup error={showError}>
+    <FormGroup className={formGroupClassName} error={showError}>
       <Checkbox
         {...fieldProps}
         name={name}
