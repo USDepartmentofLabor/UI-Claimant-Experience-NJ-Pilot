@@ -53,11 +53,9 @@ runs:
       id: build-image
       uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5
       with:
-        registry: ${{ steps.login-ecr.outputs.registry }}
-        repository: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
         push: true
         context: client
-        tags: ${{ steps.construct-image-tag.outputs.image-tag }}
+        tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-${{ inputs.deploy-env }}:${{ steps.construct-image-tag.outputs.image-tag }}
         build-args: |
           NEXT_PUBLIC_SERVER_BASE_URL=${{ inputs.server-base-url }}
           NEXT_PUBLIC_APP_ENV=${{ inputs.app-env }}
@@ -65,7 +63,7 @@ runs:
     - name: Scan client image
       uses: ./.github/actions/image-scan
       with:
-        image: ${{ steps.build-image.outputs.imageid }}
+        image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-${{ inputs.deploy-env }}:${{ steps.construct-image-tag.outputs.image-tag }}
 
     - name: Set environment name in ECS task definition template
       shell: bash
@@ -78,7 +76,7 @@ runs:
       with:
         task-definition: ops/ecs/client-task-definition.json
         container-name: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
-        image: ${{ steps.build-image.outputs.imageid }}
+        image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-${{ inputs.deploy-env }}:${{ steps.construct-image-tag.outputs.image-tag }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@3cc43061dd30ad47511af35bca46e2c1435b9035
