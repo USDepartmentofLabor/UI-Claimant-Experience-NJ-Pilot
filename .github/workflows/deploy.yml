@@ -72,16 +72,16 @@ jobs:
           IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325
+
+      - name: Build & Push image
         id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: dol-ui-claimant-intake-server-dev
-          IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
-        run: |
-          docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" server
-          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5
+        with:
+          push: true
+          context: server
+          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-server-dev:${{ steps.construct-image-tag.outputs.image-tag }}
 
       - name: Scan server image
         uses: ./.github/actions/image-scan
@@ -93,7 +93,7 @@ jobs:
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          server-image: ${{ steps.build-image.outputs.image }}
+          server-image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-server-dev:${{ steps.construct-image-tag.outputs.image-tag }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
           image-tag: ${{ steps.construct-image-tag.outputs.image-tag }}
