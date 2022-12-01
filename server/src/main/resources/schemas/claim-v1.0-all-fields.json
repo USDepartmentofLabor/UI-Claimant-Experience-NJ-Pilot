@@ -43,7 +43,8 @@
         },
         "city": {
           "type": "string",
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^([^0-9]*)$"
         },
         "state": {
           "$ref": "#/definitions/state_or_territory"
@@ -69,7 +70,8 @@
         },
         "city": {
           "type": "string",
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^([^0-9]*)$"
         },
         "state": {
           "$ref": "#/definitions/state_or_territory"
@@ -90,7 +92,8 @@
       "properties": {
         "city": {
           "type": "string",
-          "maxLength": 64
+          "maxLength": 64,
+          "pattern": "^([^0-9]*)$"
         },
         "state": {
           "$ref": "#/definitions/state_or_territory"
@@ -460,7 +463,7 @@
           "type": "string",
           "enum": [
             "laid_off",
-            "fired_discharged_terminated",
+            "fired_discharged_suspended",
             "unsatisfactory_work_performance",
             "quit_or_retired",
             "still_employed",
@@ -471,6 +474,7 @@
         "separation_circumstance_details": {
           "description": "Additional notes from claimant on separation",
           "type": "string",
+          "maxLength": 255,
           "if": {
             "properties": {
               "separation_circumstance": {
@@ -547,7 +551,7 @@
             "properties": {
               "separation_circumstance": {
                 "type": "string",
-                "enum": ["fired_discharged_terminated"]
+                "enum": ["fired_discharged_suspended"]
               }
             }
           },
@@ -650,7 +654,7 @@
           "description": "Total pay (stored in cents) received from employer for a specific type after becoming unemployed.",
           "type": "integer"
         },
-        "start_date_of_pay": {
+        "date_pay_began": {
           "description": "Start date of this pay",
           "type": "string",
           "format": "date",
@@ -663,10 +667,10 @@
             }
           },
           "then": {
-            "required": ["start_date_of_pay"]
+            "required": ["date_pay_began"]
           }
         },
-        "end_date_of_pay": {
+        "date_pay_ended": {
           "description": "End date of this pay",
           "type": "string",
           "if": {
@@ -678,7 +682,7 @@
             }
           },
           "then": {
-            "required": ["end_date_of_pay"]
+            "required": ["date_pay_ended"]
           }
         },
         "note": {

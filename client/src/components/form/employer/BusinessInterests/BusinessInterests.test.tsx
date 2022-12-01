@@ -3,17 +3,15 @@ import { Formik } from 'formik'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 describe('BusinessInterests component', () => {
+  const { data } = useGetRecentEmployers()
   const renderBusinessInterests = () => {
     render(
       <Formik
         initialValues={{
-          employers: [
-            {
-              name: 'Some employer',
-            },
-          ],
+          employers: data,
         }}
         onSubmit={noop}
       >

@@ -15,7 +15,10 @@ export const yupAddress = () =>
     address: string()
       .max(64)
       .required(i18n_common.t('address.address.required')),
-    city: string().max(64).required(i18n_common.t('address.city.required')),
+    city: string()
+      .max(64)
+      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.noNumbers'))
+      .required(i18n_common.t('address.city.required')),
     state: string()
       .oneOf(Object.keys(states))
       .required(i18n_common.t('address.state.required')),
@@ -34,7 +37,10 @@ export const yupAddressWithoutPOBox = () =>
         i18n_common.t('address.address.pobox')
       )
       .required(i18n_common.t('address.address.required')),
-    city: string().max(64).required(i18n_common.t('address.city.required')),
+    city: string()
+      .max(64)
+      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.noNumbers'))
+      .required(i18n_common.t('address.city.required')),
     state: string()
       .oneOf(Object.keys(states))
       .required(i18n_common.t('address.state.required')),
@@ -46,7 +52,11 @@ export const yupAddressWithoutPOBox = () =>
 
 export const yupAddressWithoutStreet = () =>
   object().shape({
-    city: string().max(64).required(i18n_common.t('address.city.required')),
+    // eslint-disable-next-line security/detect-unsafe-regex
+    city: string()
+      .max(64)
+      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.noNumbers'))
+      .required(i18n_common.t('address.city.required')),
     state: string()
       .oneOf(Object.keys(states))
       .required(i18n_common.t('address.state.required')),

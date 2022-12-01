@@ -3,6 +3,7 @@ import {
   RaceOption,
   SexOption,
   InterpreterTTYOption,
+  PayTypeOption,
   PreferredLanguageOption,
   PaymentMethodOption,
   AccountTypeOption,
@@ -45,8 +46,10 @@ export type Employer = {
 
   separation_circumstance?: string
   expect_to_be_recalled?: boolean
+  separation_circumstance_details?: string
   employment_start_date?: string
   employment_last_date?: string
+  discharge_date?: string
 
   worked_at_employer_address?: boolean
   alternate_physical_work_address?: AddressWithoutStreetInput
@@ -58,6 +61,17 @@ export type Employer = {
   corporate_officer_or_stock_ownership?: boolean
   employer_is_sole_proprietorship?: boolean
   related_to_owner_or_child_of_owner_under_18?: boolean
+
+  LOCAL_pay_types: PayTypeOption[]
+  payments_received: PaymentsReceivedDetailInput[]
+}
+
+export type PaymentsReceivedDetailInput = {
+  pay_type: PayTypeOption
+  note?: string
+  total?: string
+  date_pay_began?: string
+  date_pay_ended?: string
 }
 
 export type ScreenerInput = {

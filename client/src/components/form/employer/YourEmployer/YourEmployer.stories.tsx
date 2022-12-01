@@ -4,18 +4,16 @@ import { Button } from '@trussworks/react-uswds'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
 import { noop } from 'helpers/noop/noop'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 export default {
   title: 'Components/Form/Employer/Sections/YourEmployer',
   component: YourEmployer,
 } as ComponentMeta<typeof YourEmployer>
 
-// TODO: Get from one place
+const { data } = useGetRecentEmployers()
 const initialValues = {
-  employers: [
-    { name: 'Tesla', is_full_time: undefined },
-    { name: 'Apple', is_full_time: undefined },
-  ],
+  employers: data,
 }
 
 const Template: ComponentStory<typeof YourEmployer> = (args) => {
