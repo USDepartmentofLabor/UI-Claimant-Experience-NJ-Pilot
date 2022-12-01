@@ -39,6 +39,7 @@ export const CheckboxGroupField = ({
           key={`${id || name}.${index}.${option.value}`}
           id={`${id || name}.${option.value}`}
           name={name}
+          formGroupClassName="margin-top-1"
           label={option.label}
           value={option.value}
           checked={!!fieldProps?.value?.includes(option.value)}

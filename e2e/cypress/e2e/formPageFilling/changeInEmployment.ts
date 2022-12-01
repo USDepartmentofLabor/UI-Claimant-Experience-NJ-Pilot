@@ -5,9 +5,11 @@ type dateField = {
 }
 type ChangeInEmploymentOptions = {
   separation_circumstance: string
+  separation_circumstance_details?: string
   expect_to_be_recalled?: boolean
   employment_start_date?: dateField
   employment_last_date?: dateField
+  discharge_date?: dateField
   has_definite_recall_date?: boolean
   definite_recall_date?: dateField
   is_seasonal_work?: boolean
@@ -22,6 +24,12 @@ const fillChangeInEmployment = (
   )
     .parent()
     .click()
+
+  if (options.separation_circumstance_details) {
+    cy.get(
+      `textarea[name=employers\\[${employerIndex}\\]\\.separation_circumstance_details]`
+    ).type(options.separation_circumstance_details)
+  }
 
   if (options.employment_start_date) {
     cy.get(
@@ -57,6 +65,22 @@ const fillChangeInEmployment = (
     )
       .clear()
       .type(options.employment_last_date.yr)
+  }
+
+  if (options.discharge_date) {
+    cy.get(
+      `input[name=employers\\[${employerIndex}\\]\\.discharge_date\\.month]`
+    )
+      .clear()
+      .type(options.discharge_date.mo)
+    cy.get(`input[name=employers\\[${employerIndex}\\]\\.discharge_date\\.day]`)
+      .clear()
+      .type(options.discharge_date.day)
+    cy.get(
+      `input[name=employers\\[${employerIndex}\\]\\.discharge_date\\.year]`
+    )
+      .clear()
+      .type(options.discharge_date.yr)
   }
 
   if (options.expect_to_be_recalled !== undefined) {

@@ -4,38 +4,16 @@ import { WorkLocation } from './WorkLocation'
 import { noop } from 'helpers/noop/noop'
 import { Button } from '@trussworks/react-uswds'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 export default {
   title: 'Components/Form/Employer/Sections/WorkLocation',
   component: WorkLocation,
 } as ComponentMeta<typeof WorkLocation>
 
-// TODO: Get from one place
+const { data } = useGetRecentEmployers()
 const initialValues = {
-  employers: [
-    {
-      name: 'Tesla',
-      is_full_time: undefined,
-      employer_address: {
-        address: '123 Main St',
-        city: 'Trenton',
-        state: 'NJ',
-        zipcode: '01234',
-      },
-      employer_phone: '123-456-7890',
-    },
-    {
-      name: 'Apple',
-      is_full_time: undefined,
-      employer_address: {
-        address: '321 First St',
-        city: 'Seattle',
-        state: 'WA',
-        zipcode: '43210',
-      },
-      employer_phone: '987-654-3210',
-    },
-  ],
+  employers: data,
 }
 
 const Template: ComponentStory<typeof WorkLocation> = (args) => {

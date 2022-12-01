@@ -3,24 +3,15 @@ import { Formik } from 'formik'
 import { WorkLocation } from 'components/form/employer/WorkLocation/WorkLocation'
 import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 describe('WorkLocation component', () => {
+  const { data } = useGetRecentEmployers()
   const renderWorkLocation = () => {
     render(
       <Formik
         initialValues={{
-          employers: [
-            {
-              name: 'Tesla',
-              employer_address: {
-                address: '123 Main St',
-                city: 'Trenton',
-                state: 'NJ',
-                zipcode: '01234',
-              },
-              employer_phone: '123-456-7890',
-            },
-          ],
+          employers: data,
         }}
         onSubmit={noop}
       >

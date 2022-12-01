@@ -11,6 +11,7 @@ import { Trans } from 'react-i18next'
 
 import { ChangeEventHandler } from 'react'
 import { useClearFields } from 'hooks/useClearFields'
+import TextAreaField from 'components/form/fields/TextAreaField/TextAreaField'
 
 interface IEmployer {
   index: string
@@ -21,6 +22,8 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
+  const showComment =
+    employer?.separation_circumstance === 'fired_discharged_suspended'
   const showLastDay =
     employer?.separation_circumstance !== undefined &&
     employer?.separation_circumstance !== 'still_employed'
@@ -28,14 +31,20 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const showDefiniteRecall =
     employer?.expect_to_be_recalled === true &&
     employer?.definite_recall === true
+  const showDischargeDate =
+    employer?.separation_circumstance === 'fired_discharged_suspended'
 
   const { clearField } = useClearFields()
-  //Uncomment when adding in more change in employment options
-  // const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-  //   if (e.target.value === 'still_employed') {
-  //     clearField(`employers[${index}].employment_last_date`)
-  //   }
-  // }
+  const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    // "TODO. - uncomment when Still employed is added"
+    // if (e.target.value === 'still_employed') {
+    //   clearField(`employers[${index}].employment_last_date`)
+    // }
+    if (e.target.value !== 'fired_discharged_suspended') {
+      clearField(`employers[${index}].separation_circumstance_details`)
+      clearField(`employers[${index}].discharge_date`)
+    }
+  }
   const handleExpectRecallChange: ChangeEventHandler<HTMLInputElement> = (
     e
   ) => {
@@ -70,7 +79,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
                 value: option,
               }
             })}
-            // onChange={handleReasonChange} //uncomment when adding in additional fields
+            onChange={handleReasonChange}
           />
         </Fieldset>
         <div className="usa-alert usa-alert--info usa-alert--validation">
@@ -85,6 +94,14 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             </Trans>
           </div>
         </div>
+        {showComment && (
+          <TextAreaField
+            label={t(
+              'separation.separation_circumstance_details.required_label'
+            )}
+            name={`employers[${index}].separation_circumstance_details`}
+          />
+        )}
         <DateInputField
           name={`employers[${index}].employment_start_date`}
           legend={t('employment_start_date.label')}
@@ -95,7 +112,12 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             legend={t('employment_last_date.label')}
           />
         )}
-
+        {showDischargeDate && (
+          <DateInputField
+            name={`employers[${index}].discharge_date`}
+            legend={t('discharge_date.label')}
+          />
+        )}
         <YesNoQuestion
           question={t('separation.expect_to_be_recalled.label')}
           name={`employers[${index}].expect_to_be_recalled`}

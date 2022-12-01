@@ -3,17 +3,16 @@ import { BusinessInterests } from 'components/form/employer/BusinessInterests/Bu
 import { Form, Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+
 export default {
   title: 'Components/Form/Employer/Sections/BusinessInterests',
   component: BusinessInterests,
 } as ComponentMeta<typeof BusinessInterests>
 
-// TODO: Get from one place
+const { data } = useGetRecentEmployers()
 const initialValues = {
-  employers: [
-    { name: 'Tesla', is_full_time: undefined },
-    { name: 'Apple', is_full_time: undefined },
-  ],
+  employers: data,
 }
 
 const Template: ComponentStory<typeof BusinessInterests> = (args) => {

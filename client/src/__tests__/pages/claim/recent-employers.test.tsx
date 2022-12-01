@@ -14,11 +14,11 @@ describe('Recent employers page', () => {
     expect(screen.getByText('recent_employers.preamble')).toBeInTheDocument()
     expect(screen.getByText('recent_employers.question')).toBeInTheDocument()
 
-    expect(screen.getByText('Lenox Incorporated')).toBeInTheDocument()
-    expect(screen.getByText('Lyft Inc.')).toBeInTheDocument()
-    expect(screen.getByText("McDonald's")).toBeInTheDocument()
+    expect(screen.getByText('Apple')).toBeInTheDocument()
+    expect(screen.getByText('Microsoft')).toBeInTheDocument()
+    expect(screen.getByText('Wendys')).toBeInTheDocument()
 
-    //const employer = screen.getByText(/did you work at lenox incorporated/i)
+    //const employer = screen.getByText(/did you work at Apple/i)
     const employer = await screen
       .findAllByRole('group', {
         name: /recent_employers.work_at/,
