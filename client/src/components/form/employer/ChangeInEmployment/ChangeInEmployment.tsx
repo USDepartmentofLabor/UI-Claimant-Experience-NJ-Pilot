@@ -24,9 +24,7 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
 
   const { clearField } = useClearFields()
   const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (e.target.value === 'still_employed') {
-      clearField(`employers[${index}].employment_last_date`)
-    } else {
+    if (e.target.value !== 'still_employed') {
       clearField(`employers[${index}].reason_still_employed`)
       clearField(`employers[${index}].hours_reduced_twenty_percent`)
     }
@@ -46,8 +44,6 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const showHoursReducedPercentage =
     showStillEmployed &&
     employer?.reason_still_employed === 'reduction_in_hours_by_employer'
-  const showLastDay =
-    employer?.separation_circumstance !== undefined && !showStillEmployed
 
   return (
     <>
@@ -103,12 +99,11 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           name={`employers[${index}].employment_start_date`}
           legend={t('employment_start_date.label')}
         />
-        {showLastDay && (
-          <DateInputField
-            name={`employers[${index}].employment_last_date`}
-            legend={t('employment_last_date.label')}
-          />
-        )}
+        <DateInputField
+          name={`employers[${index}].employment_last_date`}
+          legend={t('employment_last_date.label')}
+          hint={showStillEmployed ? t('employment_last_date.hint') : undefined}
+        />
         {showHoursReducedPercentage && (
           <YesNoQuestion
             question={t('hours_reduced_twenty_percent.label')}

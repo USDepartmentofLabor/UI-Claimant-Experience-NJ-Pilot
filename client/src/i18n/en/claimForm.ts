@@ -335,6 +335,7 @@ const claimForm = {
     },
     employment_last_date: {
       label: 'Last day of work for this employer',
+      hint: 'If still employed, put the last day you physically worked at this employer',
       errors: {
         required: 'Last day of work is required',
         maxDate: "Last day of work can't be in the future",

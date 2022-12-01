@@ -68,7 +68,6 @@ describe('Change in Employment component', () => {
     }
     const queryForHoursReducedByClaimantAnswer = () => {
       const question = queryForReasonStillEmployedQuestion()
-      console.log(question)
       return question !== null
         ? within(question).queryByRole('radio', {
             name: 'separation.reasons.still_employed.options.reduction_in_hours_by_claimant',
@@ -143,12 +142,10 @@ describe('Change in Employment component', () => {
     expect(expectRecallNoAnswer).toBeInTheDocument()
     expect(expectRecallYesAnswer).toBeInTheDocument()
     expect(startDate).toBeInTheDocument()
-    expect(finishDate).not.toBeInTheDocument()
+    expect(finishDate).toBeInTheDocument()
 
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(changeReasonLaidOffAnswer).toBeChecked()
-    expect(queryForFinishDate()).toBeInTheDocument()
-
     await user.click(changeReasonStillEmployedAnswer as HTMLElement)
     expect(changeReasonStillEmployedAnswer).toBeChecked()
   })
