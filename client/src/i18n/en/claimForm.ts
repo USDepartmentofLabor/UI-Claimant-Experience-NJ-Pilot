@@ -206,10 +206,12 @@ const claimForm = {
       option: {
         required: 'Please select a separation option',
       },
-      comment: {
+      separation_circumstance_details: {
         required_label: 'Please share more details below',
         optional_label: 'Please share more details below <i>(optional)</i>',
         errors: {
+          max_length:
+            'Your separation circumstance details must be at most 255 characters',
           required: 'More detail about the separation reason is required',
         },
       },
@@ -232,12 +234,12 @@ const claimForm = {
             business_closed: 'Business closed or moved out of area',
           },
         },
-        fired_discharged_terminated: {
+        fired_discharged_suspended: {
           label: 'Fired, discharged, or suspended',
           description:
             'Your employer ended your job, suspended you, or forced you to resign for a reason other than lack of work or assignment ending.',
           option_heading:
-            'What was the reason you were fired, discharged, or terminated?',
+            'What was the reason you were fired, discharged, or suspended?',
           options: {
             attendance: 'Attendance',
             violation: 'Violation of employer policy',
@@ -286,7 +288,6 @@ const claimForm = {
           // unconventional to have a null translation but it's because we leverage this file also for TS types
           option_heading: null,
         },
-
         unsatisfactory_work_performance: {
           label: 'Unsatisfactory work performance',
           description:
@@ -300,7 +301,6 @@ const claimForm = {
         },
       },
     },
-    heading: 'Your employer',
     reason_for_data_collection:
       'We need the <strong>last 18 months</strong> of your work history to calculate your unemployment benefit amount. List out all your jobs, including jobs you are still working, to avoid delays with your application.',
     errors: {
@@ -338,6 +338,15 @@ const claimForm = {
         required: 'Last day of work is required',
         maxDate: "Last day of work can't be in the future",
         minDate: "Last day can't be before employment start date",
+      },
+    },
+    discharge_date: {
+      label: 'What was your discharge date?',
+      errors: {
+        date_format: 'Discharge date',
+        required: 'Discharge date is required',
+        maxDate: "Discharge date can't be in the future",
+        minDate: 'Discharge date must be on or after employment end date',
       },
     },
     same_phone: {

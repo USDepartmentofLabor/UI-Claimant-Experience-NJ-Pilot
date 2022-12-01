@@ -97,7 +97,7 @@ export type SuffixOption = typeof suffixOptions[number]
 
 export const changeInEmploymentOptions = [
   'laid_off',
-  // 'fired_discharged_terminated',
+  'fired_discharged_suspended',
   // 'unsatisfactory_work_performance',
   // 'quit_or_retired',
   // 'still_employed',

@@ -53,7 +53,7 @@ const PaymentsReceived = ({ employerIndex }: PaymentsReceivedProps) => {
 
   return (
     <>
-      <h2 className="font-heading-sm">{t('heading')}</h2>
+      <h2 className="font-heading-sm">{t('payments_received.heading')}</h2>
       <FieldArray
         name={`employers[${employerIndex}].payments_received`}
         render={(arrayHelpers) => (
