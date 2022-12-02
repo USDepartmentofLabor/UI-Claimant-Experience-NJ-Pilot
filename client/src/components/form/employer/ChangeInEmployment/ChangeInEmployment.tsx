@@ -7,11 +7,11 @@ import { useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
+import { TextAreaField } from 'components/form/fields/TextAreaField/TextAreaField'
 import { Trans } from 'react-i18next'
 
 import { ChangeEventHandler } from 'react'
 import { useClearFields } from 'hooks/useClearFields'
-import TextAreaField from 'components/form/fields/TextAreaField/TextAreaField'
 
 interface IEmployer {
   index: string
@@ -23,7 +23,8 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
 
   const employer = values.employers?.[parseInt(index)]
   const showComment =
-    employer?.separation_circumstance === 'fired_discharged_suspended'
+    employer?.separation_circumstance === 'fired_discharged_suspended' ||
+    employer?.separation_circumstance === 'quit_or_retired'
   const showLastDay =
     employer?.separation_circumstance !== undefined &&
     employer?.separation_circumstance !== 'still_employed'
@@ -43,6 +44,9 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
     if (e.target.value !== 'fired_discharged_suspended') {
       clearField(`employers[${index}].separation_circumstance_details`)
       clearField(`employers[${index}].discharge_date`)
+    }
+    if (e.target.value !== 'quit_or_retired') {
+      clearField(`employers[${index}].separation_circumstance_details`)
     }
   }
   const handleExpectRecallChange: ChangeEventHandler<HTMLInputElement> = (

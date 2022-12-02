@@ -99,7 +99,7 @@ export const changeInEmploymentOptions = [
   'laid_off',
   'fired_discharged_suspended',
   // 'unsatisfactory_work_performance',
-  // 'quit_or_retired',
+  'quit_or_retired',
   // 'still_employed',
   // 'strike_or_lock_out_by_employer',
   // 'federal_or_state_shutdown',
