@@ -50,6 +50,9 @@ export type Employer = {
   employment_start_date?: string
   employment_last_date?: string
   discharge_date?: string
+  definite_recall?: boolean
+  definite_recall_date?: string
+  is_seasonal_work?: boolean
 
   worked_at_employer_address?: boolean
   alternate_physical_work_address?: AddressWithoutStreetInput
