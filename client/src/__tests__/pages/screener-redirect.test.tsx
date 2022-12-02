@@ -192,17 +192,17 @@ describe('Screener-redirect page', () => {
           <ScreenerRedirect />
         </Formik>
       )
-      const otherStateHref = screen.queryByRole('button', {
+      const otherStateHrefButton = screen.queryByRole('button', {
         name: 'other_state.button',
       })
-      await user.click(otherStateHref as HTMLElement)
+
+      await user.click(otherStateHrefButton as HTMLElement)
       expect(getPageUrl()).toEqual(
         'https://www.dol.gov/general/topic/unemployment-insurance/'
       )
     })
 
     it('can access the disability url', async () => {
-      //    screener_currently_disabled: true}
       const user = userEvent.setup()
       const searchString = { screener_currently_disabled: true }
       makeMockWindowSearch(searchString)
@@ -212,16 +212,15 @@ describe('Screener-redirect page', () => {
           <ScreenerRedirect />
         </Formik>
       )
-      const otherStateHref = screen.queryByRole('button', {
+      const disabilityHrefButton = screen.queryByRole('button', {
         name: 'disability.button',
       })
-      await user.click(otherStateHref as HTMLElement)
+      await user.click(disabilityHrefButton as HTMLElement)
       expect(getPageUrl()).toEqual(
         'https://nj.gov/labor/myleavebenefits/worker/tdi/'
       )
     })
     it('can access the military service url', async () => {
-      //    screener_currently_disabled: true}
       const user = userEvent.setup()
       const searchString = { screener_military_service_eighteen_months: true }
       makeMockWindowSearch(searchString)
@@ -231,10 +230,10 @@ describe('Screener-redirect page', () => {
           <ScreenerRedirect />
         </Formik>
       )
-      const otherStateHref = screen.queryByRole('button', {
+      const militaryHrefButton = screen.queryByRole('button', {
         name: 'military_mvp.label.button',
       })
-      await user.click(otherStateHref as HTMLElement)
+      await user.click(militaryHrefButton as HTMLElement)
       expect(getPageUrl()).toEqual(
         'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
       )
