@@ -102,7 +102,9 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         <DateInputField
           name={`employers[${index}].employment_last_date`}
           legend={t('employment_last_date.label')}
-          hint={showStillEmployed ? t('employment_last_date.hint') : undefined}
+          //TODO - uncomment if hint is added back in,
+          //     remove if decide not to have a hint
+          // hint={showStillEmployed ? t('employment_last_date.hint') : undefined}
         />
         {showHoursReducedPercentage && (
           <YesNoQuestion
