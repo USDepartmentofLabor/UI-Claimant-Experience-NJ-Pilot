@@ -13,57 +13,65 @@ import { suffixOptions } from 'constants/formOptions'
 export const yupAddress = () =>
   object().shape({
     address: string()
-      .max(64)
-      .required(i18n_common.t('address.address.required')),
+      .max(64, i18n_common.t('address.address.errors.maxLength'))
+      .required(i18n_common.t('address.address.errors.required')),
     city: string()
-      .max(64)
-      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.noNumbers'))
-      .required(i18n_common.t('address.city.required')),
+      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
+      .required(i18n_common.t('address.city.errors.required')),
     state: string()
       .oneOf(Object.keys(states))
-      .required(i18n_common.t('address.state.required')),
+      .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
-      // eslint-disable-next-line security/detect-unsafe-regex
-      .matches(/^\d{5}(-\d{4})?$/, i18n_common.t('address.zipcode.format'))
-      .required(i18n_common.t('address.zipcode.required')),
+      .matches(
+        // eslint-disable-next-line security/detect-unsafe-regex
+        /^\d{5}(-\d{4})?$/,
+        i18n_common.t('address.zipcode.errors.format')
+      )
+      .required(i18n_common.t('address.zipcode.errors.required')),
   })
 
 export const yupAddressWithoutPOBox = () =>
   object().shape({
     address: string()
-      .max(64)
+      .max(64, i18n_common.t('address.address.errors.maxLength'))
       .matches(
         /^(?!.*(?:(.*((p|post)[-.\s]*(o|off|office)[-.\s]*(box|bin)[-.\s]*)|.*((p |post)[-.\s]*(box|bin)[-.\s]*)))).*$/i,
-        i18n_common.t('address.address.pobox')
+        i18n_common.t('address.address.errors.pobox')
       )
-      .required(i18n_common.t('address.address.required')),
+      .required(i18n_common.t('address.address.errors.required')),
     city: string()
-      .max(64)
-      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.noNumbers'))
-      .required(i18n_common.t('address.city.required')),
+      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
+      .required(i18n_common.t('address.city.errors.required')),
     state: string()
       .oneOf(Object.keys(states))
-      .required(i18n_common.t('address.state.required')),
+      .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
-      // eslint-disable-next-line security/detect-unsafe-regex
-      .matches(/^\d{5}(-\d{4})?$/, i18n_common.t('address.zipcode.format'))
-      .required(i18n_common.t('address.zipcode.required')),
+      .matches(
+        // eslint-disable-next-line security/detect-unsafe-regex
+        /^\d{5}(-\d{4})?$/,
+        i18n_common.t('address.zipcode.errors.format')
+      )
+      .required(i18n_common.t('address.zipcode.errors.required')),
   })
 
 export const yupAddressWithoutStreet = () =>
   object().shape({
-    // eslint-disable-next-line security/detect-unsafe-regex
     city: string()
-      .max(64)
-      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.noNumbers'))
-      .required(i18n_common.t('address.city.required')),
+      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
+      .required(i18n_common.t('address.city.errors.required')),
     state: string()
       .oneOf(Object.keys(states))
-      .required(i18n_common.t('address.state.required')),
+      .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
-      // eslint-disable-next-line security/detect-unsafe-regex
-      .matches(/^\d{5}(-\d{4})?$/, i18n_common.t('address.zipcode.format'))
-      .required(i18n_common.t('address.zipcode.required')),
+      .matches(
+        // eslint-disable-next-line security/detect-unsafe-regex
+        /^\d{5}(-\d{4})?$/,
+        i18n_common.t('address.zipcode.errors.format')
+      )
+      .required(i18n_common.t('address.zipcode.errors.required')),
   })
 
 export const yupDate = (fieldName: string) =>
@@ -89,27 +97,27 @@ export const yupCurrency = (errorMsg = '') => {
 export const yupName = object().shape({
   first_name: string()
     .nullable()
-    .max(36)
+    .max(36, i18n_claimForm.t('name.first_name.errors.maxLength'))
     .matches(
       /^[A-Za-z]+$/,
       i18n_claimForm.t('name.first_name.errors.alphabetical')
     )
-    .required(i18n_claimForm.t('name.first_name.required')),
+    .required(i18n_claimForm.t('name.first_name.errors.required')),
   last_name: string()
     .nullable()
-    .max(36)
+    .max(36, i18n_claimForm.t('name.last_name.errors.maxLength'))
     .matches(
       /^[A-Za-z]+$/,
       i18n_claimForm.t('name.last_name.errors.alphabetical')
     )
-    .required(i18n_claimForm.t('name.last_name.required')),
+    .required(i18n_claimForm.t('name.last_name.errors.required')),
   middle_initial: string()
     .nullable()
     .matches(
       /[A-Za-z]/,
       i18n_claimForm.t('name.middle_initial.errors.alphabetical')
     )
-    .max(1, i18n_claimForm.t('name.middle_initial.errors.max')),
+    .max(1, i18n_claimForm.t('name.middle_initial.errors.maxLength')),
   suffix: string()
     .oneOf([...suffixOptions])
     .nullable(),

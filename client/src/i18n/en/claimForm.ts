@@ -722,12 +722,14 @@ const claimForm = {
       label: 'Name of your union',
       errors: {
         required: 'You must give the name of your union',
+        maxLength: 'Union name must be at most 32 characters',
       },
     },
     union_local_number: {
       label: 'Union local number',
       errors: {
         required: 'You must give your union local number',
+        maxLength: 'Union local number must be at most 16 characters',
       },
     },
     required_to_seek_work_through_hiring_hall: {
@@ -768,7 +770,9 @@ const claimForm = {
         tty: 'Yes, TTY',
         no_interpreter_tty: 'No',
       },
-      required: 'You must say whether you need an interpreter or TTY',
+      errors: {
+        required: 'You must say whether you need an interpreter or TTY',
+      },
     },
     preferred_language: {
       label: 'What language do you speak?',
@@ -782,7 +786,10 @@ const claimForm = {
         vietnamese: 'Tiếng Việt (Vietnamese)',
         other: 'Other',
       },
-      required: 'Please specify the language you speak',
+      errors: {
+        required: 'Please specify the language you speak',
+        maxLength: 'Preferred language must be at most 32 characters',
+      },
     },
     other_language: 'Enter the language you speak',
   },
@@ -791,23 +798,25 @@ const claimForm = {
     alternate_name: 'Additional name',
     first_name: {
       label: 'First name',
-      required: 'First name is required',
       errors: {
+        required: 'First name is required',
         alphabetical: 'First name must be alphabetical',
+        maxLength: 'First name must be at most 36 characters',
       },
     },
     middle_initial: {
       label: 'Middle initial (optional)',
       errors: {
         alphabetical: 'Middle initial must be alphabetical',
-        max: 'Middle initial must be at most 1 character',
+        maxLength: 'Middle initial must be at most 1 character',
       },
     },
     last_name: {
       label: 'Last name',
-      required: 'Last name is required',
       errors: {
+        required: 'Last name is required',
         alphabetical: 'Last name must be alphabetical',
+        maxLength: 'Last name must be at most 36 characters',
       },
     },
     suffix: {
