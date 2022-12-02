@@ -67,7 +67,7 @@ export const UnionPageDefinition: PageDefinition = {
       is: true,
       then: (schema) =>
         schema
-          .max(32)
+          .max(32, i18n_claimForm.t('union.union_name.errors.maxLength'))
           .required(i18n_claimForm.t('union.union_name.errors.required')),
     }),
     union_local_number: string().when(
@@ -76,7 +76,10 @@ export const UnionPageDefinition: PageDefinition = {
         is: true,
         then: (schema) =>
           schema
-            .max(16)
+            .max(
+              16,
+              i18n_claimForm.t('union.union_local_number.errors.maxLength')
+            )
             .required(
               i18n_claimForm.t('union.union_local_number.errors.required')
             ),

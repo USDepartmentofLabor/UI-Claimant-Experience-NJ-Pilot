@@ -142,13 +142,20 @@ export const ContactPageDefinition: PageDefinition = {
       is: 'interpreter',
       then: string()
         .oneOf([...preferredLanguageOptions])
-        .required(i18n_claimForm.t('contact.preferred_language.required')),
+        .required(
+          i18n_claimForm.t('contact.preferred_language.errors.required')
+        ),
     }),
     preferred_language_other: mixed().when('preferred_language', {
       is: 'other',
       then: string()
-        .max(32)
-        .required(i18n_claimForm.t('contact.preferred_language.required')),
+        .max(
+          32,
+          i18n_claimForm.t('contact.preferred_language.errors.maxLength')
+        )
+        .required(
+          i18n_claimForm.t('contact.preferred_language.errors.required')
+        ),
     }),
   }),
 }
