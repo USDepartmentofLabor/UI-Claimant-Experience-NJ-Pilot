@@ -10,13 +10,14 @@ import {
   Link,
 } from '@trussworks/react-uswds'
 import { useRouter } from 'next/router'
-import { pageDefinitions } from 'constants/pages/pageDefinitions'
+// import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { Routes, CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 
 export const NewJerseyHeader = () => {
   const { t } = useTranslation('common', { keyPrefix: 'header' })
   const router = useRouter()
-  const goToFirstPageOfClaimForm = () => router.push(pageDefinitions[0].path)
+  // TODO Figure out solution to why this line is making Storybook give errors
+  // const goToFirstPageOfClaimForm = () => router.push(pageDefinitions[0].path)
   const [expanded, setExpanded] = useState(false)
   const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded)
   const [isOpen, setIsOpen] = useState([false, false])
@@ -75,7 +76,7 @@ export const NewJerseyHeader = () => {
       </>
     ) : (
       <Link
-        onClick={goToFirstPageOfClaimForm}
+        // onClick={goToFirstPageOfClaimForm}
         key="claim"
         variant="nav"
         href=""
