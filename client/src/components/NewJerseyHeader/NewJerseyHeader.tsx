@@ -16,8 +16,6 @@ import { Routes, CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 export const NewJerseyHeader = () => {
   const { t } = useTranslation('common', { keyPrefix: 'header' })
   const router = useRouter()
-  // TODO Figure out solution to why this line is making Storybook give errors
-  // const goToFirstPageOfClaimForm = () => router.push(pageDefinitions[0].path)
   const [expanded, setExpanded] = useState(false)
   const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded)
   const [isOpen, setIsOpen] = useState([false, false])
@@ -76,10 +74,11 @@ export const NewJerseyHeader = () => {
       </>
     ) : (
       <Link
-        // onClick={goToFirstPageOfClaimForm}
         key="claim"
         variant="nav"
-        href=""
+        // TODO Figure out solution to why this line is making Storybook give errors
+        // href={pageDefinitions[0].path}
+        href={Routes.CLAIM.PREQUAL}
         aria-current={router && router.asPath.includes(CLAIM_FORM_BASE_ROUTE)}
         className={
           router && router.asPath.includes(CLAIM_FORM_BASE_ROUTE)
