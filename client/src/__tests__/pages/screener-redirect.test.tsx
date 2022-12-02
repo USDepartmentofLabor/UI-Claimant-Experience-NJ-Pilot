@@ -2,9 +2,31 @@ import { render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 
 import { noop } from 'helpers/noop/noop'
+import userEvent from '@testing-library/user-event'
 import ScreenerRedirect from 'pages/screener-redirect'
 
 describe('Screener-redirect page', () => {
+  const getPageUrl = () => window.location.href
+  const makeQueryString = (
+    values: { [s: string]: unknown } | ArrayLike<unknown>
+  ) => {
+    return Object.entries(values)
+      .filter(([, val]) => val !== undefined)
+      .map(([key, val]) => `${key}=${val}`)
+      .join('&')
+  }
+
+  const makeMockWindowSearch = (
+    searchString: { [s: string]: unknown } | ArrayLike<unknown>
+  ) => {
+    const queryString = makeQueryString(searchString)
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        search: `?${queryString}`,
+      },
+    })
+  }
   it('renders properly', () => {
     render(
       <Formik initialValues={{}} onSubmit={noop}>
@@ -21,27 +43,6 @@ describe('Screener-redirect page', () => {
     ).toBeInTheDocument()
   })
   describe('shows the correct content based on querystring values', () => {
-    const makeQueryString = (
-      values: { [s: string]: unknown } | ArrayLike<unknown>
-    ) => {
-      return Object.entries(values)
-        .filter(([, val]) => val !== undefined)
-        .map(([key, val]) => `${key}=${val}`)
-        .join('&')
-    }
-
-    const makeMockWindowSearch = (
-      searchString: { [s: string]: unknown } | ArrayLike<unknown>
-    ) => {
-      const queryString = makeQueryString(searchString)
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: {
-          search: `?${queryString}`,
-        },
-      })
-    }
-
     it('when resident of Canada', () => {
       const searchString = {
         screener_current_country_us: false,
@@ -177,6 +178,66 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('can access all imbedded urls', () => {
+    it('can select other state url', async () => {
+      const user = userEvent.setup()
+      const searchString = { screener_any_work_nj: false }
+      makeMockWindowSearch(searchString)
+
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <ScreenerRedirect />
+        </Formik>
+      )
+      const otherStateHref = screen.queryByRole('button', {
+        name: 'other_state.button',
+      })
+      await user.click(otherStateHref as HTMLElement)
+      expect(getPageUrl()).toEqual(
+        'https://www.dol.gov/general/topic/unemployment-insurance/'
+      )
+    })
+
+    it('can access the disability url', async () => {
+      //    screener_currently_disabled: true}
+      const user = userEvent.setup()
+      const searchString = { screener_currently_disabled: true }
+      makeMockWindowSearch(searchString)
+
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <ScreenerRedirect />
+        </Formik>
+      )
+      const otherStateHref = screen.queryByRole('button', {
+        name: 'disability.button',
+      })
+      await user.click(otherStateHref as HTMLElement)
+      expect(getPageUrl()).toEqual(
+        'https://nj.gov/labor/myleavebenefits/worker/tdi/'
+      )
+    })
+    it('can access the military service url', async () => {
+      //    screener_currently_disabled: true}
+      const user = userEvent.setup()
+      const searchString = { screener_military_service_eighteen_months: true }
+      makeMockWindowSearch(searchString)
+
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <ScreenerRedirect />
+        </Formik>
+      )
+      const otherStateHref = screen.queryByRole('button', {
+        name: 'military_mvp.label.button',
+      })
+      await user.click(otherStateHref as HTMLElement)
+      expect(getPageUrl()).toEqual(
+        'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
+      )
     })
   })
 })
