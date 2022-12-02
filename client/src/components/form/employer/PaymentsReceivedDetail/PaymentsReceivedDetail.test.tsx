@@ -105,6 +105,37 @@ describe('PaymentsReceivedDetail component', () => {
     expect(endDayField).toHaveValue('22')
     expect(endYearField).toHaveValue('2020')
   })
+  // it('shows date hint',async () => {
+  //   const props = {
+  //     name: 'severance',
+  //     label: 'Severance Snape',
+  //     payType: 'severance_or_continuation'  as Exclude<PayTypeOption, 'none'>,
+  //   }
+  //   render(
+  //     <Formik initialValues={{}} onSubmit={noop}>
+  //       <PaymentsReceivedDetail {...props} />
+  //     </Formik>
+  //   )
+  //   const hintText=screen.getByText('payments_received.payments_received_detail.dates_hint.severance_or_continuation')
+  //   expect(hintText).toBeInTheDocument()
+  // }
+  // )
+  it('shows date hint vacation', async () => {
+    const props = {
+      name: 'vacation_sick_pto',
+      label: 'Severance Snape',
+      payType: 'vacation_sick_pto' as Exclude<PayTypeOption, 'none'>,
+    }
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <PaymentsReceivedDetail {...props} />
+      </Formik>
+    )
+    const hintText = screen.getByText(
+      'payments_received.payments_received_detail.dates_hint.vacation_sick_pto'
+    )
+    expect(hintText).toBeInTheDocument()
+  })
 
   it('renders expected fields for other pay', async () => {
     const props = {

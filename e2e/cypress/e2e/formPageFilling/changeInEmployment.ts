@@ -10,6 +10,9 @@ type ChangeInEmploymentOptions = {
   employment_start_date?: dateField
   employment_last_date?: dateField
   discharge_date?: dateField
+  has_definite_recall_date?: boolean
+  definite_recall_date?: dateField
+  is_seasonal_work?: boolean
 }
 
 const fillChangeInEmployment = (
@@ -84,6 +87,44 @@ const fillChangeInEmployment = (
     cy.get(
       `input[id=employers\\[${employerIndex}\\]\\.expect_to_be_recalled\\.${
         options.expect_to_be_recalled ? 'yes' : 'no'
+      }]`
+    ).click({ force: true })
+  }
+  if (options.has_definite_recall_date !== undefined) {
+    cy.get(
+      `input[id=employers\\[${employerIndex}\\]\\.definite_recall\\.${
+        options.expect_to_be_recalled ? 'yes' : 'no'
+      }]`
+    ).click({ force: true })
+  }
+  if (options.has_definite_recall_date !== undefined) {
+    cy.get(
+      `input[id=employers\\[${employerIndex}\\]\\.definite_recall\\.${
+        options.has_definite_recall_date ? 'yes' : 'no'
+      }]`
+    ).click({ force: true })
+  }
+  if (options.definite_recall_date !== undefined) {
+    cy.get(
+      `input[name=employers\\[${employerIndex}\\]\\.definite_recall_date\\.month]`
+    )
+      .clear()
+      .type(options.definite_recall_date.mo)
+    cy.get(
+      `input[name=employers\\[${employerIndex}\\]\\.definite_recall_date\\.day]`
+    )
+      .clear()
+      .type(options.definite_recall_date.day)
+    cy.get(
+      `input[name=employers\\[${employerIndex}\\]\\.definite_recall_date\\.year]`
+    )
+      .clear()
+      .type(options.definite_recall_date.yr)
+  }
+  if (options.is_seasonal_work !== undefined) {
+    cy.get(
+      `input[id=employers\\[${employerIndex}\\]\\.is_seasonal_work\\.${
+        options.is_seasonal_work ? 'yes' : 'no'
       }]`
     ).click({ force: true })
   }

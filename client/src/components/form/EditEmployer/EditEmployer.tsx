@@ -93,9 +93,12 @@ export const editEmployerInitialValues = () => {
     // Change in Employment
     separation_circumstance: undefined,
     separation_circumstance_details: undefined,
-    expect_to_be_recalled: undefined,
     employment_start_date: undefined,
     employment_last_date: undefined,
+    expect_to_be_recalled: undefined,
+    definite_recall: undefined,
+    definite_recall_date: undefined,
+    is_seasonal_work: undefined,
     discharge_date: undefined,
   }
 }
@@ -344,6 +347,46 @@ const yupEditEmployer = object().shape({
       }),
     })
   ),
+  is_seasonal_work: boolean().when('expect_to_be_recalled', {
+    is: true,
+    then: boolean().required(
+      i18n_claimForm.t('employers.separation.is_seasonal_work.errors.required')
+    ),
+  }),
+  definite_recall: boolean().when('expect_to_be_recalled', {
+    is: true,
+    then: boolean().required(
+      i18n_claimForm.t('employers.separation.definite_recall.errors.required')
+    ),
+  }),
+  definite_recall_date: yupDate(
+    i18n_claimForm.t('employers.separation.definite_recall_date.label')
+  )
+    .when('definite_recall', {
+      is: true,
+      then: (schema) =>
+        schema.when('separation_circumstance', {
+          is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
+            changeInEmploymentReason !== undefined &&
+            !changeInEmploymentReason?.includes('still_employed'),
+          then: (schema) =>
+            schema.min(
+              ref('employment_last_date'),
+              i18n_claimForm.t(
+                'employers.separation.definite_recall_date.errors.minDate'
+              )
+            ),
+        }),
+    })
+    .when('definite_recall', {
+      is: true,
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.separation.definite_recall_date.errors.required'
+          )
+        ),
+    }),
 })
 
 export const yupEditEmployers = object().shape({
