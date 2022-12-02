@@ -23,20 +23,33 @@ const common = {
   address: {
     address: {
       label: 'Address',
-      required: 'Address is required',
-      pobox:
-        'P.O. boxes can only be used as a mailing address, not a residential address. If you do not have another address, then please contact us.',
+      errors: {
+        required: 'Address is required',
+        pobox:
+          'P.O. boxes can only be used as a mailing address, not a residential address. If you do not have another address, then please contact us.',
+        maxLength: 'Address must be at most 64 characters',
+      },
     },
     city: {
       label: 'City',
-      noNumbers: 'Do not use numbers',
-      required: 'City is required',
+      errors: {
+        required: 'City is required',
+        noNumbers: 'Do not use numbers',
+        maxLength: 'City must be at most 64 characters',
+      },
     },
-    state: { label: 'State', required: 'State is required' },
+    state: {
+      label: 'State',
+      errors: {
+        required: 'State is required',
+      },
+    },
     zipcode: {
       label: 'ZIP',
-      required: 'ZIP Code is required',
-      format: 'ZIP Code must be five digits or in 12345-1234 format',
+      errors: {
+        required: 'ZIP Code is required',
+        format: 'ZIP Code must be five digits or in 12345-1234 format',
+      },
     },
   },
   expanded_content: {
