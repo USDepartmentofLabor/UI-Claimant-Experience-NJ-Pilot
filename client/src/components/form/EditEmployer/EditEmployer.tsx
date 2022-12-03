@@ -224,15 +224,10 @@ const yupEditEmployer = object().shape({
           i18n_claimForm.t('employers.employment_last_date.errors.minDate')
         ),
     })
-    .when('separation_circumstance', {
-      is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
-        changeInEmploymentReason !== undefined &&
-        !changeInEmploymentReason?.includes('still_employed'),
-      then: (schema) =>
-        schema.required(
-          i18n_claimForm.t('employers.employment_last_date.errors.required')
-        ),
-    }),
+    .required(
+      i18n_claimForm.t('employers.employment_last_date.errors.required')
+    ),
+
   reason_still_employed: string()
     .oneOf([...reasonStillEmployedOptions])
     .when('separation_circumstance', {
