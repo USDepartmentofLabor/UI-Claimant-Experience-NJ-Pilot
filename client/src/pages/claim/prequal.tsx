@@ -10,31 +10,39 @@ import { boolean, object, string } from 'yup'
 import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
 import styles from 'styles/pages/claim/prequal.module.scss'
-import DropdownField from 'components/form/fields/DropdownField/DropdownField'
-import { statesProvincesAndTerritories } from 'fixtures/states_provinces_territories'
-import { ChangeEventHandler } from 'react'
+import DropdownField, {
+  DropdownOption,
+} from 'components/form/fields/DropdownField/DropdownField'
+import { statesTerritoriesAndProvinces } from 'fixtures/states_territories_provinces'
 
-const stateProvincesTerritoriesDropdownOptions = Object.entries(
-  statesProvincesAndTerritories
-).map(([key, value]) => ({ label: value, value: key }))
+const stateProvincesTerritoriesDropdownOptions: Record<
+  string,
+  DropdownOption[]
+> = {}
+
+Object.entries(statesTerritoriesAndProvinces).forEach(
+  ([groupName, entries]) => {
+    const options = Object.entries(entries).map(([abbr, name]) => ({
+      label: name,
+      value: abbr,
+    }))
+    stateProvincesTerritoriesDropdownOptions[`${groupName}`] = options
+  }
+)
 
 export const Prequal: NextPage = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'prequal' })
   const { values } = useFormikContext<ClaimantInput>()
   const { clearField } = useClearFields()
 
-  const handleFiledInLast12MonthsChange: ChangeEventHandler<
-    HTMLInputElement
-  > = (e) => {
-    if (e.target.value === 'no') {
+  const handleFiledUnemploymentChange = () => {
+    if (values.filed_in_last_12mo === false) {
       clearField('state_province_territory_where_filed')
     }
   }
 
-  const handleLivedOutsideOfNewJerseyChange: ChangeEventHandler<
-    HTMLInputElement
-  > = (e) => {
-    if (e.target.value === 'no') {
+  const handleLiveOutOfStateChange = () => {
+    if (values.lived_outside_nj_when_working_nj === false) {
       clearField('will_look_for_work_in_nj')
     }
   }
@@ -44,7 +52,7 @@ export const Prequal: NextPage = () => {
       <YesNoQuestion
         question={t('filed_in_last_12mo.label')}
         name="filed_in_last_12mo"
-        onChange={handleFiledInLast12MonthsChange}
+        onChange={handleFiledUnemploymentChange}
       />
       {values.filed_in_last_12mo === true && (
         <DropdownField
@@ -59,7 +67,7 @@ export const Prequal: NextPage = () => {
       <YesNoQuestion
         question={t('lived_outside_nj_when_working_nj.label')}
         name="lived_outside_nj_when_working_nj"
-        onChange={handleLivedOutsideOfNewJerseyChange}
+        onChange={handleLiveOutOfStateChange}
       />
       {values.lived_outside_nj_when_working_nj === true && (
         <YesNoQuestion
@@ -98,7 +106,9 @@ export const PrequalPageDefinition: PageDefinition = {
       is: true,
       then: string()
         .oneOf([
-          ...stateProvincesTerritoriesDropdownOptions.map(({ value }) => value),
+          ...Object.entries(statesTerritoriesAndProvinces).flatMap(
+            ([, entries]) => Object.entries(entries).map(([abbr]) => abbr)
+          ),
         ])
         .required(
           i18n_claimForm.t(
