@@ -19,6 +19,21 @@ interface IEmployer {
 
 export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { values } = useFormikContext<ClaimantInput>()
+  const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
+
+  const employer = values.employers?.[parseInt(index)]
+  const showComment =
+    employer?.separation_circumstance === 'fired_discharged_suspended'
+  const showLastDay =
+    employer?.separation_circumstance !== undefined &&
+    employer?.separation_circumstance !== 'still_employed'
+  const showRecallQuestions = employer?.expect_to_be_recalled === true
+  const showDefiniteRecall =
+    employer?.expect_to_be_recalled === true &&
+    employer?.definite_recall === true
+  const showDischargeDate =
+    employer?.separation_circumstance === 'fired_discharged_suspended'
+
   const { clearField } = useClearFields()
   const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     // "TODO. - uncomment when Still employed is added"
@@ -30,15 +45,22 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
       clearField(`employers[${index}].discharge_date`)
     }
   }
-  const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
-
-  const employer = values.employers?.[parseInt(index)]
-  const showComment =
-    employer?.separation_circumstance === 'fired_discharged_suspended'
-  const showLastDay = employer?.separation_circumstance !== undefined
-  const showDischargeDate =
-    employer?.separation_circumstance === 'fired_discharged_suspended'
-  employer?.separation_circumstance !== 'still_employed'
+  const handleExpectRecallChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.value === 'no') {
+      clearField(`employers[${index}].definite_recall`)
+      clearField(`employers[${index}].is_seasonal_work`)
+      clearField(`employers[${index}].definite_recall_date`)
+    }
+  }
+  const handleHasDefiniteRecallChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.value === 'no') {
+      clearField(`employers[${index}].definite_recall_date`)
+    }
+  }
 
   return (
     <>
@@ -99,7 +121,27 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         <YesNoQuestion
           question={t('separation.expect_to_be_recalled.label')}
           name={`employers[${index}].expect_to_be_recalled`}
+          onChange={handleExpectRecallChange}
         />
+        {showRecallQuestions && (
+          <YesNoQuestion
+            question={t('separation.definite_recall.label')}
+            name={`employers[${index}].definite_recall`}
+            onChange={handleHasDefiniteRecallChange}
+          />
+        )}
+        {showDefiniteRecall && (
+          <DateInputField
+            name={`employers[${index}].definite_recall_date`}
+            legend={t('separation.definite_recall_date.label')}
+          />
+        )}
+        {showRecallQuestions && (
+          <YesNoQuestion
+            question={t('separation.is_seasonal_work.label')}
+            name={`employers[${index}].is_seasonal_work`}
+          />
+        )}
       </div>
     </>
   )

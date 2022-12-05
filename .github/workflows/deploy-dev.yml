@@ -73,14 +73,14 @@ jobs:
         with:
           push: true
           context: server
-          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-dev:${{ steps.construct-image-tag.outputs.image-tag }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-server-dev:${{ steps.construct-image-tag.outputs.image-tag }}
 
       - name: Deploy server
         uses: ./.github/actions/deploy-server
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          server-image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-dev:${{ steps.construct-image-tag.outputs.image-tag }}
+          server-image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-server-dev:${{ steps.construct-image-tag.outputs.image-tag }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
           image-tag: ${{ steps.construct-image-tag.outputs.image-tag }}
