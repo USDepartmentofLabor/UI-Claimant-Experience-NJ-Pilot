@@ -49,6 +49,8 @@ export type Employer = {
   separation_circumstance_details?: string
   employment_start_date?: string
   employment_last_date?: string
+  reason_still_employed?: string
+  hours_reduced_twenty_percent?: boolean
   discharge_date?: string
   definite_recall?: boolean
   definite_recall_date?: string

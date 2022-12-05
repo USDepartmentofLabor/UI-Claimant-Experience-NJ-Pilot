@@ -1,6 +1,9 @@
 import { Fieldset, Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
-import { changeInEmploymentOptions } from 'constants/formOptions'
+import {
+  changeInEmploymentOptions,
+  reasonStillEmployedOptions,
+} from 'constants/formOptions'
 import { useTranslation } from 'react-i18next'
 import { useFormikContext } from 'formik'
 
@@ -25,25 +28,26 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const showComment =
     employer?.separation_circumstance === 'fired_discharged_suspended' ||
     employer?.separation_circumstance === 'quit_or_retired'
-  const showLastDay =
-    employer?.separation_circumstance !== undefined &&
-    employer?.separation_circumstance !== 'still_employed'
   const showRecallQuestions = employer?.expect_to_be_recalled === true
   const showDefiniteRecall =
     employer?.expect_to_be_recalled === true &&
     employer?.definite_recall === true
   const showDischargeDate =
     employer?.separation_circumstance === 'fired_discharged_suspended'
-
+  const showStillEmployed =
+    employer?.separation_circumstance === 'still_employed'
+  const showHoursReducedPercentage =
+    showStillEmployed &&
+    employer?.reason_still_employed === 'reduction_in_hours_by_employer'
   const { clearField } = useClearFields()
   const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    // "TODO. - uncomment when Still employed is added"
-    // if (e.target.value === 'still_employed') {
-    //   clearField(`employers[${index}].employment_last_date`)
-    // }
     if (e.target.value !== 'fired_discharged_suspended') {
       clearField(`employers[${index}].separation_circumstance_details`)
       clearField(`employers[${index}].discharge_date`)
+    }
+    if (e.target.value !== 'still_employed') {
+      clearField(`employers[${index}].reason_still_employed`)
+      clearField(`employers[${index}].hours_reduced_twenty_percent`)
     }
     if (e.target.value !== 'quit_or_retired') {
       clearField(`employers[${index}].separation_circumstance_details`)
@@ -63,6 +67,13 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   ) => {
     if (e.target.value === 'no') {
       clearField(`employers[${index}].definite_recall_date`)
+    }
+  }
+  const handleStillEmployedReasonChange: ChangeEventHandler<
+    HTMLInputElement
+  > = (e) => {
+    if (e.target.value !== 'reduction_in_hours_by_employer') {
+      clearField(`employers[${index}].hours_reduced_twenty_percent`)
     }
   }
 
@@ -98,6 +109,24 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
             </Trans>
           </div>
         </div>
+        {showStillEmployed && (
+          <Fieldset
+            legend={t('separation.reasons.still_employed.option_heading')}
+          >
+            <RadioField
+              name={`employers[${index}].reason_still_employed`}
+              options={reasonStillEmployedOptions.map((option) => {
+                return {
+                  label: t(
+                    `separation.reasons.still_employed.options.${option}`
+                  ),
+                  value: option,
+                }
+              })}
+              onChange={handleStillEmployedReasonChange}
+            />
+          </Fieldset>
+        )}
         {showComment && (
           <TextAreaField
             label={t(
@@ -110,10 +139,18 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           name={`employers[${index}].employment_start_date`}
           legend={t('employment_start_date.label')}
         />
-        {showLastDay && (
-          <DateInputField
-            name={`employers[${index}].employment_last_date`}
-            legend={t('employment_last_date.label')}
+        <DateInputField
+          name={`employers[${index}].employment_last_date`}
+          legend={t('employment_last_date.label')}
+          //TODO - uncomment if hint is added back in,
+          //     remove if decide not to have a hint
+          // hint={showStillEmployed ? t('employment_last_date.hint') : undefined}
+        />
+        {showHoursReducedPercentage && (
+          <YesNoQuestion
+            question={t('hours_reduced_twenty_percent.label')}
+            hint={t('hours_reduced_twenty_percent.hint')}
+            name={`employers[${index}].hours_reduced_twenty_percent`}
           />
         )}
         {showDischargeDate && (
