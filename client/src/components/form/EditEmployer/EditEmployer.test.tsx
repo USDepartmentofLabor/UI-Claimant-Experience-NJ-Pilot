@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 import { EditEmployer } from './EditEmployer'
+import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
 import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 describe('Edit Employer Component', () => {
@@ -43,5 +44,23 @@ describe('Edit Employer Component', () => {
     )
 
     screen.getByText(/No employer defined for index/i)
+  })
+})
+describe('Validates the schema', () => {
+  describe('Definite recall field', () => {
+    it('validates with a valid value', async () => {
+      const schemaSlice = {
+        employers: [
+          {
+            is_full_time: true,
+            definite_recall: true,
+            expect_to_be_recalled: true,
+          },
+        ],
+      }
+      await expect(
+        yupEditEmployers.validateAt(`employers[0].definite_recall`, schemaSlice)
+      ).resolves.toBeTruthy()
+    })
   })
 })

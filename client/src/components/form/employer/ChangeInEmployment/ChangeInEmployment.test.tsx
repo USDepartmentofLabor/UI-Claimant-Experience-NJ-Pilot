@@ -28,10 +28,15 @@ describe('Change in Employment component', () => {
     const queryForChangeReasonLaidOffAnswer = () =>
       screen.getByTestId('employers[0].separation_circumstance.laid_off')
 
+    const queryForChangeReasonStillEmployedAnswer = () =>
+      screen.getByTestId('employers[0].separation_circumstance.still_employed')
     const queryForChangeReasonFiredDischargedSuspendedAnswer = () =>
       screen.getByTestId(
         'employers[0].separation_circumstance.fired_discharged_suspended'
       )
+
+    const queryForChangeReasonQuitOrRetiredAnswer = () =>
+      screen.getByTestId('employers[0].separation_circumstance.quit_or_retired')
 
     const queryForExpectRecall = () =>
       screen.queryByRole('group', {
@@ -56,6 +61,46 @@ describe('Change in Employment component', () => {
         : null
     }
 
+    const queryForReasonStillEmployedQuestion = () =>
+      screen.queryByRole('group', {
+        name: 'separation.reasons.still_employed.option_heading',
+      })
+    const queryForHoursReducedByEmployerAnswer = () => {
+      const question = queryForReasonStillEmployedQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'separation.reasons.still_employed.options.reduction_in_hours_by_employer',
+          })
+        : null
+    }
+    const queryForHoursReducedByClaimantAnswer = () => {
+      const question = queryForReasonStillEmployedQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'separation.reasons.still_employed.options.reduction_in_hours_by_claimant',
+          })
+        : null
+    }
+    const queryForReduced20PercentQuestion = () =>
+      screen.queryByRole('group', {
+        name: 'hours_reduced_twenty_percent.label',
+      })
+    const queryForReduced20PercentYesAnswer = () => {
+      const question = queryForReduced20PercentQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'yes',
+          })
+        : null
+    }
+    const queryForReduced20PercentNoAnswer = () => {
+      const question = queryForReduced20PercentQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'yes',
+          })
+        : null
+    }
     const queryForSeparationCircumstanceDetails = () =>
       screen.queryByLabelText(
         'separation.separation_circumstance_details.required_label'
@@ -149,9 +194,9 @@ describe('Change in Employment component', () => {
       within(queryForLastDateParent()).getByRole('textbox', { name: /day/i })
     const getYearLastDate = () =>
       within(queryForLastDateParent()).getByRole('textbox', { name: /year/i })
+
     const queryForDischargeDate = () =>
       screen.queryByText('discharge_date.label')
-
     const queryForDischargeDateParent = () =>
       screen.getByTestId('employers[0].discharge_date.parent-div')
 
@@ -172,7 +217,15 @@ describe('Change in Employment component', () => {
       sectionTitle,
       queryForChangeReasonRadioField,
       queryForChangeReasonLaidOffAnswer,
+      queryForChangeReasonStillEmployedAnswer,
+      queryForHoursReducedByEmployerAnswer,
+      queryForHoursReducedByClaimantAnswer,
+      queryForReasonStillEmployedQuestion,
+      queryForReduced20PercentQuestion,
+      queryForReduced20PercentYesAnswer,
+      queryForReduced20PercentNoAnswer,
       queryForChangeReasonFiredDischargedSuspendedAnswer,
+      queryForChangeReasonQuitOrRetiredAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
       queryForHaveDefiniteDateOfRecall,
@@ -199,12 +252,31 @@ describe('Change in Employment component', () => {
       getYearDischargeDate,
     }
   }
+  const checkShouldBeInDocument = (elements: (HTMLElement | null)[]) => {
+    elements.forEach((q: HTMLElement | null) => {
+      expect(q).toBeInTheDocument()
+    })
+  }
+  const checkShouldNotBeInDocument = (
+    absentElements: (HTMLElement | null)[]
+  ) => {
+    absentElements?.forEach((q: HTMLElement | null) => {
+      expect(q).not.toBeInTheDocument()
+    })
+  }
+  const checkShouldHaveEmptyValue = (elements: (HTMLElement | null)[]) => {
+    elements.forEach((field: HTMLElement | null) => {
+      expect(field).toHaveValue('')
+    })
+  }
+
   it('renders without errors', async () => {
     const user = userEvent.setup()
     const {
       sectionTitle,
-      queryForChangeReasonRadioField,
       queryForChangeReasonLaidOffAnswer,
+      queryForChangeReasonStillEmployedAnswer,
+      queryForChangeReasonRadioField,
       queryForChangeReasonFiredDischargedSuspendedAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
@@ -218,6 +290,8 @@ describe('Change in Employment component', () => {
     } = renderChangeInEmployment()
     const changeReasonRadioField = queryForChangeReasonRadioField()
     const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+    const changeReasonStillEmployedAnswer =
+      queryForChangeReasonStillEmployedAnswer()
     const changeReasonFiredDischargedSuspendedAnswer =
       queryForChangeReasonFiredDischargedSuspendedAnswer()
     const expectRecallNoAnswer = queryForExpectRecallNoAnswer()
@@ -233,36 +307,129 @@ describe('Change in Employment component', () => {
     const finishDate = queryForFinishDate()
     const recallDate = queryForRecallDate()
 
-    expect(sectionTitle).toBeInTheDocument()
-    expect(changeReasonRadioField).toBeInTheDocument()
-    expect(changeReasonLaidOffAnswer).toBeInTheDocument()
-    expect(changeReasonFiredDischargedSuspendedAnswer).toBeInTheDocument()
-    expect(expectRecallNoAnswer).toBeInTheDocument()
-    expect(expectRecallYesAnswer).toBeInTheDocument()
-    expect(startDate).toBeInTheDocument()
-    expect(finishDate).not.toBeInTheDocument()
+    checkShouldBeInDocument([
+      sectionTitle,
+      changeReasonRadioField,
+      changeReasonLaidOffAnswer,
+      changeReasonFiredDischargedSuspendedAnswer,
+      expectRecallNoAnswer,
+      expectRecallYesAnswer,
+      startDate,
+      finishDate,
+    ])
 
-    expect(haveDefiniteDateOfRecallNoAnswer).not.toBeInTheDocument()
-    expect(haveDefiniteDateOfRecallYesAnswer).not.toBeInTheDocument()
-    expect(isSeasonalNoAnswer).not.toBeInTheDocument()
-    expect(isSeasonalYesAnswer).not.toBeInTheDocument()
-    expect(recallDate).not.toBeInTheDocument()
+    checkShouldNotBeInDocument([
+      haveDefiniteDateOfRecallNoAnswer,
+      haveDefiniteDateOfRecallYesAnswer,
+      isSeasonalNoAnswer,
+      isSeasonalYesAnswer,
+      recallDate,
+    ])
 
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+    expect(changeReasonStillEmployedAnswer).toBeChecked()
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(changeReasonLaidOffAnswer).toBeChecked()
     expect(queryForFinishDate()).toBeInTheDocument()
 
     await user.click(expectRecallYesAnswer as HTMLElement)
-    expect(queryForHaveDefiniteDateOfRecallNoAnswer()).toBeInTheDocument()
-    expect(queryForHaveDefiniteDateOfRecallYesAnswer()).toBeInTheDocument()
-    expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
-    expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
+    checkShouldBeInDocument([
+      queryForHaveDefiniteDateOfRecallNoAnswer(),
+      queryForHaveDefiniteDateOfRecallYesAnswer(),
+      queryForIsSeasonalNoAnswer(),
+      queryForIsSeasonalYesAnswer(),
+    ])
     expect(queryForRecallDate()).not.toBeInTheDocument()
 
     await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
     expect(queryForIsSeasonalNoAnswer()).toBeInTheDocument()
     expect(queryForIsSeasonalYesAnswer()).toBeInTheDocument()
     expect(queryForRecallDate()).toBeInTheDocument()
+  })
+
+  it('shows and clears Still Employed conditionals', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonLaidOffAnswer,
+      queryForChangeReasonStillEmployedAnswer,
+      queryForHoursReducedByEmployerAnswer,
+      queryForReasonStillEmployedQuestion,
+      queryForReduced20PercentQuestion,
+      queryForReduced20PercentYesAnswer,
+    } = renderChangeInEmployment()
+    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+    const changeReasonStillEmployedAnswer =
+      queryForChangeReasonStillEmployedAnswer()
+
+    //click still employed should show 1 conditional
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+    expect(queryForReasonStillEmployedQuestion()).toBeInTheDocument()
+
+    let hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
+    let reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
+    expect(reduced20PercentYesAnswer).not.toBeInTheDocument()
+
+    // clicking hours_reduced_by_employer reveals 2nd conditional
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    expect(hoursReducedByEmployerAnswer).toBeChecked()
+    expect(queryForReduced20PercentQuestion()).toBeInTheDocument()
+
+    reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
+    await user.click(reduced20PercentYesAnswer as HTMLElement)
+    expect(reduced20PercentYesAnswer).toBeChecked()
+
+    //clicking laid off should hide fields
+    await user.click(changeReasonLaidOffAnswer as HTMLElement)
+    expect(changeReasonLaidOffAnswer).toBeChecked()
+    expect(queryForReduced20PercentQuestion()).not.toBeInTheDocument()
+    expect(queryForReasonStillEmployedQuestion()).not.toBeInTheDocument()
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+
+    hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
+
+    //hours reduced should appear only after click and be cleared
+    expect(queryForReduced20PercentQuestion()).not.toBeInTheDocument()
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    expect(hoursReducedByEmployerAnswer).toBeChecked()
+    expect(queryForReduced20PercentYesAnswer()).not.toBeChecked()
+  })
+  it('Clears Reduced Hours by 20 percent', async () => {
+    const user = userEvent.setup()
+    const {
+      queryForChangeReasonStillEmployedAnswer,
+      queryForHoursReducedByEmployerAnswer,
+      queryForHoursReducedByClaimantAnswer,
+      queryForReduced20PercentQuestion,
+      queryForReduced20PercentYesAnswer,
+      queryForReduced20PercentNoAnswer,
+    } = renderChangeInEmployment()
+    const changeReasonStillEmployedAnswer =
+      queryForChangeReasonStillEmployedAnswer()
+
+    //click still employed to show reduced hours
+    await user.click(changeReasonStillEmployedAnswer as HTMLElement)
+    const hoursReducedByEmployerAnswer = queryForHoursReducedByEmployerAnswer()
+
+    //select hours reduced by employer and no to reduced hours
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    let reduced20PercentNoAnswer = queryForReduced20PercentNoAnswer()
+    await user.click(reduced20PercentNoAnswer as HTMLElement)
+    expect(reduced20PercentNoAnswer).toBeChecked()
+    const hoursReducedByClaimantAnswer = queryForHoursReducedByClaimantAnswer()
+
+    //change still employed reason to hide reduced hours
+    await user.click(hoursReducedByClaimantAnswer as HTMLElement)
+    expect(hoursReducedByClaimantAnswer).toBeChecked()
+    const reduced20PercentQuestion = queryForReduced20PercentQuestion()
+    expect(reduced20PercentQuestion).not.toBeInTheDocument()
+
+    //change reason back to hours reduced by employer, value should be cleared
+    await user.click(hoursReducedByEmployerAnswer as HTMLElement)
+    reduced20PercentNoAnswer = queryForReduced20PercentNoAnswer()
+    const reduced20PercentYesAnswer = queryForReduced20PercentYesAnswer()
+
+    expect(reduced20PercentNoAnswer).not.toBeChecked()
+    expect(reduced20PercentYesAnswer).not.toBeChecked()
   })
   it('user can fill the base fields that are non-conditional to the main field', async () => {
     const user = userEvent.setup()
@@ -288,9 +455,11 @@ describe('Change in Employment component', () => {
     expect(changeReasonLaidOffAnswer).toBeChecked()
 
     //enter start date
-    expect(startDateDayField).toHaveValue('')
-    expect(startDateMonthField).toHaveValue('')
-    expect(startDateYearField).toHaveValue('')
+    checkShouldHaveEmptyValue([
+      startDateDayField,
+      startDateMonthField,
+      startDateYearField,
+    ])
 
     await user.type(startDateDayField, '01')
     await user.type(startDateMonthField, '06')
@@ -316,28 +485,15 @@ describe('Change in Employment component', () => {
   it('conditional fields show', async () => {
     const user = userEvent.setup()
     const {
-      queryForChangeReasonLaidOffAnswer,
       queryForExpectRecallYesAnswer,
       queryForHaveDefiniteDateOfRecallNoAnswer,
       queryForHaveDefiniteDateOfRecallYesAnswer,
       queryForIsSeasonalNoAnswer,
       queryForIsSeasonalYesAnswer,
-      queryForFinishDate,
       queryForRecallDate,
     } = renderChangeInEmployment()
 
-    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
     const expectRecallYesAnswer = queryForExpectRecallYesAnswer()
-    let finishDate = queryForFinishDate()
-
-    //laid off should trigger finished date to show
-    expect(finishDate).not.toBeInTheDocument()
-    await user.click(changeReasonLaidOffAnswer as HTMLElement)
-    expect(changeReasonLaidOffAnswer).toBeChecked()
-
-    finishDate = queryForFinishDate()
-    expect(finishDate).toBeInTheDocument()
-
     let haveDefiniteDateOfRecallNoAnswer =
       queryForHaveDefiniteDateOfRecallNoAnswer()
     let haveDefiniteDateOfRecallYesAnswer =
@@ -345,10 +501,12 @@ describe('Change in Employment component', () => {
     let isSeasonalNoAnswer = queryForIsSeasonalNoAnswer()
     let isSeasonalYesAnswer = queryForIsSeasonalYesAnswer()
 
-    expect(haveDefiniteDateOfRecallNoAnswer).not.toBeInTheDocument()
-    expect(haveDefiniteDateOfRecallYesAnswer).not.toBeInTheDocument()
-    expect(isSeasonalNoAnswer).not.toBeInTheDocument()
-    expect(isSeasonalYesAnswer).not.toBeInTheDocument()
+    checkShouldNotBeInDocument([
+      haveDefiniteDateOfRecallNoAnswer,
+      haveDefiniteDateOfRecallYesAnswer,
+      isSeasonalNoAnswer,
+      isSeasonalYesAnswer,
+    ])
 
     //definite date of recall yes/no question and seasonal should appear
     //the definite date of recall date field should still be hidden
@@ -360,10 +518,12 @@ describe('Change in Employment component', () => {
     isSeasonalNoAnswer = queryForIsSeasonalNoAnswer()
     isSeasonalYesAnswer = queryForIsSeasonalYesAnswer()
 
-    expect(haveDefiniteDateOfRecallNoAnswer).toBeInTheDocument()
-    expect(haveDefiniteDateOfRecallYesAnswer).toBeInTheDocument()
-    expect(isSeasonalNoAnswer).toBeInTheDocument()
-    expect(isSeasonalYesAnswer).toBeInTheDocument()
+    checkShouldBeInDocument([
+      haveDefiniteDateOfRecallNoAnswer,
+      haveDefiniteDateOfRecallYesAnswer,
+      isSeasonalNoAnswer,
+      isSeasonalYesAnswer,
+    ])
 
     //recall date field
     let definiteRecallDate = queryForRecallDate()
@@ -376,9 +536,11 @@ describe('Change in Employment component', () => {
     isSeasonalNoAnswer = queryForIsSeasonalNoAnswer()
     isSeasonalYesAnswer = queryForIsSeasonalYesAnswer()
 
-    expect(isSeasonalNoAnswer).toBeInTheDocument()
-    expect(isSeasonalYesAnswer).toBeInTheDocument()
-    expect(definiteRecallDate).toBeInTheDocument()
+    checkShouldBeInDocument([
+      isSeasonalNoAnswer,
+      isSeasonalYesAnswer,
+      definiteRecallDate,
+    ])
   })
   it('fills and clears last day of work', async () => {
     const user = userEvent.setup()
@@ -402,12 +564,6 @@ describe('Change in Employment component', () => {
     expect(lastDayOfWorkDayField).toHaveValue('01')
     expect(lastDayOfWorkMonthField).toHaveValue('06')
     expect(lastDayOfWorkYearField).toHaveValue('2023')
-
-    /*TODO - should be filled in here with reseting the last day field if
-    the radio is unchecked
-    Fill in when still-employed is added in.
-    Change the const values above to be let and reassign
-    */
   })
   it('fills and clears recall conditionals', async () => {
     const user = userEvent.setup()
@@ -455,9 +611,11 @@ describe('Change in Employment component', () => {
     await user.click(queryForHaveDefiniteDateOfRecallYesAnswer() as HTMLElement)
 
     //check if cleared appropriately
-    expect(getMonthRecallDate()).toHaveValue('')
-    expect(getDayRecallDate()).toHaveValue('')
-    expect(getYearRecallDate()).toHaveValue('')
+    checkShouldHaveEmptyValue([
+      getMonthRecallDate(),
+      getDayRecallDate(),
+      getYearRecallDate(),
+    ])
 
     //reset values
     await user.type(getMonthRecallDate(), '01')
@@ -466,11 +624,13 @@ describe('Change in Employment component', () => {
 
     await user.click(queryForExpectRecallNoAnswer() as HTMLElement)
     expect(queryForExpectRecallNoAnswer()).toBeChecked()
-    expect(queryForIsSeasonalYesAnswer()).not.toBeInTheDocument()
-    expect(queryForIsSeasonalNoAnswer()).not.toBeInTheDocument()
-    expect(queryForRecallDate()).not.toBeInTheDocument()
-    await user.click(queryForExpectRecallYesAnswer() as HTMLElement)
+    checkShouldNotBeInDocument([
+      queryForIsSeasonalYesAnswer(),
+      queryForIsSeasonalNoAnswer(),
+      queryForRecallDate(),
+    ])
 
+    await user.click(queryForExpectRecallYesAnswer() as HTMLElement)
     expect(queryForExpectRecallYesAnswer()).toBeChecked()
     expect(queryForIsSeasonalNoAnswer()).not.toBeChecked()
     expect(queryForIsSeasonalYesAnswer()).not.toBeChecked()
@@ -554,10 +714,12 @@ describe('Change in Employment component', () => {
     expect(dischargeDate).toBeInTheDocument()
 
     // Values in separation circumstance details and discharge date should be empty
-    expect(queryForSeparationCircumstanceDetails()).toHaveValue('')
-    expect(getMonthDischargeDate()).toHaveValue('')
-    expect(getDayDischargeDate()).toHaveValue('')
-    expect(getYearDischargeDate()).toHaveValue('')
+    checkShouldHaveEmptyValue([
+      queryForSeparationCircumstanceDetails(),
+      getMonthDischargeDate(),
+      getDayDischargeDate(),
+      getYearDischargeDate(),
+    ])
   })
 
   it('fills out answers for "Fired, discharged, or suspended" and checks clearing of separation circumstance details and discharge date', async () => {
@@ -631,9 +793,52 @@ describe('Change in Employment component', () => {
     expect(dischargeDate).toBeInTheDocument()
 
     // Values in separation circumstance details and discharge date should be empty
-    expect(queryForSeparationCircumstanceDetails()).toHaveValue('')
-    expect(getMonthDischargeDate()).toHaveValue('')
-    expect(getDayDischargeDate()).toHaveValue('')
-    expect(getYearDischargeDate()).toHaveValue('')
+    checkShouldHaveEmptyValue([
+      queryForSeparationCircumstanceDetails(),
+      getMonthDischargeDate(),
+      getDayDischargeDate(),
+      getYearDischargeDate(),
+    ])
+  })
+  describe('Quit resigned or retired selected', () => {
+    it('shows appropriate fields', async () => {
+      const user = userEvent.setup()
+      const {
+        queryForChangeReasonQuitOrRetiredAnswer,
+        queryForSeparationCircumstanceDetails,
+        queryForStartDate,
+        queryForFinishDate,
+      } = renderChangeInEmployment()
+
+      const changeReasonQuitOrRetired =
+        queryForChangeReasonQuitOrRetiredAnswer()
+      await user.click(changeReasonQuitOrRetired)
+      expect(changeReasonQuitOrRetired).toBeChecked()
+      checkShouldBeInDocument([
+        queryForSeparationCircumstanceDetails(),
+        queryForStartDate(),
+        queryForFinishDate(),
+      ])
+    })
+    it('clears textbox when different change reason is selected', async () => {
+      const user = userEvent.setup()
+      const {
+        queryForChangeReasonQuitOrRetiredAnswer,
+        queryForChangeReasonLaidOffAnswer,
+        queryForSeparationCircumstanceDetails,
+      } = renderChangeInEmployment()
+      const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+      const changeReasonQuitOrRetired =
+        queryForChangeReasonQuitOrRetiredAnswer()
+      await user.click(changeReasonQuitOrRetired)
+
+      const detail = 'I am a reasonable reason'
+      await user.type(queryForSeparationCircumstanceDetails(), detail)
+      expect(screen.getByText(detail)).toBeInTheDocument()
+      await user.click(changeReasonLaidOffAnswer)
+      expect(changeReasonQuitOrRetired).not.toBeChecked()
+      await user.click(changeReasonQuitOrRetired)
+      expect(screen.queryByText(detail)).not.toBeInTheDocument()
+    })
   })
 })

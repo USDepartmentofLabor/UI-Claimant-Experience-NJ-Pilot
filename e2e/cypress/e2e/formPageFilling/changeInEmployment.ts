@@ -9,6 +9,8 @@ type ChangeInEmploymentOptions = {
   expect_to_be_recalled?: boolean
   employment_start_date?: dateField
   employment_last_date?: dateField
+  hours_reduced_twenty_percent?: boolean
+  reason_still_employed?: string
   discharge_date?: dateField
   has_definite_recall_date?: boolean
   definite_recall_date?: dateField
@@ -24,6 +26,11 @@ const fillChangeInEmployment = (
   )
     .parent()
     .click()
+  if (options.reason_still_employed) {
+    cy.get(
+      `input[id=employers\\[${employerIndex}\\]\\.reason_still_employed\\.${options.reason_still_employed}]`
+    ).click({ force: true })
+  }
 
   if (options.separation_circumstance_details) {
     cy.get(
@@ -65,6 +72,13 @@ const fillChangeInEmployment = (
     )
       .clear()
       .type(options.employment_last_date.yr)
+  }
+  if (options.hours_reduced_twenty_percent !== undefined) {
+    cy.get(
+      `input[id=employers\\[${employerIndex}\\]\\.hours_reduced_twenty_percent\\.${
+        options.hours_reduced_twenty_percent ? 'yes' : 'no'
+      }]`
+    ).click({ force: true })
   }
 
   if (options.discharge_date) {

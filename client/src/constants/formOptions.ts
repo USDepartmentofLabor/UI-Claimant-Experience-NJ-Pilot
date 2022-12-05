@@ -99,12 +99,26 @@ export const changeInEmploymentOptions = [
   'laid_off',
   'fired_discharged_suspended',
   // 'unsatisfactory_work_performance',
-  // 'quit_or_retired',
-  // 'still_employed',
+  'quit_or_retired',
+  'still_employed',
   // 'strike_or_lock_out_by_employer',
   // 'federal_or_state_shutdown',
 ] as const
 export type ChangeInEmploymentOption = typeof changeInEmploymentOptions[number]
+
+export const reasonStillEmployedOptions = [
+  'reduction_in_hours_by_employer',
+  'reduction_in_hours_by_claimant',
+  'hours_not_reduced_at_this_employer',
+  'leave_of_absence',
+  'paid_vacation_holiday_or_pto',
+  'temp_lay_off_or_furlough',
+  'school_employee_on_break',
+  'self_employed',
+  'shared_work_program',
+] as const
+export type ReasonStillEmployedOptions =
+  typeof reasonStillEmployedOptions[number]
 
 export const employerRelationOptions = [
   'no',

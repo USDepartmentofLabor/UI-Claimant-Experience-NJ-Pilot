@@ -49,4 +49,12 @@ describe('Edit employer checks', () => {
     fillPaymentsReceived(employerIndex)
     /* add other edit employer cypress tests here */
   })
+  it('fills still employed-change in employment sections', () => {
+    const employerIndexString = '0'
+    fillChangeInEmployment(employerIndexString, {
+      separation_circumstance: 'still_employed',
+      reason_still_employed: 'reduction_in_hours_by_employer',
+      hours_reduced_twenty_percent: true,
+    })
+  })
 })
