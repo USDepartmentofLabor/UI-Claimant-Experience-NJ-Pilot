@@ -1,4 +1,4 @@
-FROM node:16.16.0-bullseye-slim AS builder
+FROM node:16.18.1-bullseye-slim AS builder
 WORKDIR /app
 
 COPY package.json .
@@ -19,8 +19,8 @@ ARG NEXT_PUBLIC_APP_ENV
 
 RUN yarn build
 
-# Pin sha version of gcr.io/distroless/nodejs-debian11:16
-FROM gcr.io/distroless/nodejs-debian11@sha256:96b8c823f1ba80024c04213d237c3fdded1248c3cb5f92ad1cc1681fde5360bc AS runner
+# Pin sha version of gcr.io/distroless/nodejs16-debian11
+FROM gcr.io/distroless/nodejs16-debian11@sha256:4653eb0ad97cfb03eef69c62305271580a8485649c6e9d75548bd9ea853f6bff AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
