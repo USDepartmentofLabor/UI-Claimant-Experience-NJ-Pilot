@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, createEvent } from '@testing-library/react'
 import { useField, useFormikContext } from 'formik' // package will be auto mocked
 import userEvent from '@testing-library/user-event'
 
@@ -177,6 +177,34 @@ describe('TextField component', () => {
 
       expect(screen.queryByText('First Name')).toHaveClass('usa-label--error')
       expect(screen.queryByText('This field is required')).toBeInTheDocument()
+    })
+    it('Prevents onInvalid default from showing default validation error', async () => {
+      const mockMeta = {
+        touched: true,
+        error: 'This field is required',
+        initialError: '',
+        initialTouched: false,
+        initialValue: '',
+        value: '',
+      }
+
+      const mockField = {
+        value: '',
+        checked: false,
+        onChange: jest.fn(),
+        onBlur: jest.fn(),
+        multiple: undefined,
+        name: 'firstName',
+      }
+
+      mockUseFormikContext.mockReturnValue({ submitCount: 1 })
+      mockUseField.mockReturnValue([mockField, mockMeta])
+      render(<TextField label="Some Key" name="someKey" type="text" />)
+
+      const testTextField = screen.getByLabelText(/some key/i)
+      const invalidEvent = createEvent.invalid(testTextField)
+      fireEvent(testTextField, invalidEvent)
+      expect(invalidEvent.defaultPrevented).toBeTruthy()
     })
   })
 

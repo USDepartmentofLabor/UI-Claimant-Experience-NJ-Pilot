@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { createEvent, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik } from 'formik'
 
@@ -24,9 +24,10 @@ const radioOptions = [
 
 describe('RadioField component', () => {
   it('renders the elements that make up a field', () => {
+    const legend = 'What is my question?'
     render(
       <Formik initialValues={{ radioField: undefined }} onSubmit={noop}>
-        <RadioField name="radioField" options={radioOptions} />
+        <RadioField name="radioField" legend={legend} options={radioOptions} />
       </Formik>
     )
 
@@ -34,6 +35,7 @@ describe('RadioField component', () => {
     const secondOption = screen.getByLabelText('Second')
     const thirdOption = screen.getByLabelText('Third')
 
+    expect(screen.getByText(legend)).toBeInTheDocument()
     expect(firstOption).toBeInstanceOf(HTMLInputElement)
     expect(firstOption).toHaveAttribute('id', 'radioField.first')
     expect(firstOption).toHaveAttribute('name', 'radioField')
@@ -184,6 +186,24 @@ describe('RadioField component', () => {
 
       expect(errorAlert).toBeInTheDocument()
       expect(errorAlert).toHaveTextContent('You must select an option')
+    })
+  })
+  describe('on validation', () => {
+    it('Prevents onInvalid default from showing default validation error', async () => {
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <RadioField
+            name="someKey"
+            type="text"
+            options={[{ label: 'some label', value: 'some value' }]}
+          />
+        </Formik>
+      )
+
+      const testField = screen.getByLabelText('some label')
+      const invalidEvent = createEvent.invalid(testField)
+      fireEvent(testField, invalidEvent)
+      expect(invalidEvent.defaultPrevented).toBeTruthy()
     })
   })
 })

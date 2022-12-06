@@ -90,6 +90,7 @@ const DropdownField = ({
         onChange={handleChange}
         {...inputProps}
         inputRef={selectRef}
+        onInvalid={(e) => e.preventDefault()}
       >
         {options &&
           options.map(({ label: optionLabel, value }, index) => (

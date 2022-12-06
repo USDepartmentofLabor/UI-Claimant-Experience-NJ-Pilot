@@ -1,10 +1,17 @@
-import { render, within, screen } from '@testing-library/react'
+import {
+  render,
+  within,
+  screen,
+  createEvent,
+  fireEvent,
+} from '@testing-library/react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import userEvent from '@testing-library/user-event'
 import { yupDate } from 'validations/yup/custom'
 import { noop } from 'helpers/noop/noop'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
+import React from 'react'
 
 describe('DateInputField Component', () => {
   const submittableDateInputField = (
@@ -339,5 +346,23 @@ describe('DateInputField Component', () => {
     expect(monthField).toHaveValue('')
     expect(dayField).toHaveValue('')
     expect(yearField).toHaveValue('')
+  })
+  it('Prevents onInvalid default from showing default validation error', async () => {
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <DateInputField name="someDate" />
+      </Formik>
+    )
+
+    for (const label of [
+      'date.month.label',
+      'date.day.label',
+      'date.year.label',
+    ]) {
+      const testField = screen.getByLabelText(label)
+      const invalidEvent = createEvent.invalid(testField)
+      fireEvent(testField, invalidEvent)
+      expect(invalidEvent.defaultPrevented).toBeTruthy()
+    }
   })
 })

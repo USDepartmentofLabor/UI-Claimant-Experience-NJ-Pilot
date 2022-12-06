@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { createEvent, fireEvent, render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
@@ -70,6 +70,25 @@ describe('dropdownField component', () => {
       )
 
       expect(getByLabelText('dropdownField')).toBeDisabled()
+    })
+  })
+
+  describe('on validation', () => {
+    it('Prevents onInvalid default from showing default validation error', async () => {
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <DropdownField
+            label="Some dropdown"
+            name="someDropdown"
+            options={[{ label: 'some label', value: 'some value' }]}
+          />
+        </Formik>
+      )
+
+      const testTextField = screen.getByLabelText(/some dropdown/i)
+      const invalidEvent = createEvent.invalid(testTextField)
+      fireEvent(testTextField, invalidEvent)
+      expect(invalidEvent.defaultPrevented).toBeTruthy()
     })
   })
 })

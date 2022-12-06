@@ -1,4 +1,4 @@
-import { Fieldset, Link } from '@trussworks/react-uswds'
+import { Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import {
   changeInEmploymentOptions,
@@ -83,20 +83,19 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         <p>
           <strong>{t('separation.heading')}</strong>
         </p>
-        <Fieldset legend={t('separation.reason.label')}>
-          <RadioField
-            name={`employers[${index}].separation_circumstance`}
-            tile={true}
-            options={changeInEmploymentOptions.map((option) => {
-              return {
-                label: t(`separation.reasons.${option}.label`),
-                labelDescription: t(`separation.reasons.${option}.description`),
-                value: option,
-              }
-            })}
-            onChange={handleReasonChange}
-          />
-        </Fieldset>
+        <RadioField
+          name={`employers[${index}].separation_circumstance`}
+          legend={t('separation.reason.label')}
+          tile={true}
+          options={changeInEmploymentOptions.map((option) => {
+            return {
+              label: t(`separation.reasons.${option}.label`),
+              labelDescription: t(`separation.reasons.${option}.description`),
+              value: option,
+            }
+          })}
+          onChange={handleReasonChange}
+        />
         <div className="usa-alert usa-alert--info usa-alert--validation">
           <div className="usa-alert__body">
             <Trans t={t} i18nKey="separation.info_alert.description">
@@ -110,22 +109,17 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           </div>
         </div>
         {showStillEmployed && (
-          <Fieldset
+          <RadioField
+            name={`employers[${index}].reason_still_employed`}
             legend={t('separation.reasons.still_employed.option_heading')}
-          >
-            <RadioField
-              name={`employers[${index}].reason_still_employed`}
-              options={reasonStillEmployedOptions.map((option) => {
-                return {
-                  label: t(
-                    `separation.reasons.still_employed.options.${option}`
-                  ),
-                  value: option,
-                }
-              })}
-              onChange={handleStillEmployedReasonChange}
-            />
-          </Fieldset>
+            options={reasonStillEmployedOptions.map((option) => {
+              return {
+                label: t(`separation.reasons.still_employed.options.${option}`),
+                value: option,
+              }
+            })}
+            onChange={handleStillEmployedReasonChange}
+          />
         )}
         {showComment && (
           <TextAreaField

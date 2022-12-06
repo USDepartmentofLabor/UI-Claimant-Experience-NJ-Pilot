@@ -34,6 +34,7 @@ export const Review: NextPage = () => {
 
       <CheckboxField
         name="certify"
+        formGroupClassName="padding-top-05"
         label={
           <Trans t={t} i18nKey="certify.label">
             <Link

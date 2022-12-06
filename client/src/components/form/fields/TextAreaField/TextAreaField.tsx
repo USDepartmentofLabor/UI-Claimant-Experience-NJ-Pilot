@@ -56,6 +56,7 @@ export const TextAreaField = ({
         {...textareaProps}
         inputRef={textareaRef}
         error={showError}
+        onInvalid={(e) => e.preventDefault()}
       />
 
       {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}

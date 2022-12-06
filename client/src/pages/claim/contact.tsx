@@ -15,7 +15,6 @@ import {
   interpreterTTYOptions,
   preferredLanguageOptions,
 } from 'constants/formOptions'
-import { Fieldset } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import formStyles from 'components/form/form.module.scss'
 import { yupPhoneOptional, yupPhoneWithSMS } from 'validations/yup/custom'
@@ -78,28 +77,24 @@ const Contact: NextPage = () => {
         showSMS={false}
         onChange={handleAlternatePhoneChange}
       />
-      <Fieldset
+      <RadioField
+        name="interpreter_required"
         legend={t('interpreter_required.label')}
         className={formStyles.field}
-      >
-        <RadioField
-          name="interpreter_required"
-          options={interpreterTTYOptions.map((option) => {
-            return {
-              label: t(`interpreter_required.options.${option}`),
-              value: option,
-            }
-          })}
-          onChange={handleInterpreterRequiredChange}
-        />
-      </Fieldset>
+        options={interpreterTTYOptions.map((option) => {
+          return {
+            label: t(`interpreter_required.options.${option}`),
+            value: option,
+          }
+        })}
+        onChange={handleInterpreterRequiredChange}
+      />
       {values.interpreter_required === 'interpreter' && (
-        <Fieldset
-          legend={t('preferred_language.label')}
-          className={formStyles.field}
-        >
+        <>
           <RadioField
             name="preferred_language"
+            legend={t('preferred_language.label')}
+            className={formStyles.field}
             options={preferredLanguageOptions.map((option) => {
               return {
                 label: t(`preferred_language.options.${option}`),
@@ -116,7 +111,7 @@ const Contact: NextPage = () => {
               label={t('other_language')}
             />
           )}
-        </Fieldset>
+        </>
       )}
     </>
   )
