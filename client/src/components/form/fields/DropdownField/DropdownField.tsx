@@ -67,7 +67,7 @@ const DropdownField = ({
 
   const id = idProp || name
 
-  function mapOptions(options: DropdownOption[]) {
+  const mapOptions = (options: DropdownOption[]) => {
     return options.map(({ label, value }, index) => (
       <option key={`${index}_${label}_${value}`} value={value}>
         {label}
