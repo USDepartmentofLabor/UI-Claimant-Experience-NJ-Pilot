@@ -1,5 +1,11 @@
 import React from 'react'
-import { createEvent, fireEvent, render, screen, within } from '@testing-library/react'
+import {
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react'
 import { Formik } from 'formik'
 
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
