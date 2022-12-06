@@ -46,6 +46,13 @@ describe('Edit employer checks', () => {
       discharge_date: { mo: '03', day: '24', yr: '2022' },
       expect_to_be_recalled: false,
     })
+    fillChangeInEmployment(employerIndexString, {
+      separation_circumstance: 'unsatisfactory_work_performance',
+      separation_circumstance_details: 'unsatisfactory_work_performance',
+      employment_start_date: { mo: '04', day: '20', yr: '2014' },
+      employment_last_date: { mo: '04', day: '24', yr: '2022' },
+      expect_to_be_recalled: false,
+    })
     fillPaymentsReceived(employerIndex)
     /* add other edit employer cypress tests here */
   })
