@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { createEvent, fireEvent, render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 
 import { CheckboxField } from 'components/form/fields/CheckboxField/CheckboxField'
@@ -48,6 +48,20 @@ describe('CheckboxField component', () => {
       )
 
       expect(getByLabelText('checkboxField')).toBeDisabled()
+    })
+  })
+  describe('on validation', () => {
+    it('Prevents onInvalid default from showing default validation error', async () => {
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <CheckboxField label="Some Key" name="someKey" type="text" />
+        </Formik>
+      )
+
+      const testTextField = screen.getByLabelText(/some key/i)
+      const invalidEvent = createEvent.invalid(testTextField)
+      fireEvent(testTextField, invalidEvent)
+      expect(invalidEvent.defaultPrevented).toBeTruthy()
     })
   })
 

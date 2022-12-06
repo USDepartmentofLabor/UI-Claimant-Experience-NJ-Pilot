@@ -1,9 +1,10 @@
 import { BooleanRadio } from 'components/form/fields/BooleanRadio/BooleanRadio'
-import { Fieldset } from '@trussworks/react-uswds'
+import { ErrorMessage, Fieldset, FormGroup } from '@trussworks/react-uswds'
 import classnames from 'classnames'
 import { useShowErrors } from 'hooks/useShowErrors'
 import { ChangeEventHandler, PropsWithChildren, ReactNode } from 'react'
 import styles from './YesNoQuestion.module.scss'
+import { useField } from 'formik'
 
 interface IYesNoQuestionProps {
   id?: string
@@ -22,25 +23,30 @@ export const YesNoQuestion = ({
   children,
   ...inputProps
 }: PropsWithChildren<IYesNoQuestionProps>) => {
+  const [, metaProps] = useField(inputProps.name)
   const showError = useShowErrors(inputProps.name)
 
   return (
-    <Fieldset
-      legend={question}
-      className={classnames(styles.fieldset, 'dol-fieldset', {
-        'usa-form-group--error': showError,
-      })}
-    >
-      {hint && (
-        <span
-          className="usa-hint"
-          id={`${inputProps.id || inputProps.name}.hint`}
-        >
-          {hint}
-        </span>
-      )}
-      <BooleanRadio {...inputProps} />
-      {children}
-    </Fieldset>
+    <FormGroup error={showError}>
+      <Fieldset
+        legend={question}
+        className={classnames(styles.fieldset, 'dol-fieldset', {
+          [styles.errorLegend]: showError,
+        })}
+        onInvalid={(e) => e.preventDefault()}
+      >
+        {hint && (
+          <span
+            className="usa-hint"
+            id={`${inputProps.id || inputProps.name}.hint`}
+          >
+            {hint}
+          </span>
+        )}
+        <BooleanRadio showsErrors={false} {...inputProps} />
+        {children}
+        {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
+      </Fieldset>
+    </FormGroup>
   )
 }

@@ -142,8 +142,10 @@ const claimForm = {
       less_than_high_school: 'Less than High School',
       some_high_school: 'Some High School',
       high_school_ged: 'High School Graduate/GED',
-      some_college: 'Some College',
+      high_school_credential_certification:
+        'High School + Credential/Certification',
       associates: "Associate's Degree",
+      some_college: 'Some College',
       bachelors: "Bachelor's Degree",
       some_graduate: 'Some Graduate School',
       masters: "Master's Degree",
@@ -193,7 +195,7 @@ const claimForm = {
   },
   employers: {
     separation: {
-      heading: 'Change in Employment',
+      heading: 'Change in employment',
       info_alert: {
         description:
           'If you were treated unfairly, harassed, or discriminated against on the job, please also visit the <0>EEOC website</0> for help.',
@@ -421,7 +423,10 @@ const claimForm = {
           full_time: 'Full-time',
           part_time: 'Part-time or intermittent',
         },
-        required: 'This field is required',
+        errors: {
+          required:
+            'You must say whether this was a full-time or part-time job',
+        },
       },
     },
     work_location: {

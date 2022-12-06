@@ -1,10 +1,11 @@
 import { Formik } from 'formik'
-import { render, screen } from '@testing-library/react'
+import { createEvent, fireEvent, render, screen } from '@testing-library/react'
 
 import { YesNoQuestion } from './YesNoQuestion'
 import userEvent from '@testing-library/user-event'
 import { noop } from 'helpers/noop/noop'
 import { boolean, object } from 'yup'
+import React from 'react'
 
 describe('YesNoQuestion Component', () => {
   it('renders properly', () => {
@@ -138,5 +139,17 @@ describe('YesNoQuestion Component', () => {
     await user.click(submitButton)
 
     expect(await screen.findByRole('alert')).toBeInTheDocument()
+  })
+  it('Prevents onInvalid default from showing default validation error', async () => {
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <YesNoQuestion question="Some Question" name="someQuestion" />
+      </Formik>
+    )
+
+    const testTextField = screen.getByLabelText(/no/i)
+    const invalidEvent = createEvent.invalid(testTextField)
+    fireEvent(testTextField, invalidEvent)
+    expect(invalidEvent.defaultPrevented).toBeTruthy()
   })
 })

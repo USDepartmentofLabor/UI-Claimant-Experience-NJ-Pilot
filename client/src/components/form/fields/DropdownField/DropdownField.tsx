@@ -94,6 +94,7 @@ const DropdownField = ({
         onChange={handleChange}
         {...inputProps}
         inputRef={selectRef}
+        onInvalid={(e) => e.preventDefault()}
       >
         {startEmpty && (
           <option key="empty" value={EMPTY_OPTION_VALUE}>

@@ -89,6 +89,7 @@ export const TextField = ({
       onChange={handleChange}
       {...textInputProps}
       inputRef={textFieldRef}
+      onInvalid={(e) => e.preventDefault()}
     />
   )
 

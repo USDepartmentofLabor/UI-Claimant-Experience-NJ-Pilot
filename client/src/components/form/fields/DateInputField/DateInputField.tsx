@@ -207,6 +207,7 @@ export const DateInputField = ({
           )
         }
         legendStyle={legendStyle}
+        onInvalid={(e) => e.preventDefault()}
       >
         {hint && (
           <span className="usa-hint" id={`${id}.hint`}>

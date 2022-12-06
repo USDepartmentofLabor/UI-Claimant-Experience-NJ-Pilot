@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { createEvent, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik } from 'formik'
 
 import { CurrencyField } from 'components/form/fields/CurrencyField/CurrencyField'
 import { noop } from 'helpers/noop/noop'
+import React from 'react'
 
 describe('CurrencyField', () => {
   const FormikCurrencyField = () => {
@@ -43,5 +44,17 @@ describe('CurrencyField', () => {
     const field = screen.getByRole('textbox', { name: 'Show me the money' })
 
     expect(field).toHaveValue('220.45')
+  })
+  it('Prevents onInvalid default from showing default validation error', async () => {
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <CurrencyField label="Some Key" name="someKey" />
+      </Formik>
+    )
+
+    const testField = screen.getByLabelText(/some key/i)
+    const invalidEvent = createEvent.invalid(testField)
+    fireEvent(testField, invalidEvent)
+    expect(invalidEvent.defaultPrevented).toBeTruthy()
   })
 })

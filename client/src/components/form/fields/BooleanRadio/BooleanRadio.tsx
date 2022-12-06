@@ -13,6 +13,7 @@ interface IBooleanRadioProps {
   noLabel?: string
   isStacked?: boolean
   onChange?: ChangeEventHandler<HTMLInputElement>
+  showsErrors?: boolean
 }
 
 export const BooleanRadio = ({
@@ -22,11 +23,12 @@ export const BooleanRadio = ({
   noLabel,
   isStacked,
   onChange,
+  showsErrors = true,
   ...inputProps
 }: IBooleanRadioProps & JSX.IntrinsicElements['input']) => {
   const { t } = useTranslation('common')
   const [fieldProps, metaProps, fieldHelperProps] = useField(name)
-  const showError = useShowErrors(name)
+  const showError = showsErrors && useShowErrors(name)
   const radioRef = useRef<HTMLInputElement>(null)
 
   useFocusFirstError(metaProps.error, radioRef)

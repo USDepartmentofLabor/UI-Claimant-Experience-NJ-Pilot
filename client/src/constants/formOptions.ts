@@ -67,8 +67,9 @@ export const educationLevelOptions = [
   'less_than_high_school',
   'some_high_school',
   'high_school_ged',
-  'some_college',
+  'high_school_credential_certification',
   'associates',
+  'some_college',
   'bachelors',
   'some_graduate',
   'masters',
@@ -98,10 +99,10 @@ export type SuffixOption = typeof suffixOptions[number]
 export const changeInEmploymentOptions = [
   'laid_off',
   'fired_discharged_suspended',
-  // 'unsatisfactory_work_performance',
+  'unsatisfactory_work_performance',
   'quit_or_retired',
   'still_employed',
-  // 'strike_or_lock_out_by_employer',
+  'strike_or_lock_out_by_employer',
   // 'federal_or_state_shutdown',
 ] as const
 export type ChangeInEmploymentOption = typeof changeInEmploymentOptions[number]

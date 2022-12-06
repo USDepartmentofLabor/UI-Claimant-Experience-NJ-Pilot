@@ -106,18 +106,17 @@ const PaymentInformation: NextPage = () => {
       </div>
 
       <Fieldset legend={<Trans t={t} i18nKey="payment_method.header" />}>
-        <Fieldset legend={t('payment_method.label')}>
-          <RadioField
-            name="payment_method"
-            options={paymentMethodOptions.map((option) => {
-              return {
-                label: t(`payment_method.options.${option}`),
-                value: option,
-              }
-            })}
-            onChange={handlePaymentMethodChange}
-          />
-        </Fieldset>
+        <RadioField
+          name="payment_method"
+          legend={t('payment_method.label')}
+          options={paymentMethodOptions.map((option) => {
+            return {
+              label: t(`payment_method.options.${option}`),
+              value: option,
+            }
+          })}
+          onChange={handlePaymentMethodChange}
+        />
         {values.payment_method === 'direct_deposit' && (
           <p>{t('payment_method.direct_deposit_description')}</p>
         )}
