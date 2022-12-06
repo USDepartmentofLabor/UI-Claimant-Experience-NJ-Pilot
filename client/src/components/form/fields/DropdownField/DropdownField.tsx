@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef, ReactNode } from 'react'
+import React, { ChangeEvent, useRef } from 'react'
 import { useField } from 'formik'
 import {
   FormGroup,
@@ -75,26 +75,6 @@ const DropdownField = ({
     ))
   }
 
-  const optionList: ReactNode[] = []
-  if (startEmpty) {
-    optionList.unshift(
-      <option key="empty" value={EMPTY_OPTION_VALUE}>
-        {t('select')}
-      </option>
-    )
-  }
-  if (Array.isArray(options)) {
-    optionList.push(mapOptions(options))
-  } else {
-    Object.entries(options).map(([key, value]) => {
-      optionList.push(
-        <optgroup key={`${name}_${key}`} label={key}>
-          {mapOptions(value)}
-        </optgroup>
-      )
-    })
-  }
-
   return (
     <FormGroup className={formGroupClassName} error={showError}>
       <Label
@@ -115,7 +95,18 @@ const DropdownField = ({
         {...inputProps}
         inputRef={selectRef}
       >
-        {options && optionList}
+        {startEmpty && (
+          <option key="empty" value={EMPTY_OPTION_VALUE}>
+            {t('select')}
+          </option>
+        )}
+        {Array.isArray(options)
+          ? mapOptions(options)
+          : Object.entries(options).map(([key, value]) => (
+              <optgroup key={`${name}_${key}`} label={key}>
+                {mapOptions(value)}
+              </optgroup>
+            ))}
       </Dropdown>
 
       {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
