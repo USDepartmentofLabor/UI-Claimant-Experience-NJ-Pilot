@@ -43,6 +43,11 @@ describe('Change in Employment component', () => {
     const queryForChangeReasonQuitOrRetiredAnswer = () =>
       screen.getByTestId('employers[0].separation_circumstance.quit_or_retired')
 
+    const queryForChangeReasonStrikeOrLockOutAnswer = () =>
+      screen.getByTestId(
+        'employers[0].separation_circumstance.strike_or_lock_out_by_employer'
+      )
+
     const queryForExpectRecall = () =>
       screen.queryByRole('group', {
         name: 'separation.expect_to_be_recalled.label',
@@ -232,6 +237,7 @@ describe('Change in Employment component', () => {
       queryForChangeReasonFiredDischargedSuspendedAnswer,
       queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer,
       queryForChangeReasonQuitOrRetiredAnswer,
+      queryForChangeReasonStrikeOrLockOutAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
       queryForHaveDefiniteDateOfRecall,
@@ -791,7 +797,7 @@ describe('Change in Employment component', () => {
         queryForFinishDate(),
       ])
     })
-    it('clears textbox when different change reason is selected', async () => {
+    it('clears textbox when different change reason without textbox is selected', async () => {
       const user = userEvent.setup()
       const {
         queryForChangeReasonQuitOrRetiredAnswer,
@@ -809,6 +815,49 @@ describe('Change in Employment component', () => {
       await user.click(changeReasonLaidOffAnswer)
       expect(changeReasonQuitOrRetired).not.toBeChecked()
       await user.click(changeReasonQuitOrRetired)
+      expect(screen.queryByText(detail)).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Strike or lock out', () => {
+    it('displays the correct fields', async () => {
+      const user = userEvent.setup()
+      const {
+        queryForChangeReasonStrikeOrLockOutAnswer,
+        queryForSeparationCircumstanceDetails,
+        queryForStartDate,
+        queryForFinishDate,
+        queryForExpectRecallYesAnswer,
+      } = renderChangeInEmployment()
+      const changeReasonStrikeOrLockOutAnswer =
+        queryForChangeReasonStrikeOrLockOutAnswer()
+      await user.click(changeReasonStrikeOrLockOutAnswer)
+      expect(changeReasonStrikeOrLockOutAnswer).toBeChecked()
+      checkShouldBeInDocument([
+        queryForSeparationCircumstanceDetails(),
+        queryForStartDate(),
+        queryForFinishDate(),
+        queryForExpectRecallYesAnswer(),
+      ])
+    })
+    it('clears textbox when different change reason without textbox is selected', async () => {
+      const user = userEvent.setup()
+      const {
+        queryForChangeReasonStrikeOrLockOutAnswer,
+        queryForChangeReasonLaidOffAnswer,
+        queryForSeparationCircumstanceDetails,
+      } = renderChangeInEmployment()
+      const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+      const changeReasonStrikeOrLockOutAnswer =
+        queryForChangeReasonStrikeOrLockOutAnswer()
+      await user.click(changeReasonStrikeOrLockOutAnswer)
+
+      const detail = 'I am a righteous reason'
+      await user.type(queryForSeparationCircumstanceDetails(), detail)
+      expect(screen.getByText(detail)).toBeInTheDocument()
+      await user.click(changeReasonLaidOffAnswer)
+      expect(changeReasonStrikeOrLockOutAnswer).not.toBeChecked()
+      await user.click(changeReasonLaidOffAnswer)
       expect(screen.queryByText(detail)).not.toBeInTheDocument()
     })
   })

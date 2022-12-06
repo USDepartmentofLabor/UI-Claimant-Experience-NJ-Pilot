@@ -110,7 +110,7 @@ const yupEditEmployer = object().shape({
   name: string().required(i18n_claimForm.t('employers.name.required')),
   // Your Employer
   is_full_time: boolean().required(
-    i18n_claimForm.t('employers.your_employer.is_full_time.required')
+    i18n_claimForm.t('employers.your_employer.is_full_time.errors.required')
   ),
   // Work Location
   worked_at_employer_address: boolean().required(
@@ -191,6 +191,7 @@ const yupEditEmployer = object().shape({
           'fired_discharged_suspended',
           'unsatisfactory_work_performance',
           'quit_or_retired',
+          'strike_or_lock_out_by_employer',
         ].includes(changeInEmploymentReason),
       then: (schema) =>
         schema.required(
