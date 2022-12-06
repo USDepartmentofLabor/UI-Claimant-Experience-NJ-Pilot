@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 
-RUN yarn install --production
+RUN yarn install --production  --frozen-lockfile
 
 FROM node:16.18.1-bullseye-slim AS builder
 WORKDIR /app
