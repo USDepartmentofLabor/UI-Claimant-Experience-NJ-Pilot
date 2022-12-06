@@ -24,6 +24,8 @@ services:
       - front-tier
     read_only: true
     env_file: client/.env
+    environment:
+      - NEXTAUTH_URL=https://sandbox-claimant-intake:8443
     ports:
       - "3000:3000"
   server:

@@ -225,13 +225,13 @@ To view the JSON-formatted api documentation, navigate to `/intake-api/v3/api-do
 To run the application locally in docker, use:
 
 ```sh
-make dev-up
+make docker-up
 ```
 
 Or, if you prefer to run the application(s) outside of docker (in dev-mode for example) alongside dockerized services, use:
 
 ```sh
-make services-up
+make docker-services-up
 ```
 
 Then, run the relevant application(s) individually.
@@ -239,7 +239,7 @@ Then, run the relevant application(s) individually.
 To shut the docker services down, use:
 
 ```sh
-make dev-down
+make docker-down
 ```
 
 ### LocalStack
@@ -273,7 +273,13 @@ LocalStack runs as a docker container and will be started along with the other
 application services by running the following command:
 
 ```
-make dev-up
+make docker-up
+```
+
+or
+
+```
+make docker-services-up
 ```
 
 To confirm the LocalStack container is running, run the following command:
@@ -326,7 +332,7 @@ Next, add this entry to your `/etc/hosts` (or Windows equivalent) file:
 Then run the following command to start everything in docker:
 
 ```
-make dev-up
+make docker-up
 ```
 
 You can now visit the application at https://sandbox-claimant-intake:8443.
@@ -379,21 +385,41 @@ your browser.
 To run Cypress (e2e) tests locally there are a few considerations:
 
 - You must run the server app with the 'e2e' profile active for mocked authentication to work
-- The app should be run dockerized when running end-to-end tests. Running the app in "dev mode" will fail Lighthouse performance thresholds
-- Make sure your .env files are updated with the right URL (sandbox vs localhost) if running the app dockerized
 
-The easiest way to run e2e tests locally satisfying the above requirements is through the following commands:
+#### Option A: Run client, server in dev mode
 
-```
-make ci-up
+To run Cypress tests while running the client and server locally in dev mode:
+
+```shell
+# Run the supporting services (db, localstack) in docker
+make docker-services-up
+
+# Terminal #1: Run the client
+make client-dev
+
+# Terminal #2: Run the server
+# Note: server-bootRun-e2e is only for running cypress tests, which requires
+# mocked authentication for the cypress tests to work. When not running cypress
+# tests, use server-bootRun to enable real login functionality.
+make server-bootRun-e2e
+
+# Terminal #3: Run cypress (two options)
+make e2e-test-gui-local      # Runs Cypress tests in browser
+make e2e-test-headless-local # Runs Cypress tests on the command line
 ```
 
-```
-make e2e-ci-test
-```
+#### Option B: Run client, server in docker
 
-Or, if you want to use the Cypress GUI
+To run Cypress tests while running the application in docker:
 
-```
-make e2e-test-local-docker
+```shell
+# Run the application and supporting services in docker
+# Note: docker-e2e-up is only for running cypress tests, which requires
+# mocked authentication for the cypress tests to work. If you want to run
+# everything in docker with real login functionality, use docker-up.
+make docker-e2e-up
+
+# Run cypress (two options)
+make e2e-test-gui-docker      # Runs Cypress tests in browser
+make e2e-test-headless-docker # Runs Cypress tests on the command line
 ```
