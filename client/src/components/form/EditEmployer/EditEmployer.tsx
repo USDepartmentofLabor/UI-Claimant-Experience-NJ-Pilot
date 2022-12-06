@@ -187,9 +187,11 @@ const yupEditEmployer = object().shape({
     )
     .when('separation_circumstance', {
       is: (changeInEmploymentReason: ChangeInEmploymentOption) =>
-        ['fired_discharged_suspended', 'quit_or_retired'].includes(
-          changeInEmploymentReason
-        ),
+        [
+          'fired_discharged_suspended',
+          'unsatisfactory_work_performance',
+          'quit_or_retired',
+        ].includes(changeInEmploymentReason),
       then: (schema) =>
         schema.required(
           i18n_claimForm.t(

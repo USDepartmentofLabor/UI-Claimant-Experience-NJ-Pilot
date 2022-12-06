@@ -1,4 +1,3 @@
-import { Fieldset } from '@trussworks/react-uswds'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import { useTranslation } from 'react-i18next'
@@ -73,19 +72,16 @@ export const BusinessInterests = ({ index }: BusinessInterestsProps) => {
         />
       )}
       {showRelatedToOwner && (
-        <Fieldset
+        <RadioField
+          name={`${baseName}.related_to_owner_or_child_of_owner_under_18`}
           legend={t('related_to_owner_or_child_of_owner_under_18.label')}
-        >
-          <RadioField
-            name={`${baseName}.related_to_owner_or_child_of_owner_under_18`}
-            options={employerRelationOptions.map((option) => ({
-              label: t(
-                `related_to_owner_or_child_of_owner_under_18.options.${option}.label`
-              ),
-              value: option,
-            }))}
-          />
-        </Fieldset>
+          options={employerRelationOptions.map((option) => ({
+            label: t(
+              `related_to_owner_or_child_of_owner_under_18.options.${option}.label`
+            ),
+            value: option,
+          }))}
+        />
       )}
     </>
   )

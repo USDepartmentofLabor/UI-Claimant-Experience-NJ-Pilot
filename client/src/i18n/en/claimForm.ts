@@ -142,8 +142,10 @@ const claimForm = {
       less_than_high_school: 'Less than High School',
       some_high_school: 'Some High School',
       high_school_ged: 'High School Graduate/GED',
-      some_college: 'Some College',
+      high_school_credential_certification:
+        'High School + Credential/Certification',
       associates: "Associate's Degree",
+      some_college: 'Some College',
       bachelors: "Bachelor's Degree",
       some_graduate: 'Some Graduate School',
       masters: "Master's Degree",

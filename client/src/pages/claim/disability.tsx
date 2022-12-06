@@ -8,7 +8,6 @@ import {
   SummaryBox,
   SummaryBoxContent,
   SummaryBoxHeading,
-  Fieldset,
 } from '@trussworks/react-uswds'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
@@ -60,54 +59,49 @@ export const Disability: NextPage = () => {
           </ul>
         </SummaryBoxContent>
       </SummaryBox>
-      <Fieldset
+      <CheckboxGroupField
         legend={t('disability.disability_applied_to_or_received.label')}
-      >
-        <CheckboxGroupField
-          name="disability_applied_to_or_received"
-          options={disabilityPaymentTypeOptions.map((paymentOption) => ({
-            label: t(
-              `disability.disability_applied_to_or_received.options.${paymentOption}`
-            ),
-            value: paymentOption,
-            checkboxProps: {
-              onChange: (e) => {
-                if (e.target.value === 'none' && e.target.checked) {
-                  setFieldValue(
-                    'disability_applied_to_or_received',
-                    ['none'],
-                    true
-                  )
-                }
-                handleHasCollectedDisabilityChange()
-              },
-              disabled:
-                values.disability_applied_to_or_received?.includes('none') &&
-                paymentOption !== 'none',
+        name="disability_applied_to_or_received"
+        options={disabilityPaymentTypeOptions.map((paymentOption) => ({
+          label: t(
+            `disability.disability_applied_to_or_received.options.${paymentOption}`
+          ),
+          value: paymentOption,
+          checkboxProps: {
+            onChange: (e) => {
+              if (e.target.value === 'none' && e.target.checked) {
+                setFieldValue(
+                  'disability_applied_to_or_received',
+                  ['none'],
+                  true
+                )
+              }
+              handleHasCollectedDisabilityChange()
             },
-          }))}
-        />
-      </Fieldset>
+            disabled:
+              values.disability_applied_to_or_received?.includes('none') &&
+              paymentOption !== 'none',
+          },
+        }))}
+      />
       {hasCollectedDisability && (
         <>
           <YesNoQuestion
             question={t('disability.disabled_immediately_before.label')}
             name="disabled_immediately_before"
           />
-          <Fieldset
+          <RadioField
+            name="type_of_disability"
             legend={t('disability.type_of_disability.label')}
-            className={formStyles.field}
-          >
-            <RadioField
-              name="type_of_disability"
-              options={disabilityTypeOptions.map((option) => {
-                return {
-                  label: t(`disability.type_of_disability.options.${option}`),
-                  value: option,
-                }
-              })}
-            />
-          </Fieldset>
+            showsErrors={true}
+            fieldsetClassName={formStyles.field}
+            options={disabilityTypeOptions.map((option) => {
+              return {
+                label: t(`disability.type_of_disability.options.${option}`),
+                value: option,
+              }
+            })}
+          />
           <DateInputField
             name="date_disability_began"
             legend={t('disability.date_disability_began.label')}

@@ -1,8 +1,4 @@
-import {
-  Fieldset,
-  SummaryBox,
-  SummaryBoxContent,
-} from '@trussworks/react-uswds'
+import { SummaryBox, SummaryBoxContent } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -33,40 +29,40 @@ const Demographics: NextPage = () => {
       <SummaryBox>
         <SummaryBoxContent>{t('demographics.preamble')}</SummaryBoxContent>
       </SummaryBox>
-      <Fieldset legend={t('sex.label')} className={formStyles.field}>
-        <RadioField
-          name="sex"
-          options={sexOptions.map((option) => {
-            return {
-              label: t(`sex.options.${option}`),
-              value: option,
-            }
-          })}
-        />
-      </Fieldset>
-      <Fieldset legend={t('ethnicity.label')} className={formStyles.field}>
-        <RadioField
-          name="ethnicity"
-          options={ethnicityOptions.map((option) => {
-            return {
-              label: t(`ethnicity.options.${option}`),
-              value: option,
-            }
-          })}
-        />
-      </Fieldset>
-      <Fieldset legend={t('race.label')} className={formStyles.field}>
-        <RadioField
-          name="race[0]"
-          options={raceOptions.map((option) => {
-            return {
-              label: t(`race.options.${option}`),
-              value: option,
-            }
-          })}
-          errorMessage={errors.race}
-        />
-      </Fieldset>
+      <RadioField
+        name="sex"
+        legend={t('sex.label')}
+        className={formStyles.field}
+        options={sexOptions.map((option) => {
+          return {
+            label: t(`sex.options.${option}`),
+            value: option,
+          }
+        })}
+      />
+      <RadioField
+        name="ethnicity"
+        legend={t('ethnicity.label')}
+        className={formStyles.field}
+        options={ethnicityOptions.map((option) => {
+          return {
+            label: t(`ethnicity.options.${option}`),
+            value: option,
+          }
+        })}
+      />
+      <RadioField
+        name="race[0]"
+        legend={t('race.label')}
+        className={formStyles.field}
+        options={raceOptions.map((option) => {
+          return {
+            label: t(`race.options.${option}`),
+            value: option,
+          }
+        })}
+        errorMessage={errors.race}
+      />
       <DropdownField
         name="education_level"
         label={t('education_level.label')}

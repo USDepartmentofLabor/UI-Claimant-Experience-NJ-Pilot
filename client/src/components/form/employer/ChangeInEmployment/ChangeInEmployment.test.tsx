@@ -35,6 +35,11 @@ describe('Change in Employment component', () => {
         'employers[0].separation_circumstance.fired_discharged_suspended'
       )
 
+    const queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer = () =>
+      screen.getByTestId(
+        'employers[0].separation_circumstance.unsatisfactory_work_performance'
+      )
+
     const queryForChangeReasonQuitOrRetiredAnswer = () =>
       screen.getByTestId('employers[0].separation_circumstance.quit_or_retired')
 
@@ -225,6 +230,7 @@ describe('Change in Employment component', () => {
       queryForReduced20PercentYesAnswer,
       queryForReduced20PercentNoAnswer,
       queryForChangeReasonFiredDischargedSuspendedAnswer,
+      queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer,
       queryForChangeReasonQuitOrRetiredAnswer,
       queryForExpectRecallNoAnswer,
       queryForExpectRecallYesAnswer,
@@ -722,84 +728,49 @@ describe('Change in Employment component', () => {
     ])
   })
 
-  it('fills out answers for "Fired, discharged, or suspended" and checks clearing of separation circumstance details and discharge date', async () => {
-    const user = userEvent.setup()
-    const {
-      queryForChangeReasonLaidOffAnswer,
-      queryForChangeReasonFiredDischargedSuspendedAnswer,
-      queryForSeparationCircumstanceDetails,
-      queryForDischargeDate,
-      getDayDischargeDate,
-      getMonthDischargeDate,
-      getYearDischargeDate,
-    } = renderChangeInEmployment()
+  describe('Unsatisfactory work performance selected', () => {
+    it('shows appropriate fields', async () => {
+      const user = userEvent.setup()
+      const {
+        queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer,
+        queryForSeparationCircumstanceDetails,
+        queryForStartDate,
+        queryForFinishDate,
+      } = renderChangeInEmployment()
 
-    const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
-    const changeReasonFiredDischargedSuspendedAnswer =
-      queryForChangeReasonFiredDischargedSuspendedAnswer()
-    let separationCircumstanceDetails = queryForSeparationCircumstanceDetails()
-    let dischargeDate = queryForDischargeDate()
+      const changeReasonUnsatisfactoryWorkPerformance =
+        queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer()
+      await user.click(changeReasonUnsatisfactoryWorkPerformance)
+      expect(changeReasonUnsatisfactoryWorkPerformance).toBeChecked()
+      checkShouldBeInDocument([
+        queryForSeparationCircumstanceDetails(),
+        queryForStartDate(),
+        queryForFinishDate(),
+      ])
+    })
 
-    // Separation circumstance details and discharge date should not be in document on load
-    expect(changeReasonFiredDischargedSuspendedAnswer).not.toBeChecked()
-    expect(separationCircumstanceDetails).not.toBeInTheDocument()
-    expect(dischargeDate).not.toBeInTheDocument()
+    it('clears textbox when different change reason is selected', async () => {
+      const user = userEvent.setup()
+      const {
+        queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer,
+        queryForChangeReasonLaidOffAnswer,
+        queryForSeparationCircumstanceDetails,
+      } = renderChangeInEmployment()
+      const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
+      const changeReasonUnsatisfactoryWorkPerformance =
+        queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer()
+      await user.click(changeReasonUnsatisfactoryWorkPerformance)
 
-    // Click 'Fired, discharged, or suspended' radio button
-    await user.click(changeReasonFiredDischargedSuspendedAnswer as HTMLElement)
-    expect(changeReasonFiredDischargedSuspendedAnswer).toBeChecked()
-
-    // Separation circumstance details and discharge date should be in document
-    separationCircumstanceDetails = queryForDischargeDate() as HTMLElement
-    dischargeDate = queryForDischargeDate()
-    expect(separationCircumstanceDetails).toBeInTheDocument()
-    expect(dischargeDate).toBeInTheDocument()
-
-    // Add text to separation circumstance details comment box
-    separationCircumstanceDetails = queryForSeparationCircumstanceDetails()
-    await user.type(separationCircumstanceDetails, 'Some text here')
-    expect(queryForSeparationCircumstanceDetails()).toHaveValue(
-      'Some text here'
-    )
-
-    // Add values to discharge date and check values
-    const dischargeDateDayField = getDayDischargeDate()
-    const dischargeDateMonthField = getMonthDischargeDate()
-    const dischargeDateYearField = getYearDischargeDate()
-    await user.type(dischargeDateMonthField, '01')
-    await user.type(dischargeDateDayField, '06')
-    await user.type(dischargeDateYearField, '2023')
-    expect(getMonthDischargeDate()).toHaveValue('01')
-    expect(getDayDischargeDate()).toHaveValue('06')
-    expect(getYearDischargeDate()).toHaveValue('2023')
-
-    // Click 'Laid off' radio button
-    await user.click(changeReasonLaidOffAnswer as HTMLElement)
-    expect(changeReasonLaidOffAnswer).toBeChecked()
-    expect(changeReasonFiredDischargedSuspendedAnswer).not.toBeChecked()
-
-    // Separation circumstance details and discharge date should not be in document
-    expect(separationCircumstanceDetails).not.toBeInTheDocument()
-    expect(dischargeDate).not.toBeInTheDocument()
-
-    // Click 'Fired, discharged, or suspended' radio button
-    await user.click(changeReasonFiredDischargedSuspendedAnswer as HTMLElement)
-    expect(changeReasonFiredDischargedSuspendedAnswer).toBeChecked()
-
-    // Separation circumstance details and discharge date should be back in document
-    separationCircumstanceDetails = queryForDischargeDate() as HTMLElement
-    dischargeDate = queryForDischargeDate()
-    expect(separationCircumstanceDetails).toBeInTheDocument()
-    expect(dischargeDate).toBeInTheDocument()
-
-    // Values in separation circumstance details and discharge date should be empty
-    checkShouldHaveEmptyValue([
-      queryForSeparationCircumstanceDetails(),
-      getMonthDischargeDate(),
-      getDayDischargeDate(),
-      getYearDischargeDate(),
-    ])
+      const detail = 'I am a reasonable reason'
+      await user.type(queryForSeparationCircumstanceDetails(), detail)
+      expect(screen.getByText(detail)).toBeInTheDocument()
+      await user.click(changeReasonLaidOffAnswer)
+      expect(changeReasonUnsatisfactoryWorkPerformance).not.toBeChecked()
+      await user.click(changeReasonUnsatisfactoryWorkPerformance)
+      expect(screen.queryByText(detail)).not.toBeInTheDocument()
+    })
   })
+
   describe('Quit resigned or retired selected', () => {
     it('shows appropriate fields', async () => {
       const user = userEvent.setup()
