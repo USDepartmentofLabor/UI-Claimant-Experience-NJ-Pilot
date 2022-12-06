@@ -1,6 +1,9 @@
 FROM node:16.18.1-bullseye-slim as prod-deps
 WORKDIR /app
 
+COPY package.json .
+COPY yarn.lock .
+
 RUN yarn install --production
 
 FROM node:16.18.1-bullseye-slim AS builder
