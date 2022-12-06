@@ -113,7 +113,6 @@ jobs:
           echo "COGNITO_ISSUER=$COGNITO_ISSUER" >> .env
           echo "COGNITO_DOMAIN=$COGNITO_DOMAIN" >> .env
           echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env
-          echo "NEXTAUTH_URL=https://sandbox-claimant-intake:8443" >> .env
 
       - name: Create server/.env file
         working-directory: ./server
@@ -122,8 +121,8 @@ jobs:
         run: |
           echo "COGNITO_ISSUER=$COGNITO_ISSUER" >> .env
 
-      - name: Start CI docker container
-        run: make ci-up
+      - name: Start CI docker containers
+        run: make docker-e2e-up
         env:
           DOCKER_BUILDKIT: 1
 
@@ -137,9 +136,8 @@ jobs:
 
       - name: Run Cypress tests
         env:
-          CYPRESS_SERVER_BASE_URL: https://sandbox-claimant-intake:8443
           CYPRESS_NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-        run: make e2e-ci-test
+        run: make e2e-test-headless-docker
 
       - name: Upload Cypress artifacts
         if: failure()
@@ -151,8 +149,8 @@ jobs:
             /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/cypress/videos/
           retention-days: 1
 
-      - name: Stop CI docker container
-        run: make ci-down
+      - name: Stop CI docker containers
+        run: make docker-down
 
       - name: Scan server image
         if: ${{ github.event_name == 'pull_request' }}

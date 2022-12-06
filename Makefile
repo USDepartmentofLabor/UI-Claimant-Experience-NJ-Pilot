@@ -12,49 +12,43 @@ dev-deps: ## Install local development environment dependencies (depending on yo
 lint: ## Run lint check
 	pre-commit run --all-files
 
-dev-up: ## Run all docker services locally
+docker-up: ## Run all docker services locally
 	SPRING_PROFILES_ACTIVE=local-docker docker compose up --build --force-recreate --remove-orphans
 
-services-up: ## run supporting services locally (database, localstack)
-	SPRING_PROFILES_ACTIVE=local docker compose up db localstack --build --force-recreate --remove-orphans -d
-
-dev-db-up: ## Run the database locally in docker
-	docker compose up db
-
-dev-down: ## Shut down all local docker services
-	docker compose down
-
-dev-clean: ## Shut down all local docker services and remove volumes
-	docker compose down --volumes
-
-dev-destroy: ## Prune system of all containers and volumes. Useful when running into resource issues or if you truly want a clean slate
-	docker system prune -af --volumes
-
-dev-reset: dev-clean dev-up ## Runs dev-clean and dev-up
-
-dev-logs: ## View the local docker service logs
-	docker compose logs -f
-
-ci-up: ## Run docker services through continuous integration
+docker-e2e-up: ## Run all docker services in background, with e2e profile (only used for running cypress tests)
 	SPRING_PROFILES_ACTIVE=local-docker,e2e docker compose up -d --build --force-recreate --remove-orphans
 
-ci-down: ## Shut down docker services running through continuous integration
+docker-services-up: ## Run supporting services locally (database, localstack)
+	docker compose up db localstack --build --force-recreate --remove-orphans -d
+
+docker-down: ## Shut down all local docker services
 	docker compose down
+
+docker-clean: ## Shut down all local docker services and remove volumes
+	docker compose down --volumes
+
+docker-prune: ## Prune system of all containers and volumes. Useful when running into resource issues or if you truly want a clean slate
+	docker system prune -af --volumes
+
+docker-reset: docker-clean docker-up ## Runs docker-clean and docker-up
+
+docker-logs: ## View the local docker service logs
+	docker compose logs -f
 
 e2e-deps: ## installs dependencies for client
 	cd e2e && yarn install --frozen-lockfile
 
-e2e-test: ## runs Cypress tests in browser as configured in cypress.config.ts
-	cd e2e && yarn run cypress open
+e2e-test-gui-local: ## Runs Cypress tests in browser running the app on localhost
+	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
-e2e-test-local: ## runs Cypress tests in browser running the app on localhost
-	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000"
+e2e-test-gui-docker: ## Runs Cypress tests in browser running the app dockerized
+	cd e2e && yarn run cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
 
-e2e-test-local-docker: ## runs Cypress tests in browser running the app dockerized
-	cd e2e && yarn run cypress open --config "baseUrl=https://sandbox-claimant-intake:8443"
+e2e-test-headless-local: ## Runs Cypress tests on the command line running the app on localhost
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
-e2e-ci-test: ## runs Cypress tests on the command line
-	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443"
+e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
 
 e2e-compile-check: ## check e2e for typescript compilation
 	cd e2e && yarn tsc --noEmit
@@ -116,7 +110,7 @@ server-image-build: ## Build server docker image
 server-bootRun: ## Runs the SpringBoot development server with local profile active
 	cd server && ./gradlew bootRun --args='--spring.profiles.active=local'
 
-server-bootRun-e2e: ## Runs the SpringBoot development server with local and e2e profiles active
+server-bootRun-e2e: ## Runs the SpringBoot development server with local and e2e profiles active (only used for running cypress tests)
 	cd server && ./gradlew bootRun --args='--spring.profiles.active=local,e2e'
 
 server-test: ## run server unit tests
