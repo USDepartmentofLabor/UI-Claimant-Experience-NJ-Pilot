@@ -195,7 +195,7 @@ const claimForm = {
   },
   employers: {
     separation: {
-      heading: 'Change in Employment',
+      heading: 'Change in employment',
       info_alert: {
         description:
           'If you were treated unfairly, harassed, or discriminated against on the job, please also visit the <0>EEOC website</0> for help.',
@@ -423,7 +423,10 @@ const claimForm = {
           full_time: 'Full-time',
           part_time: 'Part-time or intermittent',
         },
-        required: 'This field is required',
+        errors: {
+          required:
+            'You must say whether this was a full-time or part-time job',
+        },
       },
     },
     work_location: {
