@@ -1,9 +1,10 @@
-import { render } from '@testing-library/react'
+import { createEvent, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik } from 'formik'
 
 import { CheckboxGroupField } from 'components/form/fields/CheckboxGroupField/CheckboxGroupField'
 import { noop } from 'helpers/noop/noop'
+import React from 'react'
 
 const checkboxOptions = [
   {
@@ -22,9 +23,11 @@ const checkboxOptions = [
 
 describe('CheckboxGroupField component', () => {
   it('renders the elements that make up the field', () => {
+    const legend = 'What is the question?'
     const { getByLabelText } = render(
       <Formik initialValues={{ checkboxGroupField: [] }} onSubmit={noop}>
         <CheckboxGroupField
+          legend={legend}
           name="checkboxGroupField"
           options={checkboxOptions}
         />
@@ -35,6 +38,7 @@ describe('CheckboxGroupField component', () => {
     const secondOption = getByLabelText('Second')
     const thirdOption = getByLabelText('Third')
 
+    expect(screen.getByText(legend)).toBeInTheDocument()
     expect(firstOption).toBeInstanceOf(HTMLInputElement)
     expect(firstOption).toHaveAttribute('id', 'checkboxGroupField.first')
     expect(firstOption).toHaveAttribute('name', 'checkboxGroupField')
@@ -59,6 +63,7 @@ describe('CheckboxGroupField component', () => {
           onSubmit={noop}
         >
           <CheckboxGroupField
+            legend="What is the question?"
             name="checkboxGroupField"
             options={checkboxOptions}
           />
@@ -82,6 +87,7 @@ describe('CheckboxGroupField component', () => {
       const { getByLabelText } = render(
         <Formik initialValues={{ checkboxGroupField: [] }} onSubmit={noop}>
           <CheckboxGroupField
+            legend="What is the question?"
             name="checkboxGroupField"
             options={checkboxOptions.map((option) => ({
               label: option.label,
@@ -109,6 +115,7 @@ describe('CheckboxGroupField component', () => {
       const { getByLabelText } = render(
         <Formik initialValues={{ checkboxGroupField: [] }} onSubmit={noop}>
           <CheckboxGroupField
+            legend="What is the question?"
             name="checkboxGroupField"
             options={checkboxOptions}
           />
@@ -139,6 +146,24 @@ describe('CheckboxGroupField component', () => {
       expect(firstOption).toBeChecked()
       expect(secondOption).not.toBeChecked()
       expect(thirdOption).toBeChecked()
+    })
+  })
+  describe('on validation', () => {
+    it('Prevents onInvalid default from showing default validation error', async () => {
+      render(
+        <Formik initialValues={{}} onSubmit={noop}>
+          <CheckboxGroupField
+            legend="Some Legend"
+            name="someLegend"
+            options={[{ label: 'something', value: 'some value' }]}
+          />
+        </Formik>
+      )
+
+      const testField = screen.getByRole('checkbox', { name: 'something' })
+      const invalidEvent = createEvent.invalid(testField)
+      fireEvent(testField, invalidEvent)
+      expect(invalidEvent.defaultPrevented).toBeTruthy()
     })
   })
 })

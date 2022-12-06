@@ -46,6 +46,7 @@ export const CheckboxField = ({
         name={name}
         id={id || name}
         onChange={handleChange}
+        onInvalid={(e) => e.preventDefault()}
         {...inputProps}
       />
       {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}

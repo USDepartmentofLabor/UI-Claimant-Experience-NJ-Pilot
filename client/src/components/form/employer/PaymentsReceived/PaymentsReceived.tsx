@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Fieldset } from '@trussworks/react-uswds'
 
 import { CheckboxGroupField } from '../../fields/CheckboxGroupField/CheckboxGroupField'
 import PaymentsReceivedDetail from '../PaymentsReceivedDetail/PaymentsReceivedDetail'
@@ -58,59 +57,56 @@ const PaymentsReceived = ({ employerIndex }: PaymentsReceivedProps) => {
         name={`employers[${employerIndex}].payments_received`}
         render={(arrayHelpers) => (
           <>
-            <Fieldset
+            <CheckboxGroupField
+              name={`employers[${employerIndex}].LOCAL_pay_types`}
               legend={t(
                 'payments_received.payments_received_detail.pay_type.label'
               )}
-            >
-              <CheckboxGroupField
-                name={`employers[${employerIndex}].LOCAL_pay_types`}
-                options={payTypeOptions.map((option) => ({
-                  label: t(
-                    `payments_received.payments_received_detail.pay_type.options.${option}.label`
+              options={payTypeOptions.map((option) => ({
+                label: t(
+                  `payments_received.payments_received_detail.pay_type.options.${option}.label`
+                ),
+                value: option,
+                checkboxProps: {
+                  'aria-description':
+                    option === 'none'
+                      ? t(
+                          `payments_received.payments_received_detail.pay_type.options.none.ariaDescription`
+                        )
+                      : undefined,
+                  labelDescription: t(
+                    `payments_received.payments_received_detail.pay_type.options.${option}.description`
                   ),
-                  value: option,
-                  checkboxProps: {
-                    'aria-description':
-                      option === 'none'
-                        ? t(
-                            `payments_received.payments_received_detail.pay_type.options.none.ariaDescription`
-                          )
-                        : undefined,
-                    labelDescription: t(
-                      `payments_received.payments_received_detail.pay_type.options.${option}.description`
-                    ),
-                    tile: true,
-                    onChange: (e) => {
-                      if (e.target.checked) {
-                        if (e.target.value === 'none') {
-                          setFieldValue(
-                            `employers[${employerIndex}].LOCAL_pay_types`,
-                            ['none'],
-                            true
-                          )
-                          setFieldValue(
-                            `employers[${employerIndex}].payments_received`,
-                            [{ pay_type: option }],
-                            true
-                          )
-                        } else {
-                          arrayHelpers.push({ pay_type: option })
-                        }
+                  tile: true,
+                  onChange: (e) => {
+                    if (e.target.checked) {
+                      if (e.target.value === 'none') {
+                        setFieldValue(
+                          `employers[${employerIndex}].LOCAL_pay_types`,
+                          ['none'],
+                          true
+                        )
+                        setFieldValue(
+                          `employers[${employerIndex}].payments_received`,
+                          [{ pay_type: option }],
+                          true
+                        )
                       } else {
-                        const indexOfPaymentReceivedToRemove =
-                          findIndexOfPaymentReceived(option)
-                        indexOfPaymentReceivedToRemove !== undefined &&
-                          arrayHelpers.remove(indexOfPaymentReceivedToRemove)
+                        arrayHelpers.push({ pay_type: option })
                       }
-                    },
-                    disabled:
-                      employer?.LOCAL_pay_types?.includes('none') &&
-                      option !== 'none',
+                    } else {
+                      const indexOfPaymentReceivedToRemove =
+                        findIndexOfPaymentReceived(option)
+                      indexOfPaymentReceivedToRemove !== undefined &&
+                        arrayHelpers.remove(indexOfPaymentReceivedToRemove)
+                    }
                   },
-                }))}
-              />
-            </Fieldset>
+                  disabled:
+                    employer?.LOCAL_pay_types?.includes('none') &&
+                    option !== 'none',
+                },
+              }))}
+            />
             {!!employer?.payments_received &&
               sortPayDetails(employer?.payments_received, [
                 ...payTypeOptions,

@@ -131,6 +131,7 @@ export const CurrencyField = ({
       onBlur={handleBlur}
       id={id || name}
       onChange={handleFieldChange}
+      onInvalid={(e) => e.preventDefault()}
       {...inputProps}
     />
   )

@@ -1,4 +1,4 @@
-import { Fieldset, Link } from '@trussworks/react-uswds'
+import { Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import {
   changeInEmploymentOptions,
@@ -25,9 +25,12 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
 
   const employer = values.employers?.[parseInt(index)]
-  const showComment =
-    employer?.separation_circumstance === 'fired_discharged_suspended' ||
-    employer?.separation_circumstance === 'quit_or_retired'
+  const showComment = [
+    'fired_discharged_suspended',
+    'unsatisfactory_work_performance',
+    'quit_or_retired',
+    'strike_or_lock_out_by_employer',
+  ].includes(employer?.separation_circumstance ?? '')
   const showRecallQuestions = employer?.expect_to_be_recalled === true
   const showDefiniteRecall =
     employer?.expect_to_be_recalled === true &&
@@ -41,16 +44,23 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
     employer?.reason_still_employed === 'reduction_in_hours_by_employer'
   const { clearField } = useClearFields()
   const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (e.target.value !== 'fired_discharged_suspended') {
+    if (
+      ![
+        'fired_discharged_suspended',
+        'unsatisfactory_work_performance',
+        'quit_or_retired',
+        'strike_or_lock_out_by_employer',
+      ].includes(employer?.separation_circumstance ?? '')
+    ) {
       clearField(`employers[${index}].separation_circumstance_details`)
+      clearField(`employers[${index}].discharge_date`)
+    }
+    if (e.target.value !== 'fired_discharged_suspended') {
       clearField(`employers[${index}].discharge_date`)
     }
     if (e.target.value !== 'still_employed') {
       clearField(`employers[${index}].reason_still_employed`)
       clearField(`employers[${index}].hours_reduced_twenty_percent`)
-    }
-    if (e.target.value !== 'quit_or_retired') {
-      clearField(`employers[${index}].separation_circumstance_details`)
     }
   }
   const handleExpectRecallChange: ChangeEventHandler<HTMLInputElement> = (
@@ -83,20 +93,19 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         <p>
           <strong>{t('separation.heading')}</strong>
         </p>
-        <Fieldset legend={t('separation.reason.label')}>
-          <RadioField
-            name={`employers[${index}].separation_circumstance`}
-            tile={true}
-            options={changeInEmploymentOptions.map((option) => {
-              return {
-                label: t(`separation.reasons.${option}.label`),
-                labelDescription: t(`separation.reasons.${option}.description`),
-                value: option,
-              }
-            })}
-            onChange={handleReasonChange}
-          />
-        </Fieldset>
+        <RadioField
+          name={`employers[${index}].separation_circumstance`}
+          legend={t('separation.reason.label')}
+          tile={true}
+          options={changeInEmploymentOptions.map((option) => {
+            return {
+              label: t(`separation.reasons.${option}.label`),
+              labelDescription: t(`separation.reasons.${option}.description`),
+              value: option,
+            }
+          })}
+          onChange={handleReasonChange}
+        />
         <div className="usa-alert usa-alert--info usa-alert--validation">
           <div className="usa-alert__body">
             <Trans t={t} i18nKey="separation.info_alert.description">
@@ -110,22 +119,17 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
           </div>
         </div>
         {showStillEmployed && (
-          <Fieldset
+          <RadioField
+            name={`employers[${index}].reason_still_employed`}
             legend={t('separation.reasons.still_employed.option_heading')}
-          >
-            <RadioField
-              name={`employers[${index}].reason_still_employed`}
-              options={reasonStillEmployedOptions.map((option) => {
-                return {
-                  label: t(
-                    `separation.reasons.still_employed.options.${option}`
-                  ),
-                  value: option,
-                }
-              })}
-              onChange={handleStillEmployedReasonChange}
-            />
-          </Fieldset>
+            options={reasonStillEmployedOptions.map((option) => {
+              return {
+                label: t(`separation.reasons.still_employed.options.${option}`),
+                value: option,
+              }
+            })}
+            onChange={handleStillEmployedReasonChange}
+          />
         )}
         {showComment && (
           <TextAreaField
