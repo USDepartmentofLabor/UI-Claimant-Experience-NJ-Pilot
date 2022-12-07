@@ -10,13 +10,26 @@ import { boolean, object, string } from 'yup'
 import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
 import styles from 'styles/pages/claim/prequal.module.scss'
-import DropdownField from 'components/form/fields/DropdownField/DropdownField'
-import { statesProvincesAndTerritories } from 'fixtures/states_provinces_territories'
 import { ChangeEventHandler } from 'react'
+import DropdownField, {
+  DropdownOption,
+} from 'components/form/fields/DropdownField/DropdownField'
+import { statesTerritoriesAndProvinces } from 'fixtures/states_territories_provinces'
 
-const stateProvincesTerritoriesDropdownOptions = Object.entries(
-  statesProvincesAndTerritories
-).map(([key, value]) => ({ label: value, value: key }))
+const stateProvincesTerritoriesDropdownOptions: Record<
+  string,
+  DropdownOption[]
+> = {}
+
+Object.entries(statesTerritoriesAndProvinces).forEach(
+  ([groupName, entries]) => {
+    const options = Object.entries(entries).map(([abbr, name]) => ({
+      label: name,
+      value: abbr,
+    }))
+    stateProvincesTerritoriesDropdownOptions[`${groupName}`] = options
+  }
+)
 
 export const Prequal: NextPage = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'prequal' })
@@ -98,7 +111,9 @@ export const PrequalPageDefinition: PageDefinition = {
       is: true,
       then: string()
         .oneOf([
-          ...stateProvincesTerritoriesDropdownOptions.map(({ value }) => value),
+          ...Object.entries(statesTerritoriesAndProvinces).flatMap(
+            ([, entries]) => Object.entries(entries).map(([abbr]) => abbr)
+          ),
         ])
         .required(
           i18n_claimForm.t(

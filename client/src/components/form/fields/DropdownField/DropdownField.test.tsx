@@ -1,5 +1,11 @@
 import React from 'react'
-import { createEvent, fireEvent, render, screen } from '@testing-library/react'
+import {
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react'
 import { Formik } from 'formik'
 
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
@@ -29,6 +35,23 @@ describe('dropdownField component', () => {
       'id',
       'dropdownField'
     )
+  })
+
+  it('renders optgroup and sub element', () => {
+    const { getAllByRole, getByRole } = render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <DropdownField
+          name="dropdownField"
+          label="dropdownField"
+          options={{ 'US States': [{ label: 'New Jersey', value: 'NJ' }] }}
+        />
+      </Formik>
+    )
+    expect(getAllByRole('option').length).toBe(1)
+    const optgroup = getByRole('group', { name: /US States/i })
+    expect(optgroup).toBeInstanceOf(HTMLOptGroupElement)
+    const option = within(optgroup).getByText('New Jersey')
+    expect(option).toBeInstanceOf(HTMLOptionElement)
   })
 
   describe('uses initial values', () => {

@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { useShowErrors } from 'hooks/useShowErrors'
 import { useFocusFirstError } from 'hooks/useFocusFirstError'
 
-type DropdownOption = {
+export type DropdownOption = {
   label: string
   value: string
 }
@@ -25,7 +25,7 @@ interface IDropdownFieldProps {
   label: React.ReactNode
   labelClassName?: string
   labelHint?: string
-  options: DropdownOption[]
+  options: DropdownOption[] | Record<string, DropdownOption[]>
   startEmpty?: boolean
 }
 /**
@@ -58,10 +58,6 @@ const DropdownField = ({
 
   useFocusFirstError(metaProps.error, selectRef)
 
-  if (startEmpty && options[0].value !== EMPTY_OPTION_VALUE) {
-    options.unshift({ value: EMPTY_OPTION_VALUE, label: t('select') })
-  }
-
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     fieldProps.onChange(e)
     if (onChange) {
@@ -70,6 +66,14 @@ const DropdownField = ({
   }
 
   const id = idProp || name
+
+  const mapOptions = (options: DropdownOption[]) => {
+    return options.map(({ label, value }, index) => (
+      <option key={`${index}_${label}_${value}`} value={value}>
+        {label}
+      </option>
+    ))
+  }
 
   return (
     <FormGroup className={formGroupClassName} error={showError}>
@@ -92,12 +96,18 @@ const DropdownField = ({
         inputRef={selectRef}
         onInvalid={(e) => e.preventDefault()}
       >
-        {options &&
-          options.map(({ label: optionLabel, value }, index) => (
-            <option key={`${index}_${optionLabel}_${value}`} value={value}>
-              {optionLabel}
-            </option>
-          ))}
+        {startEmpty && (
+          <option key="empty" value={EMPTY_OPTION_VALUE}>
+            {t('select')}
+          </option>
+        )}
+        {Array.isArray(options)
+          ? mapOptions(options)
+          : Object.entries(options).map(([key, value]) => (
+              <optgroup key={`${name}_${key}`} label={key}>
+                {mapOptions(value)}
+              </optgroup>
+            ))}
       </Dropdown>
 
       {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
