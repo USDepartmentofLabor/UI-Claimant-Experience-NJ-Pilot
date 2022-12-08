@@ -17,6 +17,7 @@ RUN yarn install --frozen-lockfile
 COPY .eslintrc.yml .
 COPY tsconfig.json .
 COPY next.config.js .
+COPY next-i18next.config.js .
 COPY public ./public
 COPY src ./src
 
@@ -35,6 +36,7 @@ ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --from=builder /app/next.config.js .
+COPY --from=builder /app/next-i18next.config.js .
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/.next ./.next
