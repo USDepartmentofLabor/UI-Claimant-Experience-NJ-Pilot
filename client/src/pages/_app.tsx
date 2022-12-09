@@ -16,6 +16,7 @@ import { CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 import { DefaultLayout } from 'components/layouts/DefaultLayout/DefaultLayout'
 
 import 'styles/styles.scss'
+import { ActiveSessionHandler } from 'components/ActiveSessionHandler/ActiveSessionHandler'
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,
@@ -59,20 +60,22 @@ function ClaimApp({
 
   return (
     <SessionProvider session={session}>
-      <QueryClientProvider client={queryClient}>
-        <LiveAnnouncer>
-          <ReactQueryDevtools initialIsOpen={false} />
-          <DefaultLayout>
-            <GridContainer className="margin-top-2">
-              {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
-                <ClaimForm>{page}</ClaimForm>
-              ) : (
-                getLayout(page)
-              )}
-            </GridContainer>
-          </DefaultLayout>
-        </LiveAnnouncer>
-      </QueryClientProvider>
+      <ActiveSessionHandler>
+        <QueryClientProvider client={queryClient}>
+          <LiveAnnouncer>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <DefaultLayout>
+              <GridContainer className="margin-top-2">
+                {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
+                  <ClaimForm>{page}</ClaimForm>
+                ) : (
+                  getLayout(page)
+                )}
+              </GridContainer>
+            </DefaultLayout>
+          </LiveAnnouncer>
+        </QueryClientProvider>
+      </ActiveSessionHandler>
     </SessionProvider>
   )
 }

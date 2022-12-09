@@ -7,11 +7,14 @@ import {
 } from 'next-auth'
 import { WhoAmI } from 'types/claimantInput'
 
+interface SharedProps {
+  accessToken?: string
+  whoAmI?: WhoAmI
+  error?: string
+}
+
 declare module 'next-auth' {
-  interface Session extends DefaultSession {
-    accessToken?: string
-    whoAmI?: WhoAmI
-  }
+  interface Session extends DefaultSession, SharedProps {}
 
   interface Profile extends NextAuthProfile {
     given_name?: string
@@ -22,8 +25,8 @@ declare module 'next-auth' {
 }
 
 declare module 'next-auth/jwt' {
-  interface JWT extends NextAuthJWT {
-    accessToken?: string
-    whoAmI?: WhoAmI
+  interface JWT extends NextAuthJWT, SharedProps {
+    accessTokenExpires?: number
+    refreshToken?: string
   }
 }
