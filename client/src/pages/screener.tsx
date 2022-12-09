@@ -1,99 +1,32 @@
-import { useFormikContext } from 'formik'
+import { Formik, Form, FormikHelpers } from 'formik'
 import { useTranslation, Trans } from 'react-i18next'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
-import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { boolean, object } from 'yup'
-import { ClaimantInput } from 'types/claimantInput'
+import { ScreenerInput } from 'types/claimantInput'
 import { i18n_screener } from 'i18n/i18n'
+import {
+  ChangeEventHandler,
+  MouseEventHandler,
+  ReactNode,
+  useContext,
+  useRef,
+} from 'react'
+import { NextPageWithLayout } from 'pages/_app'
+import { ScreenerLayout } from 'components/layouts/ScreenerLayout/ScreenerLayout'
+import styles from 'styles/pages/screener.module.scss'
+import { Button, FormGroup } from '@trussworks/react-uswds'
+import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
 import { Routes } from 'constants/routes'
-import { useClearFields } from 'hooks/useClearFields'
-import { ChangeEventHandler, ReactNode } from 'react'
-import { NextPageWithLayout } from './_app'
-import { ScreenerForm } from 'components/layouts/ClaimForm/ScreenerForm/ScreenerForm'
+import { useRouter } from 'next/router'
+import { IntakeAppContext } from 'contexts/IntakeAppContext'
+import { getClearFieldsFunctions } from 'hooks/useClearFields'
 
 const Screener: NextPageWithLayout = () => {
   const { t } = useTranslation('screener')
-  const { values } = useFormikContext<ClaimantInput>()
-  const { clearField } = useClearFields()
+  const router = useRouter()
+  const { setScreenerInput } = useContext(IntakeAppContext)
 
-  const handleCurrentCountryUSChange: ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    if (e.target.value === 'no') {
-      clearField('screener_live_in_canada')
-    }
-  }
-
-  const handleJobLast18MonthsChange: ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    if (e.target.value === 'yes') {
-      clearField('screener_all_work_nj')
-    }
-    clearField('screener_any_work_nj')
-  }
-
-  const handleAllWorkInNJChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (e.target.value === 'no') {
-      clearField('screener_any_work_nj')
-    }
-  }
-
-  return (
-    <>
-      <YesNoQuestion
-        question={t('screener_current_country_us.label')}
-        name="screener_current_country_us"
-        onChange={handleCurrentCountryUSChange}
-      />
-      {values.screener_current_country_us === false && (
-        <YesNoQuestion
-          question={t('screener_live_in_canada.label')}
-          name="screener_live_in_canada"
-        />
-      )}
-      <YesNoQuestion
-        question={t('screener_job_last_eighteen_months.label')}
-        name="screener_job_last_eighteen_months"
-        onChange={handleJobLast18MonthsChange}
-      />
-      <YesNoQuestion
-        question={t('screener_military_service_eighteen_months.label')}
-        name="screener_military_service_eighteen_months"
-      />
-      {values.screener_job_last_eighteen_months === true && (
-        <YesNoQuestion
-          question={<Trans t={t} i18nKey="screener_all_work_nj.label" />}
-          name="screener_all_work_nj"
-          onChange={handleAllWorkInNJChange}
-        />
-      )}
-      {values.screener_all_work_nj === false && (
-        <YesNoQuestion
-          question={<Trans t={t} i18nKey="screener_any_work_nj.label" />}
-          name="screener_any_work_nj"
-        />
-      )}
-      <YesNoQuestion
-        question={t('screener_currently_disabled.label')}
-        name="screener_currently_disabled"
-      />
-      <YesNoQuestion
-        question={t('screener_maritime_employer_eighteen_months.label')}
-        name="screener_maritime_employer_eighteen_months"
-      />
-    </>
-  )
-}
-
-Screener.getLayout = function getLayout(page: ReactNode) {
-  return <ScreenerForm>{page}</ScreenerForm>
-}
-
-export const ScreenerPageDefinition: PageDefinition = {
-  path: Routes.SCREENER,
-  heading: i18n_screener.t('heading'),
-  initialValues: {
+  const initialValues = {
     screener_current_country_us: undefined,
     screener_live_in_canada: undefined,
     screener_job_last_eighteen_months: undefined,
@@ -102,8 +35,9 @@ export const ScreenerPageDefinition: PageDefinition = {
     screener_any_work_nj: undefined,
     screener_currently_disabled: undefined,
     screener_maritime_employer_eighteen_months: undefined,
-  },
-  validationSchema: object().shape({
+  }
+
+  const validationSchema = object().shape({
     screener_current_country_us: boolean().required(
       i18n_screener.t('screener_current_country_us.errors.required')
     ),
@@ -151,7 +85,182 @@ export const ScreenerPageDefinition: PageDefinition = {
         'screener_maritime_employer_eighteen_months.errors.required'
       )
     ),
-  }),
+  })
+
+  const handleSubmit = (
+    values: ScreenerInput,
+    helpers: FormikHelpers<ScreenerInput>
+  ) => {
+    const { setSubmitting } = helpers
+    setScreenerInput(values)
+    setSubmitting(false)
+  }
+
+  return (
+    <Formik<ScreenerInput>
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({
+        values,
+        errors,
+        isValid,
+        submitForm,
+        isSubmitting,
+        submitCount,
+        getFieldMeta,
+        setFieldValue,
+        setFieldTouched,
+      }) => {
+        const { clearField, clearFields } = getClearFieldsFunctions(
+          getFieldMeta,
+          setFieldValue,
+          setFieldTouched
+        )
+
+        const validRef = useRef(isValid)
+        validRef.current = isValid
+
+        const showErrorSummary =
+          submitCount > 0 && Object.keys(errors).length > 0
+
+        const handleCurrentCountryUSChange: ChangeEventHandler<
+          HTMLInputElement
+        > = async (e) => {
+          if (e.target.value === 'yes') {
+            await clearField('screener_live_in_canada')
+          }
+        }
+
+        const handleJobLast18MonthsChange: ChangeEventHandler<
+          HTMLInputElement
+        > = async (e) => {
+          if (e.target.value === 'no') {
+            await clearFields(['screener_all_work_nj', 'screener_any_work_nj'])
+          }
+        }
+
+        const handleAllWorkInNJChange: ChangeEventHandler<
+          HTMLInputElement
+        > = async (e) => {
+          if (e.target.value === 'yes') {
+            await clearField('screener_any_work_nj')
+          }
+        }
+
+        const handleClickPrevious: MouseEventHandler<
+          HTMLButtonElement
+        > = async () => {
+          await router.push(Routes.HOME)
+        }
+
+        const getIsRedirect = () => {
+          const {
+            screener_live_in_canada,
+            screener_any_work_nj,
+            screener_currently_disabled,
+            screener_military_service_eighteen_months,
+            screener_maritime_employer_eighteen_months,
+          } = values
+          return (
+            screener_live_in_canada !== undefined ||
+            screener_any_work_nj === false ||
+            screener_currently_disabled === true ||
+            screener_military_service_eighteen_months === true ||
+            screener_maritime_employer_eighteen_months === true
+          )
+        }
+
+        const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
+          submitForm().then(async () => {
+            if (validRef.current) {
+              const shouldRedirect = getIsRedirect()
+              if (shouldRedirect) {
+                await router.push(Routes.SCREENER_REDIRECT)
+              } else {
+                await router.push(Routes.HOME)
+              }
+            }
+          })
+        }
+
+        return (
+          <Form className={styles.screenerForm}>
+            {showErrorSummary && (
+              <FormErrorSummary key={submitCount} errors={errors} />
+            )}
+            <YesNoQuestion
+              question={t('screener_current_country_us.label')}
+              name="screener_current_country_us"
+              onChange={handleCurrentCountryUSChange}
+            />
+            {values.screener_current_country_us === false && (
+              <YesNoQuestion
+                question={t('screener_live_in_canada.label')}
+                name="screener_live_in_canada"
+              />
+            )}
+            <YesNoQuestion
+              question={t('screener_job_last_eighteen_months.label')}
+              name="screener_job_last_eighteen_months"
+              onChange={handleJobLast18MonthsChange}
+            />
+            <YesNoQuestion
+              question={t('screener_military_service_eighteen_months.label')}
+              name="screener_military_service_eighteen_months"
+            />
+            {values.screener_job_last_eighteen_months === true && (
+              <YesNoQuestion
+                question={<Trans t={t} i18nKey="screener_all_work_nj.label" />}
+                name="screener_all_work_nj"
+                onChange={handleAllWorkInNJChange}
+              />
+            )}
+            {values.screener_all_work_nj === false && (
+              <YesNoQuestion
+                question={<Trans t={t} i18nKey="screener_any_work_nj.label" />}
+                name="screener_any_work_nj"
+              />
+            )}
+            <YesNoQuestion
+              question={t('screener_currently_disabled.label')}
+              name="screener_currently_disabled"
+            />
+            <YesNoQuestion
+              question={t('screener_maritime_employer_eighteen_months.label')}
+              name="screener_maritime_employer_eighteen_months"
+            />
+            <div className={styles.pagination}>
+              <FormGroup>
+                <div className="text-center">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    onClick={handleClickPrevious}
+                    data-testid="back-button"
+                  >
+                    {t('pagination.previous')}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleClickNext}
+                    data-testid="next-button"
+                  >
+                    {t('pagination.next')}
+                  </Button>
+                </div>
+              </FormGroup>
+            </div>
+          </Form>
+        )
+      }}
+    </Formik>
+  )
+}
+
+Screener.getLayout = (page: ReactNode) => {
+  return <ScreenerLayout>{page}</ScreenerLayout>
 }
 
 export default Screener

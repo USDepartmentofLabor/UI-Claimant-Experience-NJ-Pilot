@@ -1,91 +1,75 @@
-import { NextPage } from 'next'
-
-import { useFormikContext } from 'formik'
 import { useTranslation } from 'react-i18next'
 import TextField from 'components/form/fields/TextField/TextField'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
-import { useClearFields } from 'hooks/useClearFields'
-import { ClaimantInput } from 'types/claimantInput'
-import { PageDefinition } from 'constants/pages/pageDefinitions'
-import { boolean, object, string } from 'yup'
-import { i18n_claimForm } from 'i18n/i18n'
-import { Routes } from 'constants/routes'
-import { ChangeEventHandler } from 'react'
+import { UnionInput } from 'types/claimantInput'
+import { NextPageWithLayout } from 'pages/_app'
+import { ReactNode, ChangeEventHandler } from 'react'
+import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
+import { UnionPageDefinition } from 'constants/pages/definitions/unionPageDefinition'
+import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
+import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
+import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
+import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
 
-export const Union: NextPage = () => {
+const pageDefinition = UnionPageDefinition
+const nextPage = getNextPage(pageDefinition)
+const previousPage = getPreviousPage(pageDefinition)
+
+export const Union: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'union' })
-  const { values } = useFormikContext<ClaimantInput>()
-  const { clearFields } = useClearFields()
-
-  const handleSeekWorkThroughHiringHallChange: ChangeEventHandler<
-    HTMLInputElement
-  > = (e) => {
-    // Remove conditional data if previous answer is changed
-    if (e.target.value === 'no') {
-      clearFields(['union_name', 'union_local_number'])
-    }
-  }
 
   return (
-    <>
-      <YesNoQuestion
-        question={t('required_to_seek_work_through_hiring_hall.label')}
-        name="required_to_seek_work_through_hiring_hall"
-        onChange={handleSeekWorkThroughHiringHallChange}
-      />
-      {values.required_to_seek_work_through_hiring_hall === true && (
-        <>
-          <TextField
-            label={t('union_name.label')}
-            type="text"
-            name="union_name"
-          />
-          <TextField
-            label={t('union_local_number.label')}
-            type="text"
-            name="union_local_number"
-          />
-        </>
-      )}
-    </>
+    <ClaimFormik<UnionInput>
+      initialValues={pageDefinition.initialValues}
+      validationSchema={pageDefinition.validationSchema}
+    >
+      {({ values, clearFields }) => {
+        const handleSeekWorkThroughHiringHallChange: ChangeEventHandler<
+          HTMLInputElement
+        > = async (e) => {
+          // Remove conditional data if previous answer is changed
+          if (e.target.value === 'no') {
+            await clearFields(['union_name', 'union_local_number'])
+          }
+        }
+
+        return (
+          <>
+            <YesNoQuestion
+              question={t('required_to_seek_work_through_hiring_hall.label')}
+              name="required_to_seek_work_through_hiring_hall"
+              onChange={handleSeekWorkThroughHiringHallChange}
+            />
+            {values.required_to_seek_work_through_hiring_hall === true && (
+              <>
+                <TextField
+                  label={t('union_name.label')}
+                  type="text"
+                  name="union_name"
+                />
+                <TextField
+                  label={t('union_local_number.label')}
+                  type="text"
+                  name="union_local_number"
+                />
+              </>
+            )}
+            <ClaimFormButtons nextStep={nextPage.heading}>
+              <BackButton previousPage={previousPage.path} />
+              <NextButton nextPage={nextPage.path} />
+            </ClaimFormButtons>
+          </>
+        )
+      }}
+    </ClaimFormik>
   )
 }
 
-export const UnionPageDefinition: PageDefinition = {
-  heading: i18n_claimForm.t('union.heading'),
-  path: Routes.CLAIM.UNION,
-  initialValues: {
-    required_to_seek_work_through_hiring_hall: undefined,
-  },
-  validationSchema: object().shape({
-    required_to_seek_work_through_hiring_hall: boolean().required(
-      i18n_claimForm.t(
-        'union.required_to_seek_work_through_hiring_hall.errors.required'
-      )
-    ),
-    union_name: string().when('required_to_seek_work_through_hiring_hall', {
-      is: true,
-      then: (schema) =>
-        schema
-          .max(32, i18n_claimForm.t('union.union_name.errors.maxLength'))
-          .required(i18n_claimForm.t('union.union_name.errors.required')),
-    }),
-    union_local_number: string().when(
-      'required_to_seek_work_through_hiring_hall',
-      {
-        is: true,
-        then: (schema) =>
-          schema
-            .max(
-              16,
-              i18n_claimForm.t('union.union_local_number.errors.maxLength')
-            )
-            .required(
-              i18n_claimForm.t('union.union_local_number.errors.required')
-            ),
-      }
-    ),
-  }),
+Union.getLayout = (page: ReactNode) => {
+  return (
+    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+  )
 }
 
 export default Union

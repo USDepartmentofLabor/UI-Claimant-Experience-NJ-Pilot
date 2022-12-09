@@ -1,8 +1,16 @@
-import { Identity, IdentityPageDefinition } from 'pages/claim/identity'
+import { Identity } from 'pages/claim/identity'
 import { screen, render, waitFor, within } from '@testing-library/react'
-import { Formik } from 'formik'
-import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
+import { IdentityPageDefinition } from 'constants/pages/definitions/identityPageDefinition'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { useInitialValues } from 'hooks/useInitialValues'
+import { ClaimantInput } from 'types/claimantInput'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('Identity Information Page', () => {
   const birthdate = '1980-07-31'
@@ -12,12 +20,15 @@ describe('Identity Information Page', () => {
   }
   const displayedBirthdate = 'July 31, 1980'
 
+  ;(useInitialValues as jest.Mock).mockImplementation(
+    (values: ClaimantInput) => ({
+      initialValues: { ...values, ...initialValues },
+      isLoading: false,
+    })
+  )
+
   it('renders properly', () => {
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Identity />
-      </Formik>
-    )
+    render(<Identity />)
 
     const verifiedFieldsSection = screen.getByTestId('verified-fields')
 
@@ -50,11 +61,7 @@ describe('Identity Information Page', () => {
 
   it('hides and shows explanation field', async () => {
     const user = userEvent.setup()
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Identity />
-      </Formik>
-    )
+    render(<Identity />)
 
     const authorizedToWorkInUSRadioGroup = screen.getByRole('group', {
       name: 'work_authorization.authorized_to_work.label',
@@ -91,11 +98,8 @@ describe('Identity Information Page', () => {
 
   it('hides and shows work authorization fields', async () => {
     const user = userEvent.setup()
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Identity />
-      </Formik>
-    )
+
+    render(<Identity />)
 
     const authorizedToWorkInUSRadioGroup = screen.getByRole('group', {
       name: 'work_authorization.authorized_to_work.label',
@@ -170,6 +174,22 @@ describe('Identity Information Page', () => {
     await waitFor(() => {
       expect(authorizationTypeDropdown).not.toBeInTheDocument()
       expect(alienRegistrationNumberField).not.toBeInTheDocument()
+    })
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = Identity
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
     })
   })
 })

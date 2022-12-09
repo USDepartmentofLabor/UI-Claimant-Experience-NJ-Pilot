@@ -1,8 +1,8 @@
-import { useClearFields } from 'hooks/useClearFields'
 import { renderHook } from '@testing-library/react-hooks'
 
 jest.mock('formik')
 import { useFormikContext } from 'formik'
+import { useClearFields } from 'hooks/useClearFields'
 const mockUseFormikContext = useFormikContext as jest.Mock
 
 describe('useClearFields hook', () => {
@@ -25,7 +25,7 @@ describe('useClearFields hook', () => {
   describe('clearField', () => {
     const fieldName = 'some_field_name'
 
-    it('can clear a single field', () => {
+    it('can clear a single field', async () => {
       const { result } = renderHook(() => useClearFields())
       const { clearField } = result.current
 
@@ -34,7 +34,7 @@ describe('useClearFields hook', () => {
         touched: true,
       })
 
-      clearField(fieldName)
+      await clearField(fieldName)
 
       expect(mockGetFieldMeta).toHaveBeenCalledTimes(1)
       expect(mockGetFieldMeta).toHaveBeenCalledWith(fieldName)
@@ -46,7 +46,7 @@ describe('useClearFields hook', () => {
       expect(mockSetFieldTouched).toHaveBeenCalledWith(fieldName, false)
     })
 
-    it('does not try to clear a single field if the state is already as desired', () => {
+    it('does not try to clear a single field if the state is already as desired', async () => {
       const { result } = renderHook(() => useClearFields())
       const { clearField } = result.current
 
@@ -55,7 +55,7 @@ describe('useClearFields hook', () => {
         touched: false,
       })
 
-      clearField(fieldName)
+      await clearField(fieldName)
 
       expect(mockGetFieldMeta).toHaveBeenCalledTimes(1)
       expect(mockGetFieldMeta).toHaveBeenCalledWith(fieldName)
@@ -65,7 +65,7 @@ describe('useClearFields hook', () => {
       expect(mockSetFieldTouched).toHaveBeenCalledTimes(0)
     })
 
-    it('can clear a single configured field', () => {
+    it('can clear a single configured field', async () => {
       const { result } = renderHook(() => useClearFields())
       const { clearField } = result.current
 
@@ -77,7 +77,7 @@ describe('useClearFields hook', () => {
       const desiredClearedValue = 'desired value'
       const desiredClearedTouched = true
 
-      clearField({
+      await clearField({
         fieldName,
         value: desiredClearedValue,
         touched: desiredClearedTouched,
@@ -99,7 +99,7 @@ describe('useClearFields hook', () => {
       )
     })
 
-    it('does not try to clear a single configured field if the state is already as desired', () => {
+    it('does not try to clear a single configured field if the state is already as desired', async () => {
       const { result } = renderHook(() => useClearFields())
       const { clearField } = result.current
 
@@ -111,7 +111,7 @@ describe('useClearFields hook', () => {
         touched: desiredClearedTouched,
       })
 
-      clearField({
+      await clearField({
         fieldName,
         value: desiredClearedValue,
         touched: desiredClearedTouched,
@@ -125,7 +125,7 @@ describe('useClearFields hook', () => {
       expect(mockSetFieldTouched).toHaveBeenCalledTimes(0)
     })
 
-    it('can clear a single configured field omitting value and touched in order to use the defaults', () => {
+    it('can clear a single configured field omitting value and touched in order to use the defaults', async () => {
       const { result } = renderHook(() => useClearFields())
       const { clearField } = result.current
 
@@ -134,7 +134,7 @@ describe('useClearFields hook', () => {
         touched: true,
       })
 
-      clearField({
+      await clearField({
         fieldName,
       })
 

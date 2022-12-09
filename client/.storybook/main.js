@@ -22,6 +22,8 @@ module.exports = {
     },
   },
   webpackFinal: async (config) => {
+    config.resolve.fallback.fs = false
+
     config.module.rules.forEach((rule) => {
       rule.use?.forEach((loader, i) => {
         loader === 'postcss-loader' &&

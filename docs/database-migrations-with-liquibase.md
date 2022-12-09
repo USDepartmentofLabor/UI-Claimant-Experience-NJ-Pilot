@@ -30,7 +30,7 @@ database without needing to start/stop or run the application at all. To do so, 
 
 1. Make sure your database is running
    ```
-   make dev-db-up
+   make docker-services-up
    ```
 1. Apply any missing migrations to your local database
    ```

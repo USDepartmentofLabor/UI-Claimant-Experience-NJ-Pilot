@@ -1,16 +1,17 @@
 import { AnySchema } from 'yup'
 import { ClaimantInput } from 'types/claimantInput'
-import { PrequalPageDefinition } from 'pages/claim/prequal'
-import { PersonalPageDefinition } from 'pages/claim/personal'
-import { ContactPageDefinition } from 'pages/claim/contact'
-import { DemographicsPageDefinition } from 'pages/claim/demographics'
-import { IdentityPageDefinition } from 'pages/claim/identity'
-import { UnionPageDefinition } from 'pages/claim/union'
-import { DisabilityPageDefinition } from 'pages/claim/disability'
-import { PaymentPageDefinition } from 'pages/claim/payment'
-import { EducationAndTrainingPageDefinition } from 'pages/claim/education-and-training'
-import { ReviewPageDefinition } from 'pages/claim/review'
-import { RecentEmployersPageDefinition } from 'pages/claim/recent-employers'
+
+import { PrequalPageDefinition } from 'constants/pages/definitions/prequalPageDefinition'
+import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
+import { ContactPageDefinition } from 'constants/pages/definitions/contactPageDefinition'
+import { DemographicsPageDefinition } from 'constants/pages/definitions/demographicsPageDefinition'
+import { IdentityPageDefinition } from 'constants/pages/definitions/identityPageDefinition'
+import { EducationAndTrainingPageDefinition } from 'constants/pages/definitions/educationAndTrainingPageDefinition'
+import { RecentEmployersPageDefinition } from 'constants/pages/definitions/recentEmployersPageDefinition'
+import { UnionPageDefinition } from 'constants/pages/definitions/unionPageDefinition'
+import { DisabilityPageDefinition } from 'constants/pages/definitions/disabilityPageDefinition'
+import { PaymentPageDefinition } from 'constants/pages/definitions/paymentPageDefinition'
+import { ReviewPageDefinition } from 'constants/pages/definitions/reviewPageDefinition'
 
 export type PageDefinition = {
   heading: string
@@ -39,3 +40,21 @@ export const pageDefinitions: PageDefinition[] = [
   PaymentPageDefinition,
   ReviewPageDefinition,
 ]
+
+export const getNextPage = (current: PageDefinition) => {
+  const currentPageIndex = pageDefinitions.indexOf(current)
+
+  if (currentPageIndex >= pageDefinitions.length - 1) {
+    throw new Error(`${current.path} has no next page`)
+  }
+
+  return pageDefinitions.at(currentPageIndex + 1) as PageDefinition
+}
+
+export const getPreviousPage = (current: PageDefinition) => {
+  const currentPageIndex = pageDefinitions.indexOf(current)
+  if (currentPageIndex <= 0) {
+    throw new Error(`${current.path} has no previous page`)
+  }
+  return pageDefinitions.at(currentPageIndex - 1) as PageDefinition
+}

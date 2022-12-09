@@ -1,158 +1,144 @@
-import { ChangeEventHandler } from 'react'
-import { NextPage } from 'next'
+import { ChangeEventHandler, ReactNode } from 'react'
+
 import { useTranslation } from 'react-i18next'
-import { useFormikContext } from 'formik'
 import { TextField } from 'components/form/fields/TextField/TextField'
 import { PhoneNumberField } from 'components/form/PhoneNumberField/PhoneNumberField'
-import { ClaimantInput } from 'types/claimantInput'
-import { PHONE_SKELETON } from 'constants/initialValues'
-import { useClearFields } from 'hooks/useClearFields'
-import { PageDefinition } from 'constants/pages/pageDefinitions'
-import { i18n_claimForm } from 'i18n/i18n'
-import { Routes } from 'constants/routes'
-import { mixed, object, string } from 'yup'
+import { ContactInput } from 'types/claimantInput'
+
 import {
   interpreterTTYOptions,
   preferredLanguageOptions,
 } from 'constants/formOptions'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import formStyles from 'components/form/form.module.scss'
-import { yupPhoneOptional, yupPhoneWithSMS } from 'validations/yup/custom'
 import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
 import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
 import { formatStoredToDisplayPhone } from 'utils/phone/format'
+import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 
-const Contact: NextPage = () => {
+import { NextPageWithLayout } from 'pages/_app'
+import { ContactPageDefinition } from 'constants/pages/definitions/contactPageDefinition'
+import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
+import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
+import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
+import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
+
+const pageDefinition = ContactPageDefinition
+const nextPage = getNextPage(pageDefinition)
+const previousPage = getPreviousPage(pageDefinition)
+
+const Contact: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'contact',
   })
-  const { values, initialValues, setValues } = useFormikContext<ClaimantInput>()
-  const { clearField } = useClearFields()
-
-  const handleAlternatePhoneChange: ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    if (e.currentTarget.value === '') {
-      setValues({ ...values, alternate_phone: undefined })
-    }
-  }
-  const handleInterpreterRequiredChange: ChangeEventHandler<
-    HTMLInputElement
-  > = (e) => {
-    if (e.target.value !== 'no_interpreter_tty') {
-      clearField('preferred_language')
-      clearField('preferred_language_other')
-    }
-  }
-
-  const handlePreferredLanguageChange: ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    if (e.target.value === 'other') {
-      clearField('preferred_language_other')
-    }
-  }
 
   return (
-    <>
-      <VerifiedFields>
-        <VerifiedField label={t('email.label')} value={values.email} />
-        {initialValues.claimant_phone?.number && (
-          <VerifiedField
-            label={t('claimant_phone.label')}
-            value={formatStoredToDisplayPhone(
-              initialValues.claimant_phone?.number
-            )}
-          />
-        )}
-      </VerifiedFields>
-      <PhoneNumberField
-        name="claimant_phone"
-        label={t('claimant_phone.label')}
-        showSMS={true}
-      />
-      <PhoneNumberField
-        name="alternate_phone"
-        label={t('alternate_phone.label')}
-        showSMS={false}
-        onChange={handleAlternatePhoneChange}
-      />
-      <RadioField
-        name="interpreter_required"
-        legend={t('interpreter_required.label')}
-        className={formStyles.field}
-        options={interpreterTTYOptions.map((option) => {
-          return {
-            label: t(`interpreter_required.options.${option}`),
-            value: option,
+    <ClaimFormik<ContactInput>
+      initialValues={pageDefinition.initialValues}
+      validationSchema={pageDefinition.validationSchema}
+    >
+      {({ values, setValues, clearField, initialValues }) => {
+        const handleAlternatePhoneChange: ChangeEventHandler<
+          HTMLInputElement
+        > = (e) => {
+          if (e.currentTarget.value === '') {
+            setValues({ ...values, alternate_phone: undefined })
           }
-        })}
-        onChange={handleInterpreterRequiredChange}
-      />
-      {values.interpreter_required === 'interpreter' && (
-        <>
-          <RadioField
-            name="preferred_language"
-            legend={t('preferred_language.label')}
-            className={formStyles.field}
-            options={preferredLanguageOptions.map((option) => {
-              return {
-                label: t(`preferred_language.options.${option}`),
-                value: option,
-              }
-            })}
-            onChange={handlePreferredLanguageChange}
-          />
-          {values.preferred_language === 'other' && (
-            <TextField
-              labelled-by="preferred_language.other"
-              name="preferred_language_other"
-              type="text"
-              label={t('other_language')}
+        }
+        const handleInterpreterRequiredChange: ChangeEventHandler<
+          HTMLInputElement
+        > = async (e) => {
+          if (e.target.value !== 'no_interpreter_tty') {
+            await clearField('preferred_language')
+            await clearField('preferred_language_other')
+          }
+        }
+
+        const handlePreferredLanguageChange: ChangeEventHandler<
+          HTMLInputElement
+        > = async (e) => {
+          if (e.target.value === 'other') {
+            await clearField('preferred_language_other')
+          }
+        }
+
+        return (
+          <>
+            <VerifiedFields>
+              <VerifiedField label={t('email.label')} value={values.email} />
+              {initialValues.claimant_phone?.number && (
+                <VerifiedField
+                  label={t('claimant_phone.label')}
+                  value={formatStoredToDisplayPhone(
+                    initialValues.claimant_phone?.number
+                  )}
+                />
+              )}
+            </VerifiedFields>
+            <PhoneNumberField
+              name="claimant_phone"
+              label={t('claimant_phone.label')}
+              showSMS={true}
             />
-          )}
-        </>
-      )}
-    </>
+            <PhoneNumberField
+              name="alternate_phone"
+              label={t('alternate_phone.label')}
+              showSMS={false}
+              onChange={handleAlternatePhoneChange}
+            />
+            <RadioField
+              name="interpreter_required"
+              legend={t('interpreter_required.label')}
+              className={formStyles.field}
+              options={interpreterTTYOptions.map((option) => {
+                return {
+                  label: t(`interpreter_required.options.${option}`),
+                  value: option,
+                }
+              })}
+              onChange={handleInterpreterRequiredChange}
+            />
+
+            {values.interpreter_required === 'interpreter' && (
+              <>
+                <RadioField
+                  name="preferred_language"
+                  legend={t('preferred_language.label')}
+                  className={formStyles.field}
+                  options={preferredLanguageOptions.map((option) => {
+                    return {
+                      label: t(`preferred_language.options.${option}`),
+                      value: option,
+                    }
+                  })}
+                  onChange={handlePreferredLanguageChange}
+                />
+                {values.preferred_language === 'other' && (
+                  <TextField
+                    labelled-by="preferred_language.other"
+                    name="preferred_language_other"
+                    type="text"
+                    label={t('other_language')}
+                  />
+                )}
+              </>
+            )}
+            <ClaimFormButtons nextStep={nextPage.heading}>
+              <BackButton previousPage={previousPage.path} />
+              <NextButton nextPage={nextPage.path} />
+            </ClaimFormButtons>
+          </>
+        )
+      }}
+    </ClaimFormik>
   )
 }
 
-export const ContactPageDefinition: PageDefinition = {
-  heading: i18n_claimForm.t('contact.heading'),
-  path: Routes.CLAIM.CONTACT,
-  initialValues: {
-    claimant_phone: { ...PHONE_SKELETON },
-    alternate_phone: undefined,
-    interpreter_required: undefined,
-    preferred_language: undefined,
-    preferred_language_other: undefined,
-  },
-  validationSchema: object().shape({
-    claimant_phone: yupPhoneWithSMS,
-    alternate_phone: yupPhoneOptional,
-    interpreter_required: mixed()
-      .oneOf([...interpreterTTYOptions])
-      .required(i18n_claimForm.t('contact.interpreter_required.required')),
-    preferred_language: mixed().when('interpreter_required', {
-      is: 'interpreter',
-      then: string()
-        .oneOf([...preferredLanguageOptions])
-        .required(
-          i18n_claimForm.t('contact.preferred_language.errors.required')
-        ),
-    }),
-    preferred_language_other: mixed().when('preferred_language', {
-      is: 'other',
-      then: string()
-        .max(
-          32,
-          i18n_claimForm.t('contact.preferred_language.errors.maxLength')
-        )
-        .required(
-          i18n_claimForm.t('contact.preferred_language.errors.required')
-        ),
-    }),
-  }),
+Contact.getLayout = (page: ReactNode) => {
+  return (
+    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+  )
 }
 
 export default Contact

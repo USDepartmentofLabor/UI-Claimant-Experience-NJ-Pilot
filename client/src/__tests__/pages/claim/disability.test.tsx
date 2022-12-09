@@ -1,12 +1,19 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Formik } from 'formik'
-import { noop } from 'helpers/noop/noop'
-import { Disability, DisabilityPageDefinition } from 'pages/claim/disability'
+import { Disability } from 'pages/claim/disability'
 import {
   disabilityTypeOptions,
   disabilityPaymentTypeOptions,
 } from 'constants/formOptions'
+import { DisabilityPageDefinition } from 'constants/pages/definitions/disabilityPageDefinition'
+
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('DisabilityStatus component', () => {
   // Re-useable queries
@@ -60,14 +67,7 @@ describe('DisabilityStatus component', () => {
     })
 
   it('renders properly', async () => {
-    render(
-      <Formik
-        initialValues={DisabilityPageDefinition.initialValues}
-        onSubmit={noop}
-      >
-        <Disability />
-      </Formik>
-    )
+    render(<Disability />)
 
     const hasCollectedDisabilityDisability = screen.getByRole('checkbox', {
       name: 'disability.disability_applied_to_or_received.options.disability',
@@ -91,11 +91,7 @@ describe('DisabilityStatus component', () => {
   describe('Toggling fields', () => {
     it('Shows fields as expected', async () => {
       const user = userEvent.setup()
-      render(
-        <Formik initialValues={{}} onSubmit={noop}>
-          <Disability />
-        </Formik>
-      )
+      render(<Disability />)
 
       const hasCollectedDisabilityDisability = screen.getByRole('checkbox', {
         name: 'disability.disability_applied_to_or_received.options.disability',
@@ -163,11 +159,7 @@ describe('DisabilityStatus component', () => {
 
     it('Hides and clears fields as expected', async () => {
       const user = userEvent.setup()
-      render(
-        <Formik initialValues={{}} onSubmit={noop}>
-          <Disability />
-        </Formik>
-      )
+      render(<Disability />)
 
       const hasCollectedDisabilityDisability = screen.getByRole('checkbox', {
         name: 'disability.disability_applied_to_or_received.options.disability',
@@ -440,6 +432,22 @@ describe('DisabilityStatus component', () => {
           )
         ).resolves.toEqual(value)
       })
+    })
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = Disability
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
     })
   })
 })

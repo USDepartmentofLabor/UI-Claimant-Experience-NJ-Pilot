@@ -13,7 +13,13 @@ export const FormErrorSummary = ({ errors }: IFormErrorSummary) => {
   const count = useMemo(() => countErrors(errors), [errors]) || 0
 
   return (
-    <Alert headingLevel="h4" role="alert" type="error" slim>
+    <Alert
+      headingLevel="h4"
+      role="alert"
+      type="error"
+      slim
+      data-testid="form-error-summary"
+    >
       {t('validation_alert', { count })}
     </Alert>
   )

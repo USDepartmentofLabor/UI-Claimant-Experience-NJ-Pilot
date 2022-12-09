@@ -1,8 +1,14 @@
 import { screen, render, within } from '@testing-library/react'
-import { Formik } from 'formik'
-import { noop } from 'helpers/noop/noop'
 import Contact from 'pages/claim/contact'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { useInitialValues } from 'hooks/useInitialValues'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('Contact page', () => {
   const initialValues = {
@@ -13,13 +19,13 @@ describe('Contact page', () => {
     preferred_language: undefined,
     preferred_language_other: undefined,
   }
+  ;(useInitialValues as jest.Mock).mockImplementation((values) => ({
+    initialValues: { ...values, ...initialValues },
+    isLoading: false,
+  }))
 
   it('renders properly', () => {
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Contact />
-      </Formik>
-    )
+    render(<Contact />)
 
     const verifiedFieldsSection = screen.getByTestId('verified-fields')
     const verifiedFields = within(verifiedFieldsSection).getAllByRole(
@@ -69,11 +75,7 @@ describe('Contact page', () => {
 
   it('conditionally displays preferred language', async () => {
     const user = userEvent.setup()
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Contact />
-      </Formik>
-    )
+    render(<Contact />)
 
     const interpreterYes = screen.getByLabelText(
       'interpreter_required.options.interpreter'
@@ -95,11 +97,7 @@ describe('Contact page', () => {
 
   it('Allows selection of preferred language', async () => {
     const user = userEvent.setup()
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Contact />
-      </Formik>
-    )
+    render(<Contact />)
 
     const interpreterYes = screen.getByLabelText(
       'interpreter_required.options.interpreter'
@@ -137,15 +135,27 @@ describe('Contact page', () => {
   })
 
   it('Autofills the phone number value', async () => {
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Contact />
-      </Formik>
-    )
+    render(<Contact />)
     const phone = screen.getByRole('textbox', {
       name: 'claimant_phone.label',
     })
 
     await expect(phone).toHaveValue('2028675309')
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = Contact
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
+    })
   })
 })

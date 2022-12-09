@@ -1,7 +1,5 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
-import { Formik, Form } from 'formik'
-import { noop } from 'helpers/noop/noop'
-import { Disability, DisabilityPageDefinition } from 'pages/claim/disability'
+import { Disability } from 'pages/claim/disability'
 
 export default {
   title: 'Pages/Claim Form/Disability Status',
@@ -9,20 +7,7 @@ export default {
 } as ComponentMeta<typeof Disability>
 
 const Template: ComponentStory<typeof Disability> = () => {
-  const initialValues = DisabilityPageDefinition.initialValues
-  const validationSchema = DisabilityPageDefinition.validationSchema
-
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={noop}
-    >
-      <Form>
-        <Disability />
-      </Form>
-    </Formik>
-  )
+  return <Disability />
 }
 
 export const Default = Template.bind({})

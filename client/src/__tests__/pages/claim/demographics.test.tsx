@@ -1,14 +1,9 @@
 import { render, within } from '@testing-library/react'
-import { Formik } from 'formik'
 import { screen } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 
 import Demographics from 'pages/claim/demographics'
-import { noop } from 'helpers/noop/noop'
-// import {
-//   getInvalidClaimFormFixtures,
-//   getValidClaimFormFixtures,
-// } from "../../../testUtils/fixtures";
+
 import {
   educationLevelOptions,
   ethnicityOptions,
@@ -16,20 +11,17 @@ import {
   sexOptions,
 } from 'constants/formOptions'
 
-describe('Demographics page', () => {
-  const initialValues = {
-    sex: undefined,
-    race: [],
-    ethnicity: undefined,
-    education_level: undefined,
-  }
+import { QueryClientProvider, QueryClient } from 'react-query'
 
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
+
+describe('Demographics page', () => {
   it('renders properly', () => {
-    const { getByLabelText } = render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Demographics />
-      </Formik>
-    )
+    const { getByLabelText } = render(<Demographics />)
 
     sexOptions.forEach((option) => {
       const sexRadio = screen.getByRole('radio', {
@@ -66,11 +58,7 @@ describe('Demographics page', () => {
   describe('sex', () => {
     it('Can check one radio button at a time', async () => {
       const user = userEvent.setup()
-      render(
-        <Formik initialValues={initialValues} onSubmit={noop}>
-          <Demographics />
-        </Formik>
-      )
+      render(<Demographics />)
       const radio1 = screen.getByLabelText('sex.options.female')
       const radio2 = screen.getByLabelText('sex.options.male')
       const radio3 = screen.getByLabelText('sex.options.unspecified')
@@ -94,11 +82,7 @@ describe('Demographics page', () => {
   describe('race', () => {
     it('Allows selection of race', async () => {
       const user = userEvent.setup()
-      render(
-        <Formik initialValues={initialValues} onSubmit={noop}>
-          <Demographics />
-        </Formik>
-      )
+      render(<Demographics />)
       const americanIndianAN = screen.getByLabelText(
         'race.options.american_indian_or_alaskan'
       )
@@ -177,11 +161,7 @@ describe('Demographics page', () => {
   describe('ethnicity', () => {
     it('Allows selection of ethnicity', async () => {
       const user = userEvent.setup()
-      render(
-        <Formik initialValues={initialValues} onSubmit={noop}>
-          <Demographics />
-        </Formik>
-      )
+      render(<Demographics />)
 
       const radio1 = screen.getByLabelText('ethnicity.options.opt_out')
       const radio3 = screen.getByLabelText('ethnicity.options.not_hispanic')
@@ -198,11 +178,7 @@ describe('Demographics page', () => {
   describe('education level', () => {
     it('Allows selection of an education level', async () => {
       const user = userEvent.setup()
-      render(
-        <Formik initialValues={{}} onSubmit={noop}>
-          <Demographics />
-        </Formik>
-      )
+      render(<Demographics />)
 
       const educationLevelDropdown = screen.getByLabelText(
         'education_level.label'
@@ -244,4 +220,20 @@ describe('Demographics page', () => {
   //     );
   //   });
   // });
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = Demographics
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
+    })
+  })
 })

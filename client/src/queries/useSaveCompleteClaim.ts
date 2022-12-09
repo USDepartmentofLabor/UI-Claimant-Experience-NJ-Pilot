@@ -1,17 +1,27 @@
 import { useMutation } from 'react-query'
-import { Claim } from 'types/Claim'
 import serverHttpClient from 'utils/http/serverHttpClient'
-import { APIResponseType } from 'types/ResponseTypes'
+import { AxiosError, AxiosResponse } from 'axios'
+import { ClaimantInput } from 'types/claimantInput'
 
-const saveCompleteClaim = (claim: Partial<Claim>) => {
-  return serverHttpClient.post<APIResponseType>('/complete-claim', claim, {
-    withCredentials: false,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+type CompleteClaimResponse = string
+
+const saveCompleteClaim = (claim: Partial<ClaimantInput>) => {
+  return serverHttpClient.post<CompleteClaimResponse>(
+    '/complete-claim',
+    claim,
+    {
+      withCredentials: false,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
 }
 
 export const useSaveCompleteClaim = () => {
-  return useMutation((claim: Partial<Claim>) => saveCompleteClaim(claim))
+  return useMutation<
+    AxiosResponse<CompleteClaimResponse>,
+    AxiosError<CompleteClaimResponse>,
+    Partial<ClaimantInput>
+  >(saveCompleteClaim)
 }

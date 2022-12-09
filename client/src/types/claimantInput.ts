@@ -99,14 +99,14 @@ export type PrequalInput = {
   federal_work_in_last_18mo?: boolean
 }
 
-type DemographicsInput = {
+export type DemographicsInput = {
   sex?: SexOption
   ethnicity?: EthnicityOption
   race?: RaceOption[]
   education_level?: EducationLevelOption
 }
 
-type ContactInput = {
+export type ContactInput = {
   email?: string
   claimant_phone?: PhoneInput
   alternate_phone?: PhoneInput
@@ -120,13 +120,13 @@ export type PhoneInput = {
   sms?: boolean
 }
 
-type UnionInput = {
+export type UnionInput = {
   union_name?: string
   union_local_number?: string
   required_to_seek_work_through_hiring_hall?: boolean
 }
 
-type DisabilityStatusInput = {
+export type DisabilityStatusInput = {
   disability_applied_to_or_received?: DisabilityPaymentTypeOption[]
   disabled_immediately_before?: boolean
   type_of_disability?: DisabilityTypeOption
@@ -135,7 +135,7 @@ type DisabilityStatusInput = {
   contacted_last_employer_after_recovery?: boolean
 }
 
-type PaymentInput = {
+export type PaymentInput = {
   federal_income_tax_withheld?: boolean
   payment_method?: PaymentMethodOption
   account_type?: AccountTypeOption
@@ -147,7 +147,7 @@ type PaymentInput = {
   apply_for_increased_payment_for_dependents?: boolean
 }
 
-type PersonalInput = ClaimantNameInput & ClaimantAddressInput
+export type PersonalInput = ClaimantNameInput & ClaimantAddressInput
 
 export type PersonNameInput = {
   first_name?: string
@@ -181,7 +181,7 @@ export type ClaimantNameInput = {
   alternate_names?: PersonNameInput[]
 }
 
-type IdentityInput = {
+export type IdentityInput = {
   birthdate?: string
   ssn?: string
   authorized_to_work?: boolean
@@ -191,12 +191,12 @@ type IdentityInput = {
   drivers_license_or_state_id_number?: string
 }
 
-type EducationAndTrainingInput = Partial<{
+export type EducationAndTrainingInput = Partial<{
   attending_college_or_job_training: boolean
   enrollment: boolean
 }>
 
-type ReviewInput = {
+export type ReviewInput = {
   certify?: boolean
 }
 

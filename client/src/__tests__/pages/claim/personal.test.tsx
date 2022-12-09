@@ -1,7 +1,15 @@
 import { render, screen, within } from '@testing-library/react'
-import { Formik } from 'formik'
-import Personal, { PersonalPageDefinition } from 'pages/claim/personal'
-import { noop } from 'helpers/noop/noop'
+import Personal from 'pages/claim/personal'
+import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
+import { ClaimantInput } from 'types/claimantInput'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { useInitialValues } from 'hooks/useInitialValues'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('Personal information component', () => {
   const initialValues = {
@@ -12,12 +20,16 @@ describe('Personal information component', () => {
       last_name: 'Coxen',
     },
   }
+
+  ;(useInitialValues as jest.Mock).mockImplementation(
+    (values: ClaimantInput) => ({
+      initialValues: { ...values, ...initialValues },
+      isLoading: false,
+    })
+  )
+
   it('renders properly without error', () => {
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <Personal />
-      </Formik>
-    )
+    render(<Personal />)
     const verifiedFieldsSection = screen.getByTestId('verified-fields')
     const verifiedFields = within(verifiedFieldsSection).getAllByRole(
       'listitem'
@@ -73,5 +85,21 @@ describe('Personal information component', () => {
     expect(primaryAddress).toBeInTheDocument()
     expect(mailingAddressIsSameCheckbox).toBeInTheDocument()
     expect(mailingAddress).toBeInTheDocument()
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = Personal
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
+    })
   })
 })

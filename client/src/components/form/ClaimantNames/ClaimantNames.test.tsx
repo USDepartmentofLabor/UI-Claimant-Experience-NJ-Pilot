@@ -5,7 +5,7 @@ import { ClaimantNames } from './ClaimantNames'
 import userEvent from '@testing-library/user-event'
 import { noop } from 'helpers/noop/noop'
 import { LiveAnnouncer } from 'react-aria-live'
-import { PersonalPageDefinition } from 'pages/claim/personal'
+import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
 
 const ALTERNATE_NAMES = 'alternate_names'
 

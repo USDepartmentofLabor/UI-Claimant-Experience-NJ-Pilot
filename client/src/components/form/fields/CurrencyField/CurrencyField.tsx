@@ -82,7 +82,7 @@ export const CurrencyField = ({
         // don't set to fixed value so that validation can apply
         return String(Number(dollarValue) * 100)
       }
-      fieldHelperProps.setValue(getFormikValue())
+      fieldHelperProps.setValue(getFormikValue()) // Should await?
     } else {
       isMounted.current = true
     }

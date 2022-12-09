@@ -1,0 +1,10 @@
+@import 'src/styles/uswds';
+
+.pagination {
+  margin: units(2) 0;
+}
+
+.screenerForm > :first-child,
+.screenerForm > :first-child legend {
+  @include u-margin-top(0);
+}

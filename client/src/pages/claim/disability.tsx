@@ -1,7 +1,3 @@
-import { NextPage } from 'next'
-import { array, boolean, string, object, ref, mixed } from 'yup'
-import { useFormikContext } from 'formik'
-import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -15,225 +11,142 @@ import { CheckboxGroupField } from 'components/form/fields/CheckboxGroupField/Ch
 import {
   disabilityTypeOptions,
   disabilityPaymentTypeOptions,
-  DisabilityPaymentTypeOption,
 } from 'constants/formOptions'
-import { ClaimantInput } from 'types/claimantInput'
-import { PageDefinition } from 'constants/pages/pageDefinitions'
-import { i18n_claimForm } from 'i18n/i18n'
-import { Routes } from 'constants/routes'
+import { DisabilityStatusInput } from 'types/claimantInput'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
-import { yupDate } from 'validations/yup/custom'
-import { useClearFields } from 'hooks/useClearFields'
 import formStyles from 'components/form/form.module.scss'
+import { ReactNode } from 'react'
+import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
+import { NextPageWithLayout } from 'pages/_app'
+import { DisabilityPageDefinition } from 'constants/pages/definitions/disabilityPageDefinition'
+import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
+import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
+import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
+import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
 
-export const Disability: NextPage = () => {
-  const { values, setFieldValue } = useFormikContext<ClaimantInput>()
+const pageDefinition = DisabilityPageDefinition
+const nextPage = getNextPage(pageDefinition)
+const previousPage = getPreviousPage(pageDefinition)
+
+export const Disability: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
-  const { clearFields } = useClearFields()
 
-  const hasCollectedDisability =
-    values.disability_applied_to_or_received?.includes('disability') ||
-    values.disability_applied_to_or_received?.includes('family_leave')
-  const handleHasCollectedDisabilityChange = () => {
-    if (!hasCollectedDisability) {
-      clearFields([
-        'disabled_immediately_before',
-        'type_of_disability',
-        'date_disability_began',
-        'recovery_date',
-        'contacted_last_employer_after_recovery',
-      ])
-    }
-  }
   return (
-    <>
-      <SummaryBox>
-        <SummaryBoxHeading headingLevel="h2">
-          {t('disability.info_alert.title')}
-        </SummaryBoxHeading>
-        <SummaryBoxContent>
-          <ul>
-            <li>{t('disability.info_alert.items.doctor_cert')}</li>
-            <li>{t('disability.info_alert.items.tdi')}</li>
-            <li>{t('disability.info_alert.items.workers_comp')}</li>
-          </ul>
-        </SummaryBoxContent>
-      </SummaryBox>
-      <CheckboxGroupField
-        legend={t('disability.disability_applied_to_or_received.label')}
-        name="disability_applied_to_or_received"
-        options={disabilityPaymentTypeOptions.map((paymentOption) => ({
-          label: t(
-            `disability.disability_applied_to_or_received.options.${paymentOption}`
-          ),
-          value: paymentOption,
-          checkboxProps: {
-            onChange: (e) => {
-              if (e.target.value === 'none' && e.target.checked) {
-                setFieldValue(
-                  'disability_applied_to_or_received',
-                  ['none'],
-                  true
-                )
-              }
-              handleHasCollectedDisabilityChange()
-            },
-            disabled:
-              values.disability_applied_to_or_received?.includes('none') &&
-              paymentOption !== 'none',
-          },
-        }))}
-      />
-      {hasCollectedDisability && (
-        <>
-          <YesNoQuestion
-            question={t('disability.disabled_immediately_before.label')}
-            name="disabled_immediately_before"
-          />
-          <RadioField
-            name="type_of_disability"
-            legend={t('disability.type_of_disability.label')}
-            showsErrors={true}
-            fieldsetClassName={formStyles.field}
-            options={disabilityTypeOptions.map((option) => {
-              return {
-                label: t(`disability.type_of_disability.options.${option}`),
-                value: option,
-              }
-            })}
-          />
-          <DateInputField
-            name="date_disability_began"
-            legend={t('disability.date_disability_began.label')}
-          />
-          <DateInputField
-            name="recovery_date"
-            legend={t('disability.recovery_date.label')}
-            hint={t('disability.recovery_date.help_text')}
-          />
-          <YesNoQuestion
-            question={t(
-              'disability.contacted_last_employer_after_recovery.label'
+    <ClaimFormik<DisabilityStatusInput>
+      initialValues={pageDefinition.initialValues}
+      validationSchema={pageDefinition.validationSchema}
+    >
+      {({ values, clearFields, setFieldValue }) => {
+        const hasCollectedDisability =
+          values.disability_applied_to_or_received?.includes('disability') ||
+          values.disability_applied_to_or_received?.includes('family_leave')
+        const handleHasCollectedDisabilityChange = async () => {
+          if (!hasCollectedDisability) {
+            await clearFields([
+              'disabled_immediately_before',
+              'type_of_disability',
+              'date_disability_began',
+              'recovery_date',
+              'contacted_last_employer_after_recovery',
+            ])
+          }
+        }
+
+        return (
+          <>
+            <SummaryBox>
+              <SummaryBoxHeading headingLevel="h2">
+                {t('disability.info_alert.title')}
+              </SummaryBoxHeading>
+              <SummaryBoxContent>
+                <ul>
+                  <li>{t('disability.info_alert.items.doctor_cert')}</li>
+                  <li>{t('disability.info_alert.items.tdi')}</li>
+                  <li>{t('disability.info_alert.items.workers_comp')}</li>
+                </ul>
+              </SummaryBoxContent>
+            </SummaryBox>
+            <CheckboxGroupField
+              legend={t('disability.disability_applied_to_or_received.label')}
+              name="disability_applied_to_or_received"
+              options={disabilityPaymentTypeOptions.map((paymentOption) => ({
+                label: t(
+                  `disability.disability_applied_to_or_received.options.${paymentOption}`
+                ),
+                value: paymentOption,
+                checkboxProps: {
+                  onChange: (e) => {
+                    if (e.target.value === 'none' && e.target.checked) {
+                      setFieldValue(
+                        'disability_applied_to_or_received',
+                        ['none'],
+                        true
+                      )
+                    }
+                    handleHasCollectedDisabilityChange()
+                  },
+                  disabled:
+                    values.disability_applied_to_or_received?.includes(
+                      'none'
+                    ) && paymentOption !== 'none',
+                },
+              }))}
+            />
+
+            {hasCollectedDisability && (
+              <>
+                <YesNoQuestion
+                  question={t('disability.disabled_immediately_before.label')}
+                  name="disabled_immediately_before"
+                />
+                <RadioField
+                  name="type_of_disability"
+                  legend={t('disability.type_of_disability.label')}
+                  showsErrors={true}
+                  fieldsetClassName={formStyles.field}
+                  options={disabilityTypeOptions.map((option) => {
+                    return {
+                      label: t(
+                        `disability.type_of_disability.options.${option}`
+                      ),
+                      value: option,
+                    }
+                  })}
+                />
+
+                <DateInputField
+                  name="date_disability_began"
+                  legend={t('disability.date_disability_began.label')}
+                />
+                <DateInputField
+                  name="recovery_date"
+                  legend={t('disability.recovery_date.label')}
+                  hint={t('disability.recovery_date.help_text')}
+                />
+                <YesNoQuestion
+                  question={t(
+                    'disability.contacted_last_employer_after_recovery.label'
+                  )}
+                  name="contacted_last_employer_after_recovery"
+                />
+              </>
             )}
-            name="contacted_last_employer_after_recovery"
-          />
-        </>
-      )}
-    </>
+            <ClaimFormButtons nextStep={nextPage.heading}>
+              <BackButton previousPage={previousPage.path} />
+              <NextButton nextPage={nextPage.path} />
+            </ClaimFormButtons>
+          </>
+        )
+      }}
+    </ClaimFormik>
   )
 }
 
-const validationSchema = object().shape({
-  disability_applied_to_or_received: array()
-    .of(mixed().oneOf([...disabilityPaymentTypeOptions]))
-    .when({
-      is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
-        disabilityPaymentType?.includes('none'),
-      then: array().max(
-        1,
-        i18n_claimForm.t(
-          'disability.disability_applied_to_or_received.errors.none_only'
-        )
-      ),
-      otherwise: array().min(
-        1,
-        i18n_claimForm.t(
-          'disability.disability_applied_to_or_received.errors.required'
-        )
-      ),
-    })
-    .required(
-      i18n_claimForm.t(
-        'disability.disability_applied_to_or_received.errors.required'
-      )
-    ),
-  disabled_immediately_before: boolean().when(
-    'disability_applied_to_or_received',
-    {
-      is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
-        disabilityPaymentType?.includes('disability') ||
-        disabilityPaymentType?.includes('family_leave'),
-      then: (schema) =>
-        schema.required(
-          i18n_claimForm.t(
-            'disability.disabled_immediately_before.errors.required'
-          )
-        ),
-    }
-  ),
-  type_of_disability: string()
-    .oneOf([...disabilityTypeOptions])
-    .when('disability_applied_to_or_received', {
-      is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
-        disabilityPaymentType?.includes('disability') ||
-        disabilityPaymentType?.includes('family_leave'),
-      then: (schema) =>
-        schema.required(
-          i18n_claimForm.t('disability.type_of_disability.errors.required')
-        ),
-    }),
-  date_disability_began: yupDate(
-    i18n_claimForm.t('disability.date_disability_began.label')
+Disability.getLayout = (page: ReactNode) => {
+  return (
+    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
   )
-    .max(
-      dayjs(new Date()).format('YYYY-MM-DD'),
-      i18n_claimForm.t('disability.date_disability_began.errors.maxDate')
-    )
-    .when('disability_applied_to_or_received', {
-      is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
-        disabilityPaymentType?.includes('disability') ||
-        disabilityPaymentType?.includes('family_leave'),
-      then: (schema) =>
-        schema.required(
-          i18n_claimForm.t('disability.date_disability_began.errors.required')
-        ),
-    }),
-
-  recovery_date: yupDate(i18n_claimForm.t('disability.recovery_date.label'))
-    .max(
-      dayjs(new Date()).format('YYYY-MM-DD'),
-      i18n_claimForm.t('disability.recovery_date.errors.maxDate')
-    )
-    .when('date_disability_began', {
-      is: (dateValue: string | undefined) => {
-        return !!dateValue
-      },
-      then: (schema) =>
-        schema.min(
-          ref('date_disability_began'),
-          i18n_claimForm.t('disability.recovery_date.errors.minDate')
-        ),
-    })
-    .when('disability_applied_to_or_received', {
-      is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
-        disabilityPaymentType?.includes('disability') ||
-        disabilityPaymentType?.includes('family_leave'),
-      then: (schema) =>
-        schema.required(
-          i18n_claimForm.t('disability.recovery_date.errors.required')
-        ),
-    }),
-  contacted_last_employer_after_recovery: boolean().when(
-    'disability_applied_to_or_received',
-    {
-      is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
-        disabilityPaymentType?.includes('disability') ||
-        disabilityPaymentType?.includes('family_leave'),
-      then: (schema) =>
-        schema.required(
-          i18n_claimForm.t(
-            'disability.contacted_last_employer_after_recovery.errors.required'
-          )
-        ),
-    }
-  ),
-})
-
-export const DisabilityPageDefinition: PageDefinition = {
-  heading: i18n_claimForm.t('disability.heading'),
-  path: Routes.CLAIM.DISABILITY,
-  initialValues: {},
-  validationSchema,
 }
 
 export default Disability

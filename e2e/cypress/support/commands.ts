@@ -79,7 +79,12 @@ Cypress.Commands.add('login', (userObj: JWTPayload) => {
           userObj.sub
         )
         .then((response) => {
+          // Set Access Token
           userObj.accessToken = response.body
+
+          // Set Access Token expiration to one hour in future
+          userObj.accessTokenExpires = Date.now() + 60 * 60 * 1000
+
           return encode(userObj, Cypress.env('NEXTAUTH_SECRET'))
         })
     })

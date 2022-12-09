@@ -1,7 +1,5 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
-import { Formik, Form } from 'formik'
-import Contact, { ContactPageDefinition } from 'pages/claim/contact'
-import { noop } from 'helpers/noop/noop'
+import Contact from 'pages/claim/contact'
 
 export default {
   title: 'Pages/Claim Form/Contact Information',
@@ -9,19 +7,7 @@ export default {
 } as ComponentMeta<typeof Contact>
 
 const Template: ComponentStory<typeof Contact> = () => {
-  const initialValues = ContactPageDefinition.initialValues
-  const validationSchema = ContactPageDefinition.validationSchema
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={noop}
-    >
-      <Form>
-        <Contact />
-      </Form>
-    </Formik>
-  )
+  return <Contact />
 }
 
 export const Default = Template.bind({})

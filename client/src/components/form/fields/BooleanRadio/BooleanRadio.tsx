@@ -37,12 +37,12 @@ export const BooleanRadio = ({
     return value === '' ? undefined : value === 'yes'
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    fieldHelperProps.setValue(convertValueToBoolean(e.target.value))
-    fieldHelperProps.setTouched(true, false)
+  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       onChange(e)
     }
+    await fieldHelperProps.setValue(convertValueToBoolean(e.target.value))
+    fieldHelperProps.setTouched(true, false)
   }
 
   const id = idProp || name

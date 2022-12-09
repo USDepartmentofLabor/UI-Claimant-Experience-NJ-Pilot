@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   Button,
@@ -17,38 +17,20 @@ import {
   CLAIMS_AGENT_NUMBER_3,
 } from 'constants/phoneNumbers'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
+import { IntakeAppContext } from 'contexts/IntakeAppContext'
 
 const ScreenerRedirect: NextPage = () => {
   const { t } = useTranslation('redirect')
-  const [queryParams, setQueryParams] = useState<{ [p: string]: string }>()
+  const { screenerInput } = useContext(IntakeAppContext)
 
-  useEffect(() => {
-    const urlSearchParams = new URLSearchParams(window.location.search)
-    const params = Object.fromEntries(urlSearchParams.entries())
-    setQueryParams(params)
-  }, [])
-
-  const convertBoolStrToBool = (val: string | undefined) =>
-    val === undefined ? undefined : val === 'true'
-
-  const screener_current_country_us = convertBoolStrToBool(
-    queryParams?.screener_current_country_us
-  )
-  const screener_live_in_canada = convertBoolStrToBool(
-    queryParams?.screener_live_in_canada
-  )
-  const screener_any_work_nj = convertBoolStrToBool(
-    queryParams?.screener_any_work_nj
-  )
-  const screener_currently_disabled = convertBoolStrToBool(
-    queryParams?.screener_currently_disabled
-  )
-  const screener_military_service_eighteen_months = convertBoolStrToBool(
-    queryParams?.screener_military_service_eighteen_months
-  )
-  const screener_maritime_employer_eighteen_months = convertBoolStrToBool(
-    queryParams?.screener_maritime_employer_eighteen_months
-  )
+  const {
+    screener_current_country_us,
+    screener_live_in_canada,
+    screener_any_work_nj,
+    screener_currently_disabled,
+    screener_military_service_eighteen_months,
+    screener_maritime_employer_eighteen_months,
+  } = screenerInput || {}
 
   const ipInUS = true // temporary until we pull IP addresses
   const ipInNJ = true // temporary until we pull IP addresses
@@ -76,18 +58,16 @@ const ScreenerRedirect: NextPage = () => {
                 </Link>
               </li>
             )}
-            {typeof screener_live_in_canada === 'boolean' &&
-              screener_live_in_canada && (
-                <li>
-                  {t('info_alert.items.canada')}
-                  <Link variant="nav" href={'#canada'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-            {typeof screener_current_country_us === 'boolean' &&
-              !screener_current_country_us &&
-              !screener_live_in_canada && (
+            {screener_live_in_canada && (
+              <li>
+                {t('info_alert.items.canada')}
+                <Link variant="nav" href={'#canada'}>
+                  {t('read_more')}
+                </Link>
+              </li>
+            )}
+            {screener_current_country_us === false &&
+              screener_live_in_canada === false && (
                 <li>
                   {t('info_alert.items.non_resident')}
                   <Link variant="nav" href={'#non_resident'}>
@@ -95,15 +75,14 @@ const ScreenerRedirect: NextPage = () => {
                   </Link>
                 </li>
               )}
-            {typeof screener_any_work_nj === 'boolean' &&
-              !screener_any_work_nj && (
-                <li>
-                  {t('info_alert.items.other_state')}
-                  <Link variant="nav" href={'#other_state'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
+            {screener_any_work_nj === false && (
+              <li>
+                {t('info_alert.items.other_state')}
+                <Link variant="nav" href={'#other_state'}>
+                  {t('read_more')}
+                </Link>
+              </li>
+            )}
             {screener_currently_disabled && (
               <li>
                 {t('info_alert.items.disability')}
@@ -159,16 +138,15 @@ const ScreenerRedirect: NextPage = () => {
         </div>
       )}
 
-      {typeof screener_current_country_us === 'boolean' &&
-        !screener_current_country_us &&
-        !screener_live_in_canada && (
+      {screener_current_country_us === false &&
+        screener_live_in_canada === false && (
           <div className={borderStyle}>
             <h2 id="non_resident">{t('non_resident.heading')}</h2>
             <p>{t('non_resident.label')}</p>
           </div>
         )}
 
-      {typeof screener_any_work_nj === 'boolean' && !screener_any_work_nj && (
+      {screener_any_work_nj === false && (
         <div className={borderStyle}>
           <h2 id="other_state">{t('other_state.heading')}</h2>
           <p>{t('other_state.label')}</p>
@@ -176,8 +154,9 @@ const ScreenerRedirect: NextPage = () => {
             <Button
               type="button"
               onClick={() =>
-                (window.location.href =
-                  'https://www.dol.gov/general/topic/unemployment-insurance/')
+                window.location.assign(
+                  'https://www.dol.gov/general/topic/unemployment-insurance/'
+                )
               }
             >
               {t('other_state.button')}
@@ -201,8 +180,9 @@ const ScreenerRedirect: NextPage = () => {
             <Button
               type="button"
               onClick={() =>
-                (window.location.href =
-                  'https://nj.gov/labor/myleavebenefits/worker/tdi/')
+                window.location.assign(
+                  'https://nj.gov/labor/myleavebenefits/worker/tdi/'
+                )
               }
             >
               {t('disability.button')}
@@ -220,8 +200,9 @@ const ScreenerRedirect: NextPage = () => {
               type="button"
               onClick={
                 () =>
-                  (window.location.href =
-                    'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess') //TODO change this link
+                  window.location.assign(
+                    'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
+                  ) //TODO change this link
               }
             >
               {t('military_mvp.label.button')}
