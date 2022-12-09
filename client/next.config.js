@@ -1,6 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path')
-
+const { i18n } = require('./next-i18next.config')
 const securityHeaders = [
   {
     key: 'X-Frame-Options',
@@ -30,12 +29,6 @@ if (process.env.NODE_ENV === 'production') {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  i18n: {
-    locales: ['en', 'es'],
-    defaultLocale: 'en',
-    // TODO: set up domain locales if/when we have domain routing
-  },
-  localePath: path.resolve('./src/i18n'),
   poweredByHeader: false,
   async headers() {
     return [
@@ -46,6 +39,7 @@ const nextConfig = {
       },
     ]
   },
+  i18n,
 }
 
 module.exports = nextConfig
