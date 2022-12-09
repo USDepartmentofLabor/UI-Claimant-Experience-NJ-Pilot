@@ -24,7 +24,7 @@ export const ClaimantNames = () => {
               const handleHasAlternateNamesChange: ChangeEventHandler<
                 HTMLInputElement
               > = (e) => {
-                if (e.currentTarget.value === 'yes') {
+                if (e.target.value === 'yes') {
                   if (values.alternate_names?.length === 0) {
                     arrayHelpers.push({ ...PERSON_NAME_SKELETON })
                   }

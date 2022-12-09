@@ -20,19 +20,19 @@ export const BusinessInterests = ({ index }: BusinessInterestsProps) => {
 
   const handleCorporateOfficerOrStockOwnershipChange: ChangeEventHandler<
     HTMLInputElement
-  > = (e) => {
+  > = async (e) => {
     if (e.target.value === 'yes') {
-      clearField(`employers[${index}].employer_is_sole_proprietorship`)
-      clearField(
+      await clearField(`employers[${index}].employer_is_sole_proprietorship`)
+      await clearField(
         `employers[${index}].related_to_owner_or_child_of_owner_under_18`
       )
     }
   }
-  const handleSoleProprietorshipChange: ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
+  const handleSoleProprietorshipChange: ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
     if (e.target.value === 'yes') {
-      clearField(
+      await clearField(
         `employers[${index}].related_to_owner_or_child_of_owner_under_18`
       )
     }

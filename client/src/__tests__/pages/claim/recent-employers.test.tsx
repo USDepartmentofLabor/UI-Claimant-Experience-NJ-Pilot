@@ -1,16 +1,17 @@
-import { noop } from 'helpers/noop/noop'
-import { Formik } from 'formik'
 import { screen, render, within } from '@testing-library/react'
 import RecentEmployers from '../../../pages/claim/recent-employers'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('Recent employers page', () => {
   it('renders properly without error', async () => {
-    render(
-      <Formik onSubmit={noop} initialValues={{}}>
-        <RecentEmployers />
-      </Formik>
-    )
+    render(<RecentEmployers />)
     expect(screen.getByText('recent_employers.preamble')).toBeInTheDocument()
     expect(screen.getByText('recent_employers.question')).toBeInTheDocument()
 
@@ -31,11 +32,7 @@ describe('Recent employers page', () => {
   })
 
   it('displays an alert when user selects that they did not work for an employer', async () => {
-    render(
-      <Formik onSubmit={noop} initialValues={{}}>
-        <RecentEmployers />
-      </Formik>
-    )
+    render(<RecentEmployers />)
     const user = userEvent.setup()
     expect(
       screen.queryByText('recent_employers.confirm_employer')
@@ -53,5 +50,21 @@ describe('Recent employers page', () => {
     expect(
       screen.queryByText('recent_employers.confirm_employer')
     ).toBeInTheDocument()
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = RecentEmployers
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
+    })
   })
 })

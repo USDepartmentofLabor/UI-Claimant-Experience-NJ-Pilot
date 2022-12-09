@@ -3,16 +3,15 @@ import { SessionProvider } from 'next-auth/react'
 import { GridContainer } from '@trussworks/react-uswds'
 import type { AppProps } from 'next/app'
 import { appWithTranslation, SSRConfig } from 'next-i18next'
-import { useRouter } from 'next/router'
 import { LiveAnnouncer } from 'react-aria-live'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextPage } from 'next'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
+import { ScreenerInput } from 'types/claimantInput'
+import { IntakeAppContext } from 'contexts/IntakeAppContext'
 
 import 'i18n/i18n'
-import { ClaimForm } from 'components/layouts/ClaimForm/ClaimForm'
-import { CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 import { DefaultLayout } from 'components/layouts/DefaultLayout/DefaultLayout'
 
 import 'styles/styles.scss'
@@ -35,11 +34,13 @@ function ClaimApp({
   Component,
   pageProps: { session, ...pageProps },
 }: CustomAppProps) {
-  const router = useRouter()
+  const [screenerInput, setScreenerInput] = useState<ScreenerInput | undefined>(
+    undefined
+  )
+  const [ssn, setSsn] = useState<string | undefined>(undefined)
 
   const getLayout = Component.getLayout ?? ((page) => page)
   const page = <Component {...pageProps} />
-  const currentPath = router.pathname
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -54,9 +55,6 @@ function ClaimApp({
       },
     },
   })
-  // TODO: Use Layout pattern again for things like claim form pages
-  //       This is fine for now because we only have one condition to render
-  //       a layout for, but this is not a good long term solution
 
   return (
     <SessionProvider session={session}>
@@ -64,15 +62,20 @@ function ClaimApp({
         <QueryClientProvider client={queryClient}>
           <LiveAnnouncer>
             <ReactQueryDevtools initialIsOpen={false} />
-            <DefaultLayout>
-              <GridContainer className="margin-top-2">
-                {currentPath.startsWith(`${CLAIM_FORM_BASE_ROUTE}/`) ? (
-                  <ClaimForm>{page}</ClaimForm>
-                ) : (
-                  getLayout(page)
-                )}
-              </GridContainer>
-            </DefaultLayout>
+            <IntakeAppContext.Provider
+              value={{
+                screenerInput,
+                setScreenerInput,
+                ssn,
+                setSsn,
+              }}
+            >
+              <DefaultLayout>
+                <GridContainer className="margin-top-2">
+                  {getLayout(page)}
+                </GridContainer>
+              </DefaultLayout>
+            </IntakeAppContext.Provider>
           </LiveAnnouncer>
         </QueryClientProvider>
       </ActiveSessionHandler>

@@ -10,96 +10,96 @@ import {
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 
 import formStyles from 'components/form/form.module.scss'
-import { NextPage } from 'next'
-import { PageDefinition } from 'constants/pages/pageDefinitions'
-import { i18n_claimForm } from 'i18n/i18n'
-import { Routes } from 'constants/routes'
-import { array, mixed, object, string } from 'yup'
 import DropdownField from '../../components/form/fields/DropdownField/DropdownField'
-import * as yup from 'yup'
-import { useFormikContext } from 'formik'
-import { ClaimantInput } from 'types/claimantInput'
+import { DemographicsInput } from 'types/claimantInput'
+import { ReactNode } from 'react'
+import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
+import { NextPageWithLayout } from 'pages/_app'
+import { DemographicsPageDefinition } from 'constants/pages/definitions/demographicsPageDefinition'
+import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
+import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
+import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
+import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 
-const Demographics: NextPage = () => {
+const pageDefinition = DemographicsPageDefinition
+const nextPage = getNextPage(pageDefinition)
+const previousPage = getPreviousPage(pageDefinition)
+
+const Demographics: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
-  const { errors } = useFormikContext<ClaimantInput>()
 
   return (
-    <>
-      <SummaryBox>
-        <SummaryBoxContent>{t('demographics.preamble')}</SummaryBoxContent>
-      </SummaryBox>
-      <RadioField
-        name="sex"
-        legend={t('sex.label')}
-        className={formStyles.field}
-        options={sexOptions.map((option) => {
-          return {
-            label: t(`sex.options.${option}`),
-            value: option,
-          }
-        })}
-      />
-      <RadioField
-        name="ethnicity"
-        legend={t('ethnicity.label')}
-        className={formStyles.field}
-        options={ethnicityOptions.map((option) => {
-          return {
-            label: t(`ethnicity.options.${option}`),
-            value: option,
-          }
-        })}
-      />
-      <RadioField
-        name="race[0]"
-        legend={t('race.label')}
-        className={formStyles.field}
-        options={raceOptions.map((option) => {
-          return {
-            label: t(`race.options.${option}`),
-            value: option,
-          }
-        })}
-        errorMessage={errors.race}
-      />
-      <DropdownField
-        name="education_level"
-        label={t('education_level.label')}
-        startEmpty
-        options={educationLevelOptions.map((option) => ({
-          value: option,
-          label: t(`education_level.options.${option}`),
-        }))}
-      />
-    </>
+    <ClaimFormik<DemographicsInput>
+      initialValues={pageDefinition.initialValues}
+      validationSchema={pageDefinition.validationSchema}
+    >
+      {({ errors }) => {
+        return (
+          <>
+            <SummaryBox>
+              <SummaryBoxContent>
+                {t('demographics.preamble')}
+              </SummaryBoxContent>
+            </SummaryBox>
+            <RadioField
+              name="sex"
+              legend={t('sex.label')}
+              className={formStyles.field}
+              options={sexOptions.map((option) => {
+                return {
+                  label: t(`sex.options.${option}`),
+                  value: option,
+                }
+              })}
+            />
+            <RadioField
+              name="ethnicity"
+              legend={t('ethnicity.label')}
+              className={formStyles.field}
+              options={ethnicityOptions.map((option) => {
+                return {
+                  label: t(`ethnicity.options.${option}`),
+                  value: option,
+                }
+              })}
+            />
+            <RadioField
+              name="race[0]"
+              legend={t('race.label')}
+              className={formStyles.field}
+              options={raceOptions.map((option) => {
+                return {
+                  label: t(`race.options.${option}`),
+                  value: option,
+                }
+              })}
+              errorMessage={errors.race}
+            />
+            <DropdownField
+              name="education_level"
+              label={t('education_level.label')}
+              startEmpty
+              options={educationLevelOptions.map((option) => ({
+                value: option,
+                label: t(`education_level.options.${option}`),
+              }))}
+            />
+            <ClaimFormButtons nextStep={nextPage.heading}>
+              <BackButton previousPage={previousPage.path} />
+              <NextButton nextPage={nextPage.path} />
+            </ClaimFormButtons>
+          </>
+        )
+      }}
+    </ClaimFormik>
   )
 }
 
-export const DemographicsPageDefinition: PageDefinition = {
-  heading: i18n_claimForm.t('demographics.heading'),
-  path: Routes.CLAIM.DEMOGRAPHICS,
-  initialValues: {
-    sex: undefined,
-    ethnicity: undefined,
-    race: [],
-    education_level: undefined,
-  },
-  validationSchema: object().shape({
-    sex: mixed()
-      .oneOf([...sexOptions])
-      .required(i18n_claimForm.t('sex.errors.required')),
-    race: array()
-      .of(string().oneOf([...raceOptions]))
-      .min(1, i18n_claimForm.t('race.errors.required')),
-    ethnicity: mixed()
-      .oneOf([...ethnicityOptions])
-      .required(i18n_claimForm.t('ethnicity.errors.required')),
-    education_level: yup
-      .mixed()
-      .oneOf([...educationLevelOptions])
-      .required(i18n_claimForm.t('education_level.errors.required')),
-  }),
+Demographics.getLayout = (page: ReactNode) => {
+  return (
+    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+  )
 }
 
 export default Demographics

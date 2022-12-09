@@ -1,16 +1,17 @@
 import { render, screen, within } from '@testing-library/react'
-import { Formik } from 'formik'
 import { Prequal } from 'pages/claim/prequal'
-import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('Prequal page', () => {
   beforeEach(() => {
-    render(
-      <Formik initialValues={{}} onSubmit={noop}>
-        <Prequal />
-      </Formik>
-    )
+    render(<Prequal />)
   })
 
   it('renders as expected', async () => {
@@ -131,5 +132,21 @@ describe('Prequal page', () => {
         screen.getByRole('group', { name: 'federal_work_in_last_18mo.label' })
       ).getByLabelText('yes')
     )
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = Prequal
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
+    })
   })
 })

@@ -1,16 +1,18 @@
 import { render, screen, within } from '@testing-library/react'
-import { Formik } from 'formik'
-import { Union, UnionPageDefinition } from 'pages/claim/union'
-import { noop } from 'helpers/noop/noop'
+import { Union } from 'pages/claim/union'
 import userEvent from '@testing-library/user-event'
+import { UnionPageDefinition } from 'constants/pages/definitions/unionPageDefinition'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('Union page', () => {
   beforeEach(() => {
-    render(
-      <Formik initialValues={{}} onSubmit={noop}>
-        <Union />
-      </Formik>
-    )
+    render(<Union />)
   })
 
   it('renders', async () => {
@@ -126,6 +128,22 @@ describe('Union page', () => {
           )
         ).rejects.toBeTruthy()
       })
+    })
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = Union
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
     })
   })
 })

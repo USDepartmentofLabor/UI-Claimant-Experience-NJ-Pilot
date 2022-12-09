@@ -23,18 +23,18 @@ export const WorkLocation = ({ index }: IWorkLocationProps) => {
   const baseName = `employers[${index}]`
   const handleEmployerWorkLocationChange: ChangeEventHandler<
     HTMLInputElement
-  > = (e) => {
+  > = async (e) => {
     if (e.target.value === 'yes') {
-      clearField(`${baseName}.alternate_physical_work_address.city`)
-      clearField(`${baseName}.alternate_physical_work_address.state`)
-      clearField(`${baseName}.alternate_physical_work_address.zipcode`)
+      await clearField(`${baseName}.alternate_physical_work_address.city`)
+      await clearField(`${baseName}.alternate_physical_work_address.state`)
+      await clearField(`${baseName}.alternate_physical_work_address.zipcode`)
     }
   }
   const handleEmployerLocationPhoneChange: ChangeEventHandler<
     HTMLInputElement
-  > = (e) => {
+  > = async (e) => {
     if (e.target.value === 'yes') {
-      clearField(`${baseName}.work_location_phone`)
+      await clearField(`${baseName}.work_location_phone`)
     }
   }
 

@@ -1,20 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import PaymentInformation, { PaymentPageDefinition } from 'pages/claim/payment'
-import { Formik } from 'formik'
-import { noop } from 'helpers/noop/noop'
+import PaymentInformation from 'pages/claim/payment'
 import { accountTypeOptions, paymentMethodOptions } from 'constants/formOptions'
+import { PaymentPageDefinition } from 'constants/pages/definitions/paymentPageDefinition'
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('Payment page', () => {
   it('renders as expected', () => {
-    const initialValues = {
-      payment_method: {},
-    }
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <PaymentInformation />
-      </Formik>
-    )
+    render(<PaymentInformation />)
     paymentMethodOptions.forEach((option) => {
       const paymentMethodRadio = screen.getByRole('radio', {
         name: `payment_method.options.${option}`,
@@ -37,14 +36,8 @@ describe('Payment page', () => {
 
   it('shows fields conditional upon direct deposit selection', async () => {
     const user = userEvent.setup()
-    const initialValues = {
-      payment_method: {},
-    }
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <PaymentInformation />
-      </Formik>
-    )
+
+    render(<PaymentInformation />)
 
     await user.click(
       screen.getByRole('radio', {
@@ -275,6 +268,22 @@ describe('Payment page', () => {
           )
         ).rejects.toBeTruthy()
       })
+    })
+  })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = PaymentInformation
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
     })
   })
 })

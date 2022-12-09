@@ -116,7 +116,7 @@ export const DateInputField = ({
   }
   const updateFormik = () => {
     const value = createFormikDateString()
-    fieldHelperProps.setValue(value)
+    fieldHelperProps.setValue(value) // Should await?
   }
 
   const updateLocalDateInputState = () => {

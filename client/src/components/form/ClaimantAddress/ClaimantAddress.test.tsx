@@ -2,8 +2,8 @@ import { render, screen, within } from '@testing-library/react'
 import { Formik } from 'formik'
 import { ClaimantAddress } from 'components/form/ClaimantAddress/ClaimantAddress'
 import { noop } from 'helpers/noop/noop'
-import { PersonalPageDefinition } from 'pages/claim/personal'
 import userEvent from '@testing-library/user-event'
+import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
 
 describe('ClaimantAddress component', () => {
   const initialValues = PersonalPageDefinition.initialValues

@@ -1,10 +1,12 @@
 import { useMutation } from 'react-query'
-import { Claim } from 'types/Claim'
 import serverHttpclient from 'utils/http/serverHttpClient'
-import { APIResponseType } from 'types/ResponseTypes'
+import { ClaimantInput } from 'types/claimantInput'
+import { AxiosError, AxiosResponse } from 'axios'
 
-const submitClaim = (claim: Partial<Claim>) => {
-  return serverHttpclient.post<APIResponseType>('/submit', claim, {
+type SubmitClaimResponse = string
+
+const submitClaim = (claim: Partial<ClaimantInput>) => {
+  return serverHttpclient.post<SubmitClaimResponse>('/submit', claim, {
     withCredentials: false,
     headers: {
       'Content-Type': 'application/json',
@@ -13,5 +15,9 @@ const submitClaim = (claim: Partial<Claim>) => {
 }
 
 export const useSubmitClaim = () => {
-  return useMutation((claim: Partial<Claim>) => submitClaim(claim))
+  return useMutation<
+    AxiosResponse<SubmitClaimResponse>,
+    AxiosError<SubmitClaimResponse>,
+    Partial<ClaimantInput>
+  >(submitClaim)
 }

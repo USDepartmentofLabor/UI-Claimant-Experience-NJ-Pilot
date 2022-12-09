@@ -1,20 +1,17 @@
 import { render, screen, within } from '@testing-library/react'
-import { Formik } from 'formik'
-import { noop } from 'helpers/noop/noop'
 import EducationAndTraining from 'pages/claim/education-and-training' // EducationAndTrainingPageDefinition,
 import userEvent from '@testing-library/user-event'
-// import {
-//   getInvalidClaimFormFixtures,
-//   getValidClaimFormFixtures,
-// } from "helpers/fixtures";
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+jest.mock('queries/useSaveCompleteClaim')
+jest.mock('hooks/useInitialValues')
+jest.mock('hooks/useSaveClaimFormValues')
+jest.mock('queries/useGetPartialClaim')
+jest.mock('next/router')
 
 describe('EducationAndTraining component', () => {
   it('renders properly', () => {
-    render(
-      <Formik initialValues={{}} onSubmit={noop}>
-        <EducationAndTraining />
-      </Formik>
-    )
+    render(<EducationAndTraining />)
 
     expect(
       screen.getByText('education_and_training.attending_training.label')
@@ -23,11 +20,7 @@ describe('EducationAndTraining component', () => {
 
   it('shows/hides enrollment', async () => {
     const user = userEvent.setup()
-    render(
-      <Formik initialValues={{}} onSubmit={noop}>
-        <EducationAndTraining />
-      </Formik>
-    )
+    render(<EducationAndTraining />)
 
     const currentlyAttendingTrainingFormGroup = screen.getByRole('group', {
       name: 'education_and_training.attending_training.label',
@@ -82,4 +75,20 @@ describe('EducationAndTraining component', () => {
   //     })
   //   })
   // })
+
+  describe('page layout', () => {
+    it('uses the ClaimFormLayout', () => {
+      const Page = EducationAndTraining
+      expect(Page).toHaveProperty('getLayout')
+
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          {Page.getLayout?.(<Page />)}
+        </QueryClientProvider>
+      )
+      const main = screen.queryByRole('main')
+
+      expect(main).toBeInTheDocument()
+    })
+  })
 })

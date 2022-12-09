@@ -43,7 +43,9 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
     showStillEmployed &&
     employer?.reason_still_employed === 'reduction_in_hours_by_employer'
   const { clearField } = useClearFields()
-  const handleReasonChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleReasonChange: ChangeEventHandler<HTMLInputElement> = async (
+    e
+  ) => {
     if (
       ![
         'fired_discharged_suspended',
@@ -52,38 +54,38 @@ export const ChangeInEmployment = ({ index }: IEmployer) => {
         'strike_or_lock_out_by_employer',
       ].includes(employer?.separation_circumstance ?? '')
     ) {
-      clearField(`employers[${index}].separation_circumstance_details`)
-      clearField(`employers[${index}].discharge_date`)
+      await clearField(`employers[${index}].separation_circumstance_details`)
+      await clearField(`employers[${index}].discharge_date`)
     }
     if (e.target.value !== 'fired_discharged_suspended') {
-      clearField(`employers[${index}].discharge_date`)
+      await clearField(`employers[${index}].discharge_date`)
     }
     if (e.target.value !== 'still_employed') {
-      clearField(`employers[${index}].reason_still_employed`)
-      clearField(`employers[${index}].hours_reduced_twenty_percent`)
+      await clearField(`employers[${index}].reason_still_employed`)
+      await clearField(`employers[${index}].hours_reduced_twenty_percent`)
     }
   }
-  const handleExpectRecallChange: ChangeEventHandler<HTMLInputElement> = (
+  const handleExpectRecallChange: ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
     if (e.target.value === 'no') {
-      clearField(`employers[${index}].definite_recall`)
-      clearField(`employers[${index}].is_seasonal_work`)
-      clearField(`employers[${index}].definite_recall_date`)
+      await clearField(`employers[${index}].definite_recall`)
+      await clearField(`employers[${index}].is_seasonal_work`)
+      await clearField(`employers[${index}].definite_recall_date`)
     }
   }
-  const handleHasDefiniteRecallChange: ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
+  const handleHasDefiniteRecallChange: ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
     if (e.target.value === 'no') {
-      clearField(`employers[${index}].definite_recall_date`)
+      await clearField(`employers[${index}].definite_recall_date`)
     }
   }
   const handleStillEmployedReasonChange: ChangeEventHandler<
     HTMLInputElement
-  > = (e) => {
+  > = async (e) => {
     if (e.target.value !== 'reduction_in_hours_by_employer') {
-      clearField(`employers[${index}].hours_reduced_twenty_percent`)
+      await clearField(`employers[${index}].hours_reduced_twenty_percent`)
     }
   }
 
