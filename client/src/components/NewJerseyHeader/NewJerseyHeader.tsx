@@ -123,7 +123,11 @@ export const NewJerseyHeader = () => {
         data-testid="overlay"
         className={`usa-overlay ${expanded ? 'is-visible' : ''}`}
       ></div>
-      <Header basic={true} basicWithMegaMenu={true}>
+      <Header
+        basic={true}
+        basicWithMegaMenu={true}
+        className="border-bottom border-base-lighter"
+      >
         <div className="usa-nav-container">
           <div className="usa-navbar">
             <Title>{t('title')}</Title>
