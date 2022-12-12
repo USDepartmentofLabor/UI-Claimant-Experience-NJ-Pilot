@@ -309,7 +309,8 @@
         },
         "employer_agency_code": {
           "description": "Federal employee agency code",
-          "type": "boolean",
+          "type": "string",
+          "pattern": "^\\d{3}$",
           "if": {
             "properties": {
               "was_federal": {
