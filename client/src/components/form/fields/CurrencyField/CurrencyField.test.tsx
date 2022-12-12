@@ -57,4 +57,34 @@ describe('CurrencyField', () => {
     fireEvent(testField, invalidEvent)
     expect(invalidEvent.defaultPrevented).toBeTruthy()
   })
+  it('Can take and call an onChange handler', async () => {
+    const mockOnChange = jest.fn()
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <CurrencyField
+          label="SomeTotal"
+          name="someTotal"
+          onChange={mockOnChange}
+        />
+      </Formik>
+    )
+    const field = screen.getByRole('textbox', { name: 'SomeTotal' })
+    await userEvent.type(field, '777')
+    expect(mockOnChange).toHaveBeenCalledTimes(3)
+  })
+  it('Removes focus on blur and applies field props onBlur', async () => {
+    const mockOnBlur = jest.fn()
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <CurrencyField label="SomeTotal" name="someTotal" onBlur={mockOnBlur} />
+      </Formik>
+    )
+    const field = screen.getByRole('textbox', { name: 'SomeTotal' })
+    await userEvent.click(field)
+    fireEvent.focus(field)
+    expect(field).toHaveFocus()
+    await userEvent.tab()
+    expect(mockOnBlur).toHaveBeenCalledTimes(1)
+    expect(field).not.toHaveFocus()
+  })
 })
