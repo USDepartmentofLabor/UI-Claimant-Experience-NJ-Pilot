@@ -1,0 +1,13 @@
+# Ignore the following SnakeYAML vulnerabilities. The claimant intake
+# application does not use SnakeYAML to parse untrusted input.
+# See the discussion at https://github.com/spring-projects/spring-boot/issues/32221
+CVE-2022-25857
+CVE-2022-38749
+CVE-2022-38750
+CVE-2022-38751
+CVE-2022-38752
+CVE-2022-41854
+
+# Ignore the following io.netty:netty-codec-http finding for now and wait for spring
+# boot to include patched version
+CVE-2022-41915

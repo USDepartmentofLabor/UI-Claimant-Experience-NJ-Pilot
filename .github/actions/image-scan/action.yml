@@ -15,7 +15,7 @@ runs:
         format: "table"
         exit-code: "1"
         ignore-unfixed: true
-        vuln-type: "os"
+        vuln-type: "os,library"
         security-checks: "vuln,secret"
     - name: Run Anchore vulnerability scan
       uses: anchore/scan-action@9a22e4caae42db0d4c687ab5431e1c3699d0def1
