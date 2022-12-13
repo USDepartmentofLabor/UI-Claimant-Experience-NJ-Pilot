@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, waitFor } from '@testing-library/react'
 import { ClaimantInput } from 'types/claimantInput'
 
 jest.mock('next-auth/react')
@@ -50,8 +50,10 @@ const setUpHook = async (status: number) => {
     mutateAsync: async (values: ClaimantInput) => mockMutateAsync(values),
   }))
 
-  const { result, waitFor } = renderHook(() => useSaveClaimFormValues())
-  await waitFor(() => !!result.current.appendAndSaveClaimFormValues)
+  const { result } = renderHook(() => useSaveClaimFormValues())
+  await waitFor(() =>
+    expect(result.current.appendAndSaveClaimFormValues).not.toBeUndefined()
+  )
   return { mockMutateAsync, result }
 }
 

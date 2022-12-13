@@ -9,6 +9,11 @@ const mockUseSession = useSession as jest.Mock
 ;(signIn as jest.Mock).mockImplementation(() => jest.fn())
 ;(signOut as jest.Mock).mockImplementation(() => jest.fn())
 
+const mockRouter = jest.fn()
+jest.mock('next/router', () => ({
+  useRouter: () => mockRouter(),
+}))
+
 describe('home page', () => {
   const renderHomePage = () => {
     render(<Home />)
@@ -113,4 +118,13 @@ describe('home page', () => {
       expect(signOutButton).not.toBeInTheDocument()
     }
   )
+  it('Shows a success alert when a claim form has been submitted', () => {
+    mockRouter.mockImplementation(() => ({
+      query: { completed: true },
+      asPath: '/',
+    }))
+    renderHomePage()
+    const alert = screen.getByTestId('alert')
+    expect(alert).toBeInTheDocument()
+  })
 })

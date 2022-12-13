@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, waitFor } from '@testing-library/react'
 import { useInitialValues } from 'hooks/useInitialValues'
 import { ClaimantInput, WhoAmI } from 'types/claimantInput'
 
@@ -45,17 +45,14 @@ describe('useInitialValues hook', () => {
       status: 'authenticated',
     })
 
-    const { result, waitFor } = renderHook(
-      () => useInitialValues(pageInitialValues),
-      {
-        wrapper: ({ children }: any) => (
-          <ClaimFormContext.Provider value={claimFormContext}>
-            {children}
-          </ClaimFormContext.Provider>
-        ),
-      }
-    )
-    await waitFor(() => !result.current.isLoading)
+    const { result } = renderHook(() => useInitialValues(pageInitialValues), {
+      wrapper: ({ children }: any) => (
+        <ClaimFormContext.Provider value={claimFormContext}>
+          {children}
+        </ClaimFormContext.Provider>
+      ),
+    })
+    await waitFor(() => expect(result.current.isLoading).toEqual(false))
 
     const { initialValues } = result.current
 

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Claim } from 'types/Claim'
 import { useSaveCompleteClaim } from './useSaveCompleteClaim'
@@ -23,7 +23,9 @@ const wrapper = ({ children }: any) => {
 
 describe('use save complete claim', () => {
   it('calls the onSuccess callback if the completed claim was successfully saved', async () => {
-    const hooky = renderHook(() => useSaveCompleteClaim(), { wrapper })
-    hooky.result.current.mutate({ email: 'good data' })
+    const hook = renderHook(() => useSaveCompleteClaim(), { wrapper })
+    hook.result.current.mutate({ email: 'good data' })
+
+    await waitFor(() => expect(hook.result.current.isSuccess).toEqual(true))
   })
 })

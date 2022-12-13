@@ -19,9 +19,13 @@ describe('formatUserInputDate', () => {
     const result = formatUserInputDate(invalidDateString)
     expect(result).toEqual(invalidDateString)
   })
+  it('returns undefined if there is no initial value', () => {
+    const result = formatUserInputDate()
+    expect(result).toEqual(undefined)
+  })
 })
 
-describe('formatStoredDate', () => {
+describe('formatStoredDateToDisplayDate', () => {
   it('returns the expected date format', () => {
     const storedDate = '2009-08-20'
     const result = formatStoredDateToDisplayDate(storedDate)
@@ -32,6 +36,11 @@ describe('formatStoredDate', () => {
     const storedDate = undefined
     const result = formatStoredDateToDisplayDate(storedDate)
     expect(result).toEqual(undefined)
+  })
+  it('returns the input value if it is an invalid dayjs value', () => {
+    const storedDate = 'some invalid string'
+    const result = formatStoredDateToDisplayDate(storedDate)
+    expect(result).toEqual(storedDate)
   })
 })
 

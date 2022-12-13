@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 import { EditEmployer } from './EditEmployer'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
@@ -6,16 +6,19 @@ import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 describe('Edit Employer Component', () => {
   const { data } = useGetRecentEmployers()
-  it('renders correctly', () => {
+  it('renders correctly', async () => {
     const initialValues = {
       employers: data,
     }
 
-    render(
-      <Formik initialValues={initialValues} onSubmit={() => undefined}>
-        <EditEmployer index={'2'} />
-      </Formik>
+    await act(() =>
+      render(
+        <Formik initialValues={initialValues} onSubmit={() => undefined}>
+          <EditEmployer index={'2'} />
+        </Formik>
+      )
     )
+
     expect(screen.getByText(/Wendys/i)).toBeInTheDocument()
     expect(
       screen.getByRole('radio', {
@@ -32,15 +35,17 @@ describe('Edit Employer Component', () => {
     ).toBeInTheDocument()
   })
 
-  it('displays an error if the index is invalid', () => {
+  it('displays an error if the index is invalid', async () => {
     const initialValues = {
       employers: data,
     }
 
-    render(
-      <Formik initialValues={initialValues} onSubmit={() => undefined}>
-        <EditEmployer index={'4'} />
-      </Formik>
+    await act(() =>
+      render(
+        <Formik initialValues={initialValues} onSubmit={() => undefined}>
+          <EditEmployer index={'4'} />
+        </Formik>
+      )
     )
 
     screen.getByText(/No employer defined for index/i)
