@@ -20,6 +20,7 @@
     "react-dom": "18.2.0",
     "react-query": "^3.39.2",
     "sass": "^1.55.0",
+    "universal-cookie": "^4.0.4",
     "uswds": "2.13.3",
     "yup": "^0.32.11"
   },

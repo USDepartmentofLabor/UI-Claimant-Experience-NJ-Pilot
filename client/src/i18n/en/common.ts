@@ -115,6 +115,17 @@ const common = {
     gov_aria: 'U.S. government information and services',
     copyright: 'Copyright © 2020 State of New Jersey',
   },
+  timeout: {
+    title: 'You will be logged out due to inactivity in ',
+    stay_logged_in: 'Stay logged in',
+    log_out: 'Log out',
+    instructions:
+      'Click the button below to stay logged in. Otherwise, to protect your' +
+      ' data, your progress will be saved, but you will be logged out.',
+    sr_countdown_zero: '{{seconds}} seconds',
+    sr_countdown_one: '{{count}} minute, {{seconds}} seconds',
+    sr_countdown_other: '{{count}} minutes, {{seconds}} seconds',
+  },
 }
 
 export default common

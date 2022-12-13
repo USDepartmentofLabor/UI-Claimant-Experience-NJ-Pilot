@@ -6,6 +6,5 @@ export const useWhoAmI = () => {
 
   const whoAmI = data?.whoAmI as WhoAmI | undefined
   const isLoading = status === 'loading'
-
   return { data: whoAmI, isLoading }
 }
