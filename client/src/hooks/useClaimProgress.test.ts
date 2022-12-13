@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, waitFor } from '@testing-library/react'
 import { ClaimantInput } from 'types/claimantInput'
 
 jest.mock('next-auth/react')
@@ -25,9 +25,9 @@ describe('should use whoami', () => {
       claimFormValues: initialValues,
     }))
 
-    const { result, waitFor } = renderHook(() => useClaimProgress())
+    const { result } = await renderHook(() => useClaimProgress())
 
-    await waitFor(() => !!result.current.continuePath)
+    await waitFor(() => expect(result.current.continuePath).not.toBeUndefined())
 
     expect(result.current.continuePath).toEqual(pageDefinitions[0].path)
   })
@@ -44,9 +44,9 @@ describe('should use whoami', () => {
       },
     }))
 
-    const { result, waitFor } = renderHook(() => useClaimProgress())
+    const { result } = await renderHook(() => useClaimProgress())
 
-    await waitFor(() => !!result.current.continuePath)
+    await waitFor(() => expect(result.current.continuePath).not.toBeUndefined())
 
     expect(result.current.continuePath).toEqual(pageDefinitions[1].path)
   })
@@ -56,9 +56,9 @@ describe('should use whoami', () => {
       claimFormValues: undefined,
     }))
 
-    const { result, waitFor } = renderHook(() => useClaimProgress())
+    const { result } = await renderHook(() => useClaimProgress())
 
-    await waitFor(() => !!result.current.continuePath)
+    await waitFor(() => expect(result.current.continuePath).not.toBeUndefined())
 
     expect(result.current.continuePath).toEqual(Routes.HOME)
   })

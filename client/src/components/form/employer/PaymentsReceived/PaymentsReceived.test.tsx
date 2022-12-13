@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Formik } from 'formik'
 
@@ -7,14 +7,17 @@ import PaymentsReceived from 'components/form/employer/PaymentsReceived/Payments
 
 describe('PaymentsReceived', () => {
   const defaultInitialValues = { employers: [{ payments_received: [] }] }
-  const renderPaymentsReceived = (
+  const renderPaymentsReceived = async (
     initialValues: object = defaultInitialValues
   ) => {
-    render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
-        <PaymentsReceived employerIndex={0} />
-      </Formik>
+    await act(() =>
+      render(
+        <Formik initialValues={initialValues} onSubmit={noop}>
+          <PaymentsReceived employerIndex={0} />
+        </Formik>
+      )
     )
+
     const payTypeGroup = screen.getByRole('group', {
       name: 'payments_received.payments_received_detail.pay_type.label',
     })
@@ -49,7 +52,7 @@ describe('PaymentsReceived', () => {
     }
   }
   it('renders properly', async () => {
-    renderPaymentsReceived()
+    await renderPaymentsReceived()
     expect(
       screen.getByRole('group', {
         name: 'payments_received.payments_received_detail.pay_type.label',
@@ -59,7 +62,7 @@ describe('PaymentsReceived', () => {
 
   it('opens additional fields based on pay type selection', async () => {
     const { user, pto, otherPay, getOtherPayNoteField } =
-      renderPaymentsReceived()
+      await renderPaymentsReceived()
 
     await user.click(pto)
     await user.click(otherPay)
@@ -124,7 +127,7 @@ describe('PaymentsReceived', () => {
     }
 
     const { user, vacation, severance, noOtherPay } =
-      renderPaymentsReceived(initialValues)
+      await renderPaymentsReceived(initialValues)
 
     expect(vacation).toBeEnabled()
     expect(severance).toBeEnabled()
@@ -148,7 +151,7 @@ describe('PaymentsReceived', () => {
   })
 
   it('orders the order pay detail fields by order of checkboxes', async () => {
-    const { user, pto, severance, otherPay } = renderPaymentsReceived()
+    const { user, pto, severance, otherPay } = await renderPaymentsReceived()
 
     await user.click(severance)
     await user.click(pto)
@@ -162,7 +165,7 @@ describe('PaymentsReceived', () => {
   })
 
   it('displays the correct values in the details when pay types are removed', async () => {
-    const { user, pto, severance } = renderPaymentsReceived()
+    const { user, pto, severance } = await renderPaymentsReceived()
 
     await user.click(pto)
     await user.click(severance)

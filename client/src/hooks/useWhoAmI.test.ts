@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, waitFor } from '@testing-library/react'
 import { useWhoAmI } from 'hooks/useWhoAmI'
 import { WhoAmI } from 'types/claimantInput'
 
@@ -25,9 +25,9 @@ describe('should use whoami', () => {
       },
       status: 'authenticated',
     })
-    const { result, waitFor } = renderHook(() => useWhoAmI())
+    const { result } = renderHook(() => useWhoAmI())
 
-    await waitFor(() => !result.current.isLoading)
+    await waitFor(() => expect(result.current.isLoading).toEqual(false))
 
     expect(mockUseSession).toHaveBeenCalledTimes(1)
     expect(result.current.data).toEqual(whoAmI)

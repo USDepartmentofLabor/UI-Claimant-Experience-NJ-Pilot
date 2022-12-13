@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { useSavePartialClaim } from './useSavePartialClaim'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Claim } from 'types/Claim'
@@ -23,9 +23,9 @@ const wrapper = ({ children }: any) => {
 
 describe('use save partial claim', () => {
   it('calls the onSuccess callback if the partial claim was successfully saved', async () => {
-    const hooky = renderHook(() => useSavePartialClaim(), { wrapper })
-    hooky.result.current.mutate({ email: 'good data' })
+    const hook = renderHook(() => useSavePartialClaim(), { wrapper })
+    hook.result.current.mutate({ email: 'good data' })
 
-    //lost here
+    await waitFor(() => expect(hook.result.current.isSuccess).toEqual(true))
   })
 })
