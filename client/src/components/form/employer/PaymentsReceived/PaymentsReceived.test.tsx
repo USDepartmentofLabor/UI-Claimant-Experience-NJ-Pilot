@@ -6,18 +6,17 @@ import { noop } from 'helpers/noop/noop'
 import PaymentsReceived from 'components/form/employer/PaymentsReceived/PaymentsReceived'
 
 describe('PaymentsReceived', () => {
-  const defaultInitialValues = { employers: [{ payments_received: [] }] }
+  const defaultInitialValues = { payments_received: [] }
   const renderPaymentsReceived = async (
     initialValues: object = defaultInitialValues
   ) => {
     await act(() =>
       render(
         <Formik initialValues={initialValues} onSubmit={noop}>
-          <PaymentsReceived employerIndex={0} />
+          <PaymentsReceived />
         </Formik>
       )
     )
-
     const payTypeGroup = screen.getByRole('group', {
       name: 'payments_received.payments_received_detail.pay_type.label',
     })
@@ -109,19 +108,15 @@ describe('PaymentsReceived', () => {
 
   it("removes and disables all other options when 'no other pay' is selected", async () => {
     const initialValues = {
-      employers: [
+      payments_received: [
         {
-          payments_received: [
-            {
-              pay_type: 'vacation_sick_pto',
-              total: 3000,
-            },
-            {
-              pay_type: 'severance_or_continuation',
-              total: 500,
-              note: 'They paid a small severance',
-            },
-          ],
+          pay_type: 'vacation_sick_pto',
+          total: 3000,
+        },
+        {
+          pay_type: 'severance_or_continuation',
+          total: 500,
+          note: 'They paid a small severance',
         },
       ],
     }
@@ -170,9 +165,7 @@ describe('PaymentsReceived', () => {
     await user.click(pto)
     await user.click(severance)
 
-    const ptoDetails = screen.getByTestId(
-      'payDetail-employers[0].payments_received.0'
-    )
+    const ptoDetails = screen.getByTestId('payDetail-payments_received.0')
     const ptoTotal = within(ptoDetails).getByRole('textbox', {
       name: 'payments_received.payments_received_detail.total.label',
     })
@@ -190,9 +183,7 @@ describe('PaymentsReceived', () => {
       name: 'date.year.label',
     })
 
-    const severanceDetails = screen.getByTestId(
-      'payDetail-employers[0].payments_received.1'
-    )
+    const severanceDetails = screen.getByTestId('payDetail-payments_received.1')
     let severanceTotal = within(severanceDetails).getByRole('textbox', {
       name: 'payments_received.payments_received_detail.total.label',
     })
@@ -247,7 +238,7 @@ describe('PaymentsReceived', () => {
     await user.click(pto)
 
     const severanceDetailsAtNewIndex = screen.getByTestId(
-      'payDetail-employers[0].payments_received.0'
+      'payDetail-payments_received.0'
     )
     severanceTotal = within(severanceDetailsAtNewIndex).getByRole('textbox', {
       name: 'payments_received.payments_received_detail.total.label',

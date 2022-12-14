@@ -1,9 +1,10 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
-import { EditEmployer, yupEditEmployers } from './EditEmployer'
+import { EditEmployer, yupEditEmployer } from './EditEmployer'
 import { Form, Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
-import { ClaimantInput } from 'types/claimantInput'
 import { Button } from '@trussworks/react-uswds'
+import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
+import * as React from 'react'
 import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 export default {
@@ -11,87 +12,77 @@ export default {
   component: EditEmployer,
 } as ComponentMeta<typeof EditEmployer>
 
-const Template: ComponentStory<typeof EditEmployer> = (args) => {
-  /* Add input from child components here */
+const Template: ComponentStory<typeof EditEmployer> = () => {
   const { data } = useGetRecentEmployers()
-  const initialValues: ClaimantInput = {
-    employers: data,
-  }
-
+  /* Add input from child components here */
   return (
-    <Formik initialValues={initialValues} onSubmit={noop}>
+    <Formik initialValues={data[0]} onSubmit={noop}>
       <Form>
-        <EditEmployer index={args.index} />
+        <EditEmployer />
       </Form>
     </Formik>
   )
 }
 
 export const Default = Template.bind({})
-Default.args = {
-  index: '0',
-}
 
-export const InvalidIndex = Template.bind({})
-InvalidIndex.args = {
-  index: '5',
-}
-
-/* Possibly make more templates for conditionals in the components */
-
-const WithValidation: ComponentStory<typeof EditEmployer> = (args) => {
-  /* Add input from child components here */
+const Invalid: ComponentStory<typeof EditEmployer> = () => {
   const { data } = useGetRecentEmployers()
-  const initialValues: ClaimantInput = {
-    employers: data,
-  }
-
+  /* Add input from child components here */
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={yupEditEmployers}
-      onSubmit={noop}
-    >
-      {({ errors, setFormikState, submitCount }) => (
-        <Form>
-          <EditEmployer index={args.index} />
-          <Button
-            type="submit"
-            onClick={() =>
-              setFormikState((previousState) => ({
-                ...previousState,
-                submitCount: submitCount + 1,
-              }))
-            }
-          >
-            Validate
-          </Button>
-          {errors?.employers?.[parseInt(args.index)] &&
-            Object.keys(errors.employers[parseInt(args.index)]).length > 0 && (
-              <div>
-                <pre>
-                  {JSON.stringify(
-                    errors.employers[parseInt(args.index)],
-                    null,
-                    2
-                  )}
-                </pre>
-              </div>
-            )}
-        </Form>
-      )}
+    <Formik initialValues={data[5]} onSubmit={noop}>
+      <Form>
+        <EditEmployer />
+      </Form>
     </Formik>
   )
 }
 
-export const FirstEmployer = WithValidation.bind({})
-FirstEmployer.args = {
-  index: '0',
-}
+export const InvalidIndex = Invalid.bind({})
 
 /* Possibly make more templates for conditionals in the components */
 
-export const SecondEmployer = WithValidation.bind({})
-SecondEmployer.args = {
-  index: '1',
+const WithValidation: ComponentStory<typeof EditEmployer> = () => {
+  /* Add input from child components here */
+  const { data } = useGetRecentEmployers()
+
+  return (
+    <Formik
+      initialValues={data[0]}
+      validationSchema={yupEditEmployer}
+      onSubmit={noop}
+    >
+      {({ errors, setFormikState, submitCount }) => {
+        const showErrorSummary =
+          submitCount > 0 && Object.keys(errors).length > 0
+
+        return (
+          <Form>
+            {showErrorSummary && (
+              <FormErrorSummary key={submitCount} errors={errors} />
+            )}
+            <EditEmployer />
+            <Button
+              type="submit"
+              onClick={() =>
+                setFormikState((previousState) => ({
+                  ...previousState,
+                  submitCount: submitCount + 1,
+                }))
+              }
+            >
+              Validate
+            </Button>
+            {errors && Object.keys(errors).length > 0 && (
+              <div>
+                <pre>{JSON.stringify(errors, null, 2)}</pre>
+              </div>
+            )}
+          </Form>
+        )
+      }}
+    </Formik>
+  )
 }
+
+export const Validated = WithValidation.bind({})

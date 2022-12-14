@@ -3,48 +3,42 @@ import { Form, Formik } from 'formik'
 import { Button } from '@trussworks/react-uswds'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
 import { noop } from 'helpers/noop/noop'
-import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
-import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+import {
+  EMPLOYER_SKELETON,
+  yupEditEmployer,
+} from 'components/form/EditEmployer/EditEmployer'
 
 export default {
   title: 'Components/Form/Employer/Sections/YourEmployer',
   component: YourEmployer,
 } as ComponentMeta<typeof YourEmployer>
 
-const { data } = useGetRecentEmployers()
-const initialValues = {
-  employers: data,
-}
-
-const Template: ComponentStory<typeof YourEmployer> = (args) => {
+const Template: ComponentStory<typeof YourEmployer> = () => {
   return (
-    <Formik initialValues={initialValues} onSubmit={noop}>
+    <Formik initialValues={EMPLOYER_SKELETON} onSubmit={noop}>
       <Form>
-        <YourEmployer index={args.index} />
+        <YourEmployer />
       </Form>
     </Formik>
   )
 }
 
 export const Default = Template.bind({})
-Default.args = {
-  index: '0',
-}
 
 const onSubmit = () => {
   console.log('Submitted!')
 }
 
-const WithValidationsTemplate: ComponentStory<typeof YourEmployer> = (args) => {
+const WithValidationsTemplate: ComponentStory<typeof YourEmployer> = () => {
   return (
     <Formik
-      initialValues={initialValues}
-      validationSchema={yupEditEmployers}
+      initialValues={EMPLOYER_SKELETON}
+      validationSchema={yupEditEmployer}
       onSubmit={onSubmit}
     >
       {() => (
         <Form>
-          <YourEmployer {...args} />
+          <YourEmployer />
           <Button type="submit">Validate me</Button>
         </Form>
       )}
@@ -53,6 +47,3 @@ const WithValidationsTemplate: ComponentStory<typeof YourEmployer> = (args) => {
 }
 
 export const WithValidations = WithValidationsTemplate.bind({})
-WithValidations.args = {
-  index: '1',
-}

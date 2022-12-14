@@ -3,46 +3,40 @@ import { Form, Formik } from 'formik'
 import { Button } from '@trussworks/react-uswds'
 import { ChangeInEmployment } from './ChangeInEmployment'
 import { noop } from 'helpers/noop/noop'
-import { yupEditEmployers } from '../../EditEmployer/EditEmployer'
-import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+import {
+  EMPLOYER_SKELETON,
+  yupEditEmployer,
+} from '../../EditEmployer/EditEmployer'
 
 export default {
   title: 'Components/form/Employer/Sections/Change In Employment',
   component: ChangeInEmployment,
 } as ComponentMeta<typeof ChangeInEmployment>
 
-const { data } = useGetRecentEmployers()
-const initialValues = {
-  employers: data,
-}
-
-const Template: ComponentStory<typeof ChangeInEmployment> = (args) => {
+const Template: ComponentStory<typeof ChangeInEmployment> = () => {
   return (
-    <Formik initialValues={initialValues} onSubmit={noop}>
+    <Formik initialValues={EMPLOYER_SKELETON} onSubmit={noop}>
       <Form>
-        <ChangeInEmployment index={args.index} />
+        <ChangeInEmployment />
       </Form>
     </Formik>
   )
 }
 
 export const Default = Template.bind({})
-Default.args = {
-  index: '0',
-}
 
-const WithFormikValueTemplate: ComponentStory<typeof ChangeInEmployment> = (
-  args
-) => {
+const WithFormikValueTemplate: ComponentStory<
+  typeof ChangeInEmployment
+> = () => {
   return (
     <Formik
-      initialValues={initialValues}
-      validationSchema={yupEditEmployers}
+      initialValues={EMPLOYER_SKELETON}
+      validationSchema={yupEditEmployer}
       onSubmit={noop}
     >
       {() => (
         <Form>
-          <ChangeInEmployment {...args} />
+          <ChangeInEmployment />
           <Button type="submit">Validate me</Button>
         </Form>
       )}
@@ -51,6 +45,3 @@ const WithFormikValueTemplate: ComponentStory<typeof ChangeInEmployment> = (
 }
 
 export const ShowFormikValue = WithFormikValueTemplate.bind({})
-ShowFormikValue.args = {
-  index: '1',
-}

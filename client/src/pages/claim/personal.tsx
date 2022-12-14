@@ -13,7 +13,11 @@ import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
-import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import {
+  getNextPage,
+  getPreviousPage,
+  pageDefinitions,
+} from 'constants/pages/pageDefinitions'
 
 const pageDefinition = PersonalPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -55,7 +59,12 @@ const Personal: NextPageWithLayout = () => {
 
 Personal.getLayout = (page: ReactNode) => {
   return (
-    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+    <ClaimFormLayout
+      pageDefinition={pageDefinition}
+      index={pageDefinitions.indexOf(pageDefinition)}
+    >
+      {page}
+    </ClaimFormLayout>
   )
 }
 

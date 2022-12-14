@@ -1,4 +1,4 @@
-import { ClaimantInput } from 'types/claimantInput'
+import { ClaimantInput, Employer } from 'types/claimantInput'
 import { useSavePartialClaim } from 'queries/useSavePartialClaim'
 import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
 import { useSubmitClaim } from 'queries/useSubmitClaim'
@@ -28,7 +28,32 @@ export const useSaveClaimFormValues = () => {
     await saveClaimFormValues(appendedClaimFormValues)
   }
 
+  const modifyEmployerAndSaveClaimFormValues = async (
+    values: Employer,
+    index: string
+  ) => {
+    const modifiedClaimFormValues = { ...claimFormValues }
+
+    // Ensure a valid index and do nothing if the index is invalid
+    if (
+      (claimFormValues?.employers &&
+        claimFormValues.employers.length < parseInt(index)) ||
+      (!claimFormValues?.employers && parseInt(index) !== 0)
+    )
+      return
+
+    if (!modifiedClaimFormValues.employers) {
+      modifiedClaimFormValues.employers = []
+      modifiedClaimFormValues.employers[parseInt(index)] = values
+    } else {
+      modifiedClaimFormValues.employers[parseInt(index)] = values
+    }
+
+    await saveClaimFormValues(modifiedClaimFormValues)
+  }
+
   return {
     appendAndSaveClaimFormValues,
+    modifyEmployerAndSaveClaimFormValues,
   }
 }

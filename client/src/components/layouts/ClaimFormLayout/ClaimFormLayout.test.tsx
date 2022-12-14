@@ -29,7 +29,7 @@ describe('ClaimFormLayout', () => {
     it('renders the layout properly', () => {
       render(
         <QueryClientProvider client={new QueryClient()}>
-          <ClaimFormLayout pageDefinition={PrequalPageDefinition}>
+          <ClaimFormLayout pageDefinition={PrequalPageDefinition} index={0}>
             Some content
           </ClaimFormLayout>
         </QueryClientProvider>
@@ -50,7 +50,7 @@ describe('ClaimFormLayout', () => {
     it('renders a loader while loading', () => {
       render(
         <QueryClientProvider client={new QueryClient()}>
-          <ClaimFormLayout pageDefinition={PrequalPageDefinition}>
+          <ClaimFormLayout pageDefinition={PrequalPageDefinition} index={0}>
             Some content
           </ClaimFormLayout>
         </QueryClientProvider>
