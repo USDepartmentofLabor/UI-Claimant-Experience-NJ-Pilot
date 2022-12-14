@@ -14,6 +14,7 @@ import fillEducationAndTrainingFields from './formPageFilling/education_and_trai
 import fillReviewFields from './formPageFilling/review'
 import fillRecentEmployersFields from './formPageFilling/recent-employers'
 import { generateWhoAmI } from './utils/generateWhoAmI'
+import { fillEditEmployerFields } from './formPageFilling/edit-employer'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -92,6 +93,12 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     //Recent Employers
     fillRecentEmployersFields()
     cy.checkA11y()
+    cy.lighthouse()
+    cy.clickNext()
+
+    fillEditEmployerFields()
+    //TODO: Reenable the a11y check when NJWDS changes link color
+    //cy.checkA11y()
     cy.lighthouse()
     cy.clickNext()
 

@@ -13,7 +13,6 @@ export const PrequalPageDefinition: PageDefinition = {
     lived_outside_nj_when_working_nj: undefined,
     will_look_for_work_in_nj: undefined,
     can_begin_work_immediately: undefined,
-    federal_work_in_last_18mo: undefined,
   },
   validationSchema: object().shape({
     filed_in_last_12mo: boolean().required(
@@ -49,9 +48,6 @@ export const PrequalPageDefinition: PageDefinition = {
     ),
     can_begin_work_immediately: boolean().required(
       i18n_claimForm.t('prequal.can_begin_work_immediately.errors.required')
-    ),
-    federal_work_in_last_18mo: boolean().required(
-      i18n_claimForm.t('prequal.federal_work_in_last_18mo.errors.required')
     ),
   }),
 }

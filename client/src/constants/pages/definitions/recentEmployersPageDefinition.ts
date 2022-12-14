@@ -6,11 +6,11 @@ import { PageDefinition } from 'constants/pages/pageDefinitions'
 const validationSchema = object().shape({
   employers: array().of(
     object().shape({
-      isImported: boolean(),
-      isEmployer: boolean().when('isImported', {
+      is_imported: boolean(),
+      is_employer: boolean().when('is_imported', {
         is: true,
         then: boolean().required(
-          i18n_claimForm.t('recent_employers.isEmployer.errors.required')
+          i18n_claimForm.t('recent_employers.is_employer.errors.required')
         ),
       }),
     })

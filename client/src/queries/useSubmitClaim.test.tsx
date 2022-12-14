@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Claim } from 'types/Claim'
 import { useSubmitClaim } from './useSubmitClaim'
@@ -25,5 +25,7 @@ describe('use submit complete claim', () => {
   it('calls the onSuccess callback if the completed claim was successfully submitted', async () => {
     const hook = renderHook(() => useSubmitClaim(), { wrapper })
     hook.result.current.mutate({ email: 'good data' })
+
+    await waitFor(() => expect(hook.result.current.isSuccess).toEqual(true))
   })
 })

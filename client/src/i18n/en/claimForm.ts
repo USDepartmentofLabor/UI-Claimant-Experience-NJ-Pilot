@@ -73,7 +73,7 @@ const claimForm = {
     work_at: 'Did you work at {{employer}}',
     confirm_employer:
       'Are you sure? Check your pay stubs or W2 to confirm your employer name.',
-    isEmployer: {
+    is_employer: {
       errors: {
         required:
           'Please say whether you were employed by this employer within the last 18 months',
@@ -850,6 +850,9 @@ const claimForm = {
       required:
         'You must say if you have worked under a different name in the past 18 months',
     },
+  },
+  edit_employer: {
+    heading: 'Edit Employer',
   },
   payment: {
     heading: 'Payment information',

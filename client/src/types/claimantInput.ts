@@ -35,14 +35,14 @@ export type EmployerInput = {
 }
 
 export type Employer = {
-  isImported?: boolean
-  isEmployer?: boolean
+  is_imported?: boolean
+  is_employer?: boolean
   employer_address?: AddressInput
   employer_phone?: string
 
   isInitiated?: boolean
   name?: string
-  isFullTime?: boolean
+  is_full_time?: boolean
 
   separation_circumstance?: string
   expect_to_be_recalled?: boolean
@@ -85,8 +85,9 @@ export type ScreenerInput = {
   screener_job_last_eighteen_months?: boolean
   screener_all_work_nj?: boolean
   screener_any_work_nj?: boolean
-  screener_currently_disabled?: boolean
   screener_military_service_eighteen_months?: boolean
+  screener_currently_disabled?: boolean
+  screener_federal_work_in_last_eighteen_months?: boolean
   screener_maritime_employer_eighteen_months?: boolean
 }
 
@@ -96,7 +97,6 @@ export type PrequalInput = {
   lived_outside_nj_when_working_nj?: boolean
   will_look_for_work_in_nj?: boolean
   can_begin_work_immediately?: boolean
-  federal_work_in_last_18mo?: boolean
 }
 
 export type DemographicsInput = {

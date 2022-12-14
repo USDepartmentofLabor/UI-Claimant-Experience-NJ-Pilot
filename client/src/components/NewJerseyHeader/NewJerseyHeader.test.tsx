@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useTranslation } from 'react-i18next'
 import { NewJerseyHeader } from 'components/NewJerseyHeader/NewJerseyHeader'
-import { Routes, CLAIM_FORM_BASE_ROUTE } from '../../constants/routes'
+import { Routes, CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({

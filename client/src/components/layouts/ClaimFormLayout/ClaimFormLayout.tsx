@@ -16,6 +16,7 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 
 type ClaimFormProps = {
   pageDefinition: PageDefinition
+  index: number
   children: ReactNode
   isDynamic?: boolean
 }
@@ -23,12 +24,14 @@ type ClaimFormProps = {
 export const ClaimFormLayout = ({
   children,
   pageDefinition,
+  index,
 }: ClaimFormProps) => {
   const { t } = useTranslation('claimForm')
 
   const [claimFormValues, setClaimFormValues] = useState<
     ClaimantInput | undefined
   >(undefined)
+
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const { data: partialClaim, isLoading: isLoadingGetPartialClaim } =
     useGetPartialClaim()
@@ -44,7 +47,7 @@ export const ClaimFormLayout = ({
   const headingRef = useRef<HTMLHeadingElement>(null)
 
   const { heading } = pageDefinition // TODO: Pass in heading and index to avoid dependency on pageDefinition?
-  const currentPageIndex = pageDefinitions.indexOf(pageDefinition)
+  const currentPageIndex = index
 
   const step = currentPageIndex + 1
   const totalSteps = pageDefinitions.length
@@ -87,7 +90,7 @@ export const ClaimFormLayout = ({
           ))}
         </StepIndicator>
         <ClaimFormSideNav
-          pageDefinition={pageDefinition}
+          index={index}
           className="desktop:grid-col-3 desktop:margin-top-4"
         />
         <main

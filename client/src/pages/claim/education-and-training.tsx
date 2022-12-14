@@ -10,7 +10,11 @@ import { EducationAndTrainingPageDefinition } from 'constants/pages/definitions/
 import { ChangeEventHandler } from 'react'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 import { EducationAndTrainingInput } from 'types/claimantInput'
-import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import {
+  getNextPage,
+  getPreviousPage,
+  pageDefinitions,
+} from 'constants/pages/pageDefinitions'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
@@ -76,7 +80,12 @@ const EducationAndTraining: NextPageWithLayout = () => {
 
 EducationAndTraining.getLayout = (page: ReactNode) => {
   return (
-    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+    <ClaimFormLayout
+      pageDefinition={pageDefinition}
+      index={pageDefinitions.indexOf(pageDefinition)}
+    >
+      {page}
+    </ClaimFormLayout>
   )
 }
 

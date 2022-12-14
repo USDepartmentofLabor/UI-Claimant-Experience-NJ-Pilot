@@ -7,7 +7,11 @@ import { ReactNode, ChangeEventHandler } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { UnionPageDefinition } from 'constants/pages/definitions/unionPageDefinition'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
-import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import {
+  getNextPage,
+  getPreviousPage,
+  pageDefinitions,
+} from 'constants/pages/pageDefinitions'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
@@ -68,7 +72,12 @@ export const Union: NextPageWithLayout = () => {
 
 Union.getLayout = (page: ReactNode) => {
   return (
-    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+    <ClaimFormLayout
+      pageDefinition={pageDefinition}
+      index={pageDefinitions.indexOf(pageDefinition)}
+    >
+      {page}
+    </ClaimFormLayout>
   )
 }
 

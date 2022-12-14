@@ -9,13 +9,8 @@ describe('Change in Employment component', () => {
   const { data } = useGetRecentEmployers()
   const renderChangeInEmployment = () => {
     render(
-      <Formik
-        initialValues={{
-          employers: data,
-        }}
-        onSubmit={noop}
-      >
-        <ChangeInEmployment index="0" />
+      <Formik initialValues={data[0]} onSubmit={noop}>
+        <ChangeInEmployment />
       </Formik>
     )
     const sectionTitle = screen.getByText('separation.heading')
@@ -26,26 +21,24 @@ describe('Change in Employment component', () => {
       })
 
     const queryForChangeReasonLaidOffAnswer = () =>
-      screen.getByTestId('employers[0].separation_circumstance.laid_off')
+      screen.getByTestId('separation_circumstance.laid_off')
 
     const queryForChangeReasonStillEmployedAnswer = () =>
-      screen.getByTestId('employers[0].separation_circumstance.still_employed')
+      screen.getByTestId('separation_circumstance.still_employed')
     const queryForChangeReasonFiredDischargedSuspendedAnswer = () =>
-      screen.getByTestId(
-        'employers[0].separation_circumstance.fired_discharged_suspended'
-      )
+      screen.getByTestId('separation_circumstance.fired_discharged_suspended')
 
     const queryForChangeReasonUnsatisfactoryWorkPerformanceAnswer = () =>
       screen.getByTestId(
-        'employers[0].separation_circumstance.unsatisfactory_work_performance'
+        'separation_circumstance.unsatisfactory_work_performance'
       )
 
     const queryForChangeReasonQuitOrRetiredAnswer = () =>
-      screen.getByTestId('employers[0].separation_circumstance.quit_or_retired')
+      screen.getByTestId('separation_circumstance.quit_or_retired')
 
     const queryForChangeReasonStrikeOrLockOutAnswer = () =>
       screen.getByTestId(
-        'employers[0].separation_circumstance.strike_or_lock_out_by_employer'
+        'separation_circumstance.strike_or_lock_out_by_employer'
       )
 
     const queryForExpectRecall = () =>
@@ -170,13 +163,13 @@ describe('Change in Employment component', () => {
       screen.queryByText('definite_recall_date.label', { exact: false })
 
     const queryForStartDateParent = () =>
-      screen.getByTestId('employers[0].employment_start_date.parent-div')
+      screen.getByTestId('employment_start_date.parent-div')
 
     const queryForLastDateParent = () =>
-      screen.getByTestId('employers[0].employment_last_date.parent-div')
+      screen.getByTestId('employment_last_date.parent-div')
 
     const queryForRecallDateParent = () =>
-      screen.getByTestId('employers[0].definite_recall_date.parent-div')
+      screen.getByTestId('definite_recall_date.parent-div')
 
     const getMonthRecallDate = () =>
       within(queryForRecallDateParent()).getByRole('textbox', {
@@ -208,7 +201,7 @@ describe('Change in Employment component', () => {
     const queryForDischargeDate = () =>
       screen.queryByText('discharge_date.label')
     const queryForDischargeDateParent = () =>
-      screen.getByTestId('employers[0].discharge_date.parent-div')
+      screen.getByTestId('discharge_date.parent-div')
 
     const getMonthDischargeDate = () =>
       within(queryForDischargeDateParent()).getByRole('textbox', {

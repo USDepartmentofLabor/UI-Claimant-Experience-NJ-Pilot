@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { useGetPartialClaim } from './useGetPartialClaim'
 import serverHttpClient from 'utils/http/serverHttpClient'
@@ -27,12 +27,12 @@ describe('use get partial claim', () => {
   it('calls the query and gets back data', async () => {
     mockedGet.mockResolvedValueOnce({ data: getData })
 
-    const { result, waitFor } = renderHook(() => useGetPartialClaim(), {
+    const { result } = renderHook(() => useGetPartialClaim(), {
       wrapper,
     })
 
-    await waitFor(() => result.current.isSuccess)
-
+    await waitFor(() => expect(result.current.isSuccess).toEqual(true))
+    expect(result.current.isSuccess).toBeTruthy()
     expect(mockedGet).toHaveBeenCalledTimes(1)
     expect(result.current.data).toEqual(getData)
   })
@@ -44,11 +44,11 @@ describe('use get partial claim', () => {
       throw { response: { status: 404 } }
     })
 
-    const { result, waitFor } = renderHook(() => useGetPartialClaim(), {
+    const { result } = renderHook(() => useGetPartialClaim(), {
       wrapper,
     })
 
-    await waitFor(() => result.current.isSuccess)
+    await waitFor(() => expect(result.current.isSuccess).toEqual(true))
 
     expect(mockedGet).toHaveBeenCalledTimes(1)
     expect(result.current.data).toEqual({})

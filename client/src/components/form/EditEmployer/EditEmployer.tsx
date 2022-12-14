@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { useFormikContext } from 'formik'
-import { ClaimantInput, PaymentsReceivedDetailInput } from 'types/claimantInput'
+import { Employer, PaymentsReceivedDetailInput } from 'types/claimantInput'
 import { array, boolean, object, mixed, ref, string } from 'yup'
 import {
   yupDate,
@@ -8,7 +8,6 @@ import {
   yupCurrency,
   yupPhone,
 } from 'validations/yup/custom'
-import { useEffect } from 'react'
 import { i18n_claimForm } from 'i18n/i18n'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
 import {
@@ -27,85 +26,65 @@ import {
   ADDRESS_WITHOUT_STREET_SKELETON,
   PHONE_SKELETON,
 } from 'constants/initialValues'
+import Error from 'next/error'
 
-type EditEmployerType = {
-  index: string
-}
+export const EditEmployer = () => {
+  const { values } = useFormikContext<Employer>()
 
-export const EditEmployer = ({ index }: EditEmployerType) => {
-  const { values } = useFormikContext<ClaimantInput>()
-  useEffect(() => {
-    /* Give employer initial values if they have not been initiated yet */
-    if (
-      values.employers &&
-      values.employers[parseInt(index)] &&
-      !values.employers[parseInt(index)].isInitiated
-    ) {
-      values.employers[parseInt(index)] = {
-        ...editEmployerInitialValues(),
-        ...values.employers[parseInt(index)],
-      }
-    }
-  }, [])
+  if (!values) return <Error statusCode={404} />
 
   return (
     <>
       {
-        /* Add our components here */
-        /* Satisfy error checking, will remove when we no longer directly reference the array */
-        values.employers && values.employers[parseInt(index)] ? (
-          /* Add employer form values here */
-          <div>
-            <div data-testid="edit-employer-test-subheader">
-              This is the employer name {values.employers[parseInt(index)].name}
-            </div>
-            <YourEmployer index={index} />
-            <WorkLocation index={index} />
-            <BusinessInterests index={index} />
-            <ChangeInEmployment index={index} />
-            <PaymentsReceived employerIndex={+index} />
+        <div data-testid="edit-employer-component">
+          <div data-testid="edit-employer-test-subheader">
+            This is the employer name {values.name}
           </div>
-        ) : (
-          /* Invalid Index */ <div>No employer defined for index {index}</div>
-        )
+          <YourEmployer />
+          <WorkLocation />
+          <BusinessInterests />
+          <ChangeInEmployment />
+          <PaymentsReceived />
+        </div>
       }
     </>
   )
 }
 
 /* THIS IS WHERE YOU DEFINE THE INITIAL VALUES */
-export const editEmployerInitialValues = () => {
-  return {
-    name: '',
-    isInitiated: true,
-    // Your Employer
-    is_full_time: undefined,
-    // Work Location
-    worked_at_employer_address: undefined,
-    alternate_physical_work_address: { ...ADDRESS_WITHOUT_STREET_SKELETON },
-    is_employer_phone_accurate: undefined,
-    work_location_phone: { ...PHONE_SKELETON },
-    // Business Interests
-    self_employed: undefined,
-    is_owner: undefined,
-    corporate_officer_or_stock_ownership: undefined,
-    employer_is_sole_proprietorship: undefined,
-    related_to_owner_or_child_of_owner_under_18: undefined,
-    // Change in Employment
-    separation_circumstance: undefined,
-    separation_circumstance_details: undefined,
-    employment_start_date: undefined,
-    employment_last_date: undefined,
-    reason_still_employed: undefined,
-    hours_reduced_twenty_percent: undefined,
-    expect_to_be_recalled: undefined,
-    definite_recall: undefined,
-    definite_recall_date: undefined,
-    is_seasonal_work: undefined,
-    discharge_date: undefined,
-  }
+export const EMPLOYER_SKELETON = {
+  name: '',
+  isInitiated: true,
+  // Your Employer
+  is_full_time: undefined,
+  // Work Location
+  worked_at_employer_address: undefined,
+  alternate_physical_work_address: { ...ADDRESS_WITHOUT_STREET_SKELETON },
+  is_employer_phone_accurate: undefined,
+  work_location_phone: { ...PHONE_SKELETON },
+  // Business Interests
+  self_employed: undefined,
+  is_owner: undefined,
+  corporate_officer_or_stock_ownership: undefined,
+  employer_is_sole_proprietorship: undefined,
+  related_to_owner_or_child_of_owner_under_18: undefined,
+  // Change in Employment
+  separation_circumstance: undefined,
+  separation_circumstance_details: undefined,
+  employment_start_date: undefined,
+  employment_last_date: undefined,
+  reason_still_employed: undefined,
+  hours_reduced_twenty_percent: undefined,
+  expect_to_be_recalled: undefined,
+  definite_recall: undefined,
+  definite_recall_date: undefined,
+  is_seasonal_work: undefined,
+  discharge_date: undefined,
+  payments_received: [] as PaymentsReceivedDetailInput[],
+  LOCAL_pay_types: [] as PayTypeOption[],
 }
-const yupEditEmployer = object().shape({
+
+export const yupEditEmployer = object().shape({
   /* THIS IS WHERE WE DEFINE THE SCHEMA FOR THE EDIT EMPLOYER PAGE */
   name: string().required(i18n_claimForm.t('employers.name.required')),
   // Your Employer

@@ -14,7 +14,11 @@ import { NextPageWithLayout } from 'pages/_app'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { PaymentPageDefinition } from 'constants/pages/definitions/paymentPageDefinition'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
-import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import {
+  getNextPage,
+  getPreviousPage,
+  pageDefinitions,
+} from 'constants/pages/pageDefinitions'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
@@ -266,7 +270,12 @@ const PaymentInformation: NextPageWithLayout = () => {
 
 PaymentInformation.getLayout = (page: ReactNode) => {
   return (
-    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+    <ClaimFormLayout
+      pageDefinition={pageDefinition}
+      index={pageDefinitions.indexOf(pageDefinition)}
+    >
+      {page}
+    </ClaimFormLayout>
   )
 }
 

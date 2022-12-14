@@ -7,17 +7,14 @@ import { Form, Formik } from 'formik'
 import { Button } from '@trussworks/react-uswds'
 import { noop } from 'helpers/noop/noop'
 import { NextPage } from 'next'
-import { ClaimantInput } from 'types/claimantInput'
 import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 const EditEmployerPage: NextPage = () => {
   const { data } = useGetRecentEmployers()
-  const initialValues: ClaimantInput = {
-    employers: data,
-  }
+
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={data[0]}
       validationSchema={yupEditEmployers}
       onSubmit={noop}
     >
@@ -26,7 +23,7 @@ const EditEmployerPage: NextPage = () => {
           <h1 data-testid="claim-form-page-heading">
             Test Edit Employer Component
           </h1>
-          <EditEmployer index="0" />
+          <EditEmployer />
           <Button type="submit">Validate</Button>
         </Form>
       </div>

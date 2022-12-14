@@ -8,7 +8,7 @@ import { PrequalPageDefinition } from 'constants/pages/definitions/prequalPageDe
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
-import { getNextPage } from 'constants/pages/pageDefinitions'
+import { getNextPage, pageDefinitions } from 'constants/pages/pageDefinitions'
 import { PrequalInput } from 'types/claimantInput'
 import { ChangeEventHandler } from 'react'
 import DropdownField, {
@@ -92,10 +92,6 @@ export const Prequal: NextPageWithLayout = () => {
               question={t('can_begin_work_immediately.label')}
               name="can_begin_work_immediately"
             />
-            <YesNoQuestion
-              question={t('federal_work_in_last_18mo.label')}
-              name="federal_work_in_last_18mo"
-            />
             <ClaimFormButtons nextStep={nextPage.heading}>
               <NextButton nextPage={nextPage.path} />
             </ClaimFormButtons>
@@ -108,7 +104,12 @@ export const Prequal: NextPageWithLayout = () => {
 
 Prequal.getLayout = (page: ReactNode) => {
   return (
-    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+    <ClaimFormLayout
+      pageDefinition={pageDefinition}
+      index={pageDefinitions.indexOf(pageDefinition)}
+    >
+      {page}
+    </ClaimFormLayout>
   )
 }
 

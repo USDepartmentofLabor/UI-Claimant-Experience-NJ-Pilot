@@ -2,34 +2,28 @@ import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { Form, Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
-import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
-import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+import {
+  EMPLOYER_SKELETON,
+  yupEditEmployer,
+} from 'components/form/EditEmployer/EditEmployer'
 
 export default {
   title: 'Components/Form/Employer/Sections/BusinessInterests',
   component: BusinessInterests,
 } as ComponentMeta<typeof BusinessInterests>
 
-const { data } = useGetRecentEmployers()
-const initialValues = {
-  employers: data,
-}
-
-const Template: ComponentStory<typeof BusinessInterests> = (args) => {
+const Template: ComponentStory<typeof BusinessInterests> = () => {
   return (
     <Formik
-      initialValues={initialValues}
-      validationSchema={yupEditEmployers}
+      initialValues={EMPLOYER_SKELETON}
+      validationSchema={yupEditEmployer}
       onSubmit={noop}
     >
       <Form>
-        <BusinessInterests index={args.index} />
+        <BusinessInterests />
       </Form>
     </Formik>
   )
 }
 
 export const Default = Template.bind({})
-Default.args = {
-  index: '0',
-}

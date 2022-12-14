@@ -121,12 +121,12 @@ export const DateInputField = ({
 
   const updateLocalDateInputState = () => {
     const formikDate = fieldProps.value
-    if (formikDate !== undefined) {
+    if (formikDate) {
       const [yearField, monthField, dayField] = formikDate.split('-')
       // don't include leading zeros
-      setYear(yearField.replace(/^0+(?=\d4)/, ''))
-      setMonth(monthField.replace(/^0+(?=\d)/, ''))
-      setDay(dayField.replace(/^0+(?=\d)/, ''))
+      setYear(yearField ? yearField.replace(/^0+(?=\d4)/, '') : '')
+      setMonth(monthField ? monthField.replace(/^0+(?=\d)/, '') : '')
+      setDay(dayField ? dayField.replace(/^0+(?=\d)/, '') : '')
     } else {
       setYear('')
       setMonth('')

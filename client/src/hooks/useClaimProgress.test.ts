@@ -1,15 +1,44 @@
-import { renderHook } from '@testing-library/react-hooks'
-import { ClaimantInput } from 'types/claimantInput'
+import { renderHook, waitFor } from '@testing-library/react'
+import { ClaimantInput, Employer } from 'types/claimantInput'
 
 jest.mock('next-auth/react')
 import React from 'react'
-import { useClaimProgress } from 'hooks/useClaimProgress'
-import { pageDefinitions } from 'constants/pages/pageDefinitions'
+import { isEmployerArrayValid, useClaimProgress } from 'hooks/useClaimProgress'
 import { Routes } from 'constants/routes'
+import { pageDefinitions } from 'constants/pages/pageDefinitions'
+import { RecentEmployersPageDefinition } from 'constants/pages/definitions/recentEmployersPageDefinition'
 
 const mockUseContext = jest.fn()
 
 React.useContext = mockUseContext
+
+const employer: Employer = {
+  name: 'Lyft Inc.',
+  is_imported: true,
+  is_full_time: true,
+  is_employer: true,
+  payments_received: [
+    {
+      pay_type: 'none',
+    },
+  ],
+  LOCAL_pay_types: ['none'],
+  employment_start_date: '2021-12-12',
+  employer_address: {
+    address: '1 John Fitch Plaza',
+    city: 'Trenton',
+    state: 'NJ',
+    zipcode: '11111',
+  },
+  worked_at_employer_address: true,
+  is_employer_phone_accurate: true,
+  self_employed: false,
+  is_owner: false,
+  corporate_officer_or_stock_ownership: true,
+  expect_to_be_recalled: false,
+  separation_circumstance: 'laid_off',
+  employment_last_date: '2022-12-03',
+}
 
 const initialValues: ClaimantInput = {
   filed_in_last_12mo: undefined,
@@ -17,17 +46,16 @@ const initialValues: ClaimantInput = {
   lived_outside_nj_when_working_nj: undefined,
   will_look_for_work_in_nj: undefined,
   can_begin_work_immediately: undefined,
-  federal_work_in_last_18mo: undefined,
 }
-describe('should use whoami', () => {
+describe('Claim progress hook', () => {
   it('returns the first page if none of the form is filled out', async () => {
     mockUseContext.mockImplementation(() => ({
       claimFormValues: initialValues,
     }))
 
-    const { result, waitFor } = renderHook(() => useClaimProgress())
+    const { result } = await renderHook(() => useClaimProgress())
 
-    await waitFor(() => !!result.current.continuePath)
+    await waitFor(() => expect(result.current.continuePath).not.toBeUndefined())
 
     expect(result.current.continuePath).toEqual(pageDefinitions[0].path)
   })
@@ -40,13 +68,12 @@ describe('should use whoami', () => {
         lived_outside_nj_when_working_nj: false,
         will_look_for_work_in_nj: true,
         can_begin_work_immediately: true,
-        federal_work_in_last_18mo: true,
       },
     }))
 
-    const { result, waitFor } = renderHook(() => useClaimProgress())
+    const { result } = await renderHook(() => useClaimProgress())
 
-    await waitFor(() => !!result.current.continuePath)
+    await waitFor(() => expect(result.current.continuePath).not.toBeUndefined())
 
     expect(result.current.continuePath).toEqual(pageDefinitions[1].path)
   })
@@ -56,10 +83,72 @@ describe('should use whoami', () => {
       claimFormValues: undefined,
     }))
 
-    const { result, waitFor } = renderHook(() => useClaimProgress())
+    const { result } = await renderHook(() => useClaimProgress())
 
-    await waitFor(() => !!result.current.continuePath)
+    await waitFor(() => expect(result.current.continuePath).not.toBeUndefined())
 
     expect(result.current.continuePath).toEqual(Routes.HOME)
+  })
+
+  describe('isEmployerArrayValid', () => {
+    it('is invalid if the recent-employer page is not valid', () => {
+      const values = {
+        employers: [
+          {
+            ...employer,
+            ...{ is_employer: undefined, is_imported: true },
+          },
+        ],
+      }
+
+      expect(
+        isEmployerArrayValid(RecentEmployersPageDefinition, values)
+      ).toBeFalsy()
+    })
+
+    it('is invalid if there is an employer that has not been filled out yet', () => {
+      const values = {
+        employers: [
+          {
+            ...employer,
+            ...{ is_employer: undefined, is_imported: true, name: undefined },
+          },
+        ],
+      }
+
+      expect(
+        isEmployerArrayValid(RecentEmployersPageDefinition, values)
+      ).toBeFalsy()
+    })
+
+    it('is valid if none of the employers in the employer array are actually employers', () => {
+      const values = {
+        employers: [
+          {
+            ...employer,
+            ...{ is_employer: false, is_imported: true, name: undefined },
+          },
+        ],
+      }
+
+      expect(
+        isEmployerArrayValid(RecentEmployersPageDefinition, values)
+      ).toBeTruthy()
+    })
+
+    it('is valid if all employers in the array are filled out correctly', () => {
+      const values = {
+        employers: [
+          {
+            ...employer,
+            ...{ is_employer: true, is_imported: true },
+          },
+        ],
+      }
+
+      expect(
+        isEmployerArrayValid(RecentEmployersPageDefinition, values)
+      ).toBeTruthy()
+    })
   })
 })
