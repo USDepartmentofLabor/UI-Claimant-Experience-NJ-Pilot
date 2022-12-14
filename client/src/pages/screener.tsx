@@ -34,6 +34,7 @@ const Screener: NextPageWithLayout = () => {
     screener_all_work_nj: undefined,
     screener_any_work_nj: undefined,
     screener_currently_disabled: undefined,
+    screener_federal_work_in_last_eighteen_months: undefined,
     screener_maritime_employer_eighteen_months: undefined,
   }
 
@@ -79,6 +80,11 @@ const Screener: NextPageWithLayout = () => {
     }),
     screener_currently_disabled: boolean().required(
       i18n_screener.t('screener_currently_disabled.errors.required')
+    ),
+    screener_federal_work_in_last_eighteen_months: boolean().required(
+      i18n_screener.t(
+        'screener_federal_work_in_last_eighteen_months.errors.required'
+      )
     ),
     screener_maritime_employer_eighteen_months: boolean().required(
       i18n_screener.t(
@@ -161,6 +167,7 @@ const Screener: NextPageWithLayout = () => {
             screener_any_work_nj,
             screener_currently_disabled,
             screener_military_service_eighteen_months,
+            screener_federal_work_in_last_eighteen_months,
             screener_maritime_employer_eighteen_months,
           } = values
           return (
@@ -168,6 +175,7 @@ const Screener: NextPageWithLayout = () => {
             screener_any_work_nj === false ||
             screener_currently_disabled === true ||
             screener_military_service_eighteen_months === true ||
+            screener_federal_work_in_last_eighteen_months === true ||
             screener_maritime_employer_eighteen_months === true
           )
         }
@@ -226,6 +234,12 @@ const Screener: NextPageWithLayout = () => {
             <YesNoQuestion
               question={t('screener_currently_disabled.label')}
               name="screener_currently_disabled"
+            />
+            <YesNoQuestion
+              question={t(
+                'screener_federal_work_in_last_eighteen_months.label'
+              )}
+              name="screener_federal_work_in_last_eighteen_months"
             />
             <YesNoQuestion
               question={t('screener_maritime_employer_eighteen_months.label')}

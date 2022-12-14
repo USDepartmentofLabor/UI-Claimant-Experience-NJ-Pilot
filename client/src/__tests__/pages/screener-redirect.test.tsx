@@ -63,9 +63,10 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
 
@@ -91,9 +92,10 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
 
@@ -119,9 +121,10 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
 
       const otherStateButton = screen.getByText('other_state.button')
@@ -131,6 +134,44 @@ describe('Screener-redirect page', () => {
       expect(assignMock).toHaveBeenCalledTimes(1)
       expect(assignMock).toHaveBeenCalledWith(
         'https://www.dol.gov/general/topic/unemployment-insurance/'
+      )
+    })
+
+    it('when worked in the military', async () => {
+      const user = userEvent.setup()
+      const screenerInput = {
+        screener_military_service_eighteen_months: true,
+      }
+
+      render(
+        <IntakeAppContext.Provider
+          value={{
+            ...mockAppContext,
+            screenerInput: screenerInput,
+          }}
+        >
+          <ScreenerRedirect />
+        </IntakeAppContext.Provider>
+      )
+
+      expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
+
+      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
+
+      const militaryMvpButton = screen.getByText('military_mvp.label.button')
+
+      await user.click(militaryMvpButton)
+
+      expect(assignMock).toHaveBeenCalledTimes(1)
+      expect(assignMock).toHaveBeenCalledWith(
+        'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
       )
     })
 
@@ -159,9 +200,10 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
 
-      const disabilityButton = screen.getByText('disability.button')
+      const disabilityButton = screen.getByText('disability.label.button')
 
       await user.click(disabilityButton)
       expect(assignMock).toHaveBeenCalledTimes(1)
@@ -170,10 +212,10 @@ describe('Screener-redirect page', () => {
       )
     })
 
-    it('when worked in the military', async () => {
+    it('when had federal employment', async () => {
       const user = userEvent.setup()
       const screenerInput = {
-        screener_military_service_eighteen_months: true,
+        screener_federal_work_in_last_eighteen_months: true,
       }
 
       render(
@@ -187,25 +229,27 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
+      expect(screen.getByText('federal.heading')).toBeInTheDocument()
 
       expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
 
-      const militaryMvpButton = screen.getByText('military_mvp.label.button')
+      const federalButton = screen.getByText('federal.label.button')
 
-      await user.click(militaryMvpButton)
+      await user.click(federalButton)
 
       expect(assignMock).toHaveBeenCalledTimes(1)
       expect(assignMock).toHaveBeenCalledWith(
         'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
       )
     })
+
     it('when had maritime employment', () => {
       const screenerInput = {
         screener_maritime_employer_eighteen_months: true,
@@ -228,8 +272,9 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
+      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
     })
   })

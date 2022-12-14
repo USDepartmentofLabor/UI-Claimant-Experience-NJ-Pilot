@@ -92,10 +92,6 @@ export const Prequal: NextPageWithLayout = () => {
               question={t('can_begin_work_immediately.label')}
               name="can_begin_work_immediately"
             />
-            <YesNoQuestion
-              question={t('federal_work_in_last_18mo.label')}
-              name="federal_work_in_last_18mo"
-            />
             <ClaimFormButtons nextStep={nextPage.heading}>
               <NextButton nextPage={nextPage.path} />
             </ClaimFormButtons>

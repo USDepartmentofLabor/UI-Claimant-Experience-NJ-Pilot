@@ -46,7 +46,6 @@ const initialValues: ClaimantInput = {
   lived_outside_nj_when_working_nj: undefined,
   will_look_for_work_in_nj: undefined,
   can_begin_work_immediately: undefined,
-  federal_work_in_last_18mo: undefined,
 }
 describe('Claim progress hook', () => {
   it('returns the first page if none of the form is filled out', async () => {
@@ -69,7 +68,6 @@ describe('Claim progress hook', () => {
         lived_outside_nj_when_working_nj: false,
         will_look_for_work_in_nj: true,
         can_begin_work_immediately: true,
-        federal_work_in_last_18mo: true,
       },
     }))
 

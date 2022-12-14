@@ -37,6 +37,10 @@ describe('Screener page', () => {
     ).toBeInTheDocument()
 
     expect(
+      screen.getByText('screener_federal_work_in_last_eighteen_months.label')
+    ).toBeInTheDocument()
+
+    expect(
       screen.getByText('screener_maritime_employer_eighteen_months.label')
     ).toBeInTheDocument()
 
@@ -128,6 +132,17 @@ describe('Screener page', () => {
       within(
         screen.getByRole('group', {
           name: 'screener_currently_disabled.label',
+        })
+      ).getByLabelText('no')
+    )
+
+    expect(
+      screen.getByText('screener_federal_work_in_last_eighteen_months.label')
+    ).toBeInTheDocument()
+    await user.click(
+      within(
+        screen.getByRole('group', {
+          name: 'screener_federal_work_in_last_eighteen_months.label',
         })
       ).getByLabelText('no')
     )
@@ -263,6 +278,7 @@ describe('Screener page', () => {
       screener_any_work_nj: undefined,
       screener_currently_disabled: false,
       screener_military_service_eighteen_months: false,
+      screener_federal_work_in_last_eighteen_months: false,
       screener_maritime_employer_eighteen_months: false,
     }
 
@@ -314,6 +330,7 @@ describe('Screener page', () => {
 
     it('screener-redirect:when no work was done in NJ', async () => {
       const disqualifyingValues = {
+        screener_job_last_eighteen_months: true,
         screener_all_work_nj: false,
         screener_any_work_nj: false,
       }
@@ -328,6 +345,12 @@ describe('Screener page', () => {
     it('screener-redirect:when they mark yes to military service', async () => {
       const disqualifyingValues = {
         screener_military_service_eighteen_months: true,
+      }
+      await testSubmitWithValues(disqualifyingValues)
+    })
+    it('screener-redirect:when they mark yes to federal work', async () => {
+      const disqualifyingValues = {
+        screener_federal_work_in_last_eighteen_months: true,
       }
       await testSubmitWithValues(disqualifyingValues)
     })
