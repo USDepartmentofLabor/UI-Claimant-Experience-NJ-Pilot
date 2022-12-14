@@ -24,10 +24,6 @@ describe('Prequal page', () => {
     expect(
       screen.getByText('can_begin_work_immediately.label')
     ).toBeInTheDocument()
-
-    expect(
-      screen.getByText('federal_work_in_last_18mo.label')
-    ).toBeInTheDocument()
   })
 
   it('check clear state, province, and territory dropdown', async () => {
@@ -124,12 +120,6 @@ describe('Prequal page', () => {
     await user.click(
       within(
         screen.getByRole('group', { name: 'can_begin_work_immediately.label' })
-      ).getByLabelText('yes')
-    )
-
-    await user.click(
-      within(
-        screen.getByRole('group', { name: 'federal_work_in_last_18mo.label' })
       ).getByLabelText('yes')
     )
   })

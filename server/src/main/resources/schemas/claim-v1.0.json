@@ -443,6 +443,10 @@
       "type": "boolean",
       "description": "Screener question: In the last 18 months, have you served in the United States Military?"
     },
+    "screener_federal_work_in_last_eighteen_months": {
+      "type": "boolean",
+      "description": "Screener question: In the last 18 months, have you worked for the federal government (not including military service)?"
+    },
     "screener_maritime_employer_eighteen_months": {
       "type": "boolean",
       "description": "Screener question: Have you worked for a maritime employer in the last 18 months (for example, did you work on a ship or in a harbor)?"
@@ -466,10 +470,6 @@
     },
     "can_begin_work_immediately": {
       "description": "Claimant can begin full-time work immediately",
-      "type": "boolean"
-    },
-    "federal_work_in_last_18mo": {
-      "description": "Worked for the federal government in the past 18months (excluding military service)",
       "type": "boolean"
     }
   },
@@ -495,8 +495,7 @@
     "federal_income_tax_withheld",
     "apply_for_increased_payment_for_dependents",
     "filed_in_last_12mo",
-    "lived_outside_nj_when_working_nj",
-    "federal_work_in_last_18mo"
+    "lived_outside_nj_when_working_nj"
   ],
   "allOf": [
     {

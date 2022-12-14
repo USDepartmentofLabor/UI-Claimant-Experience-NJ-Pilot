@@ -27,8 +27,9 @@ const ScreenerRedirect: NextPage = () => {
     screener_current_country_us,
     screener_live_in_canada,
     screener_any_work_nj,
-    screener_currently_disabled,
     screener_military_service_eighteen_months,
+    screener_currently_disabled,
+    screener_federal_work_in_last_eighteen_months,
     screener_maritime_employer_eighteen_months,
   } = screenerInput || {}
 
@@ -83,14 +84,6 @@ const ScreenerRedirect: NextPage = () => {
                 </Link>
               </li>
             )}
-            {screener_currently_disabled && (
-              <li>
-                {t('info_alert.items.disability')}
-                <Link variant="nav" href={'#disability'}>
-                  {t('read_more')}
-                </Link>
-              </li>
-            )}
             {screener_military_service_eighteen_months && (
               <li>
                 {t('info_alert.items.military_mvp')}
@@ -103,6 +96,22 @@ const ScreenerRedirect: NextPage = () => {
               <li>
                 {t('info_alert.items.military_ip')}
                 <Link variant="nav" href={'#military_ip'}>
+                  {t('read_more')}
+                </Link>
+              </li>
+            )}
+            {screener_currently_disabled && (
+              <li>
+                {t('info_alert.items.disability')}
+                <Link variant="nav" href={'#disability'}>
+                  {t('read_more')}
+                </Link>
+              </li>
+            )}
+            {screener_federal_work_in_last_eighteen_months && (
+              <li>
+                {t('info_alert.items.federal')}
+                <Link variant="nav" href={'#federal'}>
                   {t('read_more')}
                 </Link>
               </li>
@@ -165,32 +174,6 @@ const ScreenerRedirect: NextPage = () => {
         </div>
       )}
 
-      {screener_currently_disabled && (
-        <div className={borderStyle}>
-          <h2 id="disability">{t('disability.heading')}</h2>
-          <p>{t('disability.label.line1')}</p>
-          <p>
-            <Trans t={t} i18nKey="disability.label.line2">
-              <a href={`tel:${DISABILITY_BENEFITS_AGENT_NUMBER}`}>
-                {DISABILITY_BENEFITS_AGENT_NUMBER}
-              </a>
-            </Trans>
-          </p>
-          <p>
-            <Button
-              type="button"
-              onClick={() =>
-                window.location.assign(
-                  'https://nj.gov/labor/myleavebenefits/worker/tdi/'
-                )
-              }
-            >
-              {t('disability.button')}
-            </Button>
-          </p>
-        </div>
-      )}
-
       {screener_military_service_eighteen_months && (
         <div className={borderStyle}>
           <h2 id="military_mvp">{t('military_mvp.heading')}</h2>
@@ -235,6 +218,52 @@ const ScreenerRedirect: NextPage = () => {
             </Trans>
           </p>
           <p>{t('agent_contact.label.line1')}</p>
+        </div>
+      )}
+
+      {screener_currently_disabled && (
+        <div className={borderStyle}>
+          <h2 id="disability">{t('disability.heading')}</h2>
+          <p>{t('disability.label.line1')}</p>
+          <p>
+            <Trans t={t} i18nKey="disability.label.line2">
+              <a href={`tel:${DISABILITY_BENEFITS_AGENT_NUMBER}`}>
+                {DISABILITY_BENEFITS_AGENT_NUMBER}
+              </a>
+            </Trans>
+          </p>
+          <p>
+            <Button
+              type="button"
+              onClick={() =>
+                window.location.assign(
+                  'https://nj.gov/labor/myleavebenefits/worker/tdi/'
+                )
+              }
+            >
+              {t('disability.label.button')}
+            </Button>
+          </p>
+        </div>
+      )}
+
+      {screener_federal_work_in_last_eighteen_months && (
+        <div className={borderStyle}>
+          <h2 id="federal">{t('federal.heading')}</h2>
+          <p>{t('federal.label.line1')}</p>
+          <p>
+            <Button
+              type="button"
+              onClick={
+                () =>
+                  window.location.assign(
+                    'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
+                  ) //TODO change this link
+              }
+            >
+              {t('federal.label.button')}
+            </Button>
+          </p>
         </div>
       )}
 

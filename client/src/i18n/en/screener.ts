@@ -64,6 +64,14 @@ const screener = {
         'Please say whether you are currently disabled and unable to work',
     },
   },
+  screener_federal_work_in_last_eighteen_months: {
+    label:
+      'In the last 18 months, have you worked for the federal government (not including military service)?',
+    errors: {
+      required:
+        'Please say whether in the last 18 months, have you worked for the federal government (not including military service)',
+    },
+  },
   screener_maritime_employer_eighteen_months: {
     label:
       'Have you worked for a maritime employer in the last 18 months (for example, did you work on a ship or in a harbor)?',

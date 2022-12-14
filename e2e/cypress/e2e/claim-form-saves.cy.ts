@@ -35,6 +35,5 @@ context('Claim form', { scrollBehavior: 'center' }, () => {
     )
     cy.get('input[id=will_look_for_work_in_nj\\.yes]').should('be.checked')
     cy.get('input[id=can_begin_work_immediately\\.yes]').should('be.checked')
-    cy.get('input[id=federal_work_in_last_18mo\\.no]').should('be.checked')
   })
 })
