@@ -9,8 +9,6 @@ const mockUseField = useField as typeof useField & jest.Mock
 const mockUseFormikContext = useFormikContext as typeof useFormikContext &
   jest.Mock
 
-const employerIndex = '1'
-
 describe('Your Employer component', () => {
   beforeEach(() => {
     mockUseFormikContext.mockReturnValue({ submitCount: 0 })
@@ -29,13 +27,13 @@ describe('Your Employer component', () => {
       onChange: jest.fn(),
       onBlur: jest.fn(),
       multiple: undefined,
-      name: 'employers[1].is_full_time',
+      name: 'is_full_time',
     }
     mockUseField.mockReturnValue([mockField, mockMeta])
   })
 
   it('renders labels and radio buttons', () => {
-    const { container } = render(<YourEmployer index={employerIndex} />)
+    const { container } = render(<YourEmployer />)
     expect(screen.getByRole('heading', { name: 'your_employer.heading' }))
     expect(container.getElementsByClassName('usa-radio__input').length).toBe(2)
     expect(container.getElementsByClassName('usa-hint').length).toBe(1)

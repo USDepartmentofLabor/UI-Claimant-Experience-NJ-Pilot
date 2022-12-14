@@ -4,18 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { CheckboxGroupField } from '../../fields/CheckboxGroupField/CheckboxGroupField'
 import PaymentsReceivedDetail from '../PaymentsReceivedDetail/PaymentsReceivedDetail'
 import { useFormikContext, FieldArray } from 'formik'
-import { ClaimantInput, PaymentsReceivedDetailInput } from 'types/claimantInput'
+import { Employer, PaymentsReceivedDetailInput } from 'types/claimantInput'
 import { payTypeOptions, PayTypeOption } from 'constants/formOptions'
 
-type PaymentsReceivedProps = {
-  employerIndex: number
-}
-const PaymentsReceived = ({ employerIndex }: PaymentsReceivedProps) => {
+const PaymentsReceived = () => {
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'employers',
   })
-  const { values, setFieldValue } = useFormikContext<ClaimantInput>()
-  const employer = values.employers?.[`${employerIndex}`]
+  const { values, setFieldValue } = useFormikContext<Employer>()
   const sortPayDetails = (
     paymentsReceivedArray: PaymentsReceivedDetailInput[],
     order: PayTypeOption[]
@@ -36,29 +32,29 @@ const PaymentsReceived = ({ employerIndex }: PaymentsReceivedProps) => {
   }
 
   const findIndexOfPaymentReceived = (payType: PayTypeOption) => {
-    const paymentsReceived = employer?.payments_received
+    const paymentsReceived = values.payments_received
     return paymentsReceived?.findIndex((p) => p.pay_type === payType)
   }
   useEffect(() => {
-    const paymentsReceived = employer?.payments_received || []
+    const paymentsReceived = values.payments_received || []
     // sets the local values for the checkboxes based on saved payment types
     if (paymentsReceived.length > 0) {
       const payTypes = paymentsReceived.map((detail) => detail.pay_type)
-      setFieldValue(`employers[${employerIndex}].LOCAL_pay_types`, payTypes)
+      setFieldValue(`LOCAL_pay_types`, payTypes)
     } else {
-      setFieldValue(`employers[${employerIndex}].LOCAL_pay_types`, [])
+      setFieldValue(`LOCAL_pay_types`, [])
     }
-  }, [employer?.payments_received.length])
+  }, [values.payments_received.length])
 
   return (
     <>
       <h2 className="font-heading-sm">{t('payments_received.heading')}</h2>
       <FieldArray
-        name={`employers[${employerIndex}].payments_received`}
+        name={`payments_received`}
         render={(arrayHelpers) => (
           <>
             <CheckboxGroupField
-              name={`employers[${employerIndex}].LOCAL_pay_types`}
+              name={`LOCAL_pay_types`}
               legend={t(
                 'payments_received.payments_received_detail.pay_type.label'
               )}
@@ -81,13 +77,9 @@ const PaymentsReceived = ({ employerIndex }: PaymentsReceivedProps) => {
                   onChange: (e) => {
                     if (e.target.checked) {
                       if (e.target.value === 'none') {
+                        setFieldValue(`LOCAL_pay_types`, ['none'], true)
                         setFieldValue(
-                          `employers[${employerIndex}].LOCAL_pay_types`,
-                          ['none'],
-                          true
-                        )
-                        setFieldValue(
-                          `employers[${employerIndex}].payments_received`,
+                          `payments_received`,
                           [{ pay_type: option }],
                           true
                         )
@@ -102,33 +94,33 @@ const PaymentsReceived = ({ employerIndex }: PaymentsReceivedProps) => {
                     }
                   },
                   disabled:
-                    employer?.LOCAL_pay_types?.includes('none') &&
+                    values.LOCAL_pay_types?.includes('none') &&
                     option !== 'none',
                 },
               }))}
             />
-            {!!employer?.payments_received &&
-              sortPayDetails(employer?.payments_received, [
-                ...payTypeOptions,
-              ]).map((paymentsReceivedDetail) => {
-                const indexOfPaymentReceivedToDisplay =
-                  findIndexOfPaymentReceived(paymentsReceivedDetail.pay_type)
-                return (
-                  paymentsReceivedDetail.pay_type !== 'none' && (
-                    <PaymentsReceivedDetail
-                      key={`employers[${employerIndex}].payments_received.${indexOfPaymentReceivedToDisplay}`}
-                      name={`employers[${employerIndex}].payments_received.${indexOfPaymentReceivedToDisplay}`}
-                      payType={paymentsReceivedDetail.pay_type}
-                      label={t(
-                        `payments_received.payments_received_detail.pay_type.options.${paymentsReceivedDetail.pay_type}.label`
-                      )}
-                      description={t(
-                        `payments_received.payments_received_detail.pay_type.options.${paymentsReceivedDetail.pay_type}.description`
-                      )}
-                    />
+            {!!values.payments_received &&
+              sortPayDetails(values.payments_received, [...payTypeOptions]).map(
+                (paymentsReceivedDetail) => {
+                  const indexOfPaymentReceivedToDisplay =
+                    findIndexOfPaymentReceived(paymentsReceivedDetail.pay_type)
+                  return (
+                    paymentsReceivedDetail.pay_type !== 'none' && (
+                      <PaymentsReceivedDetail
+                        key={`payments_received.${indexOfPaymentReceivedToDisplay}`}
+                        name={`payments_received.${indexOfPaymentReceivedToDisplay}`}
+                        payType={paymentsReceivedDetail.pay_type}
+                        label={t(
+                          `payments_received.payments_received_detail.pay_type.options.${paymentsReceivedDetail.pay_type}.label`
+                        )}
+                        description={t(
+                          `payments_received.payments_received_detail.pay_type.options.${paymentsReceivedDetail.pay_type}.description`
+                        )}
+                      />
+                    )
                   )
-                )
-              })}
+                }
+              )}
           </>
         )}
       />

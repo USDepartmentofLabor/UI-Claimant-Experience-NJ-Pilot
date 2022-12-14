@@ -3,6 +3,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react'
 import PaymentsReceived from './PaymentsReceived'
 import { Form, Formik } from 'formik'
 import { noop } from 'helpers/noop/noop'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 export default {
   title: 'Components/Form/Employer/Sections/PaymentsReceived',
@@ -10,11 +11,10 @@ export default {
 } as ComponentMeta<typeof PaymentsReceived>
 
 const Template: ComponentStory<typeof PaymentsReceived> = () => {
-  const initialValues = { employers: [{ payments_received: [] }] }
   return (
-    <Formik initialValues={initialValues} onSubmit={noop}>
+    <Formik initialValues={EMPLOYER_SKELETON} onSubmit={noop}>
       <Form>
-        <PaymentsReceived employerIndex={0} />
+        <PaymentsReceived />
       </Form>
     </Formik>
   )

@@ -3,9 +3,6 @@ ignore:
   - fix-state: not-fixed
   - fix-state: wont-fix
   - fix-state: unknown
-  # We use dependabot to monitor for javascript dependency updates
-  - package:
-      type: npm
   # Ignore the following SnakeYAML vulnerabilities. The claimant intake
   # application does not use SnakeYAML to parse untrusted input.
   # See the discussion at https://github.com/spring-projects/spring-boot/issues/32221
@@ -24,3 +21,8 @@ ignore:
   - vulnerability: GHSA-9w3m-gqgf-c4p9
     package:
       name: snakeyaml
+  # Ignore the following netty-codec-http finding for now and wait for
+  # spring boot to include patched version
+  - vulnerability: GHSA-hh82-3pmq-7frp
+    package:
+      name: netty-codec-http

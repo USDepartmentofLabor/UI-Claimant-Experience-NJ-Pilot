@@ -1,0 +1,6 @@
+@import 'src/styles/uswds';
+
+.claimForm > :first-child,
+.claimForm > :first-child legend {
+  @include u-margin-top(0);
+}

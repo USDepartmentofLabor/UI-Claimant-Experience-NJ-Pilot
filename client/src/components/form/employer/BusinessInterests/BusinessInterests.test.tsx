@@ -9,13 +9,8 @@ describe('BusinessInterests component', () => {
   const { data } = useGetRecentEmployers()
   const renderBusinessInterests = () => {
     render(
-      <Formik
-        initialValues={{
-          employers: data,
-        }}
-        onSubmit={noop}
-      >
-        <BusinessInterests index="0" />
+      <Formik initialValues={data[0]} onSubmit={noop}>
+        <BusinessInterests />
       </Formik>
     )
 

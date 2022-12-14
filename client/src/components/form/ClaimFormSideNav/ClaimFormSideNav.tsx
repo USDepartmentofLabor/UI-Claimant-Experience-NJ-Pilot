@@ -1,24 +1,21 @@
 import { MouseEvent } from 'react'
 import { useRouter } from 'next/router'
 import { SideNav } from '@trussworks/react-uswds'
-import {
-  PageDefinition,
-  pageDefinitions,
-} from 'constants/pages/pageDefinitions'
+import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { useClaimProgress } from 'hooks/useClaimProgress'
 
 type ClaimFormSideNavProps = {
   className?: string
-  pageDefinition: PageDefinition
+  index: number
 }
 
 export const ClaimFormSideNav = ({
   className, // TODO: It's always the same, just set it statically
-  pageDefinition, // TODO: Just need the index, pass that in instead of the definition
+  index,
 }: ClaimFormSideNavProps) => {
   const { push } = useRouter()
 
-  const currentPageIndex = pageDefinitions.indexOf(pageDefinition)
+  const currentPageIndex = index
   if (currentPageIndex === -1) {
     throw new Error('Page not found')
   }

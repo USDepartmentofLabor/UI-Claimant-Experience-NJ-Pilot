@@ -3,52 +3,60 @@ import { Formik } from 'formik'
 import { EditEmployer } from './EditEmployer'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
 import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+import { Employer } from 'types/claimantInput'
+
+export const validImportedEditEmployer: Employer = {
+  name: 'Lyft Inc.',
+  is_imported: true,
+  is_full_time: true,
+  is_employer: true,
+  payments_received: [
+    {
+      pay_type: 'none',
+    },
+  ],
+  LOCAL_pay_types: ['none'],
+  employment_start_date: '2021-12-12',
+  employer_address: {
+    address: '1 John Fitch Plaza',
+    city: 'Trenton',
+    state: 'NJ',
+    zipcode: '11111',
+  },
+  worked_at_employer_address: true,
+  is_employer_phone_accurate: true,
+  self_employed: false,
+  is_owner: false,
+  corporate_officer_or_stock_ownership: true,
+  expect_to_be_recalled: false,
+  separation_circumstance: 'laid_off',
+  employment_last_date: '2022-12-03',
+}
 
 describe('Edit Employer Component', () => {
   const { data } = useGetRecentEmployers()
   it('renders correctly', async () => {
-    const initialValues = {
-      employers: data,
-    }
+    const initialValues = data[2]
 
     await act(() =>
       render(
         <Formik initialValues={initialValues} onSubmit={() => undefined}>
-          <EditEmployer index={'2'} />
+          <EditEmployer />
         </Formik>
       )
     )
-
     expect(screen.getByText(/Wendys/i)).toBeInTheDocument()
     expect(
       screen.getByRole('radio', {
         name: 'your_employer.is_full_time.options.full_time',
       })
     ).toBeInTheDocument()
-    expect(
-      screen.getByTestId('employers[2].self_employed.yes')
-    ).toBeInTheDocument()
+    expect(screen.getByTestId('self_employed.yes')).toBeInTheDocument()
     expect(
       screen.getByRole('group', {
         name: 'payments_received.payments_received_detail.pay_type.label',
       })
     ).toBeInTheDocument()
-  })
-
-  it('displays an error if the index is invalid', async () => {
-    const initialValues = {
-      employers: data,
-    }
-
-    await act(() =>
-      render(
-        <Formik initialValues={initialValues} onSubmit={() => undefined}>
-          <EditEmployer index={'4'} />
-        </Formik>
-      )
-    )
-
-    screen.getByText(/No employer defined for index/i)
   })
 })
 describe('Validates the schema', () => {

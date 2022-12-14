@@ -12,7 +12,10 @@ import { NextPageWithLayout } from 'pages/_app'
 import { FormEventHandler, ReactNode, useContext, useRef } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { ReviewPageDefinition } from 'constants/pages/definitions/reviewPageDefinition'
-import { getPreviousPage } from 'constants/pages/pageDefinitions'
+import {
+  getPreviousPage,
+  pageDefinitions,
+} from 'constants/pages/pageDefinitions'
 import { ReviewInput } from 'types/claimantInput'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
@@ -123,7 +126,12 @@ export const Review: NextPageWithLayout = () => {
 
 Review.getLayout = (page: ReactNode) => {
   return (
-    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+    <ClaimFormLayout
+      pageDefinition={pageDefinition}
+      index={pageDefinitions.indexOf(pageDefinition)}
+    >
+      {page}
+    </ClaimFormLayout>
   )
 }
 

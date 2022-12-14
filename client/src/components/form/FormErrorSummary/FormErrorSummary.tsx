@@ -1,14 +1,15 @@
 import { Alert } from '@trussworks/react-uswds'
-import { FormikErrors } from 'formik'
+import { FormikErrors, FormikValues } from 'formik'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ClaimantInput } from 'types/claimantInput'
 
-interface IFormErrorSummary {
-  errors: FormikErrors<ClaimantInput>
+interface IFormErrorSummary<T extends FormikValues> {
+  errors: FormikErrors<T>
 }
 
-export const FormErrorSummary = ({ errors }: IFormErrorSummary) => {
+export const FormErrorSummary = <T extends FormikValues>({
+  errors,
+}: IFormErrorSummary<T>) => {
   const { t } = useTranslation('claimForm')
   const count = useMemo(() => countErrors(errors), [errors]) || 0
 
@@ -25,7 +26,7 @@ export const FormErrorSummary = ({ errors }: IFormErrorSummary) => {
   )
 }
 
-const countErrors = (errors: FormikErrors<ClaimantInput>) => {
+const countErrors = <T extends FormikValues>(errors: FormikErrors<T>) => {
   let totalErrors = 0
   const objects: Record<string, any>[] = [errors]
   while (objects.length) {

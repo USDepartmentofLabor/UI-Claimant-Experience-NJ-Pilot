@@ -9,13 +9,8 @@ describe('WorkLocation component', () => {
   const { data } = useGetRecentEmployers()
   const renderWorkLocation = () => {
     render(
-      <Formik
-        initialValues={{
-          employers: data,
-        }}
-        onSubmit={noop}
-      >
-        <WorkLocation index="0" />
+      <Formik initialValues={data[0]} onSubmit={noop}>
+        <WorkLocation />
       </Formik>
     )
 

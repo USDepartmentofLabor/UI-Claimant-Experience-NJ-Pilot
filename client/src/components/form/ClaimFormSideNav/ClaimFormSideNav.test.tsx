@@ -24,7 +24,9 @@ describe('ClaimFormSideNav', () => {
       continuePath: firstPageDefinition.path,
     }))
 
-    render(<ClaimFormSideNav pageDefinition={firstPageDefinition} />)
+    render(
+      <ClaimFormSideNav index={pageDefinitions.indexOf(firstPageDefinition)} />
+    )
 
     const firstPageLink = screen.queryByText(firstPageDefinition.heading)
 
@@ -37,7 +39,9 @@ describe('ClaimFormSideNav', () => {
     }))
 
     const user = userEvent.setup()
-    render(<ClaimFormSideNav pageDefinition={middlePageDefinition} />)
+    render(
+      <ClaimFormSideNav index={pageDefinitions.indexOf(middlePageDefinition)} />
+    )
 
     const firstPageLink = screen.getByText(firstPageDefinition.heading)
     await user.click(firstPageLink)

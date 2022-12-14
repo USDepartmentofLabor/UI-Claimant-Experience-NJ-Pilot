@@ -35,14 +35,14 @@ export type EmployerInput = {
 }
 
 export type Employer = {
-  isImported?: boolean
-  isEmployer?: boolean
+  is_imported?: boolean
+  is_employer?: boolean
   employer_address?: AddressInput
   employer_phone?: string
 
   isInitiated?: boolean
   name?: string
-  isFullTime?: boolean
+  is_full_time?: boolean
 
   separation_circumstance?: string
   expect_to_be_recalled?: boolean

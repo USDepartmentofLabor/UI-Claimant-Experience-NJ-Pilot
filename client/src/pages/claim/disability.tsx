@@ -20,7 +20,11 @@ import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLay
 import { NextPageWithLayout } from 'pages/_app'
 import { DisabilityPageDefinition } from 'constants/pages/definitions/disabilityPageDefinition'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
-import { getNextPage, getPreviousPage } from 'constants/pages/pageDefinitions'
+import {
+  getNextPage,
+  getPreviousPage,
+  pageDefinitions,
+} from 'constants/pages/pageDefinitions'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
@@ -145,7 +149,12 @@ export const Disability: NextPageWithLayout = () => {
 
 Disability.getLayout = (page: ReactNode) => {
   return (
-    <ClaimFormLayout pageDefinition={pageDefinition}>{page}</ClaimFormLayout>
+    <ClaimFormLayout
+      pageDefinition={pageDefinition}
+      index={pageDefinitions.indexOf(pageDefinition)}
+    >
+      {page}
+    </ClaimFormLayout>
   )
 }
 
