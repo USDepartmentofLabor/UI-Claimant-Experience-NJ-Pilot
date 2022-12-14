@@ -43,7 +43,10 @@ const ScreenerRedirect: NextPage = () => {
         <title>{t('page_title')}</title>
       </Head>
 
-      <main id="main-content">
+      <main
+        id="main-content"
+        className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
+      >
         <h1>{t('page_title')}</h1>
 
         <SummaryBox>
