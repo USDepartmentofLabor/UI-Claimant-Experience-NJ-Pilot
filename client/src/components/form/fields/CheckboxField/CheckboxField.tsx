@@ -41,6 +41,7 @@ export const CheckboxField = ({
   /* eslint-disable-next-line react/jsx-props-no-spreading */
   return (
     <FormGroup className={formGroupClassName} error={showError}>
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       <Checkbox
         {...fieldProps}
         name={name}
@@ -49,7 +50,6 @@ export const CheckboxField = ({
         onInvalid={(e) => e.preventDefault()}
         {...inputProps}
       />
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
     </FormGroup>
   )
 }

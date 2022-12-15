@@ -49,6 +49,8 @@ export const TextAreaField = ({
         {hint}
       </div>
 
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
+
       <Textarea
         {...fieldProps}
         value={fieldProps.value || ''}
@@ -58,8 +60,6 @@ export const TextAreaField = ({
         error={showError}
         onInvalid={(e) => e.preventDefault()}
       />
-
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
     </FormGroup>
   )
 }

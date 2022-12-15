@@ -214,6 +214,7 @@ export const DateInputField = ({
             {hint}
           </span>
         )}
+        {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
         <div
           id={id}
           className="usa-memorable-date"
@@ -269,7 +270,6 @@ export const DateInputField = ({
             onChange={handleYearChange}
           />
         </div>
-        {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       </Fieldset>
     </FormGroup>
   )
