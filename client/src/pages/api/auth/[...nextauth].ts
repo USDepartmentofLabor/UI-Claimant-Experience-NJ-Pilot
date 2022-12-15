@@ -89,6 +89,7 @@ export const authOptions: NextAuthOptions = {
 
       if (account) {
         token.accessToken = account.access_token
+        //__REMOVE__ accout comes from the JWT account
         if (account.expires_at) {
           token.accessTokenExpires = account.expires_at * 1000
         }

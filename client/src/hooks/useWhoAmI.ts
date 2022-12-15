@@ -5,6 +5,7 @@ export const useWhoAmI = () => {
   const { data, status } = useSession()
 
   const whoAmI = data?.whoAmI as WhoAmI | undefined
+  const expiresTemp = data?.expires as Date | undefined
   const isLoading = status === 'loading'
-  return { data: whoAmI, isLoading }
+  return { data: whoAmI, isLoading, expiresTemp }
 }

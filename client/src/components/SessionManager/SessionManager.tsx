@@ -13,7 +13,7 @@ type SessionManagerPros = {
 //   Modal.setAppElement("#root");
 // }
 
-const NOTIFY_UNDER_MINUTES = 1
+// const NOTIFY_UNDER_MINUTES = 1
 const TIMOUT_BUFFER_SECONDS = 5
 
 const getSecondsLeft = () => {
@@ -57,16 +57,17 @@ export const SessionManager = ({ forceOpen }: SessionManagerPros) => {
   const { t } = useTranslation('common')
 
   // Use whomai query to refresh session
-  // const { refetch, isFetching } = useWhoAmI();
-  const { isLoading } = useWhoAmI()
-  //check if have log in info??
-  if (!isLoading && expiresAt.current === undefined) {
-    cookies.set(
-      'expires_at',
-      new Date().getTime() + NOTIFY_UNDER_MINUTES * 60000
-    )
-    console.log('was undefined')
-  }
+  const { isLoading, expiresTemp } = useWhoAmI()
+  console.log('expires temp is ' + expiresTemp) //__REMOVE__
+
+  //check if have log in info??__REMOVE__
+  //   if (!isLoading && expiresAt.current === undefined) {
+  //     cookies.set(
+  //       'expires_at',
+  //       new Date().getTime() + NOTIFY_UNDER_MINUTES * 60000
+  //     )
+  //     console.log('was undefined')
+  //   }
   const checkExpiry = useCallback(() => {
     const seconds = getSecondsLeft()
     // if (seconds ===undefined){
@@ -115,24 +116,25 @@ export const SessionManager = ({ forceOpen }: SessionManagerPros) => {
     return null
   }
 
-  const timeFromSeconds = (time: number, sr = false) => {
-    const minutes = Math.floor(time / 60)
-    const seconds = time % 60
-    if (sr) {
-      return t('timeout.sr_countdown', { count: minutes, seconds })
-    }
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
+  //   const timeFromSeconds = (time: number, sr = false) => {
+  //     const minutes = Math.floor(time / 60)
+  //     const seconds = time % 60
+  //     if (sr) {
+  //       return t('timeout.sr_countdown', { count: minutes, seconds })
+  //     }
+  //     return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  //   }
 
-  const time = timeFromSeconds(secondsRemaining)
+  //   const time = timeFromSeconds(secondsRemaining)
+
   // For screen readers, only announce every 10 seconds
-  const announceSecondsRemaining = Math.ceil(secondsRemaining / 10) * 10
-  const announceTime = timeFromSeconds(announceSecondsRemaining, true)
-  //   const time = 30;
+  //   const announceSecondsRemaining = Math.ceil(secondsRemaining / 10) * 10
+  //   const announceTime = timeFromSeconds(announceSecondsRemaining, true)
+  const time = 30
   // For screen readers, only announce every 10 seconds
   //   const secondsRemaining=15;
-  //   const announceSecondsRemaining = 10;
-  //   const announceTime = 5;
+  //   const announceSecondsRemaining = 10
+  const announceTime = 5
   const modalRef = useRef<ModalRef>(null)
   //   const open= !forceOpen ? secondsRemaining <= NOTIFY_UNDER_MINUTES * 60 : true
   const open = forceOpen || true

@@ -5,7 +5,9 @@ import { REFRESH_TOKEN_ERROR } from 'constants/errors'
 type ActiveSessionHandlerProps = {
   children: ReactNode
 }
-
+// const getTimeOut = () => {
+//   return new Date(Date.now() + 5 * 60000)
+// } __REMOVE
 export const ActiveSessionHandler = ({
   children,
 }: ActiveSessionHandlerProps) => {
