@@ -194,6 +194,8 @@ const claimForm = {
     },
   },
   employers: {
+    preamble:
+      'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount.',
     separation: {
       heading: 'Change in employment',
       info_alert: {
@@ -324,8 +326,6 @@ const claimForm = {
         },
       },
     },
-    reason_for_data_collection:
-      'We need the <strong>last 18 months</strong> of your work history to calculate your unemployment benefit amount. List out all your jobs, including jobs you are still working, to avoid delays with your application.',
     errors: {
       required: 'This field is required',
     },
