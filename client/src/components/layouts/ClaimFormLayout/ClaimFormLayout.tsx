@@ -89,10 +89,7 @@ export const ClaimFormLayout = ({
             />
           ))}
         </StepIndicator>
-        <ClaimFormSideNav
-          index={index}
-          className="desktop:grid-col-3 desktop:margin-top-4"
-        />
+        <ClaimFormSideNav index={index} />
         <main
           className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
           id="main-content"

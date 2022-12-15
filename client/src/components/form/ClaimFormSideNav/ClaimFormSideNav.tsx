@@ -5,14 +5,10 @@ import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { useClaimProgress } from 'hooks/useClaimProgress'
 
 type ClaimFormSideNavProps = {
-  className?: string
   index: number
 }
 
-export const ClaimFormSideNav = ({
-  className, // TODO: It's always the same, just set it statically
-  index,
-}: ClaimFormSideNavProps) => {
+export const ClaimFormSideNav = ({ index }: ClaimFormSideNavProps) => {
   const { push } = useRouter()
 
   const currentPageIndex = index
@@ -68,7 +64,10 @@ export const ClaimFormSideNav = ({
   })
 
   return (
-    <nav aria-labelledby="Side Navigation" className={className}>
+    <nav
+      aria-labelledby="Side Navigation"
+      className="desktop:grid-col-3 desktop:margin-top-4"
+    >
       <SideNav items={appItems} />
     </nav>
   )
