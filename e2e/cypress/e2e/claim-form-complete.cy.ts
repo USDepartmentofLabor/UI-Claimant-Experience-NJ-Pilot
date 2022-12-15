@@ -116,7 +116,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Education and training page
     fillEducationAndTrainingFields({
       attending_college_or_job_training: 'yes',
-      enrollment: 'yes',
+      training_through_hiring_hall_or_career_center: 'yes',
     })
     cy.checkA11y()
     cy.lighthouse()

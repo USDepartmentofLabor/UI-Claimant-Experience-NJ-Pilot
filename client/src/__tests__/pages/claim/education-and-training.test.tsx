@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import EducationAndTraining from 'pages/claim/education-and-training' // EducationAndTrainingPageDefinition,
+import EducationAndTraining from 'pages/claim/education-and-training'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
@@ -18,7 +18,7 @@ describe('EducationAndTraining component', () => {
     ).toBeInTheDocument()
   })
 
-  it('shows/hides enrollment', async () => {
+  it('shows/hides training_through_hiring_hall_or_career_center', async () => {
     const user = userEvent.setup()
     render(<EducationAndTraining />)
 
@@ -34,21 +34,24 @@ describe('EducationAndTraining component', () => {
 
     expect(
       screen.queryByRole('group', {
-        name: 'education_and_training.enrollment.label',
+        name: 'education_and_training.training_through_hiring_hall_or_career_center.label',
       })
     ).not.toBeInTheDocument()
 
     await user.click(currentlyAttendingTrainingYes)
 
-    const enrollmentFormGroup = await screen.findByRole('group', {
-      name: 'education_and_training.enrollment.label',
-    })
+    const trainingThroughHiringHallOrCareerCenterFormGroup =
+      await screen.findByRole('group', {
+        name: 'education_and_training.training_through_hiring_hall_or_career_center.label',
+      })
 
-    expect(enrollmentFormGroup).toBeInTheDocument()
+    expect(trainingThroughHiringHallOrCareerCenterFormGroup).toBeInTheDocument()
 
     await user.click(currentlyAttendingTrainingNo)
 
-    expect(enrollmentFormGroup).not.toBeInTheDocument()
+    expect(
+      trainingThroughHiringHallOrCareerCenterFormGroup
+    ).not.toBeInTheDocument()
   })
 
   // TODO: add validation tests, fixtures and functions when pages are more flushed out

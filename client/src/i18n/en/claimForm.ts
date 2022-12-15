@@ -716,7 +716,7 @@ const claimForm = {
       help_text:
         'If you are in union-required training or paid job training, choose "No."',
     },
-    enrollment: {
+    training_through_hiring_hall_or_career_center: {
       label: 'Did you go through a union hiring hall or Career Center?',
       help_text:
         'Career Centers include Vocational Rehabilitation and other <0>New Jersey career services</0>.',

@@ -193,7 +193,7 @@ export type IdentityInput = {
 
 export type EducationAndTrainingInput = Partial<{
   attending_college_or_job_training: boolean
-  enrollment: boolean
+  training_through_hiring_hall_or_career_center: boolean
 }>
 
 export type ReviewInput = {

@@ -78,14 +78,6 @@ export const educationLevelOptions = [
 
 export type EducationLevelOption = typeof educationLevelOptions[number]
 
-export const enrollmentOptions = [
-  'self_enrolled',
-  'career_center',
-  'union',
-] as const
-
-export type EnrollmentOption = typeof enrollmentOptions[number]
-
 export const suffixOptions = [
   'I',
   'II',
