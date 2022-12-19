@@ -1,11 +1,11 @@
-import { ScreenerInput } from 'types/claimantInput'
+import { ScreenerInput, SsnInput } from 'types/claimantInput'
 import { createContext } from 'react'
 
 export type IntakeAppContextType = {
   screenerInput?: ScreenerInput
   setScreenerInput: (screenerInput: ScreenerInput) => void
-  ssn?: string
-  setSsn: (ssn: string) => void
+  ssnInput?: SsnInput
+  setSsn: (ssnInput: SsnInput) => void
 }
 
 export const IntakeAppContext = createContext<IntakeAppContextType>(

@@ -7,6 +7,7 @@ export const Routes = {
   SCREENER: '/screener',
   SCREENER_REDIRECT: '/screener-redirect',
   PRIVACY: '/privacy',
+  SSN: '/ssn',
 
   // Claim Form
   CLAIM: {

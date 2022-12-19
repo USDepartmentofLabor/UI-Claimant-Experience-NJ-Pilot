@@ -1,19 +1,14 @@
-import { ReactNode, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { ReactNode } from 'react'
 import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
 
 import Head from 'next/head'
 
-type ScreenerFormProps = {
+type IntakeAppProps = {
+  heading: ReactNode
   children: ReactNode
 }
 
-export const ScreenerLayout = ({ children }: ScreenerFormProps) => {
-  const { t } = useTranslation('screener')
-  const headingRef = useRef<HTMLHeadingElement>(null)
-
-  const heading = t('heading')
-
+export const IntakeAppLayout = ({ heading, children }: IntakeAppProps) => {
   return (
     <>
       <Head>
@@ -24,9 +19,7 @@ export const ScreenerLayout = ({ children }: ScreenerFormProps) => {
           className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
           id="main-content"
         >
-          <PageHeading ref={headingRef} aria-label={`${heading}`}>
-            {heading}
-          </PageHeading>
+          <PageHeading aria-label={`${heading}`}>{heading}</PageHeading>
           {children}
         </main>
       </div>

@@ -62,7 +62,7 @@ describe('Screener page', () => {
     await user.click(previousButton)
 
     expect(mockPush).toHaveBeenCalledTimes(1)
-    expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
+    expect(mockPush).toHaveBeenCalledWith(Routes.SSN)
   })
 
   it('Can fill out all questions on page', async () => {

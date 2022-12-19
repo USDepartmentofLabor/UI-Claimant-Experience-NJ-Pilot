@@ -83,15 +83,6 @@ const claimForm = {
   identity: {
     heading: 'Identity Information',
   },
-  ssn: {
-    label: 'Social Security number',
-    hint: 'Use format 000-00-0000',
-    errors: {
-      badFormat: 'Must use format 000-00-0000',
-      required: 'Social Security number is required',
-    },
-    showSsnLabel: 'Show SSN',
-  },
   birthdate: {
     label: 'Date of birth',
     errors: {
@@ -261,7 +252,7 @@ const claimForm = {
         fired_discharged_suspended: {
           label: 'Fired, discharged, or suspended',
           description:
-            'Your employer ended your job, suspended you, or forced you to resign for a reason other than lack of work or assignment ending.',
+            'This employer ended your job, suspended you, or forced you to resign for a reason other than lack of work or assignment ending.',
           option_heading:
             'What was the reason you were fired, discharged, or suspended?',
           options: {
@@ -274,7 +265,7 @@ const claimForm = {
         still_employed: {
           label: 'Still employed',
           description:
-            "You're still working for your employer, but you may have fewer hours or be on a leave/break.",
+            "You're still working for this employer, but you may have fewer hours or be on a leave/break.",
           option_heading: 'Explain the reason you are still employed',
           options: {
             reduction_in_hours_by_employer: 'Hours reduced by employer',
@@ -309,19 +300,19 @@ const claimForm = {
         strike_or_lock_out_by_employer: {
           label: 'Strike or lock out by employer',
           description:
-            'During a labor dispute, you chose to stop work or your employer stopped work.',
+            'During a labor dispute, you chose to stop work or this employer stopped work.',
           // unconventional to have a null translation but it's because we leverage this file also for TS types
           option_heading: null,
         },
         unsatisfactory_work_performance: {
           label: 'Unsatisfactory work performance',
           description:
-            'Your employer ended your job due to performance, such as not meeting a quota',
+            'This employer ended your job due to performance, such as not meeting a quota',
         },
         federal_or_state_shutdown: {
           label: 'Strike or lock out by employer',
           description:
-            'During a labor dispute, you decided to stop work or your employer stopped work.',
+            'During a labor dispute, you decided to stop work or this employer stopped work.',
           option_heading: null,
         },
       },
@@ -457,8 +448,8 @@ const claimForm = {
       },
     },
     hours_reduced_twenty_percent: {
-      label: 'Did your employer reduce your hours by 20% or more?',
-      hint: 'For example, if your employer reduced your hours from 40 hours per week to 30 hours, you would choose "yes."',
+      label: 'Did this employer reduce your hours by 20% or more?',
+      hint: 'For example, if this employer reduced your hours from 40 hours per week to 32 hours, you would choose "yes."',
       errors: {
         required: 'You must say whether your hours were reduced by 20% or more',
       },
