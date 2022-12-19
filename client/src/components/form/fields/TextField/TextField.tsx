@@ -103,6 +103,10 @@ export const TextField = ({
       >
         {label}
       </Label>
+      <div className="usa-hint" id={`${textInputProps.name}-hint`}>
+        {hint}
+      </div>
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       {inputSuffix || inputPrefix ? (
         <div
           className={classnames('usa-input-group', {
@@ -118,10 +122,6 @@ export const TextField = ({
       ) : (
         textInput
       )}
-      <div className="usa-hint" id={`${textInputProps.name}-hint`}>
-        {hint}
-      </div>
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
     </FormGroup>
   )
 }

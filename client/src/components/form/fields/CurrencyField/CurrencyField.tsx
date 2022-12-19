@@ -146,6 +146,10 @@ export const CurrencyField = ({
       >
         {label}
       </Label>
+      <div className="usa-hint" id={`${name}-hint`}>
+        {hint}
+      </div>
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       {inputSuffix || inputPrefix ? (
         <div
           className={classnames('usa-input-group', {
@@ -161,10 +165,6 @@ export const CurrencyField = ({
       ) : (
         textInput
       )}
-      <div className="usa-hint" id={`${name}-hint`}>
-        {hint}
-      </div>
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
     </FormGroup>
   )
 }

@@ -65,6 +65,9 @@ export const RadioField = ({
         }`}
         onInvalid={(e) => e.preventDefault()}
       >
+        {showError && (
+          <ErrorMessage>{errorMessage || metaProps.error}</ErrorMessage>
+        )}
         {options.map((option, index) => (
           <Radio
             {...fieldProps}
@@ -80,10 +83,6 @@ export const RadioField = ({
             inputRef={index === 0 ? radioRef : undefined}
           />
         ))}
-
-        {showError && (
-          <ErrorMessage>{errorMessage || metaProps.error}</ErrorMessage>
-        )}
       </Fieldset>
     </FormGroup>
   )
