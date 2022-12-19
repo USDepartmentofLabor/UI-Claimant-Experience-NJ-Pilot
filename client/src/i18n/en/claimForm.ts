@@ -83,15 +83,6 @@ const claimForm = {
   identity: {
     heading: 'Identity Information',
   },
-  ssn: {
-    label: 'Social Security number',
-    hint: 'Use format 000-00-0000',
-    errors: {
-      badFormat: 'Must use format 000-00-0000',
-      required: 'Social Security number is required',
-    },
-    showSsnLabel: 'Show SSN',
-  },
   birthdate: {
     label: 'Date of birth',
     errors: {

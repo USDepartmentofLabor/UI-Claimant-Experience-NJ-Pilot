@@ -10,6 +10,7 @@ import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
 import fillDisabilityFields from './formPageFilling/disability'
 import fillPaymentFields from './formPageFilling/payment'
+import fillSsnField from './formPageFilling/ssn'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
 import fillRecentEmployersFields from './formPageFilling/recent-employers'
@@ -33,8 +34,18 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.visit('/')
     cy.get('[data-testid=sign-out]').should('be.visible')
 
+    // Ssn (Access your records) page
+    cy.visit('/ssn')
+    fillSsnField({ ssn: '987-65-4321' })
+    cy.checkA11y()
+    cy.lighthouse()
+    cy.get('[data-testid=next-button]')
+      .contains('Continue')
+      .scrollIntoView()
+      .should('be.visible')
+      .click()
+
     // Screener page
-    cy.visit('/screener')
     fillScreenerFields()
     cy.checkA11y()
     cy.lighthouse()
