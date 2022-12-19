@@ -180,7 +180,8 @@ const Screener: NextPageWithLayout = () => {
           )
         }
 
-        const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
+        const handleClickNext: MouseEventHandler<HTMLButtonElement> = (e) => {
+          e.preventDefault()
           submitForm().then(async () => {
             if (validRef.current) {
               const shouldRedirect = getIsRedirect()
@@ -249,16 +250,16 @@ const Screener: NextPageWithLayout = () => {
               <FormGroup>
                 <div className="text-center">
                   <Button
-                    type="submit"
-                    disabled={isSubmitting}
+                    type="button"
                     onClick={handleClickPrevious}
                     data-testid="back-button"
                   >
                     {t('pagination.previous')}
                   </Button>
                   <Button
-                    type="button"
+                    type="submit"
                     onClick={handleClickNext}
+                    disabled={isSubmitting}
                     data-testid="next-button"
                   >
                     {t('pagination.next')}
