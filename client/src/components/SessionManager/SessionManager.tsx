@@ -1,36 +1,49 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Button, Modal, ModalRef } from '@trussworks/react-uswds'
+import { Button, Modal } from '@trussworks/react-uswds'
 import { useWhoAmI } from 'hooks/useWhoAmI'
 import { useTranslation } from 'react-i18next'
-import Cookies from 'universal-cookie'
-
-const cookies = new Cookies()
+// import cognitoSignOut from 'utils/signout/cognitoSignOut'
 
 type SessionManagerPros = {
   forceOpen: boolean
+  forceExpireTime?: string
 }
+
 // if (process.env.NODE_ENV !== "test") {
 //   Modal.setAppElement("#root");
 // }
 
-// const NOTIFY_UNDER_MINUTES = 1
+const NOTIFY_UNDER_MINUTES = 1
 const TIMOUT_BUFFER_SECONDS = 5
+// let lockRefresh=false
+// const eventTypes = [
+//     'keypress',
+//     // 'mousemove',
+//     'mouseup',
+//     'scroll',
+//     'touchend',
+//     'pointerup'
+//   ]
+// const addEventListeners = (listener: any) => {
+//     eventTypes.forEach((type) => {
+//       window.addEventListener(type, listener, false)
+//     })
+//   }
+// const urlParams = new URLSearchParams({
+//     client_id: process.env.COGNITO_CLIENT_ID as string,
+//     logout_uri: `${process.env.NEXTAUTH_URL as string}`,
+//   })
+// const logoxutUrl = `${process.env.COGNITO_DOMAIN}/logout?${urlParams}`
+const logout = () => {
+  // window.location.href = logoutUrl) results in not found
+  // cognitoSignOut()// results in SessionManager.tsx?3e1a:27 Uncaught TypeError: (0 , utils_signout_cognitoSignOut__WEBPACK_IMPORTED_MODULE_5__.default) is not a function
+  const saveAndExit = document.querySelector(
+    '#save-and-exit-button'
+  ) as HTMLButtonElement
 
-const getSecondsLeft = () => {
-  //   const secondsLeft = expiresAt.getSeconds();
-  const secondsLeft = cookies.get('expires_at')
-  if (secondsLeft) {
-    cookies.remove('expires_at', { path: '/' })
-    // console.log("seconds left" +secondsLeft)
-    return secondsLeft - TIMOUT_BUFFER_SECONDS
-  }
-  return undefined
+  console.log('save and exit is ' + saveAndExit)
+  saveAndExit?.click()
 }
-
-const baseUrl = process.env.REACT_APP_BASE_URL || ''
-const logoutUrl = `${baseUrl}/logout/`
-const logout = () => (window.location.href = logoutUrl)
-
 // const customStyles = {
 //   overlay: {
 //     zIndex: 100,
@@ -47,52 +60,108 @@ const logout = () => (window.location.href = logoutUrl)
 //     transform: "translate(-50%, -50%)",
 //   },
 // };
-const reloadSession = () => {
+
+const reloadSession = async () => {
   const event = new Event('visibilitychange')
-  document.dispatchEvent(event)
+  document.dispatchEvent(event) // works
+  // await axios.get('/api/auth/session?update');// does nothing
 }
-export const SessionManager = ({ forceOpen }: SessionManagerPros) => {
+export const SessionManager = ({
+  forceOpen,
+  forceExpireTime,
+}: SessionManagerPros) => {
   const expiresAt = useRef<Date>()
   const [secondsRemaining, setSecondsRemaining] = useState<number>()
+  //   const [isOpen, setIsOpen] = useState<boolean>()
   const { t } = useTranslation('common')
 
   // Use whomai query to refresh session
-  const { isLoading, expiresTemp } = useWhoAmI()
-  console.log('expires temp is ' + expiresTemp) //__REMOVE__
+  const { isLoading, sessionExpires } = useWhoAmI()
+  console.log(
+    'From whoam recieved sesison expiration as: ' +
+      sessionExpires +
+      'session type is ' +
+      typeof sessionExpires
+  )
+  if (forceExpireTime !== undefined) {
+    expiresAt.current = new Date(forceExpireTime)
+  } else if (sessionExpires !== undefined) {
+    const isNewExpiration =
+      expiresAt.current === undefined ||
+      expiresAt.current <
+        new Date(sessionExpires.getTime() - TIMOUT_BUFFER_SECONDS * 1000)
 
-  //check if have log in info??__REMOVE__
-  //   if (!isLoading && expiresAt.current === undefined) {
-  //     cookies.set(
-  //       'expires_at',
-  //       new Date().getTime() + NOTIFY_UNDER_MINUTES * 60000
-  //     )
-  //     console.log('was undefined')
-  //   }
-  const checkExpiry = useCallback(() => {
-    const seconds = getSecondsLeft()
-    // if (seconds ===undefined){
-    //     cookies.set("expires_at",new Date().getTime() + NOTIFY_UNDER_MINUTES * 60000)
-    //     console.log("was undefined")
-    // }
-    if (seconds) {
-      expiresAt.current = new Date(new Date().getTime() + seconds * 1000)
-      console.log('expires at is ' + expiresAt.current)
-    }
-
-    console.log('seconds was ' + seconds) //returns undefined
-    if (expiresAt.current) {
-      // console.log("expires at is "+expiresAt.current)
-      setSecondsRemaining(
-        Math.max(
-          0,
-          Math.round(
-            (expiresAt.current.getTime() - new Date().getTime()) / 1000
-          )
-        )
+    if (isNewExpiration) {
+      console.log(
+        'session manager main () -> is new expires temp is ' + expiresAt.current
+      ) //__REMOVE__
+      console.log('session manager main () -> using subtract time')
+      expiresAt.current = new Date(
+        sessionExpires.getTime() - TIMOUT_BUFFER_SECONDS * 1000
+      )
+      console.log(
+        'session manager main () -> expires after subtract is ' +
+          expiresAt.current
       )
     }
-  }, [])
+  }
 
+  const getSecondsLeft = () => {
+    if (expiresAt.current === undefined) {
+      console.log('getSecondsLeft()_.>returning unedefined') //__REMOVE
+      return undefined
+    }
+    const expireTime = expiresAt.current.getTime()
+    const curr = new Date()
+    const secondsLeft = Math.round((expireTime - curr.getTime()) / 1000)
+    console.log(
+      'getSecondsLeft()->seconds left is ' +
+        secondsLeft +
+        ' expire time is ' +
+        expireTime +
+        ' current time is ' +
+        curr +
+        ' expire at is ' +
+        expiresAt.current
+    )
+  }
+
+  const checkExpiry = useCallback(() => {
+    const seconds = getSecondsLeft()
+
+    console.log('checkExpiry->in check expires temp is ' + expiresAt.current) //17:08:45
+
+    console.log('checkExpiry->seconds was ' + seconds) //returns u40
+    if (expiresAt.current !== undefined) {
+      // console.log("expires at is "+expiresAt.current)
+      //expire time-time now converted to seconds and rounded
+
+      const remaining =
+        (expiresAt.current.getTime() - new Date().getTime()) / 1000
+      console.log(
+        'checkExpiry->setting seconds remaining to ' +
+          remaining +
+          ' current is ' +
+          expiresAt.current
+      )
+      setSecondsRemaining(Math.max(0, Math.round(remaining)))
+    }
+  }, [])
+  //   const handleOnAction=() =>  {
+  //     if (isOpen!== undefined && isOpen!==false){
+  //     console.log('user did something open is '+isOpen)
+  //     // if(!lockRefresh)
+  //     //     {
+  //     //         lockRefresh=true
+  //             reloadSession()
+  //     //         lockRefresh=false
+  //     //     }
+  //     }
+  //   }
+  //   useEffect(() => {
+
+  //     addEventListeners(handleOnAction)
+  //   })
   useEffect(() => {
     const interval = setInterval(() => {
       checkExpiry()
@@ -116,36 +185,41 @@ export const SessionManager = ({ forceOpen }: SessionManagerPros) => {
     return null
   }
 
-  //   const timeFromSeconds = (time: number, sr = false) => {
-  //     const minutes = Math.floor(time / 60)
-  //     const seconds = time % 60
-  //     if (sr) {
-  //       return t('timeout.sr_countdown', { count: minutes, seconds })
-  //     }
-  //     return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  //   }
+  const timeFromSeconds = (time: number, sr = false) => {
+    const minutes = Math.floor(time / 60)
+    const seconds = time % 60
+    if (sr) {
+      return t('timeout.sr_countdown', { count: minutes, seconds })
+    }
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  }
 
-  //   const time = timeFromSeconds(secondsRemaining)
+  const time = timeFromSeconds(secondsRemaining)
 
   // For screen readers, only announce every 10 seconds
-  //   const announceSecondsRemaining = Math.ceil(secondsRemaining / 10) * 10
-  //   const announceTime = timeFromSeconds(announceSecondsRemaining, true)
-  const time = 30
-  // For screen readers, only announce every 10 seconds
-  //   const secondsRemaining=15;
-  //   const announceSecondsRemaining = 10
-  const announceTime = 5
-  const modalRef = useRef<ModalRef>(null)
-  //   const open= !forceOpen ? secondsRemaining <= NOTIFY_UNDER_MINUTES * 60 : true
-  const open = forceOpen || true
+  const announceSecondsRemaining = Math.ceil(secondsRemaining / 10) * 10
+  const announceTime = timeFromSeconds(announceSecondsRemaining, true)
+  //   const modalRef = useRef<ModalRef>(null)
+  const open = !forceOpen ? secondsRemaining <= NOTIFY_UNDER_MINUTES * 60 : true
+  console.log(
+    'open is ' +
+      open +
+      'seconds remaining is ' +
+      secondsRemaining +
+      'notfigy seconds is ' +
+      NOTIFY_UNDER_MINUTES * 60
+  )
+
+  // setIsOpen(open)
   return (
     <Modal
-      ref={modalRef}
-      id="example-modal-1"
-      aria-labelledby="modal-1-heading"
-      aria-describedby="modal-1-description"
-      isInitiallyOpen={open}
+      //   ref={modalRef}
+      id="timout-modal"
+      aria-labelledby="timout-modal-heading"
+      aria-describedby="timout-modal-description"
+      isInitiallyOpen={true}
       hidden={open}
+      forceAction
     >
       {/* isOpen={secondsRemaining <= NOTIFY_UNDER_MINUTES * 60}
       style={customStyles}

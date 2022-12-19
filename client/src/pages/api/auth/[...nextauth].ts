@@ -63,6 +63,9 @@ export const authOptions: NextAuthOptions = {
       checks: 'nonce',
     }),
   ],
+  session: {
+    maxAge: 2 * 60,
+  },
   callbacks: {
     async jwt({ token, account, profile }) {
       if (profile) {
@@ -104,7 +107,6 @@ export const authOptions: NextAuthOptions = {
       if (Date.now() < token.accessTokenExpires) {
         return token
       }
-
       // Access token has expired, try to update it
       return refreshAccessToken(token)
     },
