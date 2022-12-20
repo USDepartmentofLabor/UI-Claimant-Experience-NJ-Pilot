@@ -44,6 +44,7 @@ dependencies {
     // AWS
     implementation platform('software.amazon.awssdk:bom:2.18.36')
     implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:rds'
 
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
