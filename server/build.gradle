@@ -47,7 +47,7 @@ dependencies {
     implementation 'software.amazon.awssdk:rds'
 
     // Swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 
     // Environment Configuration
     implementation 'me.paulschwarz:spring-dotenv:2.5.4'
