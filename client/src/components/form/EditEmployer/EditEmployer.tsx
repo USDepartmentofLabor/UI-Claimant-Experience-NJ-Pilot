@@ -383,15 +383,23 @@ export const yupEditEmployer = object().shape({
               )
             ),
         }),
-      note: string().when('pay_type', {
-        is: 'other_pay',
-        then: (schema) =>
-          schema.required(
-            i18n_claimForm.t(
-              'employers.payments_received.payments_received_detail.other_note.errors.required'
-            )
-          ),
-      }),
+      note: string()
+        .trim()
+        .max(
+          1024,
+          i18n_claimForm.t(
+            'employers.payments_received.payments_received_detail.other_note.errors.maxLength'
+          )
+        )
+        .when('pay_type', {
+          is: 'other_pay',
+          then: (schema) =>
+            schema.required(
+              i18n_claimForm.t(
+                'employers.payments_received.payments_received_detail.other_note.errors.required'
+              )
+            ),
+        }),
     })
   ),
 })

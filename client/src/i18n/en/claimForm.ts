@@ -596,6 +596,8 @@ const claimForm = {
           label: 'Please explain what type of pay you received',
           errors: {
             required: 'Please give further details',
+            maxLength:
+              'Your other type of pay details must be at most 1024 characters',
           },
         },
       },
