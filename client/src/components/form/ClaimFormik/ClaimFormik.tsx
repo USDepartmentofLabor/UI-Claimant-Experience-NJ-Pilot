@@ -58,6 +58,7 @@ export const ClaimFormik = <Values extends FormikValues = ClaimantInput>({
   }, [isLoadingInitialValues])
 
   const handleSaveAndExit = (values: Values) => {
+    console.log('handleSave and exdit')
     appendAndSaveClaimFormValues(values).then(
       async () => await cognitoSignOut()
     )

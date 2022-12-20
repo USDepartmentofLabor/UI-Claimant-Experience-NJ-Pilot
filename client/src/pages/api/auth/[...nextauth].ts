@@ -10,6 +10,8 @@ import { REFRESH_TOKEN_ERROR } from 'constants/errors'
  * `accessToken` and `accessTokenExpires`. If an error occurs,
  * returns the old token and an error property
  */
+const SESSION_MAX_MINUTES = 3
+
 async function refreshAccessToken(token: JWT) {
   try {
     const clientId = process.env.COGNITO_CLIENT_ID || ''
@@ -64,7 +66,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    maxAge: 2 * 60,
+    maxAge: SESSION_MAX_MINUTES * 60,
   },
   callbacks: {
     async jwt({ token, account, profile }) {
