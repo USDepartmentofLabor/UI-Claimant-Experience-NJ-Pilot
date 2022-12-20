@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
 
 type SessionManagerPros = {
-  forceOpen: boolean
+  forceOpen?: boolean
   forceExpireTime?: string
 }
 
@@ -51,29 +51,12 @@ export const SessionManager = ({
     document.dispatchEvent(event)
   }
 
-  //   const getSecondsLeft = () => {
-  //     if (expiresAt.current === undefined) {
-  //       return undefined
-  //     }
-
-  //     const expireTime = expiresAt.current.getTime()
-  //     const curr = new Date()
-  //     const secondsLeft = Math.round((expireTime - curr.getTime()) / 1000)
-  //     console.log(
-  //       'getSecondsLeft()->seconds left is ' +
-  //         secondsLeft +
-  //         ' expire time is ' +
-  //         expireTime +
-  //         ' current time is ' +
-  //         curr +
-  //         ' expire at is ' +
-  //         expiresAt.current
-  //     )
-  //     return secondsLeft
-  //   }
+  const forceModuleOpen = () => {
+    return forceOpen !== undefined && forceOpen
+  }
 
   const shouldOpenModal = () => {
-    return !forceOpen
+    return !forceModuleOpen()
       ? secondsRemaining !== undefined &&
           secondsRemaining <= NOTIFY_UNDER_MINUTES * 60
       : true
@@ -82,15 +65,9 @@ export const SessionManager = ({
   const modalIsOpen = () => {
     return modalRef.current === null ? false : modalRef.current.modalIsOpen
   }
+
   const checkExpiry = useCallback(() => {
-    // const seconds = getSecondsLeft()
-
-    // console.log('checkExpiry->in check expires temp is ' + expiresAt.current) //17:08:45
-
-    // console.log('checkExpiry->seconds was ' + seconds) //returns u40
     if (expiresAt.current !== undefined) {
-      // console.log("expires at is "+expiresAt.current)
-      //expire time-time now converted to seconds and rounded
       const remaining =
         (expiresAt.current.getTime() - new Date().getTime()) / 1000
 
@@ -144,7 +121,7 @@ export const SessionManager = ({
   }, [isLoading, checkExpiry])
 
   useEffect(() => {
-    const shouldOpenModal = !forceOpen
+    const shouldOpenModal = !forceModuleOpen()
       ? secondsRemaining !== undefined &&
         secondsRemaining <= NOTIFY_UNDER_MINUTES * 60
       : true
@@ -177,11 +154,10 @@ export const SessionManager = ({
   return (
     <Modal
       ref={modalRef}
-      id="timout-modal"
+      id="timeout-modal"
       aria-labelledby="timout-modal-heading"
       aria-describedby="timout-modal-description"
-      isInitiallyOpen={forceOpen}
-      //   isInitiallyOpen={forceOpen}
+      isInitiallyOpen={forceModuleOpen()}
       forceAction
     >
       <h1
