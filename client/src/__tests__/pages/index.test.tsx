@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Home from 'pages'
 import userEvent from '@testing-library/user-event'
+import { Routes } from 'constants/routes'
 
 jest.mock('next-auth/react')
 import { useSession, signIn, signOut } from 'next-auth/react'
@@ -27,12 +28,16 @@ describe('home page', () => {
     const signOutButton = screen.queryByRole('button', {
       name: 'Sign out',
     })
+    const updatePaymentButton = screen.queryByRole('button', {
+      name: 'Update payment info',
+    })
 
     return {
       heading,
       loader,
       signInButton,
       signOutButton,
+      updatePaymentButton,
     }
   }
 
@@ -63,12 +68,19 @@ describe('home page', () => {
       data: null,
     })
 
-    const { heading, loader, signInButton, signOutButton } = renderHomePage()
+    const {
+      heading,
+      loader,
+      signInButton,
+      signOutButton,
+      updatePaymentButton,
+    } = renderHomePage()
 
     expect(heading).toBeInTheDocument()
     expect(loader).toBeInTheDocument()
     expect(signInButton).not.toBeInTheDocument()
     expect(signOutButton).not.toBeInTheDocument()
+    expect(updatePaymentButton).not.toBeInTheDocument()
   })
 
   it('renders when logged in', async () => {
@@ -91,16 +103,37 @@ describe('home page', () => {
       },
     })
 
-    const { heading, signInButton, signOutButton } = renderHomePage()
+    const { heading, signInButton, signOutButton, updatePaymentButton } =
+      renderHomePage()
 
     expect(heading).toBeInTheDocument()
     expect(signInButton).not.toBeInTheDocument()
     expect(signOutButton).toBeInTheDocument()
     expect(signOutButton).toHaveClass('usa-button')
+    expect(updatePaymentButton).toBeInTheDocument()
+    expect(updatePaymentButton).toHaveClass('usa-button')
+    expect(updatePaymentButton).toHaveClass('usa-button--secondary')
 
     await user.click(signOutButton as HTMLElement)
 
     expect(signOut).toHaveBeenCalledTimes(1)
+  })
+
+  it('takes the user to the update payment form page', async () => {
+    const user = userEvent.setup()
+
+    const mockNavigateUpdatePayment = jest.fn()
+    mockRouter.mockImplementation(() => ({
+      push: mockNavigateUpdatePayment,
+    }))
+
+    const { updatePaymentButton } = renderHomePage()
+
+    await user.click(updatePaymentButton as HTMLElement)
+    expect(mockNavigateUpdatePayment).toHaveBeenCalledTimes(1)
+    expect(mockNavigateUpdatePayment).toHaveBeenCalledWith(
+      Routes.UPDATE_PAYMENT_INFO
+    )
   })
 
   it.each([null, { user: null }])(
@@ -111,11 +144,13 @@ describe('home page', () => {
         data: data,
       })
 
-      const { heading, signInButton, signOutButton } = renderHomePage()
+      const { heading, signInButton, signOutButton, updatePaymentButton } =
+        renderHomePage()
 
       expect(heading).toBeInTheDocument()
       expect(signInButton).toBeInTheDocument()
       expect(signOutButton).not.toBeInTheDocument()
+      expect(updatePaymentButton).not.toBeInTheDocument()
     }
   )
   it('Shows a success alert when a claim form has been submitted', () => {
