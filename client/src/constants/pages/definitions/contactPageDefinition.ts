@@ -24,7 +24,9 @@ export const ContactPageDefinition: PageDefinition = {
     alternate_phone: yupPhoneOptional,
     interpreter_required: mixed()
       .oneOf([...interpreterTTYOptions])
-      .required(i18n_claimForm.t('contact.interpreter_required.required')),
+      .required(
+        i18n_claimForm.t('contact.interpreter_required.errors.required')
+      ),
     preferred_language: mixed().when('interpreter_required', {
       is: 'interpreter',
       then: string()
