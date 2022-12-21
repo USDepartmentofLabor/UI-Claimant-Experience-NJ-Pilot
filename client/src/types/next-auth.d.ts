@@ -6,7 +6,6 @@ import {
   Profile as NextAuthProfile,
 } from 'next-auth'
 import { WhoAmI } from 'types/claimantInput'
-//__REMOVE__ whoami comes from jwt, i think
 interface SharedProps {
   accessToken?: string
   whoAmI?: WhoAmI

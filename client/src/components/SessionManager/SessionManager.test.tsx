@@ -50,13 +50,11 @@ describe('SessionManager', () => {
       status: 'unauthenticated',
     })
     const { queryForModalWindow } = renderSessionManager()
-    console.log(queryForModalWindow())
     expect(queryForModalWindow()).not.toBeInTheDocument()
   })
 
   it('Renders if session exists and is timed out', () => {
     const expireDate = new Date(Date.now() + 2000)
-    console.log('expire data  is ' + expireDate)
     mockUseSession.mockReturnValue({
       data: { expires: expireDate, WhoAmI: undefined },
       status: 'authenticated',
@@ -81,7 +79,6 @@ describe('SessionManager', () => {
 
     //check window exits with the login button
     expect(queryForModalWindow()).toBeInTheDocument()
-
     expect(stayLoggedInBtn).toBeInTheDocument()
 
     //click login and check that the session refresh event was triggered
