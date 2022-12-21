@@ -7,7 +7,10 @@ import { useSession, signIn } from 'next-auth/react'
 // import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
 const mockUseSession = useSession as jest.Mock
 const mockSignIn = signIn as jest.Mock
-
+const mockCognitoSignOut = jest.fn(() => Promise.resolve())
+jest.mock('utils/signout/cognitoSignOut', () => ({
+  cognitoSignOut: () => mockCognitoSignOut(),
+}))
 describe('SessionManager', () => {
   const renderSessionManager = (
     forceOpen?: boolean,
@@ -39,6 +42,7 @@ describe('SessionManager', () => {
   }
   afterEach(() => {
     mockSignIn.mockClear()
+    mockCognitoSignOut.mockClear()
   })
   it('Does not render if there is no session', () => {
     mockUseSession.mockReturnValue({
@@ -91,14 +95,30 @@ describe('SessionManager', () => {
       data: { expires: expireDate, WhoAmI: undefined },
       status: 'authenticated',
     })
-    //   const signoutMock=jest.mock(cognitoSignOut)
+
     const user = userEvent.setup()
     const { queryForLogOutButton } = renderSessionManager()
-    // queryForModalWindow,
+
     const logoutBtn = queryForLogOutButton()
     expect(logoutBtn).toBeInTheDocument()
     await user.click(logoutBtn as HTMLElement)
-    // expect(queryForModalWindow()).not.toBeInTheDocument()
-    // expect(signoutMock).toBeCalled()
+    expect(mockCognitoSignOut).toHaveBeenCalledTimes(1)
+  })
+  it('can open and set the time to the optional parameters', async () => {
+    const expireDate = new Date(Date.now() + 15000)
+    mockUseSession.mockReturnValue({
+      data: { expires: expireDate, WhoAmI: undefined },
+      status: 'authenticated',
+    })
+
+    //set expire to be 31 mins,
+    //thus outside of when it should normall open the modal
+    const { queryForModalWindow } = renderSessionManager(
+      true,
+      new Date(Date.now() + 31 * 60 * 1000).toString()
+    )
+
+    //should be forced open
+    expect(queryForModalWindow()).toBeInTheDocument()
   })
 })
