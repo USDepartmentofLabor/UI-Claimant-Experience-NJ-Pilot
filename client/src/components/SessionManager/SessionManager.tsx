@@ -9,7 +9,7 @@ type SessionManagerPros = {
   forceExpireTime?: string
 }
 
-const NOTIFY_UNDER_MINUTES = 2
+const NOTIFY_UNDER_MINUTES = 5
 const TIMOUT_BUFFER_SECONDS = 5
 let lastRefresh = Date.now()
 const eventTypes = ['keypress', 'scroll', 'touchend', 'pointerup']

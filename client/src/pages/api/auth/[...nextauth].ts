@@ -10,7 +10,7 @@ import { REFRESH_TOKEN_ERROR } from 'constants/errors'
  * `accessToken` and `accessTokenExpires`. If an error occurs,
  * returns the old token and an error property
  */
-const SESSION_MAX_MINUTES = 3
+const SESSION_MAX_MINUTES = 30
 
 async function refreshAccessToken(token: JWT) {
   try {
