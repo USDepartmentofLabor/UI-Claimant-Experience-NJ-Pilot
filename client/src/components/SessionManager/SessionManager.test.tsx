@@ -1,16 +1,15 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import { SessionManager } from './SessionManager'
 import userEvent from '@testing-library/user-event'
 jest.mock('next-auth/react')
 import { useSession, signIn } from 'next-auth/react'
-// import { REFRESH_TOKEN_ERROR } from 'constants/errors'
-// import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
 const mockUseSession = useSession as jest.Mock
 const mockSignIn = signIn as jest.Mock
 const mockCognitoSignOut = jest.fn(() => Promise.resolve())
 jest.mock('utils/signout/cognitoSignOut', () => ({
   cognitoSignOut: () => mockCognitoSignOut(),
 }))
+
 describe('SessionManager', () => {
   const renderSessionManager = (
     forceOpen?: boolean,
@@ -44,16 +43,17 @@ describe('SessionManager', () => {
     mockSignIn.mockClear()
     mockCognitoSignOut.mockClear()
   })
+
   it('Does not render if there is no session', () => {
     mockUseSession.mockReturnValue({
       data: undefined,
       status: 'unauthenticated',
     })
     const { queryForModalWindow } = renderSessionManager()
-    screen.debug(undefined, 300000)
     console.log(queryForModalWindow())
     expect(queryForModalWindow()).not.toBeInTheDocument()
   })
+
   it('Renders if session exists and is timed out', () => {
     const expireDate = new Date(Date.now() + 2000)
     console.log('expire data  is ' + expireDate)
@@ -61,11 +61,11 @@ describe('SessionManager', () => {
       data: { expires: expireDate, WhoAmI: undefined },
       status: 'authenticated',
     })
+
     const { queryForModalWindow } = renderSessionManager()
-    // console.log()
-    screen.debug(undefined, 300000)
     expect(queryForModalWindow()).toBeInTheDocument()
   })
+
   it('Reloads the session with stay logged in clicked', async () => {
     const expireDate = new Date(Date.now() + 15000)
     mockUseSession.mockReturnValue({
@@ -81,14 +81,15 @@ describe('SessionManager', () => {
 
     //check window exits with the login button
     expect(queryForModalWindow()).toBeInTheDocument()
+
     expect(stayLoggedInBtn).toBeInTheDocument()
 
     //click login and check that the session refresh event was triggered
     await user.click(stayLoggedInBtn as HTMLElement)
     expect(dispatchEventSpy).toHaveBeenCalledWith(expect.any(Event))
     expect(dispatchEventSpy.mock.calls[0][0].type).toBe('visibilitychange')
-    screen.debug(undefined, 300000)
   })
+
   it('Logs out', async () => {
     const expireDate = new Date(Date.now() + 15000)
     mockUseSession.mockReturnValue({
@@ -104,7 +105,8 @@ describe('SessionManager', () => {
     await user.click(logoutBtn as HTMLElement)
     expect(mockCognitoSignOut).toHaveBeenCalledTimes(1)
   })
-  it('can open and set the time to the optional parameters', async () => {
+
+  it('can open and set the time to the optional parameters', () => {
     const expireDate = new Date(Date.now() + 15000)
     mockUseSession.mockReturnValue({
       data: { expires: expireDate, WhoAmI: undefined },
@@ -112,7 +114,7 @@ describe('SessionManager', () => {
     })
 
     //set expire to be 31 mins,
-    //thus outside of when it should normall open the modal
+    // aka doutside of when it should normall open the modal
     const { queryForModalWindow } = renderSessionManager(
       true,
       new Date(Date.now() + 31 * 60 * 1000).toString()
@@ -120,5 +122,29 @@ describe('SessionManager', () => {
 
     //should be forced open
     expect(queryForModalWindow()).toBeInTheDocument()
+  })
+
+  it('should refresh session when user interacts with window', async () => {
+    const expireDate = new Date(Date.now() + 31 * 60 * 1000)
+    mockUseSession.mockReturnValue({
+      data: { expires: expireDate, WhoAmI: undefined },
+      status: 'authenticated',
+    })
+    render(
+      <div>
+        <SessionManager />
+        <h1 data-testid="test-element">non hidden element</h1>
+      </div>
+    )
+    const dispatchEventSpy = jest.spyOn(document, 'dispatchEvent')
+    const user = userEvent.setup()
+    await user.click(screen.getByTestId('test-element') as HTMLElement)
+    expect(dispatchEventSpy).toHaveBeenCalledWith(expect.any(Event))
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 5000))
+      await user.click(screen.getByTestId('test-element') as HTMLElement)
+      expect(dispatchEventSpy).toHaveBeenCalledWith(expect.any(Event))
+      expect(dispatchEventSpy.mock.calls[0][0].type).toBe('visibilitychange')
+    })
   })
 })
