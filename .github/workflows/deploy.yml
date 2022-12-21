@@ -189,7 +189,7 @@ jobs:
           deploy-env: prod
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
           server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
-          app-env: prod
+          app-env: production
 
   prod-server-deploy:
     needs: [test-client-deploy, test-server-deploy]
