@@ -72,10 +72,6 @@ export const SessionManager = ({
         (expiresAt.current.getTime() - new Date().getTime()) / 1000
 
       setSecondsRemaining(Math.max(0, Math.round(remaining)))
-
-      if (!modalIsOpen() && shouldOpenModal() && modalRef.current !== null) {
-        modalRef.current.modalIsOpen = true
-      }
     }
   }, [])
 
@@ -121,14 +117,16 @@ export const SessionManager = ({
   }, [isLoading, checkExpiry])
 
   useEffect(() => {
-    const shouldOpenModal = !forceModuleOpen()
-      ? secondsRemaining !== undefined &&
-        secondsRemaining <= NOTIFY_UNDER_MINUTES * 60
-      : true
     if (secondsRemaining === 0) {
       handleLogout()
-    } else if (!modalIsOpen() && shouldOpenModal && modalRef.current !== null) {
-      modalRef.current.toggleModal(undefined, true)
+    } else if (modalRef.current !== null) {
+      if (!modalIsOpen() && shouldOpenModal()) {
+        modalRef.current.toggleModal(undefined, true)
+      } else if (modalIsOpen() && !shouldOpenModal()) {
+        //close modal if an async refresh comes from the server
+        //while the modal was open
+        modalRef.current.toggleModal(undefined, false)
+      }
     }
   }, [secondsRemaining])
 
