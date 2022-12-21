@@ -5,7 +5,7 @@ export default {
   title: 'Components/Session Manager',
   component: SessionManager,
 } as ComponentMeta<typeof SessionManager>
-const MINUTES = 2
+const MINUTES = 6
 const SECONDS = 0
 const generateExpireTime = () => {
   const expireDate = new Date(Date.now() + (60 * MINUTES + SECONDS) * 1000)
