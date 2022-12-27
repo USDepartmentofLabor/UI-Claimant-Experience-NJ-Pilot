@@ -8,4 +8,4 @@ export type APIResponseType = {
 
 export type PartialClaimResponseType = Partial<Claim>
 
-export type RecentEmployersResponseType = Partial<Employer>
+export type RecentEmployersResponseType = Partial<Employer>[]

@@ -15,7 +15,7 @@ const getRecentEmployers = async () => {
     return data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
-      const errorResponse: RecentEmployersResponseType = {}
+      const errorResponse: RecentEmployersResponseType = []
       return errorResponse
     }
 

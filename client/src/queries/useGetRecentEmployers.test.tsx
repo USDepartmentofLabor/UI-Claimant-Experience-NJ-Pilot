@@ -17,7 +17,10 @@ const wrapper = ({ children }: any) => {
   )
 }
 
-const getData = { test: 'success' }
+const getData = [
+  { employer_name: 'Darth Vadar', address: 'death star' },
+  { employer_name: 'Emperor Palpatin', address: 'Coruscant' },
+]
 
 beforeEach(() => {
   mockedGet.mockReset()
@@ -51,6 +54,6 @@ describe('use get imported employers', () => {
     await waitFor(() => expect(result.current.isSuccess).toEqual(true))
 
     expect(mockedGet).toHaveBeenCalledTimes(1)
-    expect(result.current.data).toEqual({})
+    expect(result.current.data).toEqual([])
   })
 })
