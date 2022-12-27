@@ -9,7 +9,6 @@ const MINUTES = 6
 const SECONDS = 0
 const generateExpireTime = () => {
   const expireDate = new Date(Date.now() + (60 * MINUTES + SECONDS) * 1000)
-  console.log('expire date is ' + expireDate)
   return expireDate.toString()
 }
 const AlwaysOpenTemplate: ComponentStory<typeof SessionManager> = () => (

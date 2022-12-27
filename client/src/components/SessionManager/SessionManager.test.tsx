@@ -111,7 +111,7 @@ describe('SessionManager', () => {
     })
 
     //set expire to be 31 mins,
-    // aka doutside of when it should normall open the modal
+    // aka outside of when it should normall open the modal
     const { queryForModalWindow } = renderSessionManager(
       true,
       new Date(Date.now() + 31 * 60 * 1000).toString()

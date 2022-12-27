@@ -10,7 +10,7 @@ type SessionManagerPros = {
 }
 
 const NOTIFY_UNDER_MINUTES = 5
-const TIMOUT_BUFFER_SECONDS = 5
+const TIMEOUT_BUFFER_SECONDS = 5
 let lastRefresh = Date.now()
 const eventTypes = ['keypress', 'scroll', 'touchend', 'pointerup']
 const addEventListeners = (listener: any) => {
@@ -37,11 +37,11 @@ export const SessionManager = ({
     const isNewExpiration =
       expiresAt.current === undefined ||
       expiresAt.current <
-        new Date(sessionExpires.getTime() - TIMOUT_BUFFER_SECONDS * 1000)
+        new Date(sessionExpires.getTime() - TIMEOUT_BUFFER_SECONDS * 1000)
 
     if (isNewExpiration) {
       expiresAt.current = new Date(
-        sessionExpires.getTime() - TIMOUT_BUFFER_SECONDS * 1000
+        sessionExpires.getTime() - TIMEOUT_BUFFER_SECONDS * 1000
       )
     }
   }
@@ -94,7 +94,7 @@ export const SessionManager = ({
     if (
       !modalIsOpen() &&
       expiresAt.current !== undefined &&
-      timeSinceLastRefresh > TIMOUT_BUFFER_SECONDS
+      timeSinceLastRefresh > TIMEOUT_BUFFER_SECONDS
     ) {
       lastRefresh = Date.now()
       reloadSession()
@@ -153,8 +153,8 @@ export const SessionManager = ({
     <Modal
       ref={modalRef}
       id="timeout-modal"
-      aria-labelledby="timout-modal-heading"
-      aria-describedby="timout-modal-description"
+      aria-labelledby="timeout-modal-heading"
+      aria-describedby="timeout-modal-description"
       isInitiallyOpen={forceModuleOpen()}
       forceAction
     >
@@ -169,24 +169,19 @@ export const SessionManager = ({
 
       <p>{t('timeout.instructions')}</p>
       <div className="display-flex flex-justify-center margin-top-3">
-        {/* <ModalToggleButton */}
         <Button
-          // modalRef={modalRef}
           className="margin-right-4"
           disabled={isLoading}
           onClick={() => handleStayLoggedIn()}
           type="button"
-          //   closer
         >
           {t('timeout.stay_logged_in')}
-          {/* </ModalToggleButton> */}
         </Button>
         <Button
           onClick={handleLogout}
           disabled={isLoading}
           unstyled
           type="button"
-          //   closer
         >
           {t('timeout.log_out')}
         </Button>

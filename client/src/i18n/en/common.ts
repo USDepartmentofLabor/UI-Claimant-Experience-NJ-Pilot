@@ -121,7 +121,7 @@ const common = {
     log_out: 'Log out',
     instructions:
       'Click the button below to stay logged in. Otherwise, to protect your' +
-      ' data, your progress will be saved, but you will be logged out.',
+      ' data, you will be logged out and unsaved changes may be lost.',
     sr_countdown_zero: '{{seconds}} seconds',
     sr_countdown_one: '{{count}} minute, {{seconds}} seconds',
     sr_countdown_other: '{{count}} minutes, {{seconds}} seconds',
