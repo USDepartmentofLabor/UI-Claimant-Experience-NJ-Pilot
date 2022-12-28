@@ -7,7 +7,3 @@ CVE-2022-38750
 CVE-2022-38751
 CVE-2022-38752
 CVE-2022-41854
-
-# Ignore the following io.netty:netty-codec-http finding for now and wait for spring
-# boot to include patched version
-CVE-2022-41915
