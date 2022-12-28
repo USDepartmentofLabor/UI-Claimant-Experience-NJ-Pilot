@@ -1,7 +1,8 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
-import Screener from 'pages/screener'
+import ScreenerComponent from 'pages/screener'
 import { Routes } from 'constants/routes'
 import { UserEvent } from '@testing-library/user-event/dist/types/setup/setup'
 import {
@@ -17,6 +18,13 @@ jest.mock('next/router', () => ({
 }))
 
 describe('Screener page', () => {
+  const Screener = () => {
+    return (
+      <QueryClientProvider client={new QueryClient()}>
+        <ScreenerComponent />
+      </QueryClientProvider>
+    )
+  }
   it('renders properly', () => {
     render(<Screener />)
 

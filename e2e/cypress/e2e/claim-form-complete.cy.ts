@@ -36,7 +36,8 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Ssn (Access your records) page
     cy.visit('/ssn')
-    fillSsnField({ ssn: '987-65-4321' })
+    const ssnUnformatted = '987654321'
+    fillSsnField({ ssn: ssnUnformatted })
     cy.checkA11y()
     cy.lighthouse()
     cy.get('[data-testid=next-button]')
@@ -56,6 +57,20 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Prequal page
     fillPrequalFields()
+    cy.checkA11y()
+    cy.lighthouse()
+    cy.clickNext()
+
+    // Identity page
+    fillIdentityFields({
+      drivers_license: 'D12345678912345',
+      work_authorization: {
+        authorized_to_work: true,
+        authorization_type: 'US_citizen_or_national',
+      },
+    })
+    const ssnFormatted = '987-65-4321'
+    cy.get('[data-testid=verified-field-value]').first().contains(ssnFormatted)
     cy.checkA11y()
     cy.lighthouse()
     cy.clickNext()
@@ -110,17 +125,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     fillEditEmployerFields()
     //TODO: Reenable the a11y check when NJWDS changes link color
     //cy.checkA11y()
-    cy.lighthouse()
-    cy.clickNext()
-
-    fillIdentityFields({
-      drivers_license: 'D12345678912345',
-      work_authorization: {
-        authorized_to_work: true,
-        authorization_type: 'US_citizen_or_national',
-      },
-    })
-    cy.checkA11y()
     cy.lighthouse()
     cy.clickNext()
 

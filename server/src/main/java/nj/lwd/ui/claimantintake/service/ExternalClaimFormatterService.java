@@ -39,6 +39,7 @@ public class ExternalClaimFormatterService {
     }
 
     public Map<String, Object> _formatClaimHelper(Map<String, Object> claimPayload) {
+
         claimPayload.keySet().removeIf(key -> key.contains("LOCAL"));
         for (Map.Entry<String, Object> entry : claimPayload.entrySet()) {
 
