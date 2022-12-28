@@ -8,12 +8,18 @@ const pageSchema = yup.object().shape({
   attending_college_or_job_training: yup
     .boolean()
     .required(t('education_and_training.attending_training.required')),
-  enrollment: yup.boolean().when('attending_college_or_job_training', {
-    is: true,
-    then: yup
-      .boolean()
-      .required(t('education_and_training.enrollment.error.required')),
-  }),
+  training_through_hiring_hall_or_career_center: yup
+    .boolean()
+    .when('attending_college_or_job_training', {
+      is: true,
+      then: yup
+        .boolean()
+        .required(
+          t(
+            'education_and_training.training_through_hiring_hall_or_career_center.error.required'
+          )
+        ),
+    }),
 })
 
 export const EducationAndTrainingPageDefinition: PageDefinition = {

@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
+import Error from 'next/error'
 import { StepIndicator, StepIndicatorStep } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 import {
@@ -31,15 +32,19 @@ export const ClaimFormLayout = ({
   const [claimFormValues, setClaimFormValues] = useState<
     ClaimantInput | undefined
   >(undefined)
-
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const { data: partialClaim, isLoading: isLoadingGetPartialClaim } =
-    useGetPartialClaim()
+  const {
+    data: partialClaim,
+    isLoading: isLoadingGetPartialClaim,
+    isError: partialClaimIsError,
+  } = useGetPartialClaim()
 
   // Initialize any previous partialClaim into ClaimFormContext
   useEffect(() => {
-    if (!isLoadingGetPartialClaim && partialClaim !== undefined) {
-      setClaimFormValues(partialClaim)
+    if (!isLoadingGetPartialClaim) {
+      if (partialClaim !== undefined) {
+        setClaimFormValues(partialClaim)
+      }
       setIsLoading(false)
     }
   }, [partialClaim, isLoadingGetPartialClaim])
@@ -58,57 +63,58 @@ export const ClaimFormLayout = ({
     return undefined
   }
 
-  return isLoading ? (
-    <PageLoader />
-  ) : (
-    <ClaimFormContext.Provider
-      value={{
-        claimFormValues,
-        setClaimFormValues,
-      }}
-    >
-      <Head>
-        <title>{heading}</title>
-      </Head>
-      <div className="grid-row grid-gap">
-        <StepIndicator
-          className="overflow-hidden width-mobile-lg margin-x-auto"
-          counters="none"
-          headingLevel="h2"
-          divProps={{
-            role: 'region',
-            'aria-label': `progress - step ${step} of ${totalSteps}`,
-          }}
-          data-testid="step-indicator"
-        >
-          {pageDefinitions.map((page, i) => (
-            <StepIndicatorStep
-              key={page.path}
-              label={page.heading}
-              status={getStatus(i)}
-            />
-          ))}
-        </StepIndicator>
-        <ClaimFormSideNav
-          index={index}
-          className="desktop:grid-col-3 desktop:margin-top-4"
-        />
-        <main
-          className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
-          id="main-content"
-        >
-          <PageHeading
-            ref={headingRef}
-            aria-label={`${heading} ${t('step_progress', {
-              step,
-              totalSteps,
-            })}`}
+  if (isLoading) {
+    return <PageLoader />
+  } else if (partialClaimIsError) {
+    return <Error statusCode={500} />
+  } else {
+    return (
+      <ClaimFormContext.Provider
+        value={{
+          claimFormValues,
+          setClaimFormValues,
+        }}
+      >
+        <Head>
+          <title>{heading}</title>
+        </Head>
+        <div className="grid-row grid-gap">
+          <StepIndicator
+            className="overflow-hidden width-mobile-lg margin-x-auto"
+            counters="none"
+            headingLevel="h2"
+            divProps={{
+              role: 'region',
+              'aria-label': `progress - step ${step} of ${totalSteps}`,
+            }}
+            data-testid="step-indicator"
           >
-            {heading}
-          </PageHeading>
-          {children}
-        </main>
-      </div>
-    </ClaimFormContext.Provider>
-  )
+            {pageDefinitions.map((page, i) => (
+              <StepIndicatorStep
+                key={page.path}
+                label={page.heading}
+                status={getStatus(i)}
+              />
+            ))}
+          </StepIndicator>
+          <ClaimFormSideNav index={index} />
+          <main
+            className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
+            id="main-content"
+          >
+            <PageHeading
+              ref={headingRef}
+              aria-label={`${heading} ${t('step_progress', {
+                step,
+                totalSteps,
+              })}`}
+            >
+              {heading}
+            </PageHeading>
+            {children}
+          </main>
+        </div>
+      </ClaimFormContext.Provider>
+    )
+  }
 }

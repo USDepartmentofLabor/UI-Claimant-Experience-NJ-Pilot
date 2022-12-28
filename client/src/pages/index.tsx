@@ -9,12 +9,14 @@ import PageLoader from 'components/loaders/PageLoader'
 import { Alert, Table } from '@trussworks/react-uswds'
 import { WhoAmI } from 'types/claimantInput'
 import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
+import { Routes } from 'constants/routes'
 
 const Home: NextPage = () => {
   const session = useSession()
   const router = useRouter()
   const { t } = useTranslation('home')
   const goToFirstPageOfClaimForm = () => router.push(pageDefinitions[0].path)
+  const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
 
   return (
     <div>
@@ -66,13 +68,23 @@ const Home: NextPage = () => {
                 Sign out
               </Button>
             </div>
-            <div>
+            <div className="margin-bottom-1">
               <Button
                 type="button"
                 onClick={goToFirstPageOfClaimForm}
                 data-testid="go-to-claim-form"
               >
                 File a claim
+              </Button>
+            </div>
+            <div>
+              <Button
+                type="button"
+                secondary
+                onClick={goToUpdatePaymentForm}
+                data-testid="go-to-update-payment"
+              >
+                Update payment info
               </Button>
             </div>
           </>

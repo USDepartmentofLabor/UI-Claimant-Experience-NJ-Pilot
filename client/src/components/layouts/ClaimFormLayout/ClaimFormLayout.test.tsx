@@ -61,4 +61,28 @@ describe('ClaimFormLayout', () => {
       expect(loader).toBeInTheDocument()
     })
   })
+
+  describe('the error state', () => {
+    beforeEach(() => {
+      mockUseGetPartialClaim.mockImplementation(() => ({
+        isLoading: false,
+        isError: true,
+      }))
+    })
+    it('renders a 500 error when loading finishes with an error', () => {
+      render(
+        <QueryClientProvider client={new QueryClient()}>
+          <ClaimFormLayout pageDefinition={PrequalPageDefinition} index={0}>
+            Some content
+          </ClaimFormLayout>
+        </QueryClientProvider>
+      )
+
+      const loader = screen.queryByTestId('page-loading')
+      const errorDiv = screen.getByText('Internal Server Error.')
+
+      expect(loader).not.toBeInTheDocument()
+      expect(errorDiv).toBeInTheDocument()
+    })
+  })
 })

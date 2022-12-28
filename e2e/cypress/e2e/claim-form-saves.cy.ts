@@ -15,8 +15,9 @@ context('Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     // Ensure the page loads
-    cy.get("[data-testid='claim-form-page-heading']").contains(
-      'Personal information'
+    cy.get("[data-testid='claim-form-page-heading']").should(
+      'have.text',
+      'Identity information'
     )
 
     // Go to home page to clear claim form context (local state cached form values)

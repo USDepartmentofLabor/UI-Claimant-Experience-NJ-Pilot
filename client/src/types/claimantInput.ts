@@ -16,6 +16,7 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type ClaimantInput = ScreenerInput &
+  SsnInput &
   PrequalInput &
   PersonalInput &
   ContactInput &
@@ -89,6 +90,10 @@ export type ScreenerInput = {
   screener_currently_disabled?: boolean
   screener_federal_work_in_last_eighteen_months?: boolean
   screener_maritime_employer_eighteen_months?: boolean
+}
+
+export type SsnInput = {
+  ssn?: string
 }
 
 export type PrequalInput = {
@@ -193,7 +198,7 @@ export type IdentityInput = {
 
 export type EducationAndTrainingInput = Partial<{
   attending_college_or_job_training: boolean
-  enrollment: boolean
+  training_through_hiring_hall_or_career_center: boolean
 }>
 
 export type ReviewInput = {

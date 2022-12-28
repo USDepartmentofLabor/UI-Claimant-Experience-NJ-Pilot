@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { ScreenerLayout } from 'components/layouts/ScreenerLayout/ScreenerLayout'
+import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLayout'
 import { makeClaimFormRoute } from 'constants/routes'
 
 const mockRouter = jest.fn()
@@ -7,23 +7,24 @@ jest.mock('next/router', () => ({
   useRouter: () => mockRouter(),
 }))
 
-describe('ScreenerLayout Layout', () => {
+describe('IntakeAppLayout Layout', () => {
   const SomePage = () => <div>Some Page!</div>
 
   it('render properly', async () => {
     mockRouter.mockImplementation(() => ({
       pathname: makeClaimFormRoute('some'),
     }))
+
+    const heading = 'Fancy heading'
     render(
-      <ScreenerLayout>
+      <IntakeAppLayout heading={heading}>
         <SomePage />
-      </ScreenerLayout>
+      </IntakeAppLayout>
     )
 
     const children = await screen.findByText('Some Page!')
-    const heading = screen.queryByText('heading')
 
     expect(children).toBeInTheDocument()
-    expect(heading).toBeInTheDocument()
+    expect(screen.getByText(heading)).toBeInTheDocument()
   })
 })

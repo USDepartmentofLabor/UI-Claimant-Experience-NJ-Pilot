@@ -20,9 +20,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
 
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
+      - uses: actions/cache@4723a57e26efda3a62cbde1812113b730952852d
         with:
           key: v1-pre-commit-dot-cache-${{ hashFiles('.pre-commit-config.yaml') }}
           path: ~/.cache/pre-commit
@@ -44,7 +44,7 @@ jobs:
         run: make e2e-deps
 
       - name: Set up Java
-        uses: actions/setup-java@c3ac5dd0ed8db40fedb61c32fbe677e6b355e94c
+        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b
         with:
           java-version: "17.0.4+8"
           distribution: "temurin"
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
 
       - name: Set up Node.js
         uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516

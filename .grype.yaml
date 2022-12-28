@@ -21,8 +21,6 @@ ignore:
   - vulnerability: GHSA-9w3m-gqgf-c4p9
     package:
       name: snakeyaml
-  # Ignore the following netty-codec-http finding for now and wait for
-  # spring boot to include patched version
-  - vulnerability: GHSA-hh82-3pmq-7frp
+  - vulnerability: GHSA-w37g-rhq8-7m4j
     package:
-      name: netty-codec-http
+      name: snakeyaml

@@ -85,7 +85,7 @@ const DropdownField = ({
       >
         {label}
       </Label>
-
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <Dropdown
         id={id}
@@ -109,8 +109,6 @@ const DropdownField = ({
               </optgroup>
             ))}
       </Dropdown>
-
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
     </FormGroup>
   )
 }

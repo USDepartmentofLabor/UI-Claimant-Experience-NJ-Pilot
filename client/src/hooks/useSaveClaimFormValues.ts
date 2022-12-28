@@ -21,11 +21,17 @@ export const useSaveClaimFormValues = () => {
   const appendAndSaveClaimFormValues = async (
     values: Partial<ClaimantInput>
   ) => {
-    const appendedClaimFormValues = {
+    const appendedClaimFormValues = await appendValuesToClaimFormContext(values)
+    await saveClaimFormValues(appendedClaimFormValues)
+  }
+
+  const appendValuesToClaimFormContext = async (
+    values: Partial<ClaimantInput>
+  ) => {
+    return {
       ...claimFormValues,
       ...values,
     }
-    await saveClaimFormValues(appendedClaimFormValues)
   }
 
   const modifyEmployerAndSaveClaimFormValues = async (
@@ -53,6 +59,7 @@ export const useSaveClaimFormValues = () => {
   }
 
   return {
+    appendValuesToClaimFormContext,
     appendAndSaveClaimFormValues,
     modifyEmployerAndSaveClaimFormValues,
   }

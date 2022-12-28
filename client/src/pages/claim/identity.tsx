@@ -29,6 +29,7 @@ const previousPage = getPreviousPage(pageDefinition)
 
 export const Identity: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
+  const { t: tSsn } = useTranslation('ssn')
 
   return (
     <ClaimFormik<IdentityInput>
@@ -71,7 +72,7 @@ export const Identity: NextPageWithLayout = () => {
             <VerifiedFields>
               {initialValues.ssn && (
                 <VerifiedField
-                  label={t('ssn.label')}
+                  label={tSsn('label')}
                   value={initialValues.ssn}
                 />
               )}

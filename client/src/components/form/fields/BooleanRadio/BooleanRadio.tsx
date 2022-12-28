@@ -49,6 +49,7 @@ export const BooleanRadio = ({
 
   return (
     <FormGroup error={showError}>
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       <Radio
         {...fieldProps}
         key={`${id}.0.yes`}
@@ -74,7 +75,6 @@ export const BooleanRadio = ({
         className={isStacked ? styles.stacked : styles.inline}
         {...inputProps}
       />
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
     </FormGroup>
   )
 }

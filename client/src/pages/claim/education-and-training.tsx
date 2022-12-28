@@ -36,7 +36,7 @@ const EducationAndTraining: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'no') {
-            await clearField('enrollment')
+            await clearField('training_through_hiring_hall_or_career_center')
           }
         }
 
@@ -50,12 +50,14 @@ const EducationAndTraining: NextPageWithLayout = () => {
             />
             {values.attending_college_or_job_training && (
               <YesNoQuestion
-                question={t('education_and_training.enrollment.label')}
-                name="enrollment"
+                question={t(
+                  'education_and_training.training_through_hiring_hall_or_career_center.label'
+                )}
+                name="training_through_hiring_hall_or_career_center"
                 hint={
                   <Trans
                     t={t}
-                    i18nKey="education_and_training.enrollment.help_text"
+                    i18nKey="education_and_training.training_through_hiring_hall_or_career_center.help_text"
                   >
                     <Link
                       variant="external"

@@ -44,6 +44,7 @@ export const CheckboxGroupField = ({
         }`}
         onInvalid={(e) => e.preventDefault()}
       >
+        {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
         {options.map((option, index) => (
           <CheckboxField
             {...fieldProps}
@@ -59,7 +60,6 @@ export const CheckboxGroupField = ({
             showsErrors={false}
           />
         ))}
-        {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       </Fieldset>
     </FormGroup>
   )

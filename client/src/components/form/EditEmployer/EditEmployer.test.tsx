@@ -2,7 +2,6 @@ import { act, render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 import { EditEmployer } from './EditEmployer'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
-import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 import { Employer } from 'types/claimantInput'
 
 export const validImportedEditEmployer: Employer = {
@@ -33,11 +32,13 @@ export const validImportedEditEmployer: Employer = {
   employment_last_date: '2022-12-03',
 }
 
-describe('Edit Employer Component', () => {
-  const { data } = useGetRecentEmployers()
-  it('renders correctly', async () => {
-    const initialValues = data[2]
+const validManuallyAddedEmployer: Employer = {
+  ...validImportedEditEmployer,
+  is_imported: false,
+}
 
+describe('Edit Employer Component', () => {
+  const renderEditEmployer = async (initialValues: Employer) => {
     await act(() =>
       render(
         <Formik initialValues={initialValues} onSubmit={() => undefined}>
@@ -45,18 +46,61 @@ describe('Edit Employer Component', () => {
         </Formik>
       )
     )
-    expect(screen.getByText(/Wendys/i)).toBeInTheDocument()
-    expect(
-      screen.getByRole('radio', {
-        name: 'your_employer.is_full_time.options.full_time',
-      })
-    ).toBeInTheDocument()
-    expect(screen.getByTestId('self_employed.yes')).toBeInTheDocument()
-    expect(
-      screen.getByRole('group', {
-        name: 'payments_received.payments_received_detail.pay_type.label',
-      })
-    ).toBeInTheDocument()
+
+    const heading = screen.getByText(/Lyft Inc./i)
+    const fullTimeQuestion = screen.getByRole('radio', {
+      name: 'your_employer.is_full_time.options.full_time',
+    })
+    const selfEmployedQuestion = screen.getByTestId('self_employed.yes')
+    const paymentsReceivedQuestion = screen.getByRole('group', {
+      name: 'payments_received.payments_received_detail.pay_type.label',
+    })
+
+    const queryForPreamble = () => screen.queryByText('preamble')
+
+    return {
+      heading,
+      fullTimeQuestion,
+      selfEmployedQuestion,
+      paymentsReceivedQuestion,
+      queryForPreamble,
+    }
+  }
+
+  describe('Imported Employers', () => {
+    it('renders correctly ', async () => {
+      const {
+        heading,
+        fullTimeQuestion,
+        selfEmployedQuestion,
+        paymentsReceivedQuestion,
+        queryForPreamble,
+      } = await renderEditEmployer(validImportedEditEmployer)
+
+      expect(heading).toBeInTheDocument()
+      expect(queryForPreamble()).not.toBeInTheDocument()
+      expect(fullTimeQuestion).toBeInTheDocument()
+      expect(selfEmployedQuestion).toBeInTheDocument()
+      expect(paymentsReceivedQuestion).toBeInTheDocument()
+    })
+  })
+
+  describe('Manually added employers', () => {
+    it('renders correctly ', async () => {
+      const {
+        heading,
+        fullTimeQuestion,
+        selfEmployedQuestion,
+        paymentsReceivedQuestion,
+        queryForPreamble,
+      } = await renderEditEmployer(validManuallyAddedEmployer)
+
+      expect(heading).toBeInTheDocument()
+      expect(queryForPreamble()).toBeInTheDocument()
+      expect(fullTimeQuestion).toBeInTheDocument()
+      expect(selfEmployedQuestion).toBeInTheDocument()
+      expect(paymentsReceivedQuestion).toBeInTheDocument()
+    })
   })
 })
 describe('Validates the schema', () => {

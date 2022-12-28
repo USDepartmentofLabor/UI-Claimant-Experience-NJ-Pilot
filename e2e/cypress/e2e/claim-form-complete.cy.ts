@@ -10,6 +10,7 @@ import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
 import fillDisabilityFields from './formPageFilling/disability'
 import fillPaymentFields from './formPageFilling/payment'
+import fillSsnField from './formPageFilling/ssn'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
 import fillRecentEmployersFields from './formPageFilling/recent-employers'
@@ -33,8 +34,19 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.visit('/')
     cy.get('[data-testid=sign-out]').should('be.visible')
 
+    // Ssn (Access your records) page
+    cy.visit('/ssn')
+    const ssnUnformatted = '987654321'
+    fillSsnField({ ssn: ssnUnformatted })
+    cy.checkA11y()
+    cy.lighthouse()
+    cy.get('[data-testid=next-button]')
+      .contains('Continue')
+      .scrollIntoView()
+      .should('be.visible')
+      .click()
+
     // Screener page
-    cy.visit('/screener')
     fillScreenerFields()
     cy.checkA11y()
     cy.lighthouse()
@@ -45,6 +57,20 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Prequal page
     fillPrequalFields()
+    cy.checkA11y()
+    cy.lighthouse()
+    cy.clickNext()
+
+    // Identity page
+    fillIdentityFields({
+      drivers_license: 'D12345678912345',
+      work_authorization: {
+        authorized_to_work: true,
+        authorization_type: 'US_citizen_or_national',
+      },
+    })
+    const ssnFormatted = '987-65-4321'
+    cy.get('[data-testid=verified-field-value]').first().contains(ssnFormatted)
     cy.checkA11y()
     cy.lighthouse()
     cy.clickNext()
@@ -102,21 +128,10 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.lighthouse()
     cy.clickNext()
 
-    fillIdentityFields({
-      drivers_license: 'D12345678912345',
-      work_authorization: {
-        authorized_to_work: true,
-        authorization_type: 'US_citizen_or_national',
-      },
-    })
-    cy.checkA11y()
-    cy.lighthouse()
-    cy.clickNext()
-
     // Education and training page
     fillEducationAndTrainingFields({
       attending_college_or_job_training: 'yes',
-      enrollment: 'yes',
+      training_through_hiring_hall_or_career_center: 'yes',
     })
     cy.checkA11y()
     cy.lighthouse()

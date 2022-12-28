@@ -39,6 +39,7 @@ export const DatePicker = ({
       <div className="usa-hint" id={`${id}-hint`}>
         mm/dd/yyyy
       </div>
+      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <USWDSDatePicker
         key={id}
@@ -49,7 +50,6 @@ export const DatePicker = ({
         onChange={onChange}
         {...inputProps}
       />
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
     </FormGroup>
   )
 }

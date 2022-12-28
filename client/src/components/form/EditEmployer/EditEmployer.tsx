@@ -27,11 +27,16 @@ import {
   PHONE_SKELETON,
 } from 'constants/initialValues'
 import Error from 'next/error'
+import { SummaryBox, SummaryBoxContent } from '@trussworks/react-uswds'
+import { useTranslation } from 'react-i18next'
 
 export const EditEmployer = () => {
+  const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   const { values } = useFormikContext<Employer>()
 
   if (!values) return <Error statusCode={404} />
+
+  const isImported = values.is_imported
 
   return (
     <>
@@ -40,6 +45,11 @@ export const EditEmployer = () => {
           <div data-testid="edit-employer-test-subheader">
             This is the employer name {values.name}
           </div>
+          {isImported ? null /*(<VerifiedFields></VerifiedFields>)*/ : (
+            <SummaryBox>
+              <SummaryBoxContent>{t('preamble')}</SummaryBoxContent>
+            </SummaryBox>
+          )}
           <YourEmployer />
           <WorkLocation />
           <BusinessInterests />
@@ -373,15 +383,23 @@ export const yupEditEmployer = object().shape({
               )
             ),
         }),
-      note: string().when('pay_type', {
-        is: 'other_pay',
-        then: (schema) =>
-          schema.required(
-            i18n_claimForm.t(
-              'employers.payments_received.payments_received_detail.other_note.errors.required'
-            )
-          ),
-      }),
+      note: string()
+        .trim()
+        .max(
+          1024,
+          i18n_claimForm.t(
+            'employers.payments_received.payments_received_detail.other_note.errors.maxLength'
+          )
+        )
+        .when('pay_type', {
+          is: 'other_pay',
+          then: (schema) =>
+            schema.required(
+              i18n_claimForm.t(
+                'employers.payments_received.payments_received_detail.other_note.errors.required'
+              )
+            ),
+        }),
     })
   ),
 })

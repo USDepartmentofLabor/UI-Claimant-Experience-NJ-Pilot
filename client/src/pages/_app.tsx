@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextPage } from 'next'
 import { ReactNode, useState } from 'react'
-import { ScreenerInput } from 'types/claimantInput'
+import { ScreenerInput, SsnInput } from 'types/claimantInput'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 
 import 'i18n/i18n'
@@ -38,8 +38,7 @@ function ClaimApp({
   const [screenerInput, setScreenerInput] = useState<ScreenerInput | undefined>(
     undefined
   )
-  const [ssn, setSsn] = useState<string | undefined>(undefined)
-
+  const [ssnInput, setSsn] = useState<SsnInput | undefined>(undefined)
   const getLayout = Component.getLayout ?? ((page) => page)
   const page = <Component {...pageProps} />
 
@@ -67,7 +66,7 @@ function ClaimApp({
               value={{
                 screenerInput,
                 setScreenerInput,
-                ssn,
+                ssnInput,
                 setSsn,
               }}
             >

@@ -81,16 +81,7 @@ const claimForm = {
     },
   },
   identity: {
-    heading: 'Identity Information',
-  },
-  ssn: {
-    label: 'Social Security number',
-    hint: 'Use format 000-00-0000',
-    errors: {
-      badFormat: 'Must use format 000-00-0000',
-      required: 'Social Security number is required',
-    },
-    showSsnLabel: 'Show SSN',
+    heading: 'Identity information',
   },
   birthdate: {
     label: 'Date of birth',
@@ -194,6 +185,8 @@ const claimForm = {
     },
   },
   employers: {
+    preamble:
+      'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount.',
     separation: {
       heading: 'Change in employment',
       info_alert: {
@@ -259,7 +252,7 @@ const claimForm = {
         fired_discharged_suspended: {
           label: 'Fired, discharged, or suspended',
           description:
-            'Your employer ended your job, suspended you, or forced you to resign for a reason other than lack of work or assignment ending.',
+            'This employer ended your job, suspended you, or forced you to resign for a reason other than lack of work or assignment ending.',
           option_heading:
             'What was the reason you were fired, discharged, or suspended?',
           options: {
@@ -272,7 +265,7 @@ const claimForm = {
         still_employed: {
           label: 'Still employed',
           description:
-            "You're still working for your employer, but you may have fewer hours or be on a leave/break.",
+            "You're still working for this employer, but you may have fewer hours or be on a leave/break.",
           option_heading: 'Explain the reason you are still employed',
           options: {
             reduction_in_hours_by_employer: 'Hours reduced by employer',
@@ -307,25 +300,23 @@ const claimForm = {
         strike_or_lock_out_by_employer: {
           label: 'Strike or lock out by employer',
           description:
-            'During a labor dispute, you chose to stop work or your employer stopped work.',
+            'During a labor dispute, you chose to stop work or this employer stopped work.',
           // unconventional to have a null translation but it's because we leverage this file also for TS types
           option_heading: null,
         },
         unsatisfactory_work_performance: {
           label: 'Unsatisfactory work performance',
           description:
-            'Your employer ended your job due to performance, such as not meeting a quota',
+            'This employer ended your job due to performance, such as not meeting a quota',
         },
         federal_or_state_shutdown: {
           label: 'Strike or lock out by employer',
           description:
-            'During a labor dispute, you decided to stop work or your employer stopped work.',
+            'During a labor dispute, you decided to stop work or this employer stopped work.',
           option_heading: null,
         },
       },
     },
-    reason_for_data_collection:
-      'We need the <strong>last 18 months</strong> of your work history to calculate your unemployment benefit amount. List out all your jobs, including jobs you are still working, to avoid delays with your application.',
     errors: {
       required: 'This field is required',
     },
@@ -457,8 +448,8 @@ const claimForm = {
       },
     },
     hours_reduced_twenty_percent: {
-      label: 'Did your employer reduce your hours by 20% or more?',
-      hint: 'For example, if your employer reduced your hours from 40 hours per week to 30 hours, you would choose "yes."',
+      label: 'Did this employer reduce your hours by 20% or more?',
+      hint: 'For example, if this employer reduced your hours from 40 hours per week to 32 hours, you would choose "yes."',
       errors: {
         required: 'You must say whether your hours were reduced by 20% or more',
       },
@@ -605,6 +596,8 @@ const claimForm = {
           label: 'Please explain what type of pay you received',
           errors: {
             required: 'Please give further details',
+            maxLength:
+              'Your other type of pay details must be at most 1024 characters',
           },
         },
       },
@@ -716,7 +709,7 @@ const claimForm = {
       help_text:
         'If you are in union-required training or paid job training, choose "No."',
     },
-    enrollment: {
+    training_through_hiring_hall_or_career_center: {
       label: 'Did you go through a union hiring hall or Career Center?',
       help_text:
         'Career Centers include Vocational Rehabilitation and other <0>New Jersey career services</0>.',

@@ -43,9 +43,9 @@ export const YesNoQuestion = ({
             {hint}
           </span>
         )}
+        {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
         <BooleanRadio showsErrors={false} {...inputProps} />
         {children}
-        {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
       </Fieldset>
     </FormGroup>
   )

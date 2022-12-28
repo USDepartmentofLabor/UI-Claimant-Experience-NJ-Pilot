@@ -12,19 +12,23 @@ import {
   useRef,
 } from 'react'
 import { NextPageWithLayout } from 'pages/_app'
-import { ScreenerLayout } from 'components/layouts/ScreenerLayout/ScreenerLayout'
-import styles from 'styles/pages/screener.module.scss'
-import { Button, FormGroup } from '@trussworks/react-uswds'
+import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLayout'
+import { IntakeAppButtons } from 'components/IntakeAppButtons/IntakeAppButtons'
+import { Button } from '@trussworks/react-uswds'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
 import { Routes } from 'constants/routes'
 import { useRouter } from 'next/router'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { getClearFieldsFunctions } from 'hooks/useClearFields'
+import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
+
+import styles from 'styles/pages/screener.module.scss'
 
 const Screener: NextPageWithLayout = () => {
   const { t } = useTranslation('screener')
   const router = useRouter()
-  const { setScreenerInput } = useContext(IntakeAppContext)
+  const { ssnInput, setScreenerInput } = useContext(IntakeAppContext)
+  const { appendValuesToClaimFormContext } = useSaveClaimFormValues()
 
   const initialValues = {
     screener_current_country_us: undefined,
@@ -158,7 +162,7 @@ const Screener: NextPageWithLayout = () => {
         const handleClickPrevious: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
-          await router.push(Routes.HOME)
+          await router.push(Routes.SSN)
         }
 
         const getIsRedirect = () => {
@@ -180,13 +184,18 @@ const Screener: NextPageWithLayout = () => {
           )
         }
 
-        const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
+        const handleClickNext: MouseEventHandler<HTMLButtonElement> = (e) => {
+          e.preventDefault()
           submitForm().then(async () => {
             if (validRef.current) {
               const shouldRedirect = getIsRedirect()
               if (shouldRedirect) {
                 await router.push(Routes.SCREENER_REDIRECT)
               } else {
+                await appendValuesToClaimFormContext({
+                  ...ssnInput,
+                  ...values,
+                })
                 await router.push(Routes.HOME)
               }
             }
@@ -245,27 +254,25 @@ const Screener: NextPageWithLayout = () => {
               question={t('screener_maritime_employer_eighteen_months.label')}
               name="screener_maritime_employer_eighteen_months"
             />
-            <div className={styles.pagination}>
-              <FormGroup>
-                <div className="text-center">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    onClick={handleClickPrevious}
-                    data-testid="back-button"
-                  >
-                    {t('pagination.previous')}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={handleClickNext}
-                    data-testid="next-button"
-                  >
-                    {t('pagination.next')}
-                  </Button>
-                </div>
-              </FormGroup>
-            </div>
+            <IntakeAppButtons>
+              <Button
+                type="button"
+                onClick={handleClickPrevious}
+                data-testid="back-button"
+                className="usa-button usa-button--outline width-auto"
+              >
+                {t('pagination.previous')}
+              </Button>
+              <Button
+                type="submit"
+                onClick={handleClickNext}
+                disabled={isSubmitting}
+                data-testid="next-button"
+                className="width-auto"
+              >
+                {t('pagination.next')}
+              </Button>
+            </IntakeAppButtons>
           </Form>
         )
       }}
@@ -274,7 +281,11 @@ const Screener: NextPageWithLayout = () => {
 }
 
 Screener.getLayout = (page: ReactNode) => {
-  return <ScreenerLayout>{page}</ScreenerLayout>
+  return (
+    <IntakeAppLayout heading={i18n_screener.t<string>('heading')}>
+      {page}
+    </IntakeAppLayout>
+  )
 }
 
 export default Screener
