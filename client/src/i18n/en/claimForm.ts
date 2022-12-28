@@ -81,7 +81,7 @@ const claimForm = {
     },
   },
   identity: {
-    heading: 'Identity Information',
+    heading: 'Identity information',
   },
   birthdate: {
     label: 'Date of birth',

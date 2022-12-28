@@ -38,7 +38,6 @@ function ClaimApp({
     undefined
   )
   const [ssnInput, setSsn] = useState<SsnInput | undefined>(undefined)
-
   const getLayout = Component.getLayout ?? ((page) => page)
   const page = <Component {...pageProps} />
 

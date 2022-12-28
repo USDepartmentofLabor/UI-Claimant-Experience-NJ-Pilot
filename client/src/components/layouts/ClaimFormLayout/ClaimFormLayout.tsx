@@ -32,7 +32,6 @@ export const ClaimFormLayout = ({
   const [claimFormValues, setClaimFormValues] = useState<
     ClaimantInput | undefined
   >(undefined)
-
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const {
     data: partialClaim,

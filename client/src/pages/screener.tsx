@@ -20,13 +20,15 @@ import { Routes } from 'constants/routes'
 import { useRouter } from 'next/router'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { getClearFieldsFunctions } from 'hooks/useClearFields'
+import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 
 import styles from 'styles/pages/screener.module.scss'
 
 const Screener: NextPageWithLayout = () => {
   const { t } = useTranslation('screener')
   const router = useRouter()
-  const { setScreenerInput } = useContext(IntakeAppContext)
+  const { ssnInput, setScreenerInput } = useContext(IntakeAppContext)
+  const { appendValuesToClaimFormContext } = useSaveClaimFormValues()
 
   const initialValues = {
     screener_current_country_us: undefined,
@@ -190,6 +192,10 @@ const Screener: NextPageWithLayout = () => {
               if (shouldRedirect) {
                 await router.push(Routes.SCREENER_REDIRECT)
               } else {
+                await appendValuesToClaimFormContext({
+                  ...ssnInput,
+                  ...values,
+                })
                 await router.push(Routes.HOME)
               }
             }

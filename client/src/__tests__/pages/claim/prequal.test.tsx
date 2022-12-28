@@ -2,12 +2,20 @@ import { render, screen, within } from '@testing-library/react'
 import { Prequal } from 'pages/claim/prequal'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { IntakeAppContext } from 'contexts/IntakeAppContext'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
 jest.mock('hooks/useSaveClaimFormValues')
 jest.mock('queries/useGetPartialClaim')
 jest.mock('next/router')
+
+const mockAppendAndSaveClaimFormValues = jest.fn(async () => Promise.resolve())
+jest.mock('hooks/useSaveClaimFormValues', () => ({
+  useSaveClaimFormValues: () => ({
+    appendAndSaveClaimFormValues: mockAppendAndSaveClaimFormValues,
+  }),
+}))
 
 describe('Prequal page', () => {
   beforeEach(() => {
@@ -88,6 +96,30 @@ describe('Prequal page', () => {
     ).toBeInTheDocument()
   })
 
+  it('saves a claim with IntakeApp context values upon render', () => {
+    const intakeAppContext = {
+      setScreenerInput: jest.fn(),
+      setSsn: jest.fn(),
+      ssnInput: { ssn: '123' },
+      screenerInput: { screener_job_last_eighteen_months: true },
+    }
+
+    const intakeAppValues = {
+      ssn: '123',
+      screener_job_last_eighteen_months: true,
+    }
+
+    render(
+      <IntakeAppContext.Provider value={intakeAppContext}>
+        <Prequal />
+      </IntakeAppContext.Provider>
+    )
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
+      intakeAppValues
+    )
+  })
+
   it('can fill out all questions on page', async () => {
     const user = userEvent.setup()
 
@@ -124,19 +156,20 @@ describe('Prequal page', () => {
     )
   })
 
-  describe('page layout', () => {
-    it('uses the ClaimFormLayout', () => {
-      const Page = Prequal
-      expect(Page).toHaveProperty('getLayout')
-
+  describe('the error state', () => {
+    it.skip('renders a 500 error when loading finishes with an error', () => {
+      // TODO: mockAppendAndSaveClaimFormValues return values to set isError to true
       render(
         <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
+          <Prequal />
         </QueryClientProvider>
       )
-      const main = screen.queryByRole('main')
 
-      expect(main).toBeInTheDocument()
+      const loader = screen.queryByTestId('page-loading')
+      const errorDiv = screen.getByText('Internal Server Error.')
+
+      expect(loader).not.toBeInTheDocument()
+      expect(errorDiv).toBeInTheDocument()
     })
   })
 })
