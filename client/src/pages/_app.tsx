@@ -16,6 +16,7 @@ import { DefaultLayout } from 'components/layouts/DefaultLayout/DefaultLayout'
 
 import 'styles/styles.scss'
 import { ActiveSessionHandler } from 'components/ActiveSessionHandler/ActiveSessionHandler'
+import { SessionManager } from 'components/SessionManager/SessionManager'
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,
@@ -70,6 +71,7 @@ function ClaimApp({
               }}
             >
               <DefaultLayout>
+                <SessionManager forceOpen={false}></SessionManager>
                 <GridContainer className="margin-top-2">
                   {getLayout(page)}
                 </GridContainer>
