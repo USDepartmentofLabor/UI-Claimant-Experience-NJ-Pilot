@@ -7,7 +7,7 @@ describe('HTTP security headers', () => {
         'x-frame-options': 'DENY',
         'x-xss-protection': '1; mode=block',
         'x-content-type-options': 'nosniff',
-        'strict-transport-security': 'max-age=300; includeSubDomains',
+        'strict-transport-security': 'max-age=86400; includeSubDomains',
         'content-security-policy': "frame-ancestors 'none'",
       })
     })
