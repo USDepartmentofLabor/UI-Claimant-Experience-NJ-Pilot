@@ -405,6 +405,23 @@ const claimForm = {
     },
     your_employer: {
       heading: 'Your employer',
+      employer_name: {
+        label: 'Employer name',
+        hint: 'You can usually find the employer or business name on your paystub or W2.',
+        errors: {
+          required: 'You must give the name of your employer',
+          maxLength:
+            'Please shorten your employer’s name to 40 characters or less (including spaces). For example you may say “DOL” instead of “Department of Labor”, or “Intl” instead of “International”',
+        },
+      },
+      fein: {
+        label: 'FEIN, or Federal Employer Identification Number (optional)',
+        hint: 'You can usually find your employer’s FEIN on your W2 or other tax documents your employer gave you.',
+        errors: {
+          digitsOnly: 'FEIN can only be numbers',
+          maxLength: 'Your FEIN must be at most 15 characters',
+        },
+      },
       is_full_time: {
         help_text:
           'Full-time means working more (even 1 minute more) than 32 hours a week. Part-time means working exactly 32 hours or less a week.',

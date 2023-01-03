@@ -5,7 +5,7 @@ import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
 import { Employer } from 'types/claimantInput'
 
 export const validImportedEditEmployer: Employer = {
-  name: 'Lyft Inc.',
+  employer_name: 'Lyft Inc.',
   is_imported: true,
   is_full_time: true,
   is_employer: true,

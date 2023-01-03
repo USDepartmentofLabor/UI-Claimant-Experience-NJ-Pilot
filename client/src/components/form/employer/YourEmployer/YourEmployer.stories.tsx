@@ -7,6 +7,7 @@ import {
   EMPLOYER_SKELETON,
   yupEditEmployer,
 } from 'components/form/EditEmployer/EditEmployer'
+import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
 
 export default {
   title: 'Components/Form/Employer/Sections/YourEmployer',
@@ -14,8 +15,9 @@ export default {
 } as ComponentMeta<typeof YourEmployer>
 
 const Template: ComponentStory<typeof YourEmployer> = () => {
+  const { data } = useGetRecentEmployers()
   return (
-    <Formik initialValues={EMPLOYER_SKELETON} onSubmit={noop}>
+    <Formik initialValues={data[0]} onSubmit={noop}>
       <Form>
         <YourEmployer />
       </Form>
@@ -47,3 +49,35 @@ const WithValidationsTemplate: ComponentStory<typeof YourEmployer> = () => {
 }
 
 export const WithValidations = WithValidationsTemplate.bind({})
+
+const NonImportedEmployerTemplate: ComponentStory<typeof YourEmployer> = () => {
+  const initialValues = { ...EMPLOYER_SKELETON, is_imported: false }
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={yupEditEmployer}
+      onSubmit={onSubmit}
+    >
+      {({ setFormikState, submitCount }) => {
+        return (
+          <Form>
+            <YourEmployer />
+            <Button
+              type="submit"
+              onClick={() =>
+                setFormikState((previousState) => ({
+                  ...previousState,
+                  submitCount: submitCount + 1,
+                }))
+              }
+            >
+              Validate
+            </Button>
+          </Form>
+        )
+      }}
+    </Formik>
+  )
+}
+
+export const NonImportedEmployer = NonImportedEmployerTemplate.bind({})

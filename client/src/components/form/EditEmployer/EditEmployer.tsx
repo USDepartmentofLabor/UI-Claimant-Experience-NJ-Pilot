@@ -43,7 +43,7 @@ export const EditEmployer = () => {
       {
         <div data-testid="edit-employer-component">
           <div data-testid="edit-employer-test-subheader">
-            This is the employer name {values.name}
+            This is the employer name {values.employer_name}
           </div>
           {isImported ? null /*(<VerifiedFields></VerifiedFields>)*/ : (
             <SummaryBox>
@@ -63,9 +63,11 @@ export const EditEmployer = () => {
 
 /* THIS IS WHERE YOU DEFINE THE INITIAL VALUES */
 export const EMPLOYER_SKELETON = {
-  name: '',
   isInitiated: true,
+  is_imported: undefined,
   // Your Employer
+  employer_name: '',
+  fein: undefined,
   is_full_time: undefined,
   // Work Location
   worked_at_employer_address: undefined,
@@ -96,8 +98,38 @@ export const EMPLOYER_SKELETON = {
 
 export const yupEditEmployer = object().shape({
   /* THIS IS WHERE WE DEFINE THE SCHEMA FOR THE EDIT EMPLOYER PAGE */
-  name: string().required(i18n_claimForm.t('employers.name.required')),
+  is_imported: boolean(),
   // Your Employer
+  employer_name: string()
+    .trim()
+    .when('is_imported', {
+      is: false,
+      then: string()
+        .max(
+          40,
+          i18n_claimForm.t(
+            'employers.your_employer.employer_name.errors.maxLength'
+          )
+        )
+        .required(
+          i18n_claimForm.t(
+            'employers.your_employer.employer_name.errors.required'
+          )
+        ),
+    }),
+  fein: string().when('is_imported', {
+    is: false,
+    then: string()
+      .nullable()
+      .max(
+        15,
+        i18n_claimForm.t('employers.your_employer.fein.errors.maxLength')
+      )
+      .matches(
+        /^[\d]{0,15}$/,
+        i18n_claimForm.t('employers.your_employer.fein.errors.digitsOnly')
+      ),
+  }),
   is_full_time: boolean().required(
     i18n_claimForm.t('employers.your_employer.is_full_time.errors.required')
   ),

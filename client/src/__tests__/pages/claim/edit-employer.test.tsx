@@ -309,7 +309,10 @@ describe('the Edit Employer page', () => {
         const user = userEvent.setup()
         const invalidClaimFormValues = {
           employers: [
-            { ...fullTimeEmployer, ...{ name: undefined } },
+            {
+              ...fullTimeEmployer,
+              ...{ employer_name: undefined, is_imported: false },
+            },
             fullTimeEmployer,
             notAnEmployer,
             notAnEmployer,
