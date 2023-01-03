@@ -10,6 +10,8 @@ export const useGetRecentEmployers = () => {
         separation_circumstance: undefined,
         employer_address: {
           address: '123 Main St',
+          address2: undefined,
+          address3: undefined,
           city: 'Seattle',
           state: 'WA',
           zipcode: '01234',
@@ -26,6 +28,8 @@ export const useGetRecentEmployers = () => {
         separation_circumstance: undefined,
         employer_address: {
           address: '456 First St',
+          address2: undefined,
+          address3: undefined,
           city: 'Manhattan',
           state: 'NY',
           zipcode: '12345',
@@ -42,6 +46,8 @@ export const useGetRecentEmployers = () => {
         separation_circumstance: undefined,
         employer_address: {
           address: '789 Rick Rd',
+          address2: undefined,
+          address3: undefined,
           city: 'Trenton',
           state: 'NJ',
           zipcode: '23456',

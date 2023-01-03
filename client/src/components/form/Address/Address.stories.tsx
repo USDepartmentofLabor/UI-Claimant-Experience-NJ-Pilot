@@ -18,6 +18,7 @@ const Template: ComponentStory<typeof Address> = (args) => {
     [args.basename]: yup.object().shape({
       address1: yup.string().required(t('validation.required')),
       address2: yup.string().optional(),
+      address3: yup.string().optional(),
       city: yup.string().required(t('validation.required')),
       state: yup.string().required(t('validation.required')),
 
@@ -32,7 +33,8 @@ const Template: ComponentStory<typeof Address> = (args) => {
   const initialValues = {
     [args.basename]: {
       address1: '',
-      address2: '',
+      address2: undefined,
+      address3: undefined,
       city: '',
       state: '',
       zipcode: '',

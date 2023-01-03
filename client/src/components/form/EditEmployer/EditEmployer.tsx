@@ -4,6 +4,7 @@ import { Employer, PaymentsReceivedDetailInput } from 'types/claimantInput'
 import { array, boolean, object, mixed, ref, string } from 'yup'
 import {
   yupDate,
+  yupEmployerAddress,
   yupAddressWithoutStreet,
   yupCurrency,
   yupPhone,
@@ -24,6 +25,7 @@ import { WorkLocation } from '../employer/WorkLocation/WorkLocation'
 import PaymentsReceived from '../employer/PaymentsReceived/PaymentsReceived'
 import {
   ADDRESS_WITHOUT_STREET_SKELETON,
+  EMPLOYER_ADDRESS_SKELETON,
   PHONE_SKELETON,
 } from 'constants/initialValues'
 import Error from 'next/error'
@@ -68,6 +70,7 @@ export const EMPLOYER_SKELETON = {
   // Your Employer
   employer_name: '',
   fein: undefined,
+  employer_address: { ...EMPLOYER_ADDRESS_SKELETON },
   is_full_time: undefined,
   // Work Location
   worked_at_employer_address: undefined,
@@ -139,6 +142,10 @@ export const yupEditEmployer = object().shape({
       'employers.work_location.worked_at_employer_address.required'
     )
   ),
+  employer_address: mixed().when('is_imported', {
+    is: false,
+    then: yupEmployerAddress(),
+  }),
   alternate_physical_work_address: mixed().when('worked_at_employer_address', {
     is: false,
     then: yupAddressWithoutStreet(),

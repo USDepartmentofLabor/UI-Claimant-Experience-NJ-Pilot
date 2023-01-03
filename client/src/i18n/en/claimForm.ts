@@ -422,6 +422,14 @@ const claimForm = {
           maxLength: 'Your FEIN must be at most 15 characters',
         },
       },
+      employer_address: {
+        address: { label: 'Employer street address 1' },
+        address2: { label: 'Employer street address 2 (optional)' },
+        address3: { label: 'Employer street address 3 (optional)' },
+        city: { label: 'City' },
+        state: { label: 'State' },
+        zipcode: { label: 'ZIP' },
+      },
       is_full_time: {
         help_text:
           'Full-time means working more (even 1 minute more) than 32 hours a week. Part-time means working exactly 32 hours or less a week.',

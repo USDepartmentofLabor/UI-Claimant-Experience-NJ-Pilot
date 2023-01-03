@@ -38,7 +38,7 @@ export type EmployerInput = {
 export type Employer = {
   is_imported?: boolean
   is_employer?: boolean
-  employer_address?: AddressInput
+  employer_address?: EmployerAddressInput
   employer_phone?: string
 
   isInitiated?: boolean
@@ -164,6 +164,15 @@ export type PersonNameInput = {
 
 export type AddressInput = {
   address: string
+  city: string
+  state: string
+  zipcode: string
+}
+
+export type EmployerAddressInput = {
+  address: string
+  address2?: string
+  address3?: string
   city: string
   state: string
   zipcode: string

@@ -20,6 +20,8 @@ export const validImportedEditEmployer: Employer = {
   employment_start_date: '2021-12-12',
   employer_address: {
     address: '1 John Fitch Plaza',
+    address2: undefined,
+    address3: undefined,
     city: 'Trenton',
     state: 'NJ',
     zipcode: '11111',
@@ -36,6 +38,14 @@ export const validImportedEditEmployer: Employer = {
 
 const validManuallyAddedEmployer: Employer = {
   ...validImportedEditEmployer,
+  employer_address: {
+    address: '',
+    address2: undefined,
+    address3: undefined,
+    city: '',
+    state: '',
+    zipcode: '',
+  },
   employer_name: undefined,
   fein: undefined,
   is_imported: false,
@@ -119,6 +129,30 @@ describe('YourEmployer component for non-imported employer', () => {
     const FEINQuestion = screen.getByLabelText('fein.label', {
       exact: false,
     })
+    const employerStreetAddress = screen.getByLabelText(
+      'employer_address.address.label',
+      { exact: false }
+    )
+    const employerStreetAddress2 = screen.getByLabelText(
+      'employer_address.address2.label',
+      { exact: false }
+    )
+    const employerStreetAddress3 = screen.getByLabelText(
+      'employer_address.address3.label',
+      { exact: false }
+    )
+    const employerCityAddress = screen.getByLabelText(
+      'employer_address.city.label',
+      { exact: false }
+    )
+    const employerStateAddress = screen.getByLabelText(
+      'employer_address.state.label',
+      { exact: false }
+    )
+    const employerZIPAddress = screen.getByLabelText(
+      'employer_address.zipcode.label',
+      { exact: false }
+    )
 
     const fullTimePartTimeQuestion = screen.getByRole('group', {
       name: 'your_employer.is_full_time.label',
@@ -138,6 +172,12 @@ describe('YourEmployer component for non-imported employer', () => {
       sectionTitle,
       employerNameQuestion,
       FEINQuestion,
+      employerStreetAddress,
+      employerStreetAddress2,
+      employerStreetAddress3,
+      employerCityAddress,
+      employerStateAddress,
+      employerZIPAddress,
       fullTimePartTimeQuestion,
       fullTimePartTimeQuestionYesAnswer,
       fullTimePartTimeQuestionNoAnswer,
@@ -149,6 +189,12 @@ describe('YourEmployer component for non-imported employer', () => {
       sectionTitle,
       employerNameQuestion,
       FEINQuestion,
+      employerStreetAddress,
+      employerStreetAddress2,
+      employerStreetAddress3,
+      employerCityAddress,
+      employerStateAddress,
+      employerZIPAddress,
       fullTimePartTimeQuestion,
       fullTimePartTimeQuestionYesAnswer,
       fullTimePartTimeQuestionNoAnswer,
@@ -158,6 +204,12 @@ describe('YourEmployer component for non-imported employer', () => {
 
     expect(employerNameQuestion).toBeInTheDocument()
     expect(FEINQuestion).toBeInTheDocument()
+    expect(employerStreetAddress).toBeInTheDocument()
+    expect(employerStreetAddress2).toBeInTheDocument()
+    expect(employerStreetAddress3).toBeInTheDocument()
+    expect(employerCityAddress).toBeInTheDocument()
+    expect(employerStateAddress).toBeInTheDocument()
+    expect(employerZIPAddress).toBeInTheDocument()
 
     expect(fullTimePartTimeQuestion).toBeInTheDocument()
     expect(fullTimePartTimeQuestionYesAnswer).toBeInTheDocument()
@@ -168,14 +220,38 @@ describe('YourEmployer component for non-imported employer', () => {
     const {
       employerNameQuestion,
       FEINQuestion,
+      employerStreetAddress,
+      employerStreetAddress2,
+      employerStreetAddress3,
+      employerCityAddress,
+      employerStateAddress,
+      employerZIPAddress,
       fullTimePartTimeQuestionYesAnswer,
     } = renderYourEmployer(validManuallyAddedEmployer)
 
     await userEvent.type(employerNameQuestion, 'Microsoft')
     expect(employerNameQuestion).toHaveValue('Microsoft')
 
-    await userEvent.type(FEINQuestion, '123456789012345')
-    expect(FEINQuestion).toHaveValue('123456789012345')
+    await userEvent.type(FEINQuestion, '12345678901234')
+    expect(FEINQuestion).toHaveValue('12345678901234')
+
+    await userEvent.type(employerStreetAddress, '1 Main St')
+    expect(employerStreetAddress).toHaveValue('1 Main St')
+
+    await userEvent.type(employerStreetAddress2, '2nd Stop Ave')
+    expect(employerStreetAddress2).toHaveValue('2nd Stop Ave')
+
+    await userEvent.type(employerStreetAddress3, 'PO BOX 1234')
+    expect(employerStreetAddress3).toHaveValue('PO BOX 1234')
+
+    await userEvent.type(employerCityAddress, 'Townsville')
+    expect(employerCityAddress).toHaveValue('Townsville')
+
+    await userEvent.selectOptions(employerStateAddress, 'NY')
+    expect(employerStateAddress).toHaveValue('NY')
+
+    await userEvent.type(employerZIPAddress, '01234')
+    expect(employerZIPAddress).toHaveValue('01234')
 
     await userEvent.click(fullTimePartTimeQuestionYesAnswer)
     expect(fullTimePartTimeQuestionYesAnswer).toBeChecked()
