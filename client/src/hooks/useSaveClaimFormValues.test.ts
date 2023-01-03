@@ -100,20 +100,36 @@ describe('it saves the claim form values', () => {
       mockClaimFormValues = {
         ssn: '000000000',
         employers: [
-          { name: 'Apple', LOCAL_pay_types: [], payments_received: [] },
-          { name: 'Honda', LOCAL_pay_types: [], payments_received: [] },
+          {
+            employer_name: 'Apple',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
+          {
+            employer_name: 'Honda',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
         ],
       }
       const expectedClaimFormValues = {
         ssn: '000000000',
         employers: [
-          { name: 'Apple', LOCAL_pay_types: [], payments_received: [] },
-          { name: 'Microsoft', LOCAL_pay_types: [], payments_received: [] },
+          {
+            employer_name: 'Apple',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
+          {
+            employer_name: 'Microsoft',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
         ],
       }
       const { mockMutateAsync, result } = await setUpHook(200)
       const employer: Employer = {
-        name: 'Microsoft',
+        employer_name: 'Microsoft',
         LOCAL_pay_types: [],
         payments_received: [],
       }
@@ -133,13 +149,21 @@ describe('it saves the claim form values', () => {
       mockClaimFormValues = {
         ssn: '000000000',
         employers: [
-          { name: 'Apple', LOCAL_pay_types: [], payments_received: [] },
-          { name: 'Honda', LOCAL_pay_types: [], payments_received: [] },
+          {
+            employer_name: 'Apple',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
+          {
+            employer_name: 'Honda',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
         ],
       }
       const { mockMutateAsync, result } = await setUpHook(404)
       const employer: Employer = {
-        name: 'Microsoft',
+        employer_name: 'Microsoft',
         LOCAL_pay_types: [],
         payments_received: [],
       }
@@ -160,12 +184,16 @@ describe('it saves the claim form values', () => {
       const expectedClaimFormValues = {
         ssn: '000000000',
         employers: [
-          { name: 'Microsoft', LOCAL_pay_types: [], payments_received: [] },
+          {
+            employer_name: 'Microsoft',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
         ],
       }
       const { mockMutateAsync, result } = await setUpHook(200)
       const employer: Employer = {
-        name: 'Microsoft',
+        employer_name: 'Microsoft',
         LOCAL_pay_types: [],
         payments_received: [],
       }
@@ -185,7 +213,7 @@ describe('it saves the claim form values', () => {
         mockClaimFormValues = { ssn: '000000000' }
         const { mockMutateAsync, result } = await setUpHook(200)
         const employer: Employer = {
-          name: 'Microsoft',
+          employer_name: 'Microsoft',
           LOCAL_pay_types: [],
           payments_received: [],
         }
@@ -206,13 +234,21 @@ describe('it saves the claim form values', () => {
         mockClaimFormValues = {
           ssn: '000000000',
           employers: [
-            { name: 'Apple', LOCAL_pay_types: [], payments_received: [] },
-            { name: 'Honda', LOCAL_pay_types: [], payments_received: [] },
+            {
+              employer_name: 'Apple',
+              LOCAL_pay_types: [],
+              payments_received: [],
+            },
+            {
+              employer_name: 'Honda',
+              LOCAL_pay_types: [],
+              payments_received: [],
+            },
           ],
         }
         const { mockMutateAsync, result } = await setUpHook(404)
         const employer: Employer = {
-          name: 'Microsoft',
+          employer_name: 'Microsoft',
           LOCAL_pay_types: [],
           payments_received: [],
         }

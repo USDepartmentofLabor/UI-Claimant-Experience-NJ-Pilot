@@ -42,7 +42,8 @@ export type Employer = {
   employer_phone?: string
 
   isInitiated?: boolean
-  name?: string
+  fein?: string
+  employer_name?: string
   is_full_time?: boolean
 
   separation_circumstance?: string

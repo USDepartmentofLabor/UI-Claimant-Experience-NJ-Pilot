@@ -80,10 +80,12 @@ export const RecentEmployers: NextPageWithLayout = () => {
                           <>
                             <span className="screen-reader-only">
                               {t('recent_employers.work_at', {
-                                employer: employer.name,
+                                employer: employer.employer_name,
                               })}
                             </span>
-                            <span aria-hidden={true}>{employer.name}</span>
+                            <span aria-hidden={true}>
+                              {employer.employer_name}
+                            </span>
                           </>
                         }
                       />

@@ -369,7 +369,8 @@
         "fein": {
           "description": "Employer's Federal Employment Identification Number (FEIN)",
           "type": "string",
-          "pattern": "^[0-9]+$"
+          "maxLength": 15,
+          "pattern": "^[\\d]{0,15}$"
         },
         "was_full_time": {
           "description": "Job was more than 32 hours per week",

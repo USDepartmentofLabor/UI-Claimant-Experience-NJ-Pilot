@@ -3,7 +3,9 @@ export const useGetRecentEmployers = () => {
     /*edit the below employers with initial values as needed */
     data: [
       {
-        name: 'Apple',
+        is_imported: true,
+        fein: '0123456789',
+        employer_name: 'Apple',
         is_full_time: undefined,
         separation_circumstance: undefined,
         employer_address: {
@@ -13,12 +15,13 @@ export const useGetRecentEmployers = () => {
           zipcode: '01234',
         },
         employer_phone: '123-456-7890',
-        is_imported: true,
         LOCAL_pay_types: [],
         payments_received: [],
       },
       {
-        name: 'Microsoft',
+        is_imported: true,
+        fein: '9876543210',
+        employer_name: 'Microsoft',
         is_full_time: undefined,
         separation_circumstance: undefined,
         employer_address: {
@@ -28,12 +31,13 @@ export const useGetRecentEmployers = () => {
           zipcode: '12345',
         },
         employer_phone: '987-654-3210',
-        is_imported: true,
         LOCAL_pay_types: [],
         payments_received: [],
       },
       {
-        name: 'Wendys',
+        is_imported: true,
+        fein: '1208462579',
+        employer_name: 'Wendys',
         is_full_time: undefined,
         separation_circumstance: undefined,
         employer_address: {
@@ -43,7 +47,22 @@ export const useGetRecentEmployers = () => {
           zipcode: '23456',
         },
         employer_phone: '555-123-9870',
-        is_imported: true,
+        LOCAL_pay_types: [],
+        payments_received: [],
+      },
+      {
+        is_imported: false,
+        employer_name: '',
+        fein: undefined,
+        is_full_time: undefined,
+        separation_circumstance: undefined,
+        employer_address: {
+          address: '',
+          city: '',
+          state: '',
+          zipcode: '',
+        },
+        employer_phone: '',
         LOCAL_pay_types: [],
         payments_received: [],
       },

@@ -5,7 +5,11 @@ import EditEmployerPage from 'pages/dev/edit-employer'
 describe('Edit Employer Component', () => {
   it('renders correctly', async () => {
     const initialValues = {
-      employers: [{ name: 'Alpha' }, { name: 'Beta' }, { name: 'Gamma' }],
+      employers: [
+        { employer_name: 'Alpha' },
+        { employer_name: 'Beta' },
+        { employer_name: 'Gamma' },
+      ],
     }
 
     await act(() =>

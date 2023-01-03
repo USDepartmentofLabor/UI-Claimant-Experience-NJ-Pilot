@@ -13,7 +13,7 @@ const mockUseContext = jest.fn()
 React.useContext = mockUseContext
 
 const employer: Employer = {
-  name: 'Lyft Inc.',
+  employer_name: 'Lyft Inc.',
   is_imported: true,
   is_full_time: true,
   is_employer: true,
@@ -111,7 +111,11 @@ describe('Claim progress hook', () => {
         employers: [
           {
             ...employer,
-            ...{ is_employer: undefined, is_imported: true, name: undefined },
+            ...{
+              is_employer: undefined,
+              is_imported: true,
+              employer_name: undefined,
+            },
           },
         ],
       }
@@ -126,7 +130,11 @@ describe('Claim progress hook', () => {
         employers: [
           {
             ...employer,
-            ...{ is_employer: false, is_imported: true, name: undefined },
+            ...{
+              is_employer: false,
+              is_imported: true,
+              employer_name: undefined,
+            },
           },
         ],
       }
