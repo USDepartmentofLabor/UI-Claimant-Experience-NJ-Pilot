@@ -22,7 +22,7 @@ const securityHeaders = [
 if (process.env.NODE_ENV === 'production') {
   securityHeaders.push({
     key: 'Strict-Transport-Security',
-    value: 'max-age=300; includeSubDomains',
+    value: 'max-age=86400; includeSubDomains',
   })
 }
 
