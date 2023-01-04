@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Map;
+import nj.lwd.ui.claimantintake.dto.Employer;
 import nj.lwd.ui.claimantintake.dto.RecentEmployers;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.RecentEmployersService;
@@ -37,13 +37,13 @@ public class RecentEmployersController {
     }
 
     @GetMapping()
-    public ArrayList<Map<String, Object>> getRecentEmployers(Authentication authentication) {
+    public ArrayList<Employer> getRecentEmployers(Authentication authentication) {
         String claimantIdpId = authentication.getName();
         String ssn = claimStorageService.getSSN(claimantIdpId);
         if (ssn == null) {
-            return new ArrayList<Map<String, Object>>();
+            return new RecentEmployers().getRecentEmployers();
         }
-
+        System.out.println("converting the values");
         // create claim date as previous sunday
         String claimDate = getClaimDate();
 
@@ -53,6 +53,6 @@ public class RecentEmployersController {
 
         RecentEmployers recentEmployers = new RecentEmployers(recentEmployersResponse);
 
-        return recentEmployers.toMapping();
+        return recentEmployers.getRecentEmployers();
     }
 }

@@ -12,14 +12,19 @@ import org.slf4j.LoggerFactory;
 
 public class RecentEmployers {
     private ArrayList<Employer> recentEmployers;
-    private final Logger logger = LoggerFactory.getLogger(RecentEmployers.class);
+    // private final Logger logger = LoggerFactory.getLogger(RecentEmployers.class);
+
+    public RecentEmployers() {
+        recentEmployers = new ArrayList<Employer>();
+    }
 
     public RecentEmployers(JSONObject recentEmployersResponse) {
+        this();
         try {
-            this.recentEmployers = new ArrayList<Employer>();
             setRecentEmployers(recentEmployersResponse);
 
         } catch (JsonProcessingException e) {
+            Logger logger = LoggerFactory.getLogger(RecentEmployers.class);
             logger.error("Couldn't parse the employer response.");
             logger.error(e.getMessage());
         }
@@ -79,5 +84,13 @@ public class RecentEmployers {
             recentEmployerMap.add(employer.toMapping());
         }
         return recentEmployerMap;
+    }
+
+    public ArrayList<Employer> getRecentEmployers() {
+        ArrayList<Employer> recEmployerCopy = new ArrayList<Employer>();
+        for (int i = 0; i < recentEmployers.size(); i++) {
+            recEmployerCopy.add(recentEmployers.get(i));
+        }
+        return recEmployerCopy;
     }
 }

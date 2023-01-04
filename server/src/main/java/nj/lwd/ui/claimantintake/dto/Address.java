@@ -1,9 +1,5 @@
 package nj.lwd.ui.claimantintake.dto;
 
-import java.util.HashMap;
-import java.util.Map;
-import nj.lwd.ui.claimantintake.constants.RecentEmployerClientKeys;
-
 public class Address {
     private final String address;
     private final String city;
@@ -59,17 +55,5 @@ public class Address {
 
     public String getZipcode() {
         return zipcode;
-    }
-
-    public Map<String, Object> toMapping() {
-
-        return new HashMap<String, Object>() {
-            {
-                put(RecentEmployerClientKeys.ADDRESS.value, address);
-                put(RecentEmployerClientKeys.CITY.value, city);
-                put(RecentEmployerClientKeys.STATE.value, state);
-                put(RecentEmployerClientKeys.ZIPCODE.value, zipcode);
-            }
-        };
     }
 }

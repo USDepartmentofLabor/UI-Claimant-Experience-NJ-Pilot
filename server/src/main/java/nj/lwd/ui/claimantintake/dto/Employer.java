@@ -1,8 +1,6 @@
 package nj.lwd.ui.claimantintake.dto;
 
 import java.util.HashMap;
-import java.util.Map;
-import nj.lwd.ui.claimantintake.constants.RecentEmployerClientKeys;
 
 public class Employer {
     private final String employer_name;
@@ -34,15 +32,28 @@ public class Employer {
                 };
     }
 
-    public Map<String, Object> toMapping() {
-        return new HashMap<String, Object>() {
-            {
-                put(RecentEmployerClientKeys.EMPLOYER_ADDRESS.value, employer_address.toMapping());
-                put(RecentEmployerClientKeys.EMPLOYER_NAME.value, employer_name);
-                put(RecentEmployerClientKeys.ALT_EMPLOYER_NAME.value, alternate_employer_name);
-                put(RecentEmployerClientKeys.EMPLOYER_PHONE.value, employer_phone);
-                put(RecentEmployerClientKeys.FEIN.value, fein);
-            }
-        };
+    // for spring to map the dto it has to be get+name of varaible in camel case
+    // the _ in our variables make the get ugly,
+    // but changing it leads to spring unable to parse the employer into JSON
+    public String getEmployer_name() {
+        return employer_name;
+    }
+
+    public String getAlternate_employer_name() {
+        return alternate_employer_name;
+    }
+
+    public Address getEmployer_address() {
+        return employer_address;
+    }
+
+    public HashMap<String, String> getEmployer_phone() {
+        HashMap<String, String> employerPhone = new HashMap<String, String>();
+        employerPhone.putAll(employer_phone);
+        return employerPhone;
+    }
+
+    public String getFein() {
+        return fein;
     }
 }
