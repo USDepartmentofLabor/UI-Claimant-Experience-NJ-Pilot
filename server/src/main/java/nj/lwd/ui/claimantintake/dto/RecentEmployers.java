@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.nimbusds.jose.shaded.json.JSONObject;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import nj.lwd.ui.claimantintake.constants.RecentEmployerResponseKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,17 +72,6 @@ public class RecentEmployers {
                                 employerPhone));
             }
         }
-    }
-
-    public ArrayList<Map<String, Object>> toMapping() {
-        ArrayList<Map<String, Object>> recentEmployerMap = new ArrayList<>();
-        if (recentEmployers.size() < 1) {
-            return new ArrayList<Map<String, Object>>();
-        }
-        for (Employer employer : recentEmployers) {
-            recentEmployerMap.add(employer.toMapping());
-        }
-        return recentEmployerMap;
     }
 
     public ArrayList<Employer> getRecentEmployers() {
