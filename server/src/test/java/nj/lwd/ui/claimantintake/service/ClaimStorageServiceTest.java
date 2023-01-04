@@ -467,7 +467,7 @@ class ClaimStorageServiceTest {
         var claim = mock(Claim.class);
         var claimantId = UUID.randomUUID();
         var claimId = UUID.randomUUID();
-        var expectedS3Key = "%s/%s.json".formatted(claimantId, claimId);
+
         when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.of(claimant));
         when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
