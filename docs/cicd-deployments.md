@@ -93,6 +93,7 @@ appropriate AWS access can retrieve the values from SSM.
 |                    | `DB_MIGRATIONS_SECURITY_GROUP_DEV`  |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |
 |                    | `DB_MIGRATIONS_SUBNET_DEV`          |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-subnet`         |
 |                    | `NEXT_PUBLIC_SERVER_BASE_URL`       |                 | `/dol-ui-claimant-intake-github-actions/next-public-server-base-url`  |
+| ci                 | `AWS_ROLE_TO_ASSUME_CI`             | dev             | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume-ci`        |
 | test               | `AWS_ROLE_TO_ASSUME_TEST`           | test            | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume`           |
 |                    | `DB_MIGRATIONS_SECURITY_GROUP_TEST` |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |
 |                    | `DB_MIGRATIONS_SUBNET_TEST`         |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-subnet`         |
