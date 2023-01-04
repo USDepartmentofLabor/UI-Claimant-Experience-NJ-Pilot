@@ -227,6 +227,26 @@ public class ClaimStorageService {
                 });
     }
 
+    public String getSSN(String claimantIdpId) {
+        logger.debug("Attempting to retreive ssn for claim {}", claimantIdpId);
+
+        Optional<Claimant> claimant = claimantStorageService.getClaimant(claimantIdpId);
+        // check claimant exists so new one is not created by get partial claim call
+        if (claimant.isPresent()) {
+            try {
+                Optional<Map<String, Object>> claim = getPartialClaim(claimantIdpId);
+                if (claim.isPresent() && claim.get().containsKey("ssn")) {
+                    return claim.get().get("ssn").toString();
+                }
+            } catch (ClaimDataRetrievalException e) {
+                logger.info(
+                        "Unable to retrieve claim, thus unable to get ssn for claimid {}",
+                        claimantIdpId);
+            }
+        }
+        return null;
+    }
+
     private Map<String, Object> deserializeToClaimData(InputStream stream) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};

@@ -16,12 +16,33 @@ public class Address {
             String addressLine3,
             String address4,
             String zipcode) {
-        // address is line 1, 2 and 3
-        this.address = addressLine1 + "\n" + addressLine2 + "\n" + addressLine3;
+
+        this.address = createAddress(addressLine1, addressLine2, addressLine3);
         String[] cityState = address4.split(" ");
         this.city = cityState[0];
         this.state = cityState[1];
         this.zipcode = zipcode;
+    }
+
+    public String createAddress(String addressLine1, String addressLine2, String addressLine3) {
+        String temp = "";
+        if (addressLine1 != null) {
+
+            temp += addressLine1;
+        }
+        if (addressLine2 != null) {
+            if (!temp.equals("")) {
+                temp += "\n";
+            }
+            temp += addressLine2;
+        }
+        if (addressLine3 != null) {
+            if (!temp.equals("")) {
+                temp += "\n";
+            }
+            temp += addressLine3;
+        }
+        return temp;
     }
 
     public String getAddress() {

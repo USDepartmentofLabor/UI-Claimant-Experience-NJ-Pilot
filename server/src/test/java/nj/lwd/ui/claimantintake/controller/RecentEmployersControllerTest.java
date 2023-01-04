@@ -1,6 +1,7 @@
 package nj.lwd.ui.claimantintake.controller;
 
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -33,6 +34,10 @@ public class RecentEmployersControllerTest {
     @Autowired private MockMvc mockMvc;
     @MockBean private ClaimStorageService claimStorageService;
     @MockBean private RecentEmployersService recentEmployersService;
+
+    void mockGetSSN() {
+        when(claimStorageService.getSSN(anyString())).thenReturn("123456789");
+    }
 
     public JSONObject getValidRecentEmployerResponse() throws JsonProcessingException {
         String employersString =
@@ -106,12 +111,13 @@ public class RecentEmployersControllerTest {
     @Test
     @WithMockUser
     void shouldReturnRecentEmployers() throws Exception {
+        mockGetSSN();
         when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
                 .thenReturn(getValidRecentEmployerResponse());
         // TODO - remove the null here when change the address dto to not tack on nulls
         String expectedResponse =
                 """
-            [{"employer_address":{"zipcode":"01961","address":"DIRECT FUTURE MAIL\nC/O TALX UC EXPRESS\nP O BOX 6001","city":"PEABODY","state":"MA"},"employer_phone":{"number":"6144151035"},"employer_name":"VICTORIAS SECRET STORES, INC.","fein":"031143718000000","alternate_employer_name":"TODO_FILL THIS IN"},{"employer_address":{"zipcode":"01961","address":"The Hall of Justice\n2212 superhero street\nSUITE #2","city":"WASHINGTON","state":"DC"},"employer_phone":{"number":"6144151035"},"employer_name":"Justice League","fein":"031143718000000","alternate_employer_name":"TODO_FILL THIS IN"},{"employer_address":{"zipcode":"12345","address":"123 Secret Identity Street\n#7\nnull","city":"Metropolis","state":"KS"},"employer_phone":{"number":"6144151035"},"employer_name":"Daily Planet","fein":"031143718000000","alternate_employer_name":"TODO_FILL THIS IN"}]
+            [{"employer_address":{"zipcode":"01961","address":"DIRECT FUTURE MAIL\nC/O TALX UC EXPRESS\nP O BOX 6001","city":"PEABODY","state":"MA"},"employer_phone":{"number":"6144151035"},"employer_name":"VICTORIAS SECRET STORES, INC.","fein":"031143718000000","alternate_employer_name":"TODO_FILL THIS IN"},{"employer_address":{"zipcode":"01961","address":"The Hall of Justice\n2212 superhero street\nSUITE #2","city":"WASHINGTON","state":"DC"},"employer_phone":{"number":"6144151035"},"employer_name":"Justice League","fein":"031143718000000","alternate_employer_name":"TODO_FILL THIS IN"},{"employer_address":{"zipcode":"12345","address":"123 Secret Identity Street\n#7","city":"Metropolis","state":"KS"},"employer_phone":{"number":"6144151035"},"employer_name":"Daily Planet","fein":"031143718000000","alternate_employer_name":"TODO_FILL THIS IN"}]
         """;
 
         this.mockMvc
@@ -128,8 +134,27 @@ public class RecentEmployersControllerTest {
     @Test
     @WithMockUser
     void shouldNotReturnRecentEmployers() throws Exception {
+        mockGetSSN();
         when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
                 .thenReturn(getInvalidRecentEmployerResponse());
+        String expectedResponse = "[]";
+
+        this.mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get("/recent-employers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnEmptyIfNoSSN() throws Exception {
+        when(claimStorageService.getSSN(anyString())).thenReturn(null);
+
         String expectedResponse = "[]";
 
         this.mockMvc

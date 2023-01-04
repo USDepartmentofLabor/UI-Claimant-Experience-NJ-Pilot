@@ -17,7 +17,7 @@ public class RecentEmployers {
     public RecentEmployers(JSONObject recentEmployersResponse) {
         try {
             this.recentEmployers = new ArrayList<Employer>();
-            parseRecentEmployers(recentEmployersResponse);
+            setRecentEmployers(recentEmployersResponse);
 
         } catch (JsonProcessingException e) {
             logger.error("Couldn't parse the employer response.");
@@ -25,12 +25,10 @@ public class RecentEmployers {
         }
     }
 
-    private void parseRecentEmployers(JSONObject recentEmployersResponse)
+    private void setRecentEmployers(JSONObject recentEmployersResponse)
             throws JsonMappingException, JsonProcessingException {
-        // TODO - should i just change this to a setRecentEmployer function?
-        // documentation says that if status code is 0 than a record is found for the ssn, otherwise
-        // no data is return for recent employer
 
+        // per documentation,  if status code is not 0 then no recent employer data is returned
         if (recentEmployersResponse == null
                 || !recentEmployersResponse
                         .get(RecentEmployerResponseKeys.RESPONSE_STATUS.value)
@@ -45,10 +43,11 @@ public class RecentEmployers {
             for (LinkedHashMap employer : employerListArray) {
                 String employerName =
                         (String) employer.get(RecentEmployerResponseKeys.EMPLOYER_NAME.value);
-                // TODO- hich field is for alt name
+                // TODO- which field is for alt name??
                 String alternate_employer_name = "TODO_FILL THIS IN";
+
                 // TODO- is it better to have this logic in the address object? and just pass map
-                // also see if there is a way to shorten the enum accessing
+                // + is there is a way to shorten the enum accessing
                 // + try to avoid having to cast to string here?
                 String addr1 =
                         (String) employer.get(RecentEmployerResponseKeys.ADDRESS_LINE_1.value);
