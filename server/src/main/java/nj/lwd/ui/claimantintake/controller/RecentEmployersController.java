@@ -46,9 +46,8 @@ public class RecentEmployersController {
         if (ssn == null) {
             return new ArrayList<Map<String, Object>>();
         }
-        // claimDate == Sunday prior to now
-        // format yyyy-mm-dd
-        // TODO-change this to get claimDate to be sunday prior to now
+
+        // create claim date as previous sunday
         String claimDate = getClaimDate();
 
         // hit WGPM api ({ssn: ssnNumber, claimDate } and get back employer data

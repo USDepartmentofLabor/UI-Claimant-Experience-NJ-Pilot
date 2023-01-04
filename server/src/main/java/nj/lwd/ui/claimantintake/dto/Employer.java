@@ -41,13 +41,11 @@ public class Employer {
     public Map<String, Object> toMapping() {
         return new HashMap<String, Object>() {
             {
-                put(RecentEmployerClientKeys.employer_address.name(), employer_address.toMapping());
-                put(RecentEmployerClientKeys.employer_name.name(), employer_name);
-                put(
-                        RecentEmployerClientKeys.alternate_employer_name.name(),
-                        alternate_employer_name);
-                put(RecentEmployerClientKeys.employer_phone.name(), employer_phone);
-                put(RecentEmployerClientKeys.fein.name(), fein);
+                put(RecentEmployerClientKeys.EMPLOYER_ADDRESS.value, employer_address.toMapping());
+                put(RecentEmployerClientKeys.EMPLOYER_NAME.value, employer_name);
+                put(RecentEmployerClientKeys.ALT_EMPLOYER_NAME.value, alternate_employer_name);
+                put(RecentEmployerClientKeys.EMPLOYER_PHONE.value, employer_phone);
+                put(RecentEmployerClientKeys.FEIN.value, fein);
             }
         };
     }

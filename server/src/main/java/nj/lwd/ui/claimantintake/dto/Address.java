@@ -65,10 +65,10 @@ public class Address {
 
         return new HashMap<String, Object>() {
             {
-                put(RecentEmployerClientKeys.address.name(), address);
-                put(RecentEmployerClientKeys.city.name(), city);
-                put(RecentEmployerClientKeys.state.name(), state);
-                put(RecentEmployerClientKeys.zipcode.name(), zipcode);
+                put(RecentEmployerClientKeys.ADDRESS.value, address);
+                put(RecentEmployerClientKeys.CITY.value, city);
+                put(RecentEmployerClientKeys.STATE.value, state);
+                put(RecentEmployerClientKeys.ZIPCODE.value, zipcode);
             }
         };
     }

@@ -1,14 +1,19 @@
 package nj.lwd.ui.claimantintake.constants;
-// TODO- to be consistent should I have these as upper case and
-// then .value like in the Response Keys file?
+
 public enum RecentEmployerClientKeys {
-    employer_name,
-    employer_address,
-    address,
-    city,
-    state,
-    zipcode,
-    alternate_employer_name,
-    employer_phone,
-    fein
+    EMPLOYER_NAME("employer_name"),
+    EMPLOYER_ADDRESS("employer_address"),
+    ADDRESS("address"),
+    CITY("city"),
+    STATE("state"),
+    ZIPCODE("zipcode"),
+    ALT_EMPLOYER_NAME("alternate_employer_name"),
+    EMPLOYER_PHONE("employer_phone"),
+    FEIN("fein");
+
+    public final String value;
+
+    private RecentEmployerClientKeys(String value) {
+        this.value = value;
+    }
 }
