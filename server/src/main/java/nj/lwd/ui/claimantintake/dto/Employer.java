@@ -25,10 +25,6 @@ public class Employer {
         this.alternate_employer_name = "TODO_FILL THIS IN";
         this.employer_address =
                 new Address(addressLine1, addressLine2, addressLine3, addressLine4, zipcode);
-
-        // TODO -  should we send fein back before we have the client expecting fein for an
-        // employer?
-        //          fein is not part of the employer object yet
         this.fein = fein;
         this.employer_phone =
                 new HashMap<String, String>() {
