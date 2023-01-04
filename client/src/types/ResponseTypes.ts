@@ -1,4 +1,5 @@
 import { Claim } from './Claim'
+import { Employer } from './claimantInput'
 
 export type APIResponseType = {
   status: string
@@ -6,3 +7,5 @@ export type APIResponseType = {
 }
 
 export type PartialClaimResponseType = Partial<Claim>
+
+export type RecentEmployersResponseType = Partial<Employer>[]

@@ -31,6 +31,34 @@ export const yupAddress = () =>
       .required(i18n_common.t('address.zipcode.errors.required')),
   })
 
+export const yupEmployerAddress = () =>
+  object().shape({
+    address: string()
+      .trim()
+      .max(40, i18n_common.t('address.address.errors.maxLength'))
+      .required(i18n_common.t('address.address.errors.required')),
+    address2: string()
+      .trim()
+      .max(40, i18n_common.t('address.address.errors.maxLength')),
+    address3: string()
+      .trim()
+      .max(40, i18n_common.t('address.address.errors.maxLength')),
+    city: string()
+      .max(40, i18n_common.t('address.city.errors.maxLength'))
+      .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
+      .required(i18n_common.t('address.city.errors.required')),
+    state: string()
+      .oneOf(Object.keys(states))
+      .required(i18n_common.t('address.state.errors.required')),
+    zipcode: string()
+      .matches(
+        // eslint-disable-next-line security/detect-unsafe-regex
+        /^\d{5}(-\d{4})?$/,
+        i18n_common.t('address.zipcode.errors.format')
+      )
+      .required(i18n_common.t('address.zipcode.errors.required')),
+  })
+
 export const yupAddressWithoutPOBox = () =>
   object().shape({
     address: string()

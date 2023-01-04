@@ -70,3 +70,52 @@ Secrets are typically stored as "Actions" secrets. However, dependabot pull
 requests do not have permission to access those secrets. If a dependabot pull
 request needs access to secrets, those secrets must be stored as both "Actions"
 secrets and "Dependabot" secrets.
+
+"Actions" secrets are scoped either to the repository or to a specific
+environment.
+
+## GitHub environments
+
+The repository uses [GitHub
+environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
+as a way to control which branches can be deployed to each AWS environment. Each
+GitHub environment stores a separate set of secrets/parameters needed to deploy
+code to AWS.
+
+The names of the GitHub secrets/parameters for each environment are listed in
+the table below. Their values are also stored in AWS as SSM parameters. If the
+GitHub secrets need to be updated or recreated, a team member with the
+appropriate AWS access can retrieve the values from SSM.
+
+| GitHub environment | Environment secret name             | AWS environment | SSM parameter name                                                    |
+| ------------------ | ----------------------------------- | --------------- | --------------------------------------------------------------------- |
+| dev                | `AWS_ROLE_TO_ASSUME_DEV`            | dev             | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume`           |
+|                    | `DB_MIGRATIONS_SECURITY_GROUP_DEV`  |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |
+|                    | `DB_MIGRATIONS_SUBNET_DEV`          |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-subnet`         |
+|                    | `NEXT_PUBLIC_SERVER_BASE_URL`       |                 | `/dol-ui-claimant-intake-github-actions/next-public-server-base-url`  |
+| ci                 | `AWS_ROLE_TO_ASSUME_CI`             | dev             | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume-ci`        |
+| test               | `AWS_ROLE_TO_ASSUME_TEST`           | test            | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume`           |
+|                    | `DB_MIGRATIONS_SECURITY_GROUP_TEST` |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |
+|                    | `DB_MIGRATIONS_SUBNET_TEST`         |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-subnet`         |
+|                    | `NEXT_PUBLIC_SERVER_BASE_URL`       |                 | `/dol-ui-claimant-intake-github-actions/next-public-server-base-url`  |
+| prod               | `AWS_ROLE_TO_ASSUME_PROD`           | prod            | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume`           |
+|                    | `DB_MIGRATIONS_SECURITY_GROUP_PROD` |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |
+|                    | `DB_MIGRATIONS_SUBNET_PROD`         |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-subnet`         |
+|                    | `NEXT_PUBLIC_SERVER_BASE_URL`       |                 | `/dol-ui-claimant-intake-github-actions/next-public-server-base-url`  |
+
+## AWS authentication
+
+The repository uses OpenID Connect within its workflows to authenticate with
+AWS. This solves the problem of securely generating and rotating AWS access
+credentials. See the following GitHub documentaton for an overview of how the
+feature works.
+
+- [About security hardening with OpenID
+  Connect](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#configuring-the-oidc-trust-with-the-cloud)
+- [Configuring OpenID Connect in Amazon Web
+  Services](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
+
+Each GitHub environment uses a different AWS Identity and Access Management
+(IAM) role. Within AWS, the assume role policy attached to the IAM role
+restricts access so that only a specific GitHub repository and environment can
+assume the role.

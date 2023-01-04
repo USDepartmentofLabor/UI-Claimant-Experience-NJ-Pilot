@@ -16,6 +16,7 @@ export const SaveAndExitLink = (props: SaveAndExitLinkProps) => {
       type="button"
       unstyled
       data-testid="save-and-exit-button"
+      id="save-and-exit-button"
       {...props}
     >
       {t('pagination.save_and_exit')}

@@ -106,6 +106,40 @@
       },
       "required": ["address", "city", "state", "zipcode"]
     },
+    "employer_address": {
+      "$id": "/definitions/employer_address",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$anchor": "#/definitions/employer_address",
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "address2": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "address3": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^([^0-9]*)$"
+        },
+        "state": {
+          "$ref": "#/definitions/state_or_territory"
+        },
+        "zipcode": {
+          "type": "string",
+          "maxLength": 10,
+          "pattern": "^\\d{5}(-\\d{4})?$"
+        }
+      },
+      "required": ["address", "city", "state", "zipcode"]
+    },
     "phone": {
       "$id": "/definitions/phone",
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -360,7 +394,7 @@
         },
         "employer_address": {
           "description": "Employer's address",
-          "$ref": "#/definitions/address"
+          "$ref": "#/definitions/employer_address"
         },
         "employer_phone": {
           "description": "Employer's phone number",
@@ -369,7 +403,8 @@
         "fein": {
           "description": "Employer's Federal Employment Identification Number (FEIN)",
           "type": "string",
-          "pattern": "^[0-9]+$"
+          "maxLength": 15,
+          "pattern": "^[\\d]{0,15}$"
         },
         "was_full_time": {
           "description": "Job was more than 32 hours per week",

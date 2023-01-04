@@ -27,9 +27,11 @@ const common = {
         required: 'Address is required',
         pobox:
           'P.O. boxes can only be used as a mailing address, not a residential address. If you do not have another address, then please contact us.',
-        maxLength: 'Address must be at most 64 characters',
+        maxLength: 'Address must be at most 40 characters',
       },
     },
+    address2: { label: 'Address 2 (optional)' },
+    address3: { label: 'Address 3 (optional)' },
     city: {
       label: 'City',
       errors: {
@@ -114,6 +116,17 @@ const common = {
     opra: 'Open Public Records Act (OPRA)',
     gov_aria: 'U.S. government information and services',
     copyright: 'Copyright © 2020 State of New Jersey',
+  },
+  timeout: {
+    title: 'You will be logged out due to inactivity in ',
+    stay_logged_in: 'Stay logged in',
+    log_out: 'Log out',
+    instructions:
+      'Click the button below to stay logged in. Otherwise, to protect your' +
+      ' data, you will be logged out and unsaved changes may be lost.',
+    sr_countdown_zero: '{{seconds}} seconds',
+    sr_countdown_one: '{{count}} minute, {{seconds}} seconds',
+    sr_countdown_other: '{{count}} minutes, {{seconds}} seconds',
   },
 }
 

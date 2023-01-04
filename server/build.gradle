@@ -6,11 +6,11 @@ import java.time.format.DateTimeFormatter
 import java.time.Instant
 
 plugins {
-    id 'org.springframework.boot' version '2.7.6'
+    id 'org.springframework.boot' version '2.7.7'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
     id 'idea'
-    id "com.diffplug.spotless" version "6.12.0"
+    id "com.diffplug.spotless" version "6.12.1"
     id "com.github.spotbugs" version "5.0.13"
     id "org.liquibase.gradle" version "2.1.1"
     id "jacoco"
@@ -42,7 +42,7 @@ dependencies {
     liquibaseRuntime sourceSets.main.output
 
     // AWS
-    implementation platform('software.amazon.awssdk:bom:2.18.36')
+    implementation platform('software.amazon.awssdk:bom:2.19.9')
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:rds'
 
@@ -60,7 +60,7 @@ dependencies {
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 
-    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.75');
+    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.76');
 }
 
 tasks.named('test') {

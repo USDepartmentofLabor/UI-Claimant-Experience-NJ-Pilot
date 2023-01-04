@@ -24,11 +24,11 @@ export type PageDefinition = {
 
 export const pageDefinitions: PageDefinition[] = [
   PrequalPageDefinition,
+  IdentityPageDefinition,
   PersonalPageDefinition,
   ContactPageDefinition,
   DemographicsPageDefinition,
   RecentEmployersPageDefinition,
-  IdentityPageDefinition,
   // EmployerPageDefinition,
   // EmployerReviewPageDefinition,
   // SelfEmploymentPageDefinition,

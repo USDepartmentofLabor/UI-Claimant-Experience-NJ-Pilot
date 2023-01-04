@@ -4,15 +4,15 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 
+# hadolint ignore=DL3060
 RUN yarn install --production --frozen-lockfile
 
-FROM node:16.18.1-bullseye-slim AS builder
-WORKDIR /app
+FROM prod-deps AS dev-deps
 
-COPY package.json .
-COPY yarn.lock .
-
+# hadolint ignore=DL3060
 RUN yarn install --frozen-lockfile
+
+FROM dev-deps AS builder
 
 COPY .eslintrc.yml .
 COPY tsconfig.json .

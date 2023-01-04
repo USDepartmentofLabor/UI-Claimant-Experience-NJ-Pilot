@@ -1,6 +1,27 @@
+import { NextPublicAppEnv } from './environments'
+
 export const CLAIM_FORM_BASE_ROUTE = '/claim'
 export const makeClaimFormRoute = (page: string) =>
   `${CLAIM_FORM_BASE_ROUTE}/${page}`
+export const ExternalRoutes = () => {
+  const env = process.env.NEXT_PUBLIC_APP_ENV as NextPublicAppEnv
+  if (env === 'production') {
+    return {
+      UPDATE_PAYMENT_INFO:
+        'https://uiclaim.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
+    }
+  } else if (env === 'test') {
+    return {
+      UPDATE_PAYMENT_INFO:
+        'https://securest.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
+    }
+  } else {
+    return {
+      UPDATE_PAYMENT_INFO:
+        'https://stclaimproxy.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
+    }
+  }
+}
 
 export const Routes = {
   HOME: '/',
@@ -8,6 +29,7 @@ export const Routes = {
   SCREENER_REDIRECT: '/screener-redirect',
   PRIVACY: '/privacy',
   SSN: '/ssn',
+  UPDATE_PAYMENT_INFO: ExternalRoutes().UPDATE_PAYMENT_INFO,
 
   // Claim Form
   CLAIM: {
