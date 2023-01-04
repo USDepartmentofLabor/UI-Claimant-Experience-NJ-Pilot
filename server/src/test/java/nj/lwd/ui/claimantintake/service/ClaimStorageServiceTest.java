@@ -482,7 +482,6 @@ class ClaimStorageServiceTest {
 
     @Test
     void getSSNShouldFailMissingClaimant() throws ClaimDataRetrievalException {
-        Claimant claimant = mock(Claimant.class);
         when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.empty());
         String ssn = claimStorageService.getSSN("12345");
         assertEquals(ssn, null);

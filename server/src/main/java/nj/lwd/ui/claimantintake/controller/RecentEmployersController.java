@@ -10,8 +10,6 @@ import java.util.Map;
 import nj.lwd.ui.claimantintake.dto.RecentEmployers;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.RecentEmployersService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecentEmployersController {
     private final ClaimStorageService claimStorageService;
     private final RecentEmployersService recentEmployersService;
-    private final Logger logger = LoggerFactory.getLogger(RecentEmployersController.class);
 
     @Autowired
     public RecentEmployersController(
