@@ -235,6 +235,7 @@ public class ClaimStorageService {
         if (claimant.isPresent()) {
             try {
                 Optional<Map<String, Object>> claim = getPartialClaim(claimantIdpId);
+
                 if (claim.isPresent() && claim.get().containsKey("ssn")) {
                     return claim.get().get("ssn").toString();
                 }

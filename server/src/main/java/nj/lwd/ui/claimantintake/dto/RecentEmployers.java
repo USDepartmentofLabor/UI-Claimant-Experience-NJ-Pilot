@@ -43,12 +43,7 @@ public class RecentEmployers {
             for (LinkedHashMap employer : employerListArray) {
                 String employerName =
                         (String) employer.get(RecentEmployerResponseKeys.EMPLOYER_NAME.value);
-                // TODO- which field is for alt name??
-                String alternate_employer_name = "TODO_FILL THIS IN";
 
-                // TODO- is it better to have this logic in the address object? and just pass map
-                // + is there is a way to shorten the enum accessing
-                // + try to avoid having to cast to string here?
                 String addr1 =
                         (String) employer.get(RecentEmployerResponseKeys.ADDRESS_LINE_1.value);
                 String addr2 =

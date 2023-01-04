@@ -22,7 +22,7 @@ public class Employer {
             String employerPhone) {
         this.employer_name = employerName;
         // this.alternate_employer_name=; which field?? TODO-add alt name
-        this.alternate_employer_name = "TODO_FILL THIS IN";
+        this.alternate_employer_name = "business llc";
         this.employer_address =
                 new Address(addressLine1, addressLine2, addressLine3, addressLine4, zipcode);
         this.fein = fein;
