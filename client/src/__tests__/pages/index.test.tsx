@@ -28,6 +28,9 @@ describe('home page', () => {
     const signOutButton = screen.queryByRole('button', {
       name: 'Sign out',
     })
+    const taxDocButton = screen.queryByRole('button', {
+      name: 'tax_doc_button',
+    })
     const updatePaymentButton = screen.queryByRole('button', {
       name: 'Update payment info',
     })
@@ -37,6 +40,7 @@ describe('home page', () => {
       loader,
       signInButton,
       signOutButton,
+      taxDocButton,
       updatePaymentButton,
     }
   }
@@ -74,12 +78,14 @@ describe('home page', () => {
       signInButton,
       signOutButton,
       updatePaymentButton,
+      taxDocButton,
     } = renderHomePage()
 
     expect(heading).toBeInTheDocument()
     expect(loader).toBeInTheDocument()
     expect(signInButton).not.toBeInTheDocument()
     expect(signOutButton).not.toBeInTheDocument()
+    expect(taxDocButton).not.toBeInTheDocument()
     expect(updatePaymentButton).not.toBeInTheDocument()
   })
 
@@ -103,13 +109,21 @@ describe('home page', () => {
       },
     })
 
-    const { heading, signInButton, signOutButton, updatePaymentButton } =
-      renderHomePage()
+    const {
+      heading,
+      signInButton,
+      signOutButton,
+      updatePaymentButton,
+      taxDocButton,
+    } = renderHomePage()
 
     expect(heading).toBeInTheDocument()
     expect(signInButton).not.toBeInTheDocument()
     expect(signOutButton).toBeInTheDocument()
     expect(signOutButton).toHaveClass('usa-button')
+    expect(taxDocButton).toBeInTheDocument()
+    expect(taxDocButton).toHaveClass('usa-button')
+    expect(taxDocButton).toHaveClass('usa-button--secondary')
     expect(updatePaymentButton).toBeInTheDocument()
     expect(updatePaymentButton).toHaveClass('usa-button')
     expect(updatePaymentButton).toHaveClass('usa-button--secondary')
@@ -117,6 +131,21 @@ describe('home page', () => {
     await user.click(signOutButton as HTMLElement)
 
     expect(signOut).toHaveBeenCalledTimes(1)
+  })
+
+  it('takes the user to the tax download page', async () => {
+    const user = userEvent.setup()
+
+    const mockNavigateTaxDoc = jest.fn()
+    mockRouter.mockImplementation(() => ({
+      push: mockNavigateTaxDoc,
+    }))
+
+    const { taxDocButton } = renderHomePage()
+
+    await user.click(taxDocButton as HTMLElement)
+    expect(mockNavigateTaxDoc).toHaveBeenCalledTimes(1)
+    expect(mockNavigateTaxDoc).toHaveBeenCalledWith(Routes.TAX_DOCUMENTS)
   })
 
   it('takes the user to the update payment form page', async () => {
@@ -144,12 +173,18 @@ describe('home page', () => {
         data: data,
       })
 
-      const { heading, signInButton, signOutButton, updatePaymentButton } =
-        renderHomePage()
+      const {
+        heading,
+        signInButton,
+        signOutButton,
+        updatePaymentButton,
+        taxDocButton,
+      } = renderHomePage()
 
       expect(heading).toBeInTheDocument()
       expect(signInButton).toBeInTheDocument()
       expect(signOutButton).not.toBeInTheDocument()
+      expect(taxDocButton).not.toBeInTheDocument()
       expect(updatePaymentButton).not.toBeInTheDocument()
     }
   )

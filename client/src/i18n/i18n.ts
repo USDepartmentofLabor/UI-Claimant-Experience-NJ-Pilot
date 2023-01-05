@@ -23,7 +23,7 @@ const namespaces = [
 ] as const
 
 i18n.use(LanguageDetector).use(initReactI18next).init({
-  lng: 'en',
+  lng: 'en', // Remove this line to enable language detection.
   fallbackLng: 'en',
   ns: namespaces,
   defaultNS,
