@@ -106,14 +106,13 @@ public class RecentEmployersControllerTest {
                 new RecentEmployersResponse("3", false, false, 0, 0, null, 0, null, 0);
         return new RecentEmployers(errorReturn);
     }
-    // TODO mock the employer service and get the data
+
     @Test
     @WithMockUser
     void shouldReturnRecentEmployers() throws Exception {
         mockGetSSN();
         when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
                 .thenReturn(getValidRecentEmployerResponse());
-        // TODO - remove the null here when change the address dto to not tack on nulls
         String expectedResponse =
                 """
                 [{"employer_name":"VICTORIAS SECRET STORES, INC.","alternate_employer_name":"business llc","employer_address":{"address":"DIRECT FUTURE MAIL\nC/O TALX UC EXPRESS\nP O BOX 6001","city":"PEABODY","state":"MA","zipcode":"01961"},"employer_phone":{"number":"6144151035"},"fein":"031143718000000"},{"employer_name":"VICTORIAS SECRET STORES, INC.","alternate_employer_name":"business llc","employer_address":{"address":"The Hall of Justice\n2212 superhero street\nSUITE #2","city":"WASHINGTON","state":"DC","zipcode":"91121"},"employer_phone":{"number":"5554151012"},"fein":"031143718000011"},{"employer_name":"Daily Planet","alternate_employer_name":"business llc","employer_address":{"address":"123 Secret Identity Street\n#7","city":"Metropolis","state":"KS","zipcode":"12345"},"employer_phone":{"number":"1114151035"},"fein":"031143718000066"}]        """
