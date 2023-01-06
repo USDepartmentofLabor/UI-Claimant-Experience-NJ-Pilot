@@ -24,10 +24,7 @@ public class RecentEmployersResponse {
             double weeklyBenefitRate,
             ArrayList<WagePotentialResponseEmployer> wagePotentialMonLookupResponseEmployerDtos,
             double potentialPartialWeeklyBenefitRate) {
-        // ArrayList<WagePotentialResponseEmployer> copyWagePotentialDtos=new ArrayList<>();
-        // for (int i=0;i< wagePotentialMonLookupResponseEmployerDtos.size(); i++){
-        //     copyWagePotentialDtos.add(wagePotentialMonLookupResponseEmployerDtos.get(i));
-        // }
+
         this.responseStatus = responseStatus;
         this.indeterminateInd = indeterminateInd;
         this.invalidMonetaryInd = invalidMonetaryInd;

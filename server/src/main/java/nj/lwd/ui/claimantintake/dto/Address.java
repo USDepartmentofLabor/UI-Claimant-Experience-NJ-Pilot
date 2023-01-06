@@ -14,6 +14,8 @@ public class Address {
             String zipcode) {
 
         this.address = createAddress(addressLine1, addressLine2, addressLine3);
+        // TODO - when doing the translation this should be changed to handle
+        // cities with a space as well
         String[] cityState = address4.split(" ");
         this.city = cityState[0];
         this.state = cityState[1];

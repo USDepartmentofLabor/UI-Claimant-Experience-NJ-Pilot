@@ -1,14 +1,9 @@
 package nj.lwd.ui.claimantintake.dto;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import java.util.ArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RecentEmployers {
     private ArrayList<Employer> recentEmployers;
-    // private final Logger logger = LoggerFactory.getLogger(RecentEmployers.class);
 
     public RecentEmployers() {
         recentEmployers = new ArrayList<Employer>();
@@ -16,19 +11,10 @@ public class RecentEmployers {
 
     public RecentEmployers(RecentEmployersResponse recentEmployersResponse) {
         this();
-        try {
-            setRecentEmployers(recentEmployersResponse);
-
-        } catch (JsonProcessingException e) {
-            // TODO - remove no longer processing json
-            Logger logger = LoggerFactory.getLogger(RecentEmployers.class);
-            logger.error("Couldn't parse the employer response.");
-            logger.error(e.getMessage());
-        }
+        setRecentEmployers(recentEmployersResponse);
     }
 
-    private void setRecentEmployers(RecentEmployersResponse recentEmployersResponse)
-            throws JsonMappingException, JsonProcessingException {
+    private void setRecentEmployers(RecentEmployersResponse recentEmployersResponse) {
 
         // per documentation,  if status code is not 0 then no recent employer data is returned
         if (recentEmployersResponse == null
