@@ -2,6 +2,8 @@ package nj.lwd.ui.claimantintake.dto;
 
 public class Address {
     private final String address;
+    private final String address2;
+    private final String address3;
     private final String city;
     private final String state;
     private final String zipcode;
@@ -13,7 +15,13 @@ public class Address {
             String address4,
             String zipcode) {
 
-        this.address = createAddress(addressLine1, addressLine2, addressLine3);
+        // TODO - address may need to be changed when translation is determined and implemented
+        // one of these address fields MAY be alt name,
+        // addressline 5 may need to be used as well.
+        this.address = addressLine1;
+        this.address2 = addressLine2;
+        this.address3 = addressLine3;
+
         // TODO - when doing the translation this should be changed to handle
         // cities with a space as well
         String[] cityState = address4.split(" ");
@@ -22,29 +30,16 @@ public class Address {
         this.zipcode = zipcode;
     }
 
-    public String createAddress(String addressLine1, String addressLine2, String addressLine3) {
-        String temp = "";
-        if (addressLine1 != null) {
-
-            temp += addressLine1;
-        }
-        if (addressLine2 != null) {
-            if (!temp.equals("")) {
-                temp += "\n";
-            }
-            temp += addressLine2;
-        }
-        if (addressLine3 != null) {
-            if (!temp.equals("")) {
-                temp += "\n";
-            }
-            temp += addressLine3;
-        }
-        return temp;
-    }
-
     public String getAddress() {
         return address;
+    }
+
+    public String getAddress2() {
+        return address2;
+    }
+
+    public String getAddress3() {
+        return address3;
     }
 
     public String getCity() {
