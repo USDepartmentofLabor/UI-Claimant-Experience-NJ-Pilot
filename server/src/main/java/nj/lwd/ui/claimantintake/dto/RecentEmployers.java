@@ -2,10 +2,7 @@ package nj.lwd.ui.claimantintake.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.nimbusds.jose.shaded.json.JSONObject;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import nj.lwd.ui.claimantintake.constants.RecentEmployerResponseKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,49 +14,40 @@ public class RecentEmployers {
         recentEmployers = new ArrayList<Employer>();
     }
 
-    public RecentEmployers(JSONObject recentEmployersResponse) {
+    public RecentEmployers(RecentEmployersResponse recentEmployersResponse) {
         this();
         try {
             setRecentEmployers(recentEmployersResponse);
 
         } catch (JsonProcessingException e) {
+            // TODO - remove no longer processing json
             Logger logger = LoggerFactory.getLogger(RecentEmployers.class);
             logger.error("Couldn't parse the employer response.");
             logger.error(e.getMessage());
         }
     }
 
-    private void setRecentEmployers(JSONObject recentEmployersResponse)
+    private void setRecentEmployers(RecentEmployersResponse recentEmployersResponse)
             throws JsonMappingException, JsonProcessingException {
 
         // per documentation,  if status code is not 0 then no recent employer data is returned
         if (recentEmployersResponse == null
-                || !recentEmployersResponse
-                        .get(RecentEmployerResponseKeys.RESPONSE_STATUS.value)
-                        .equals("0")) {
+                || !recentEmployersResponse.getResponseStatus().equals("0")) {
             recentEmployers = new ArrayList<>();
         } else {
-            ArrayList<LinkedHashMap> employerListArray =
-                    (ArrayList<LinkedHashMap>)
-                            recentEmployersResponse.get(
-                                    RecentEmployerResponseKeys.EMPLOYER_LIST.value);
+            ArrayList<WagePotentialResponseEmployer> employerListArray =
+                    recentEmployersResponse.getWagePotentialMonLookupResponseEmployerDtos();
 
-            for (LinkedHashMap employer : employerListArray) {
-                String employerName =
-                        (String) employer.get(RecentEmployerResponseKeys.EMPLOYER_NAME.value);
+            for (WagePotentialResponseEmployer employer : employerListArray) {
+                String employerName = employer.getEmployerName();
 
-                String addr1 =
-                        (String) employer.get(RecentEmployerResponseKeys.ADDRESS_LINE_1.value);
-                String addr2 =
-                        (String) employer.get(RecentEmployerResponseKeys.ADDRESS_LINE_2.value);
-                String addr3 =
-                        (String) employer.get(RecentEmployerResponseKeys.ADDRESS_LINE_3.value);
-                String addr4 =
-                        (String) employer.get(RecentEmployerResponseKeys.ADDRESS_LINE_4.value);
-                String zipcode = (String) employer.get(RecentEmployerResponseKeys.ZIPCODE.value);
-                String fein = (String) employer.get(RecentEmployerResponseKeys.FEIN.value);
-                String employerPhone =
-                        (String) employer.get(RecentEmployerResponseKeys.PHONE_NUMBER.value);
+                String addr1 = employer.getEmployerAddressLine1();
+                String addr2 = employer.getEmployerAddressLine2();
+                String addr3 = employer.getEmployerAddressLine3();
+                String addr4 = employer.getEmployerAddressLine4();
+                String zipcode = employer.getEmployerAddressZip();
+                String fein = employer.getEmployerFein();
+                String employerPhone = employer.getEmployerTelephoneNumber();
                 recentEmployers.add(
                         new Employer(
                                 employerName,

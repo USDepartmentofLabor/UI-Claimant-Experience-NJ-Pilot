@@ -1,6 +1,5 @@
 package nj.lwd.ui.claimantintake.controller;
 
-import com.nimbusds.jose.shaded.json.JSONObject;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -48,10 +47,8 @@ public class RecentEmployersController {
         String claimDate = getClaimDate();
 
         // hit WGPM api ({ssn: ssnNumber, claimDate } and get back employer data
-        JSONObject recentEmployersResponse =
+        RecentEmployers recentEmployers =
                 recentEmployersService.getRecentEmployerValues(ssn, claimDate);
-
-        RecentEmployers recentEmployers = new RecentEmployers(recentEmployersResponse);
 
         return recentEmployers.getRecentEmployers();
     }

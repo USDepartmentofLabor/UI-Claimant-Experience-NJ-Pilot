@@ -10,9 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.json.JSONObject;
-import nj.lwd.ui.claimantintake.constants.RecentEmployerResponseKeys;
+import java.util.ArrayList;
+import nj.lwd.ui.claimantintake.dto.RecentEmployers;
+import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
+import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.RecentEmployersService;
 import org.junit.jupiter.api.Test;
@@ -39,73 +40,71 @@ public class RecentEmployersControllerTest {
         when(claimStorageService.getSSN(anyString())).thenReturn("123456789");
     }
 
-    public JSONObject getValidRecentEmployerResponse() throws JsonProcessingException {
-        String employersString =
-                """
-        {
-            "responseStatus":"0",
-            "indeterminateInd":false,
-            "invalidMonetaryInd":false,
-            "claimDateEcho":1658462400000,
-            "grossMaxBenefitAllowance":9534.00,
-            "ssnEcho":"244555527",
-            "weeklyBenefitRate":681.00,
-            "wagePotentialMonLookupResponseEmployerDtos":[
-               {
+    public RecentEmployers getValidRecentEmployerResponse() throws JsonProcessingException {
+        WagePotentialResponseEmployer employer1 =
+                new WagePotentialResponseEmployer(
+                        null,
+                        "PEABODY MA",
+                        "P O BOX 6001",
+                        "C/O TALX UC EXPRESS",
+                        "DIRECT FUTURE MAIL",
+                        "031143718000000",
+                        "01961",
+                        "VICTORIAS SECRET STORES, INC.",
+                        null,
+                        "6144151035",
+                        "001");
 
-                  "employerAddressLine5":null,
-                  "employerAddressLine4":"PEABODY MA",
-                  "employerAddressLine3":"P O BOX 6001",
-                  "employerAddressLine2":"C/O TALX UC EXPRESS",
-                  "employerFein":"031143718000000",
-                  "employerAddressLine1":"DIRECT FUTURE MAIL",
-                  "employerAddressZip":"01961",
-                  "employerName":"VICTORIAS SECRET STORES, INC.",
-                  "employerStatePayrollNumber":null,
-                  "employerTelephoneNumber":"6144151035",
-                  "employerSequenceNumber":"001"
-               },
-               {
+        WagePotentialResponseEmployer employer2 =
+                new WagePotentialResponseEmployer(
+                        null,
+                        "WASHINGTON DC",
+                        "SUITE #2",
+                        "2212 superhero street",
+                        "The Hall of Justice",
+                        "031143718000011",
+                        "91121",
+                        "VICTORIAS SECRET STORES, INC.",
+                        null,
+                        "5554151012",
+                        "001");
 
-                  "employerAddressLine5":null,
-                  "employerAddressLine4":"WASHINGTON DC",
-                  "employerAddressLine3":"SUITE #2",
-                  "employerAddressLine2":"2212 superhero street",
-                  "employerFein":"031143718000000",
-                  "employerAddressLine1":"The Hall of Justice",
-                  "employerAddressZip":"01961",
-                  "employerName":"Justice League",
-                  "employerStatePayrollNumber":null,
-                  "employerTelephoneNumber":"6144151035",
-                  "employerSequenceNumber":"001"
-               },
-               {
-
-                  "employerAddressLine5":null,
-                  "employerAddressLine4":"Metropolis KS",
-                  "employerAddressLine3":null,
-                  "employerAddressLine2":"#7",
-                  "employerFein":"031143718000000",
-                  "employerAddressLine1":"123 Secret Identity Street",
-                  "employerAddressZip":"12345",
-                  "employerName":"Daily Planet",
-                  "employerStatePayrollNumber":null,
-                  "employerTelephoneNumber":"6144151035",
-                  "employerSequenceNumber":"001"
-               }
-            ],
-            "potentialPartialWeeklyBenefitRate":817.00
-         } """;
-
-        JSONObject employersJsonObject =
-                new ObjectMapper().readValue(employersString, JSONObject.class);
-        return employersJsonObject;
+        WagePotentialResponseEmployer employer3 =
+                new WagePotentialResponseEmployer(
+                        null,
+                        "Metropolis KS",
+                        null,
+                        "#7",
+                        "123 Secret Identity Street",
+                        "031143718000066",
+                        "12345",
+                        "Daily Planet",
+                        null,
+                        "1114151035",
+                        "001");
+        ArrayList<WagePotentialResponseEmployer> employerList = new ArrayList<>();
+        employerList.add(employer1);
+        employerList.add(employer2);
+        employerList.add(employer3);
+        // claimdate needs to be changed to handle the 13 digit long epock timestamp it receives
+        RecentEmployersResponse recentEmployerResponse =
+                new RecentEmployersResponse(
+                        "0",
+                        false,
+                        false,
+                        16584624,
+                        9534.00,
+                        "244555527",
+                        681.00,
+                        employerList,
+                        817.00);
+        return new RecentEmployers(recentEmployerResponse);
     }
 
-    public JSONObject getInvalidRecentEmployerResponse() {
-        JSONObject errorReturn = new JSONObject();
-        errorReturn.appendField(RecentEmployerResponseKeys.RESPONSE_STATUS.value, 3);
-        return errorReturn;
+    public RecentEmployers getInvalidRecentEmployerResponse() {
+        RecentEmployersResponse errorReturn =
+                new RecentEmployersResponse("3", false, false, 0, 0, null, 0, null, 0);
+        return new RecentEmployers(errorReturn);
     }
     // TODO mock the employer service and get the data
     @Test
@@ -117,8 +116,8 @@ public class RecentEmployersControllerTest {
         // TODO - remove the null here when change the address dto to not tack on nulls
         String expectedResponse =
                 """
-            [{"employer_address":{"zipcode":"01961","address":"DIRECT FUTURE MAIL\nC/O TALX UC EXPRESS\nP O BOX 6001","city":"PEABODY","state":"MA"},"employer_phone":{"number":"6144151035"},"employer_name":"VICTORIAS SECRET STORES, INC.","fein":"031143718000000","alternate_employer_name":"business llc"},{"employer_address":{"zipcode":"01961","address":"The Hall of Justice\n2212 superhero street\nSUITE #2","city":"WASHINGTON","state":"DC"},"employer_phone":{"number":"6144151035"},"employer_name":"Justice League","fein":"031143718000000","alternate_employer_name":"business llc"},{"employer_address":{"zipcode":"12345","address":"123 Secret Identity Street\n#7","city":"Metropolis","state":"KS"},"employer_phone":{"number":"6144151035"},"employer_name":"Daily Planet","fein":"031143718000000","alternate_employer_name":"business llc"}]
-        """;
+                [{"employer_name":"VICTORIAS SECRET STORES, INC.","alternate_employer_name":"business llc","employer_address":{"address":"DIRECT FUTURE MAIL\nC/O TALX UC EXPRESS\nP O BOX 6001","city":"PEABODY","state":"MA","zipcode":"01961"},"employer_phone":{"number":"6144151035"},"fein":"031143718000000"},{"employer_name":"VICTORIAS SECRET STORES, INC.","alternate_employer_name":"business llc","employer_address":{"address":"The Hall of Justice\n2212 superhero street\nSUITE #2","city":"WASHINGTON","state":"DC","zipcode":"91121"},"employer_phone":{"number":"5554151012"},"fein":"031143718000011"},{"employer_name":"Daily Planet","alternate_employer_name":"business llc","employer_address":{"address":"123 Secret Identity Street\n#7","city":"Metropolis","state":"KS","zipcode":"12345"},"employer_phone":{"number":"1114151035"},"fein":"031143718000066"}]        """
+                        .strip();
 
         this.mockMvc
                 .perform(
