@@ -42,6 +42,10 @@ public class RecentEmployersResponse {
 
     public ArrayList<WagePotentialResponseEmployer> copyArrayList(
             ArrayList<WagePotentialResponseEmployer> wagePotentialDtosArray) {
+        if (wagePotentialDtosArray == null) {
+            return null;
+        }
+
         ArrayList<WagePotentialResponseEmployer> copyWagePotentialDtos = new ArrayList<>();
         for (int i = 0; i < wagePotentialDtosArray.size(); i++) {
             copyWagePotentialDtos.add(wagePotentialDtosArray.get(i));
