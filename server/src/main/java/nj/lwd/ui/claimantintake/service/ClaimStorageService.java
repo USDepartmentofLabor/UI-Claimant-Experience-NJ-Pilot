@@ -228,7 +228,7 @@ public class ClaimStorageService {
     }
 
     public String getSSN(String claimantIdpId) {
-        logger.debug("Attempting to retreive ssn for claim {}", claimantIdpId);
+        logger.info("Attempting to retrieve ssn for claim {}", claimantIdpId);
 
         Optional<Claimant> claimant = claimantStorageService.getClaimant(claimantIdpId);
         // check claimant exists so new one is not created by get partial claim call
