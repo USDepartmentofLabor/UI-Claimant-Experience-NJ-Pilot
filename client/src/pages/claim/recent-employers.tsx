@@ -37,6 +37,8 @@ export const RecentEmployers: NextPageWithLayout = () => {
     <ClaimFormik
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values }) => {
         if (!values.employers?.length) {

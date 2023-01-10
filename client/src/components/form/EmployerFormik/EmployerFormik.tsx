@@ -1,4 +1,4 @@
-import { ComponentProps, ReactNode } from 'react'
+import { ComponentProps, ReactNode, useRef } from 'react'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { Employer } from 'types/claimantInput'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
@@ -8,18 +8,26 @@ import { SaveAndExitLink } from 'components/form/ClaimFormButtons/SaveAndExitLin
 import * as React from 'react'
 import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
 import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
+import { pageDefinitions } from 'constants/pages/pageDefinitions'
+import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
+import { useTranslation } from 'react-i18next'
 
 type ClaimFormikProps = {
   children: ReactNode
   index: string
+  pageIndex: number
+  heading: string
 } & Omit<ComponentProps<typeof Formik<Employer>>, 'onSubmit' | 'children'>
 
 export const EmployerFormik = ({
   children,
   index,
+  pageIndex,
+  heading,
   initialValues,
   validationSchema,
 }: ClaimFormikProps) => {
+  const { t } = useTranslation('claimForm')
   const saveCompleteClaim = useSaveCompleteClaim()
   const isComplete = saveCompleteClaim.isSuccess
 
@@ -38,37 +46,52 @@ export const EmployerFormik = ({
     )
   }
 
-  return (
-    <Formik<Employer>
-      onSubmit={handleSubmit}
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize={true}
-    >
-      {(formikProps) => {
-        const { values, errors, isSubmitting, submitCount } = formikProps
-        const showErrorSummary =
-          submitCount > 0 && Object.keys(errors).length > 0
+  const step = pageIndex + 1
+  const totalStep = pageDefinitions.length
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
-        return (
-          <Form className={styles.claimForm}>
-            <>
-              {showErrorSummary && (
-                <FormErrorSummary key={submitCount} errors={errors} />
-              )}
-              {children}
-              <div className="margin-top-1 text-center">
-                {!isComplete && (
-                  <SaveAndExitLink
-                    disabled={isSubmitting}
-                    onClick={() => handleSaveAndExit(values)}
-                  />
+  return (
+    <>
+      <PageHeading
+        ref={headingRef}
+        aria-label={`${heading} ${t('step_progress', {
+          step,
+          totalStep,
+        })}`}
+      >
+        {heading}
+      </PageHeading>
+      <Formik<Employer>
+        onSubmit={handleSubmit}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize={true}
+      >
+        {(formikProps) => {
+          const { values, errors, isSubmitting, submitCount } = formikProps
+          const showErrorSummary =
+            submitCount > 0 && Object.keys(errors).length > 0
+
+          return (
+            <Form className={styles.claimForm}>
+              <>
+                {showErrorSummary && (
+                  <FormErrorSummary key={submitCount} errors={errors} />
                 )}
-              </div>
-            </>
-          </Form>
-        )
-      }}
-    </Formik>
+                {children}
+                <div className="margin-top-1 text-center">
+                  {!isComplete && (
+                    <SaveAndExitLink
+                      disabled={isSubmitting}
+                      onClick={() => handleSaveAndExit(values)}
+                    />
+                  )}
+                </div>
+              </>
+            </Form>
+          )
+        }}
+      </Formik>
+    </>
   )
 }

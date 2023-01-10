@@ -35,6 +35,8 @@ export const Identity: NextPageWithLayout = () => {
     <ClaimFormik<IdentityInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, initialValues, clearField, clearFields }) => {
         const showWorkAuthorizationFields = values.authorized_to_work

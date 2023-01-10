@@ -94,6 +94,45 @@ describe('it saves the claim form values', () => {
       expect(mockClaimFormValues).toEqual({ ssn: '000000000' })
     })
   })
+  describe('it tries to delete an element in the employer array and then save this mutation', () => {
+    it('deletes the employer in the correct index when a 200 response is received', async () => {
+      mockClaimFormValues = {
+        ssn: '000000000',
+        employers: [
+          {
+            employer_name: 'Apple',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
+          {
+            employer_name: 'Honda',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
+        ],
+      }
+
+      const expectedClaimFormValues = {
+        ssn: '000000000',
+        employers: [
+          {
+            employer_name: 'Honda',
+            LOCAL_pay_types: [],
+            payments_received: [],
+          },
+        ],
+      }
+
+      const { mockMutateAsync, result } = await setUpHook(200)
+      await result.current.deleteEmployerAndSaveClaimFormValues('0')
+
+      expect(mockSaveCompleteClaimReset).toHaveBeenCalledTimes(1)
+      expect(mockSubmitClaimReset).toHaveBeenCalledTimes(1)
+      expect(mockMutateAsync).toHaveBeenCalledWith(expectedClaimFormValues)
+      expect(mockMutateAsync).toHaveBeenCalledTimes(1)
+      expect(mockSaveCompleteClaimReset).toHaveBeenCalledTimes(1)
+    })
+  })
 
   describe('it tries to modify the employer array and save the claim form values', () => {
     it('inserts the employer in the correct index when a 200 response is received', async () => {

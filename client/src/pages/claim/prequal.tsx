@@ -78,6 +78,8 @@ export const Prequal: NextPageWithLayout = () => {
     <ClaimFormik<PrequalInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, clearField }) => {
         const handleFiledInLast12MonthsChange: ChangeEventHandler<

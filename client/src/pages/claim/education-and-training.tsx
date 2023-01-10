@@ -30,6 +30,8 @@ const EducationAndTraining: NextPageWithLayout = () => {
     <ClaimFormik<EducationAndTrainingInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, clearField }) => {
         const handleAttendingCollegeOrTrainingChange: ChangeEventHandler<

@@ -1,5 +1,5 @@
 import { Form, Formik, FormikHelpers, FormikValues } from 'formik'
-import { ComponentProps, ReactNode, useEffect, useState } from 'react'
+import { ComponentProps, ReactNode, useEffect, useRef, useState } from 'react'
 import styles from 'components/form/ClaimFormik/ClaimFormik.module.scss'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
 import { SaveAndExitLink } from 'components/form/ClaimFormButtons/SaveAndExitLink/SaveAndExitLink'
@@ -13,6 +13,9 @@ import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 import { useInitialValues } from 'hooks/useInitialValues'
 import PageLoader from 'components/loaders/PageLoader'
 import { getClearFieldsFunctions } from 'hooks/useClearFields'
+import { pageDefinitions } from 'constants/pages/pageDefinitions'
+import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
+import { useTranslation } from 'react-i18next'
 
 type ClaimFormikChildrenFunctionProps<Values> = {
   clearField: ClearFieldFunction
@@ -29,6 +32,8 @@ type ClaimFormikChildren<Values> =
 
 type ClaimFormikProps<Values extends FormikValues> = {
   children: ClaimFormikChildren<Values>
+  heading: string
+  index: number
 } & Omit<ComponentProps<typeof Formik<Values>>, 'onSubmit' | 'children'>
 
 const isFunction = <Values extends FormikValues = ClaimantInput>(
@@ -39,8 +44,11 @@ export const ClaimFormik = <Values extends FormikValues = ClaimantInput>({
   children,
   initialValues,
   validationSchema,
+  heading,
+  index,
   ...formikProps
 }: ClaimFormikProps<Values>) => {
+  const { t } = useTranslation('claimForm')
   const [isLoading, setIsLoading] = useState(true)
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
   const saveCompleteClaim = useSaveCompleteClaim()
@@ -67,63 +75,78 @@ export const ClaimFormik = <Values extends FormikValues = ClaimantInput>({
     const { setSubmitting } = helpers
     appendAndSaveClaimFormValues(values).then(() => setSubmitting(false))
   }
+  const step = index + 1
+  const totalStep = pageDefinitions.length
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
   return isLoading ? (
     <PageLoader />
   ) : (
-    <Formik<Values>
-      onSubmit={handleSubmit}
-      initialValues={combinedInitialValues as Values}
-      validationSchema={validationSchema}
-      {...formikProps}
-    >
-      {(formikProps) => {
-        const {
-          values,
-          errors,
-          isSubmitting,
-          submitCount,
-          getFieldMeta,
-          setFieldValue,
-          setFieldTouched,
-        } = formikProps
+    <>
+      <PageHeading
+        ref={headingRef}
+        aria-label={`${heading} ${t('step_progress', {
+          step,
+          totalStep,
+        })}`}
+      >
+        {heading}
+      </PageHeading>
 
-        const { clearField, clearFields } = getClearFieldsFunctions(
-          getFieldMeta,
-          setFieldValue,
-          setFieldTouched
-        )
+      <Formik<Values>
+        onSubmit={handleSubmit}
+        initialValues={combinedInitialValues as Values}
+        validationSchema={validationSchema}
+        {...formikProps}
+      >
+        {(formikProps) => {
+          const {
+            values,
+            errors,
+            isSubmitting,
+            submitCount,
+            getFieldMeta,
+            setFieldValue,
+            setFieldTouched,
+          } = formikProps
 
-        const claimFormikProps: ClaimFormikChildrenFunctionProps<Values> = {
-          ...formikProps,
-          clearField,
-          clearFields,
-        }
+          const { clearField, clearFields } = getClearFieldsFunctions(
+            getFieldMeta,
+            setFieldValue,
+            setFieldTouched
+          )
 
-        const showErrorSummary =
-          submitCount > 0 && Object.keys(errors).length > 0
+          const claimFormikProps: ClaimFormikChildrenFunctionProps<Values> = {
+            ...formikProps,
+            clearField,
+            clearFields,
+          }
 
-        return (
-          <Form className={styles.claimForm}>
-            <>
-              {showErrorSummary && (
-                <FormErrorSummary key={submitCount} errors={errors} />
-              )}
-              {isFunction<Values>(children)
-                ? children(claimFormikProps)
-                : children}
-              <div className="margin-top-1 text-center">
-                {!isComplete && (
-                  <SaveAndExitLink
-                    disabled={isSubmitting}
-                    onClick={() => handleSaveAndExit(values)}
-                  />
+          const showErrorSummary =
+            submitCount > 0 && Object.keys(errors).length > 0
+
+          return (
+            <Form className={styles.claimForm}>
+              <>
+                {showErrorSummary && (
+                  <FormErrorSummary key={submitCount} errors={errors} />
                 )}
-              </div>
-            </>
-          </Form>
-        )
-      }}
-    </Formik>
+                {isFunction<Values>(children)
+                  ? children(claimFormikProps)
+                  : children}
+                <div className="margin-top-1 text-center">
+                  {!isComplete && (
+                    <SaveAndExitLink
+                      disabled={isSubmitting}
+                      onClick={() => handleSaveAndExit(values)}
+                    />
+                  )}
+                </div>
+              </>
+            </Form>
+          )
+        }}
+      </Formik>
+    </>
   )
 }

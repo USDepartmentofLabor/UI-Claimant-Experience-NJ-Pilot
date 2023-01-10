@@ -12,6 +12,7 @@ import { UnionPageDefinition } from 'constants/pages/definitions/unionPageDefini
 import { DisabilityPageDefinition } from 'constants/pages/definitions/disabilityPageDefinition'
 import { PaymentPageDefinition } from 'constants/pages/definitions/paymentPageDefinition'
 import { ReviewPageDefinition } from 'constants/pages/definitions/reviewPageDefinition'
+import { ReviewEmployersPageDefinition } from 'constants/pages/definitions/reviewEmployersPageDefinition'
 
 export type PageDefinition = {
   heading: string
@@ -29,10 +30,8 @@ export const pageDefinitions: PageDefinition[] = [
   ContactPageDefinition,
   DemographicsPageDefinition,
   RecentEmployersPageDefinition,
-  // EmployerPageDefinition,
-  // EmployerReviewPageDefinition,
+  ReviewEmployersPageDefinition,
   // SelfEmploymentPageDefinition,
-  // OtherPayPageDefinition,
   // OccupationPageDefinition,
   EducationAndTrainingPageDefinition,
   UnionPageDefinition,

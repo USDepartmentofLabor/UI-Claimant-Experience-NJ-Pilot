@@ -37,6 +37,8 @@ const PaymentInformation: NextPageWithLayout = () => {
     <ClaimFormik<PaymentInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, clearFields }) => {
         const showDepositFields = values.payment_method === 'direct_deposit'

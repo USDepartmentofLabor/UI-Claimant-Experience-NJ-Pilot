@@ -89,6 +89,8 @@ export const EditEmployers: NextPageWithLayout = () => {
   ) : (
     <EmployerFormik
       index={editEmployerIndex}
+      pageIndex={pageDefinitions.indexOf(RecentEmployersPageDefinition)}
+      heading={EditEmployerPageDefinition.heading}
       initialValues={initialValues}
       validationSchema={yupEditEmployer}
     >

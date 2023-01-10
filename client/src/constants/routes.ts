@@ -47,7 +47,7 @@ export const Routes = {
     IDENTITY: makeClaimFormRoute('identity'),
     RECENT_EMPLOYERS: makeClaimFormRoute('recent-employers'),
     EDIT_EMPLOYER: makeClaimFormRoute('edit-employer'),
-    EMPLOYER_REVIEW: makeClaimFormRoute('employer-review'),
+    REVIEW_EMPLOYERS: makeClaimFormRoute('review-employers'),
     OCCUPATION: makeClaimFormRoute('occupation'),
     EDUCATION_VOCATIONAL_REHAB: makeClaimFormRoute('education-and-training'),
     UNION: makeClaimFormRoute('union'),

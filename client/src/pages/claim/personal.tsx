@@ -30,6 +30,8 @@ const Personal: NextPageWithLayout = () => {
     <ClaimFormik<PersonalInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values }) => {
         const legalName = `${values.claimant_name?.first_name} ${values.claimant_name?.middle_initial} ${values.claimant_name?.last_name}`
