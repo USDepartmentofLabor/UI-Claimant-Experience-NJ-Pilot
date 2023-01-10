@@ -41,6 +41,8 @@ const Contact: NextPageWithLayout = () => {
     <ClaimFormik<ContactInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, setValues, clearField, initialValues }) => {
         const handleAlternatePhoneChange: ChangeEventHandler<

@@ -34,7 +34,12 @@ describe('ClaimFormik component', () => {
   it('renders properly passing in child components', () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
-        <ClaimFormik initialValues={{}} validationSchema={{}}>
+        <ClaimFormik
+          initialValues={{}}
+          validationSchema={{}}
+          heading="test_heading"
+          index={0}
+        >
           <div>children</div>
         </ClaimFormik>
       </QueryClientProvider>
@@ -42,9 +47,13 @@ describe('ClaimFormik component', () => {
 
     const children = screen.queryByText('children')
     const saveAndExitButton = screen.queryByTestId('save-and-exit-button')
+    const pageHeading = screen.queryByTestId('claim-form-page-heading')
+    const headingText = screen.queryByText('test_heading')
 
     expect(children).toBeInTheDocument()
     expect(saveAndExitButton).toBeInTheDocument()
+    expect(pageHeading).toBeInTheDocument()
+    expect(headingText).toBeInTheDocument()
   })
 
   it('renders properly providing context via a child function', () => {
@@ -53,6 +62,8 @@ describe('ClaimFormik component', () => {
         <ClaimFormik
           initialValues={{ someKey: 'someValue' }}
           validationSchema={{}}
+          heading="test_heading"
+          index={0}
         >
           {({ values }) => {
             return (
@@ -82,7 +93,12 @@ describe('ClaimFormik component', () => {
 
     render(
       <QueryClientProvider client={new QueryClient()}>
-        <ClaimFormik initialValues={values} validationSchema={{}}>
+        <ClaimFormik
+          initialValues={values}
+          validationSchema={{}}
+          heading="test_heading"
+          index={0}
+        >
           <div>children</div>
         </ClaimFormik>
       </QueryClientProvider>
@@ -107,7 +123,12 @@ describe('ClaimFormik component', () => {
 
     render(
       <QueryClientProvider client={new QueryClient()}>
-        <ClaimFormik initialValues={values} validationSchema={validationSchema}>
+        <ClaimFormik
+          initialValues={values}
+          validationSchema={validationSchema}
+          heading="test_heading"
+          index={0}
+        >
           <button type="submit">Submit</button>
         </ClaimFormik>
       </QueryClientProvider>
@@ -131,7 +152,12 @@ describe('ClaimFormik component', () => {
 
     render(
       <QueryClientProvider client={new QueryClient()}>
-        <ClaimFormik initialValues={values} validationSchema={validationSchema}>
+        <ClaimFormik
+          initialValues={values}
+          validationSchema={validationSchema}
+          heading="test_heading"
+          index={0}
+        >
           <TextField label="Some Key" name="someKey" type="text" />
           <button type="submit">Submit</button>
         </ClaimFormik>

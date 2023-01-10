@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { Form, Formik } from 'formik'
-import { Button } from '@trussworks/react-uswds'
+import { Button, Fieldset } from '@trussworks/react-uswds'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
 import { noop } from 'helpers/noop/noop'
 import {
@@ -32,9 +32,10 @@ const onSubmit = () => {
 }
 
 const WithValidationsTemplate: ComponentStory<typeof YourEmployer> = () => {
+  const initialValues = { ...EMPLOYER_SKELETON, is_imported: true }
   return (
     <Formik
-      initialValues={EMPLOYER_SKELETON}
+      initialValues={initialValues}
       validationSchema={yupEditEmployer}
       onSubmit={onSubmit}
     >
@@ -61,7 +62,9 @@ const NonImportedEmployerTemplate: ComponentStory<typeof YourEmployer> = () => {
       {({ setFormikState, submitCount }) => {
         return (
           <Form>
-            <YourEmployer />
+            <Fieldset>
+              <YourEmployer />
+            </Fieldset>
             <Button
               type="submit"
               onClick={() =>

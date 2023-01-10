@@ -1,12 +1,10 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import Error from 'next/error'
 import { StepIndicator, StepIndicatorStep } from '@trussworks/react-uswds'
-import { useTranslation } from 'react-i18next'
 import {
   PageDefinition,
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
-import { PageHeading } from '../../form/ClaimFormHeading/PageHeading'
 import PageLoader from 'components/loaders/PageLoader'
 
 import Head from 'next/head'
@@ -27,8 +25,6 @@ export const ClaimFormLayout = ({
   pageDefinition,
   index,
 }: ClaimFormProps) => {
-  const { t } = useTranslation('claimForm')
-
   const [claimFormValues, setClaimFormValues] = useState<
     ClaimantInput | undefined
   >(undefined)
@@ -48,8 +44,6 @@ export const ClaimFormLayout = ({
       setIsLoading(false)
     }
   }, [partialClaim, isLoadingGetPartialClaim])
-
-  const headingRef = useRef<HTMLHeadingElement>(null)
 
   const { heading } = pageDefinition // TODO: Pass in heading and index to avoid dependency on pageDefinition?
   const currentPageIndex = index
@@ -102,15 +96,6 @@ export const ClaimFormLayout = ({
             className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
             id="main-content"
           >
-            <PageHeading
-              ref={headingRef}
-              aria-label={`${heading} ${t('step_progress', {
-                step,
-                totalSteps,
-              })}`}
-            >
-              {heading}
-            </PageHeading>
             {children}
           </main>
         </div>

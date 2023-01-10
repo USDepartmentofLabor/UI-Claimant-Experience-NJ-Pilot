@@ -7,8 +7,19 @@ import { IntakeAppContext } from 'contexts/IntakeAppContext'
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
 jest.mock('hooks/useSaveClaimFormValues')
-jest.mock('queries/useGetPartialClaim')
-jest.mock('next/router')
+
+const mockPush = jest.fn(async () => true)
+const mockUseRouter = jest.fn(() => ({
+  push: mockPush,
+}))
+jest.mock('next/router', () => ({
+  useRouter: () => mockUseRouter,
+}))
+
+const mockUseGetPartialClaim = jest.fn()
+jest.mock('queries/useGetPartialClaim', () => ({
+  useGetPartialClaim: () => mockUseGetPartialClaim(),
+}))
 
 const mockAppendAndSaveClaimFormValues = jest.fn(async () => Promise.resolve())
 jest.mock('hooks/useSaveClaimFormValues', () => ({
@@ -19,6 +30,11 @@ jest.mock('hooks/useSaveClaimFormValues', () => ({
 
 describe('Prequal page', () => {
   beforeEach(() => {
+    const emptyPartialClaim = {}
+    mockUseGetPartialClaim.mockImplementation(() => ({
+      isLoading: false,
+      data: emptyPartialClaim,
+    }))
     render(<Prequal />)
   })
 
@@ -157,8 +173,13 @@ describe('Prequal page', () => {
   })
 
   describe('the error state', () => {
-    it.skip('renders a 500 error when loading finishes with an error', () => {
-      // TODO: mockAppendAndSaveClaimFormValues return values to set isError to true
+    beforeEach(() => {
+      mockUseGetPartialClaim.mockImplementation(() => ({
+        isLoading: false,
+        isError: true,
+      }))
+    })
+    it('renders a 500 error when loading finishes with an error', () => {
       render(
         <QueryClientProvider client={new QueryClient()}>
           <Prequal />

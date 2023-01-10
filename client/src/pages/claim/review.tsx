@@ -63,6 +63,8 @@ export const Review: NextPageWithLayout = () => {
     <ClaimFormik<ReviewInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {() => {
         return (

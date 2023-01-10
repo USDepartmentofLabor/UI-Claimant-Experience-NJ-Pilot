@@ -27,6 +27,8 @@ export const Union: NextPageWithLayout = () => {
     <ClaimFormik<UnionInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, clearFields }) => {
         const handleSeekWorkThroughHiringHallChange: ChangeEventHandler<

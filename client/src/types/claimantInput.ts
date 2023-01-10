@@ -23,7 +23,7 @@ export type ClaimantInput = ScreenerInput &
   DemographicsInput &
   IdentityInput &
   EmployerInput &
-  // EmployerReviewInput &
+  ReviewEmployersInput &
   // OccupationInput &
   EducationAndTrainingInput &
   UnionInput &
@@ -39,7 +39,7 @@ export type Employer = {
   is_imported?: boolean
   is_employer?: boolean
   employer_address?: EmployerAddressInput
-  employer_phone?: string
+  employer_phone?: PhoneInput
 
   isInitiated?: boolean
   fein?: string
@@ -71,6 +71,10 @@ export type Employer = {
 
   LOCAL_pay_types: PayTypeOption[]
   payments_received: PaymentsReceivedDetailInput[]
+}
+
+export type ReviewEmployersInput = {
+  LOCAL_reviewed_employers?: boolean
 }
 
 export type PaymentsReceivedDetailInput = {

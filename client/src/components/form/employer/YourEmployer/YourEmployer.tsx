@@ -5,12 +5,13 @@ import Address from 'components/form/Address/Address'
 import TextField from 'components/form/fields/TextField/TextField'
 import { useFormikContext } from 'formik'
 import { Employer } from 'types/claimantInput'
+import { PhoneNumberField } from 'components/form/PhoneNumberField/PhoneNumberField'
 
 export const YourEmployer = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   const { values } = useFormikContext<Employer>()
 
-  const importedEmployer = values?.is_imported === false
+  const importedEmployer = values?.is_imported === true
   const myLabels = {
     address: t('your_employer.employer_address.address.label'),
     address2: t('your_employer.employer_address.address2.label'),
@@ -24,7 +25,7 @@ export const YourEmployer = () => {
     <>
       <div>
         <h2 className="font-heading-sm">{t('your_employer.heading')} </h2>
-        {importedEmployer && (
+        {!importedEmployer && (
           <>
             <TextField
               name={'employer_name'}
@@ -54,9 +55,14 @@ export const YourEmployer = () => {
               optAddress2={true}
               optAddress3={true}
             />
+            <PhoneNumberField
+              name="employer_phone"
+              label={t('your_employer.employer_phone.label')}
+              showSMS={false}
+            />
           </>
         )}
-        {!importedEmployer && (
+        {importedEmployer && (
           <YesNoQuestion
             name={`is_full_time`}
             question={t('your_employer.is_full_time.label')}

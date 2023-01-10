@@ -80,6 +80,26 @@ const claimForm = {
       },
     },
   },
+  review_employers: {
+    heading: 'Review employers',
+    preamble: {
+      default:
+        'You\'ve added the following employers.  If you had any other employers in the last 18 months, click "Add employer" below.',
+      had_work:
+        "You said you had a job in the last 18 months. If that's correct, add an employer below. If you did not have a job, please go back and change your answer on <0>the first page</0>.",
+      no_work:
+        'You said you did not have a job in the last 18 months.  If that\'s correct, click "next" below. If you did have a job, please go back and change your answer on <0>the first page</0>.',
+    },
+    add_employer: 'Add Employer',
+    edit_employer: {
+      edit_details: 'Edit Details',
+      label: 'Edit details for {{employer}}',
+      delete: 'Delete',
+      delete_label: 'Delete employer {{employer}}',
+    },
+    add: 'Add',
+    save: 'Save',
+  },
   identity: {
     heading: 'Identity information',
   },
@@ -429,6 +449,9 @@ const claimForm = {
         city: { label: 'City' },
         state: { label: 'State' },
         zipcode: { label: 'ZIP' },
+      },
+      employer_phone: {
+        label: 'Employer phone number',
       },
       is_full_time: {
         help_text:

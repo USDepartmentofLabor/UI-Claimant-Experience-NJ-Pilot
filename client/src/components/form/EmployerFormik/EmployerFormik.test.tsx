@@ -38,6 +38,8 @@ describe('EmployerFormik component', () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           index={'0'}
+          pageIndex={0}
+          heading="test_heading"
         >
           <div>children</div>
           <TextField label="Some Key" name="someKey" type="text" />
@@ -48,9 +50,17 @@ describe('EmployerFormik component', () => {
 
     const children = screen.queryByText('children')
     const saveAndExitButton = screen.queryByTestId('save-and-exit-button')
+    const pageHeading = screen.queryByTestId('claim-form-page-heading')
+    const headingText = screen.queryByText('test_heading')
     const submitButton = screen.getByRole('button', { name: 'Submit' })
 
-    return { children, saveAndExitButton, submitButton }
+    return {
+      children,
+      saveAndExitButton,
+      submitButton,
+      pageHeading,
+      headingText,
+    }
   }
 
   afterEach(() => {
@@ -59,10 +69,13 @@ describe('EmployerFormik component', () => {
   })
 
   it('renders properly', () => {
-    const { children, saveAndExitButton } = renderEmployerFormik(values, {})
+    const { children, saveAndExitButton, pageHeading, headingText } =
+      renderEmployerFormik(values, {})
 
     expect(children).toBeInTheDocument()
     expect(saveAndExitButton).toBeInTheDocument()
+    expect(pageHeading).toBeInTheDocument()
+    expect(headingText).toBeInTheDocument()
   })
 
   it('handles saving and exiting the form', async () => {

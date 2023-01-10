@@ -32,6 +32,7 @@ const employer: Employer = {
     state: 'NJ',
     zipcode: '11111',
   },
+  employer_phone: { number: '555-555-5555', sms: false },
   worked_at_employer_address: true,
   is_employer_phone_accurate: true,
   self_employed: false,

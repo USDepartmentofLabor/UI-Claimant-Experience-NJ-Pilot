@@ -37,6 +37,8 @@ const Demographics: NextPageWithLayout = () => {
     <ClaimFormik<DemographicsInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ errors }) => {
         return (

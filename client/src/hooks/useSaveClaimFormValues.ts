@@ -34,6 +34,23 @@ export const useSaveClaimFormValues = () => {
     }
   }
 
+  const employerDoesNotExist = (index: string) =>
+    (claimFormValues?.employers &&
+      claimFormValues.employers.length < parseInt(index)) ||
+    (!claimFormValues?.employers && parseInt(index) !== 0)
+
+  const deleteEmployerAndSaveClaimFormValues = async (index: string) => {
+    const modifiedClaimFormValues = { ...claimFormValues }
+
+    if (employerDoesNotExist(index)) return
+
+    if (modifiedClaimFormValues.employers) {
+      modifiedClaimFormValues.employers.splice(parseInt(index), 1)
+      await saveClaimFormValues(modifiedClaimFormValues)
+    }
+    return claimFormValues
+  }
+
   const modifyEmployerAndSaveClaimFormValues = async (
     values: Employer,
     index: string
@@ -41,12 +58,7 @@ export const useSaveClaimFormValues = () => {
     const modifiedClaimFormValues = { ...claimFormValues }
 
     // Ensure a valid index and do nothing if the index is invalid
-    if (
-      (claimFormValues?.employers &&
-        claimFormValues.employers.length < parseInt(index)) ||
-      (!claimFormValues?.employers && parseInt(index) !== 0)
-    )
-      return
+    if (employerDoesNotExist(index)) return
 
     if (!modifiedClaimFormValues.employers) {
       modifiedClaimFormValues.employers = []
@@ -62,5 +74,6 @@ export const useSaveClaimFormValues = () => {
     appendValuesToClaimFormContext,
     appendAndSaveClaimFormValues,
     modifyEmployerAndSaveClaimFormValues,
+    deleteEmployerAndSaveClaimFormValues,
   }
 }

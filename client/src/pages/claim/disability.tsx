@@ -40,6 +40,8 @@ export const Disability: NextPageWithLayout = () => {
     <ClaimFormik<DisabilityStatusInput>
       initialValues={pageDefinition.initialValues}
       validationSchema={pageDefinition.validationSchema}
+      heading={pageDefinition.heading}
+      index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, clearFields, setFieldValue }) => {
         const hasCollectedDisability =
