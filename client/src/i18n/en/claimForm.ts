@@ -450,6 +450,9 @@ const claimForm = {
         state: { label: 'State' },
         zipcode: { label: 'ZIP' },
       },
+      employer_phone: {
+        label: 'Employer phone number',
+      },
       is_full_time: {
         help_text:
           'Full-time means working more (even 1 minute more) than 32 hours a week. Part-time means working exactly 32 hours or less a week.',

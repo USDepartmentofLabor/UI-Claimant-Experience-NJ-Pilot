@@ -504,6 +504,12 @@ describe('The Review Employers page', () => {
         }),
         '11111'
       )
+      await user.type(
+        screen.getByRole('textbox', {
+          name: 'your_employer.employer_phone.label',
+        }),
+        '555-555-5555'
+      )
       await user.click(screen.getByTestId('worked_at_employer_address.yes'))
       await user.click(
         within(

@@ -71,6 +71,7 @@ export const EMPLOYER_SKELETON = {
   employer_name: '',
   fein: undefined,
   employer_address: { ...EMPLOYER_ADDRESS_SKELETON },
+  employer_phone: { ...PHONE_SKELETON },
   is_full_time: undefined,
   // Work Location
   worked_at_employer_address: undefined,
@@ -133,6 +134,14 @@ export const yupEditEmployer = object().shape({
         i18n_claimForm.t('employers.your_employer.fein.errors.digitsOnly')
       ),
   }),
+  employer_address: mixed().when('is_imported', {
+    is: false,
+    then: yupEmployerAddress(),
+  }),
+  employer_phone: mixed().when('is_imported', {
+    is: false,
+    then: yupPhone,
+  }),
   is_full_time: boolean().required(
     i18n_claimForm.t('employers.your_employer.is_full_time.errors.required')
   ),
@@ -142,10 +151,6 @@ export const yupEditEmployer = object().shape({
       'employers.work_location.worked_at_employer_address.required'
     )
   ),
-  employer_address: mixed().when('is_imported', {
-    is: false,
-    then: yupEmployerAddress(),
-  }),
   alternate_physical_work_address: mixed().when('worked_at_employer_address', {
     is: false,
     then: yupAddressWithoutStreet(),

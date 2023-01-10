@@ -39,7 +39,7 @@ export type Employer = {
   is_imported?: boolean
   is_employer?: boolean
   employer_address?: EmployerAddressInput
-  employer_phone?: string
+  employer_phone?: PhoneInput
 
   isInitiated?: boolean
   fein?: string

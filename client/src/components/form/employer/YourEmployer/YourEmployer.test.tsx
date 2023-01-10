@@ -26,6 +26,7 @@ export const validImportedEditEmployer: Employer = {
     state: 'NJ',
     zipcode: '11111',
   },
+  employer_phone: { number: '555-555-5555', sms: false },
   worked_at_employer_address: true,
   is_employer_phone_accurate: true,
   self_employed: false,
@@ -46,6 +47,7 @@ const validManuallyAddedEmployer: Employer = {
     state: '',
     zipcode: '',
   },
+  employer_phone: { number: '', sms: undefined },
   employer_name: undefined,
   fein: undefined,
   is_imported: false,
@@ -153,6 +155,9 @@ describe('YourEmployer component for non-imported employer', () => {
       'employer_address.zipcode.label',
       { exact: false }
     )
+    const employerPhone = screen.getByLabelText('employer_phone.label', {
+      exact: false,
+    })
 
     const fullTimePartTimeQuestion = screen.getByRole('group', {
       name: 'your_employer.is_full_time.label',
@@ -178,6 +183,7 @@ describe('YourEmployer component for non-imported employer', () => {
       employerCityAddress,
       employerStateAddress,
       employerZIPAddress,
+      employerPhone,
       fullTimePartTimeQuestion,
       fullTimePartTimeQuestionYesAnswer,
       fullTimePartTimeQuestionNoAnswer,
@@ -195,6 +201,7 @@ describe('YourEmployer component for non-imported employer', () => {
       employerCityAddress,
       employerStateAddress,
       employerZIPAddress,
+      employerPhone,
       fullTimePartTimeQuestion,
       fullTimePartTimeQuestionYesAnswer,
       fullTimePartTimeQuestionNoAnswer,
@@ -210,6 +217,7 @@ describe('YourEmployer component for non-imported employer', () => {
     expect(employerCityAddress).toBeInTheDocument()
     expect(employerStateAddress).toBeInTheDocument()
     expect(employerZIPAddress).toBeInTheDocument()
+    expect(employerPhone).toBeInTheDocument()
 
     expect(fullTimePartTimeQuestion).toBeInTheDocument()
     expect(fullTimePartTimeQuestionYesAnswer).toBeInTheDocument()
@@ -226,6 +234,7 @@ describe('YourEmployer component for non-imported employer', () => {
       employerCityAddress,
       employerStateAddress,
       employerZIPAddress,
+      employerPhone,
       fullTimePartTimeQuestionYesAnswer,
     } = renderYourEmployer(validManuallyAddedEmployer)
 
@@ -252,6 +261,9 @@ describe('YourEmployer component for non-imported employer', () => {
 
     await userEvent.type(employerZIPAddress, '01234')
     expect(employerZIPAddress).toHaveValue('01234')
+
+    await userEvent.type(employerPhone, '555-555-5555')
+    expect(employerPhone).toHaveValue('555-555-5555')
 
     await userEvent.click(fullTimePartTimeQuestionYesAnswer)
     expect(fullTimePartTimeQuestionYesAnswer).toBeChecked()
