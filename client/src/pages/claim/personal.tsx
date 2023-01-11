@@ -34,6 +34,7 @@ const Personal: NextPageWithLayout = () => {
       index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values }) => {
+        //check middle name here
         const legalName = `${values.claimant_name?.first_name} ${values.claimant_name?.middle_initial} ${values.claimant_name?.last_name}`
         return (
           <>

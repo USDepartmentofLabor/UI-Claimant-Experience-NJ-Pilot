@@ -71,17 +71,25 @@ const Contact: NextPageWithLayout = () => {
 
         return (
           <>
-            <VerifiedFields>
-              <VerifiedField label={t('email.label')} value={values.email} />
-              {initialValues.claimant_phone?.number && (
-                <VerifiedField
-                  label={t('claimant_phone.label')}
-                  value={formatStoredToDisplayPhone(
-                    initialValues.claimant_phone?.number
-                  )}
-                />
-              )}
-            </VerifiedFields>
+            {(initialValues.claimant_phone?.number ||
+              values.email !== undefined) && (
+              <VerifiedFields>
+                {values.email !== undefined && (
+                  <VerifiedField
+                    label={t('email.label')}
+                    value={values.email}
+                  />
+                )}
+                {initialValues.claimant_phone?.number && (
+                  <VerifiedField
+                    label={t('claimant_phone.label')}
+                    value={formatStoredToDisplayPhone(
+                      initialValues.claimant_phone?.number
+                    )}
+                  />
+                )}
+              </VerifiedFields>
+            )}
             <PhoneNumberField
               name="claimant_phone"
               label={t('claimant_phone.label')}

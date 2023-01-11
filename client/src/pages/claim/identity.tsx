@@ -71,20 +71,25 @@ export const Identity: NextPageWithLayout = () => {
 
         return (
           <>
-            <VerifiedFields>
-              {initialValues.ssn && (
-                <VerifiedField
-                  label={tSsn('label')}
-                  value={initialValues.ssn}
-                />
-              )}
-              {initialValues.birthdate && (
-                <VerifiedField
-                  label={t('birthdate.label')}
-                  value={formatStoredDateToDisplayDate(initialValues.birthdate)}
-                />
-              )}
-            </VerifiedFields>
+            {(initialValues.ssn !== undefined ||
+              initialValues.birthdate !== undefined) && (
+              <VerifiedFields>
+                {initialValues.ssn && (
+                  <VerifiedField
+                    label={tSsn('label')}
+                    value={initialValues.ssn}
+                  />
+                )}
+                {initialValues.birthdate && (
+                  <VerifiedField
+                    label={t('birthdate.label')}
+                    value={formatStoredDateToDisplayDate(
+                      initialValues.birthdate
+                    )}
+                  />
+                )}
+              </VerifiedFields>
+            )}
             <TextField
               label={t('drivers_license_or_state_id_number.label')}
               name="drivers_license_or_state_id_number"
