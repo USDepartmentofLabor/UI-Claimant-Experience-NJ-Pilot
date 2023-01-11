@@ -17,3 +17,5 @@ aws:
   region: ${AWS_REGION}
   s3:
     endpoint-url: ${AWS_S3_ENDPOINT_URL}
+loops:
+  url: ${MOCK_LOOPS_HOST}${MOCK_LOOPS_PATH}

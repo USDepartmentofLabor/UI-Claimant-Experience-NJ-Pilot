@@ -47,6 +47,10 @@ services:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
       DB_HOST: db
       DB_PORT: 5432
+      MOCK_LOOPS_HOST: http://localhost:9090
+      MOCK_LOOPS_PATH: /mockloopspath
+      LOOPS_HOST: ${LOOPS_HOST}
+      LOOPS_PATH: ${LOOPS_PATH}
   db:
     image: postgres:14.3
     container_name: dol-ui-db
@@ -70,7 +74,15 @@ services:
     volumes:
       - "localstack:/var/lib/localstack"
       - "./scripts/aws-init:/docker-entrypoint-initaws.d"
-
+  wiremock:
+    container_name: dol-ui-wiremock
+    image: wiremock/wiremock:2.35.0
+    networks:
+      - back-tier
+    ports:
+      - "9090:8080"
+    volumes:
+      - "./wiremock:/home/wiremock"
 networks:
   front-tier:
     name: dol-ui-front-tier
