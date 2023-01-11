@@ -2,7 +2,6 @@ package nj.lwd.ui.claimantintake.controller;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -11,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
-import nj.lwd.ui.claimantintake.dto.RecentEmployers;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
@@ -40,7 +38,7 @@ public class RecentEmployersControllerTest {
         when(claimStorageService.getSSN(anyString())).thenReturn("123456789");
     }
 
-    public RecentEmployers getValidRecentEmployerResponse() throws JsonProcessingException {
+    public RecentEmployersResponse getValidRecentEmployerResponse() throws JsonProcessingException {
         WagePotentialResponseEmployer employer1 =
                 new WagePotentialResponseEmployer(
                         null,
@@ -87,24 +85,12 @@ public class RecentEmployersControllerTest {
         employerList.add(employer2);
         employerList.add(employer3);
         // claimdate needs to be changed to handle the 13 digit long epock timestamp it receives
-        RecentEmployersResponse recentEmployerResponse =
-                new RecentEmployersResponse(
-                        "0",
-                        false,
-                        false,
-                        16584624,
-                        9534.00,
-                        "244555527",
-                        681.00,
-                        employerList,
-                        817.00);
-        return new RecentEmployers(recentEmployerResponse);
+        return new RecentEmployersResponse(
+                "0", false, false, 16584624, 9534.00, "244555527", 681.00, employerList, 817.00);
     }
 
-    public RecentEmployers getInvalidRecentEmployerResponse() {
-        RecentEmployersResponse errorReturn =
-                new RecentEmployersResponse("3", false, false, 0, 0, null, 0, null, 0);
-        return new RecentEmployers(errorReturn);
+    public RecentEmployersResponse getInvalidRecentEmployerResponse() {
+        return new RecentEmployersResponse("3", false, false, 0, 0, null, 0, null, 0);
     }
 
     @Test
@@ -115,7 +101,7 @@ public class RecentEmployersControllerTest {
                 .thenReturn(getValidRecentEmployerResponse());
         String expectedResponse =
                 """
-                        [{"employer_name":"VICTORIAS SECRET STORES, INC.","alternate_employer_name":"business llc","employer_address":{"address":"DIRECT FUTURE MAIL","address2":"C/O TALX UC EXPRESS","address3":"P O BOX 6001","city":"PEABODY","state":"MA","zipcode":"01961"},"employer_phone":{"number":"6144151035"},"fein":"031143718000000"},{"employer_name":"VICTORIAS SECRET STORES, INC.","alternate_employer_name":"business llc","employer_address":{"address":"The Hall of Justice","address2":"2212 superhero street","address3":"SUITE #2","city":"WASHINGTON","state":"DC","zipcode":"91121"},"employer_phone":{"number":"5554151012"},"fein":"031143718000011"},{"employer_name":"Daily Planet","alternate_employer_name":"business llc","employer_address":{"address":"123 Secret Identity Street","address2":"#7","address3":null,"city":"Metropolis","state":"KS","zipcode":"12345"},"employer_phone":{"number":"1114151035"},"fein":"031143718000066"}]"""
+                        [{"employerAddressLine5":null,"employerAddressLine4":"PEABODY MA","employerAddressLine3":"P O BOX 6001","employerAddressLine2":"C/O TALX UC EXPRESS","employerAddressLine1":"DIRECT FUTURE MAIL","employerFein":"031143718000000","employerAddressZip":"01961","employerName":"VICTORIAS SECRET STORES, INC.","employerStatePayrollNumber":null,"employerTelephoneNumber":"6144151035","employerSequenceNumber":"001"},{"employerAddressLine5":null,"employerAddressLine4":"WASHINGTON DC","employerAddressLine3":"SUITE #2","employerAddressLine2":"2212 superhero street","employerAddressLine1":"The Hall of Justice","employerFein":"031143718000011","employerAddressZip":"91121","employerName":"VICTORIAS SECRET STORES, INC.","employerStatePayrollNumber":null,"employerTelephoneNumber":"5554151012","employerSequenceNumber":"001"},{"employerAddressLine5":null,"employerAddressLine4":"Metropolis KS","employerAddressLine3":null,"employerAddressLine2":"#7","employerAddressLine1":"123 Secret Identity Street","employerFein":"031143718000066","employerAddressZip":"12345","employerName":"Daily Planet","employerStatePayrollNumber":null,"employerTelephoneNumber":"1114151035","employerSequenceNumber":"001"}]"""
                         .strip();
 
         this.mockMvc

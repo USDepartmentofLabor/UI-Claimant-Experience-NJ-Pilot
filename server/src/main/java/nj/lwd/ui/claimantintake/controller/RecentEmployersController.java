@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import nj.lwd.ui.claimantintake.dto.Employer;
-import nj.lwd.ui.claimantintake.dto.RecentEmployers;
+import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
+import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.RecentEmployersService;
 import org.slf4j.Logger;
@@ -39,21 +39,33 @@ public class RecentEmployersController {
     }
 
     @GetMapping()
-    public ArrayList<Employer> getRecentEmployers(Authentication authentication) {
+    public ArrayList<WagePotentialResponseEmployer> getRecentEmployers(
+            Authentication authentication) {
         String claimantIdpId = authentication.getName();
         String ssn = claimStorageService.getSSN(claimantIdpId);
         if (ssn == null) {
             logger.info("SSN was null for claim id {}", claimantIdpId);
-            return new RecentEmployers().getRecentEmployers();
+            return new ArrayList<WagePotentialResponseEmployer>();
         }
 
         // create claim date as previous sunday
         String claimDate = getClaimDate();
 
-        // hit WGPM api ({ssn: ssnNumber, claimDate } and get back employer data
-        RecentEmployers recentEmployers =
+        // hit WGPM api with ssnNumber, claimDate  and get back employer data
+        RecentEmployersResponse recentEmployerResponse =
                 recentEmployersService.getRecentEmployerValues(ssn, claimDate);
 
-        return recentEmployers.getRecentEmployers();
+        // TODO - save the wgpm response in s3 here
+
+        // Get just the list of employers and return to client
+        ArrayList<WagePotentialResponseEmployer> employerList =
+                recentEmployerResponse.getWagePotentialMonLookupResponseEmployerDtos();
+        if (employerList == null) {
+            logger.info(
+                    "No employer list for claimid {} but ssn was found correctly", claimantIdpId);
+            return new ArrayList<WagePotentialResponseEmployer>();
+        }
+
+        return employerList;
     }
 }
