@@ -33,7 +33,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     //  - What will the app do if the user is logged in already?
     //  - How will the user know that they are logged in?
     cy.visit('/')
-    cy.get('[data-testid=sign-out]').should('be.visible')
+    cy.get('[data-testid=sign-out-button-cmp]').should('be.visible')
 
     // Ssn (Access your records) page
     cy.visit('/ssn')

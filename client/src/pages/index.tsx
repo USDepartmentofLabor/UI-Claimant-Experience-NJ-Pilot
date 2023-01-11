@@ -8,8 +8,8 @@ import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import PageLoader from 'components/loaders/PageLoader'
 import { Alert, Table } from '@trussworks/react-uswds'
 import { WhoAmI } from 'types/claimantInput'
-import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
 import { Routes } from 'constants/routes'
+import { SignOut } from 'components/SignOut/SignOut'
 
 const Home: NextPage = () => {
   const session = useSession()
@@ -62,14 +62,7 @@ const Home: NextPage = () => {
               </Table>
             </div>
             <div className="margin-bottom-1">
-              <Button
-                id="signOut"
-                type="button"
-                data-testid="sign-out"
-                onClick={() => cognitoSignOut()}
-              >
-                Sign out
-              </Button>
+              <SignOut isNavLink={false} />
             </div>
             <div className="margin-bottom-1">
               <Button
