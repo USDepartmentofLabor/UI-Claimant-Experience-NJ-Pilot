@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'next/router'
 // import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { Routes, CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
+import { SignOut } from 'components/SignOut/SignOut'
 
 export const NewJerseyHeader = () => {
   const { t } = useTranslation('common', { keyPrefix: 'header' })
@@ -100,9 +101,7 @@ export const NewJerseyHeader = () => {
     >
       {t('privacy')}
     </Link>,
-    <Link href="/logout" key="logout" variant="nav">
-      {t('logout')}
-    </Link>,
+    <SignOut isNavLink key="logout" />,
   ]
 
   const onToggle = (

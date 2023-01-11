@@ -4,6 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { NewJerseyHeader } from 'components/NewJerseyHeader/NewJerseyHeader'
 import { Routes, CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 
+jest.mock('next-auth/react')
+import { useSession, signOut } from 'next-auth/react'
+
+const mockUseSession = useSession as jest.Mock
+;(signOut as jest.Mock).mockImplementation(() => jest.fn())
+
 const mockRouter = jest.fn()
 jest.mock('next/router', () => ({
   useRouter: () => mockRouter(),
@@ -76,5 +82,24 @@ describe('NewJerseyHeader Component', () => {
 
     const myClaimMenuItem = screen.getByRole('link', { name: 'privacy' })
     expect(myClaimMenuItem).toHaveClass('usa-current')
+  })
+  it('lets user log out of the application', async () => {
+    const user = userEvent.setup()
+    mockUseSession.mockReturnValue({
+      status: 'unauthenticated',
+      data: null,
+    })
+
+    mockRouter.mockImplementation(() => ({
+      asPath: Routes.HOME,
+    }))
+    render(<NewJerseyHeader />)
+
+    const logoutNavItem = screen.getByRole('link', { name: 'logout' })
+    expect(logoutNavItem).toHaveClass('usa-link usa-nav__link')
+
+    await user.click(logoutNavItem as HTMLElement)
+
+    expect(signOut).toHaveBeenCalledTimes(1)
   })
 })

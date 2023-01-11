@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/mockloopspath/wagepotentialmonlookup/json"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": { "status": "Success", "message": "Hello, world!" },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

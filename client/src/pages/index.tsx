@@ -8,8 +8,8 @@ import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import PageLoader from 'components/loaders/PageLoader'
 import { Alert, Table } from '@trussworks/react-uswds'
 import { WhoAmI } from 'types/claimantInput'
-import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
 import { Routes } from 'constants/routes'
+import { SignOut } from 'components/SignOut/SignOut'
 
 const Home: NextPage = () => {
   const session = useSession()
@@ -18,6 +18,8 @@ const Home: NextPage = () => {
   const goToFirstPageOfClaimForm = () => router.push(pageDefinitions[0].path)
   const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
   const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
+  const goToUpdateContactInfoForm = () =>
+    router.push(Routes.UPDATE_CONTACT_INFO)
 
   return (
     <div>
@@ -60,14 +62,7 @@ const Home: NextPage = () => {
               </Table>
             </div>
             <div className="margin-bottom-1">
-              <Button
-                id="signOut"
-                type="button"
-                data-testid="sign-out"
-                onClick={() => cognitoSignOut()}
-              >
-                Sign out
-              </Button>
+              <SignOut isNavLink={false} />
             </div>
             <div className="margin-bottom-1">
               <Button
@@ -86,6 +81,16 @@ const Home: NextPage = () => {
                 data-testid="go-to-update-payment"
               >
                 Update payment info
+              </Button>
+            </div>
+            <div className="margin-bottom-1">
+              <Button
+                type="button"
+                secondary
+                onClick={goToUpdateContactInfoForm}
+                data-testid="go-to-update-contact-info"
+              >
+                {t('update_contact_info_button')}
               </Button>
             </div>
             <div>

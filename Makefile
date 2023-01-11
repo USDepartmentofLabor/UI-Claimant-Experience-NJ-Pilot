@@ -19,7 +19,7 @@ docker-e2e-up: ## Run all docker services in background, with e2e profile (only 
 	SPRING_PROFILES_ACTIVE=local-docker,e2e docker compose up -d --build --force-recreate --remove-orphans
 
 docker-services-up: ## Run supporting services locally (database, localstack)
-	docker compose up db localstack --build --force-recreate --remove-orphans -d
+	docker compose up db localstack wiremock --build --force-recreate --remove-orphans -d
 
 docker-down: ## Shut down all local docker services
 	docker compose down
