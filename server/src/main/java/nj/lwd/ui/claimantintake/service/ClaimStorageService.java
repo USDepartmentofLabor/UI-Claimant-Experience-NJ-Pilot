@@ -240,8 +240,9 @@ public class ClaimStorageService {
                     return claim.get().get("ssn").toString();
                 }
             } catch (ClaimDataRetrievalException e) {
-                logger.info(
-                        "Unable to retrieve claim, thus unable to get ssn for claimid {}",
+                logger.error(
+                        "Unable to retrieve claim, thus unable to get ssn for claimant with IDP Id"
+                                + " {}",
                         claimantIdpId);
             }
         }

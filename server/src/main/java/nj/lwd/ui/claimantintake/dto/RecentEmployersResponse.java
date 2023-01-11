@@ -44,8 +44,8 @@ public class RecentEmployersResponse {
         }
 
         ArrayList<WagePotentialResponseEmployer> copyWagePotentialDtos = new ArrayList<>();
-        for (int i = 0; i < wagePotentialDtosArray.size(); i++) {
-            copyWagePotentialDtos.add(wagePotentialDtosArray.get(i));
+        for (WagePotentialResponseEmployer wgpmResponseEmployer : wagePotentialDtosArray) {
+            copyWagePotentialDtos.add(wgpmResponseEmployer);
         }
         return copyWagePotentialDtos;
     }

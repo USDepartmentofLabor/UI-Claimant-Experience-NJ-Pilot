@@ -33,6 +33,8 @@ public class RecentEmployersController {
     }
 
     public String getClaimDate() {
+        // TODO- change this to be a service or utility function call
+        // create claim date as previous sunday
         return LocalDate.now()
                 .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
                 .format(DateTimeFormatter.ofPattern("yyyy-dd-MM"));
@@ -48,7 +50,6 @@ public class RecentEmployersController {
             return new ArrayList<WagePotentialResponseEmployer>();
         }
 
-        // create claim date as previous sunday
         String claimDate = getClaimDate();
 
         // hit WGPM api with ssnNumber, claimDate  and get back employer data
