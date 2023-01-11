@@ -20,6 +20,10 @@ public class ClaimantStorageService {
         this.claimantRepository = claimantRepository;
     }
 
+    public Optional<Claimant> getClaimant(String idpId) {
+        logger.info("Attempting to find claimant by IDP Id {}", idpId);
+        return claimantRepository.findClaimantByIdpId(idpId);
+    }
     /**
      * Gets (or creates and returns if one does not already exist) a Claimant corresponding to the
      * provided idpId
@@ -28,8 +32,7 @@ public class ClaimantStorageService {
      * @return the corresponding Claimant entity
      */
     public Claimant getOrCreateClaimant(String idpId) {
-        logger.info("Attempting to find claimant by IDP Id {}", idpId);
-        Optional<Claimant> existingClaimant = claimantRepository.findClaimantByIdpId(idpId);
+        Optional<Claimant> existingClaimant = getClaimant(idpId);
         return existingClaimant.orElseGet(
                 () -> {
                     logger.info(

@@ -457,4 +457,51 @@ class ClaimStorageServiceTest {
 
         verify(s3Service, times(0)).get(anyString(), anyString());
     }
+
+    @Test
+    void getSSN() throws ClaimDataRetrievalException {
+        Claimant claimant = mock(Claimant.class);
+        InputStream inputStream =
+                new ByteArrayInputStream(
+                        "{\"ssn\": \"123456789\"}".getBytes(StandardCharsets.UTF_8));
+        var claim = mock(Claim.class);
+        var claimantId = UUID.randomUUID();
+        var claimId = UUID.randomUUID();
+
+        when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.of(claimant));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
+        when(s3Service.get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId)))
+                .thenReturn(inputStream);
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claim.getId()).thenReturn(claimId);
+
+        String ssn = claimStorageService.getSSN("12345");
+        assertEquals("123456789", ssn);
+    }
+
+    @Test
+    void getSSNShouldFailMissingClaimant() throws ClaimDataRetrievalException {
+        when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.empty());
+        String ssn = claimStorageService.getSSN("12345");
+        assertEquals(ssn, null);
+    }
+
+    @Test
+    void getSSNShouldFailMissingClaim() throws ClaimDataRetrievalException {
+        Claimant claimant = mock(Claimant.class);
+        var claim = mock(Claim.class);
+        var claimantId = UUID.randomUUID();
+        var claimId = UUID.randomUUID();
+        when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.of(claimant));
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
+
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claim.getId()).thenReturn(claimId);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
+        when(s3Service.get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId)))
+                .thenThrow(AwsServiceException.class);
+        String ssn = claimStorageService.getSSN("12345");
+        assertEquals(null, ssn);
+    }
 }
