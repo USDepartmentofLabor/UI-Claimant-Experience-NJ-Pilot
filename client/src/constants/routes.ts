@@ -11,6 +11,8 @@ export const ExternalRoutes = () => {
         'https://uiclaim.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
       TAX_DOCUMENTS:
         'https://uiclaim.dol.state.nj.us/njsuccess/html/web1099Home.htm',
+      UPDATE_CONTACT_INFO:
+        'https://uiclaim.dol.state.nj.us/njsuccess/html/updateAddressHome.htm',
     }
   } else if (env === 'test') {
     return {
@@ -18,6 +20,8 @@ export const ExternalRoutes = () => {
         'https://securest.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
       TAX_DOCUMENTS:
         'https://securest.dol.state.nj.us/njsuccess/html/web1099Home.htm',
+      UPDATE_CONTACT_INFO:
+        'https://securest.dol.state.nj.us/njsuccess/html/updateAddressHome.htm',
     }
   } else {
     return {
@@ -25,6 +29,8 @@ export const ExternalRoutes = () => {
         'https://stclaimproxy.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
       TAX_DOCUMENTS:
         'https://stclaimproxy.dol.state.nj.us/njsuccess/html/web1099Home.htm',
+      UPDATE_CONTACT_INFO:
+        'https://stclaimproxy.dol.state.nj.us/njsuccess/html/updateAddressHome.htm',
     }
   }
 }
@@ -37,6 +43,7 @@ export const Routes = {
   SSN: '/ssn',
   UPDATE_PAYMENT_INFO: ExternalRoutes().UPDATE_PAYMENT_INFO,
   TAX_DOCUMENTS: ExternalRoutes().TAX_DOCUMENTS,
+  UPDATE_CONTACT_INFO: ExternalRoutes().UPDATE_CONTACT_INFO,
 
   // Claim Form
   CLAIM: {

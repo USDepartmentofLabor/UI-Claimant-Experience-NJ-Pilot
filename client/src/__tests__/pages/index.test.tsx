@@ -34,6 +34,9 @@ describe('home page', () => {
     const updatePaymentButton = screen.queryByRole('button', {
       name: 'Update payment info',
     })
+    const updateContactInfoButton = screen.queryByRole('button', {
+      name: 'update_contact_info_button',
+    })
 
     return {
       heading,
@@ -42,6 +45,7 @@ describe('home page', () => {
       signOutButton,
       taxDocButton,
       updatePaymentButton,
+      updateContactInfoButton,
     }
   }
 
@@ -79,6 +83,7 @@ describe('home page', () => {
       signOutButton,
       updatePaymentButton,
       taxDocButton,
+      updateContactInfoButton,
     } = renderHomePage()
 
     expect(heading).toBeInTheDocument()
@@ -87,6 +92,7 @@ describe('home page', () => {
     expect(signOutButton).not.toBeInTheDocument()
     expect(taxDocButton).not.toBeInTheDocument()
     expect(updatePaymentButton).not.toBeInTheDocument()
+    expect(updateContactInfoButton).not.toBeInTheDocument()
   })
 
   it('renders when logged in', async () => {
@@ -115,6 +121,7 @@ describe('home page', () => {
       signOutButton,
       updatePaymentButton,
       taxDocButton,
+      updateContactInfoButton,
     } = renderHomePage()
 
     expect(heading).toBeInTheDocument()
@@ -127,6 +134,9 @@ describe('home page', () => {
     expect(updatePaymentButton).toBeInTheDocument()
     expect(updatePaymentButton).toHaveClass('usa-button')
     expect(updatePaymentButton).toHaveClass('usa-button--secondary')
+    expect(updateContactInfoButton).toBeInTheDocument()
+    expect(updateContactInfoButton).toHaveClass('usa-button')
+    expect(updateContactInfoButton).toHaveClass('usa-button--secondary')
 
     await user.click(signOutButton as HTMLElement)
 
@@ -165,6 +175,23 @@ describe('home page', () => {
     )
   })
 
+  it('takes the user to the update contact info form page', async () => {
+    const user = userEvent.setup()
+
+    const mockNavigateUpdateContact = jest.fn()
+    mockRouter.mockImplementation(() => ({
+      push: mockNavigateUpdateContact,
+    }))
+
+    const { updateContactInfoButton } = renderHomePage()
+
+    await user.click(updateContactInfoButton as HTMLElement)
+    expect(mockNavigateUpdateContact).toHaveBeenCalledTimes(1)
+    expect(mockNavigateUpdateContact).toHaveBeenCalledWith(
+      Routes.UPDATE_CONTACT_INFO
+    )
+  })
+
   it.each([null, { user: null }])(
     'instructs the user to sign in if the session is missing a user',
     async (data) => {
@@ -179,6 +206,7 @@ describe('home page', () => {
         signOutButton,
         updatePaymentButton,
         taxDocButton,
+        updateContactInfoButton,
       } = renderHomePage()
 
       expect(heading).toBeInTheDocument()
@@ -186,6 +214,7 @@ describe('home page', () => {
       expect(signOutButton).not.toBeInTheDocument()
       expect(taxDocButton).not.toBeInTheDocument()
       expect(updatePaymentButton).not.toBeInTheDocument()
+      expect(updateContactInfoButton).not.toBeInTheDocument()
     }
   )
   it('Shows a success alert when a claim form has been submitted', () => {
