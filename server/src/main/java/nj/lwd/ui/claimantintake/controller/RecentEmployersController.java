@@ -33,7 +33,7 @@ public class RecentEmployersController {
     }
 
     public String getClaimDate() {
-        // TODO- change this to be a service or utility function call
+        // TODO- change this to be a service call
         // create claim date as previous sunday
         return LocalDate.now()
                 .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
