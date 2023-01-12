@@ -133,16 +133,50 @@ describe('Contact page', () => {
     await user.click(languageOther)
     expect(screen.queryByLabelText('other_language')).toHaveTextContent('')
   })
+  describe('Verified fields', () => {
+    it('Autofills the phone number value', async () => {
+      const initialValuesWithPhoneOnly = {
+        email: undefined,
+        claimant_phone: { number: '2028675309', sms: undefined },
+        alternate_phone: { number: '', sms: undefined },
+        interpreter_required: undefined,
+        preferred_language: undefined,
+        preferred_language_other: undefined,
+      }
+      ;(useInitialValues as jest.Mock).mockImplementation((values) => ({
+        initialValues: { ...values, ...initialValuesWithPhoneOnly },
+        isLoading: false,
+      }))
 
-  it('Autofills the phone number value', async () => {
-    render(<Contact />)
-    const phone = screen.getByRole('textbox', {
-      name: 'claimant_phone.label',
+      render(<Contact />)
+      const phone = screen.getByRole('textbox', {
+        name: 'claimant_phone.label',
+      })
+      const email = screen.queryByText('email.label')
+
+      await expect(phone).toHaveValue('2028675309')
+      await expect(email).not.toBeInTheDocument()
     })
-
-    await expect(phone).toHaveValue('2028675309')
+    it('Verified box does not show if missing all data', async () => {
+      const initialValuesMissingAllFields = {
+        email: undefined,
+        claimant_phone: { number: undefined, sms: undefined },
+        alternate_phone: { number: '', sms: undefined },
+        interpreter_required: undefined,
+        preferred_language: undefined,
+        preferred_language_other: undefined,
+      }
+      ;(useInitialValues as jest.Mock).mockImplementation((values) => ({
+        initialValues: { ...values, ...initialValuesMissingAllFields },
+        isLoading: false,
+      }))
+      render(<Contact />)
+      const verifiedFieldsHeading = screen.queryByText(
+        'verified_fields.default_heading'
+      )
+      expect(verifiedFieldsHeading).not.toBeInTheDocument()
+    })
   })
-
   describe('page layout', () => {
     it('uses the ClaimFormLayout', () => {
       const Page = Contact

@@ -71,8 +71,7 @@ export const Identity: NextPageWithLayout = () => {
 
         return (
           <>
-            {(initialValues.ssn !== undefined ||
-              initialValues.birthdate !== undefined) && (
+            {(initialValues.ssn || initialValues.birthdate) && (
               <VerifiedFields>
                 {initialValues.ssn && (
                   <VerifiedField

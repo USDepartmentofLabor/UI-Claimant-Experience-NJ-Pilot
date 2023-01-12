@@ -71,10 +71,9 @@ const Contact: NextPageWithLayout = () => {
 
         return (
           <>
-            {(initialValues.claimant_phone?.number ||
-              values.email !== undefined) && (
+            {(initialValues.claimant_phone?.number || values.email) && (
               <VerifiedFields>
-                {values.email !== undefined && (
+                {values.email && (
                   <VerifiedField
                     label={t('email.label')}
                     value={values.email}

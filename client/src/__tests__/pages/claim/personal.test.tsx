@@ -12,23 +12,40 @@ jest.mock('queries/useGetPartialClaim')
 jest.mock('next/router')
 
 describe('Personal information component', () => {
-  const initialValues = {
-    ...PersonalPageDefinition.initialValues,
-    claimant_name: {
-      first_name: 'Dori',
-      middle_initial: 'D',
-      last_name: 'Coxen',
-    },
+  const makeInitialValues = (
+    first_name: string | undefined,
+    middle_initial: string | undefined,
+    last_name: string | undefined
+  ) => {
+    return {
+      ...PersonalPageDefinition.initialValues,
+      claimant_name: {
+        first_name: first_name,
+        middle_initial: middle_initial,
+        last_name: last_name,
+      },
+    }
+  }
+  const mockClaimantInput = (
+    first_name: string | undefined,
+    middle_initial: string | undefined,
+    last_name: string | undefined
+  ) => {
+    const initialValues = makeInitialValues(
+      first_name,
+      middle_initial,
+      last_name
+    )
+    ;(useInitialValues as jest.Mock).mockImplementation(
+      (values: ClaimantInput) => ({
+        initialValues: { ...values, ...initialValues },
+        isLoading: false,
+      })
+    )
   }
 
-  ;(useInitialValues as jest.Mock).mockImplementation(
-    (values: ClaimantInput) => ({
-      initialValues: { ...values, ...initialValues },
-      isLoading: false,
-    })
-  )
-
   it('renders properly without error', () => {
+    mockClaimantInput('Dori', 'D', 'Coxen')
     render(<Personal />)
     const verifiedFieldsSection = screen.getByTestId('verified-fields')
     const verifiedFields = within(verifiedFieldsSection).getAllByRole(
@@ -88,6 +105,7 @@ describe('Personal information component', () => {
   })
 
   describe('page layout', () => {
+    mockClaimantInput('Dori', 'D', 'Coxen')
     it('uses the ClaimFormLayout', () => {
       const Page = Personal
       expect(Page).toHaveProperty('getLayout')
@@ -100,6 +118,28 @@ describe('Personal information component', () => {
       const main = screen.queryByRole('main')
 
       expect(main).toBeInTheDocument()
+    })
+  })
+  describe('Missing verified fields', () => {
+    it('Does not show verified fields', () => {
+      mockClaimantInput(undefined, undefined, undefined)
+
+      render(<Personal />)
+      const verifiedFieldsHeading = screen.queryByText(
+        'verified_fields.default_heading'
+      )
+      expect(verifiedFieldsHeading).not.toBeInTheDocument()
+    })
+    it('Does not include a single missing name field', () => {
+      mockClaimantInput('Dori', undefined, 'Coxen')
+
+      render(<Personal />)
+      const verifiedFieldsSection = screen.getByTestId('verified-fields')
+      expect(verifiedFieldsSection).toBeInTheDocument()
+      const verifiedLegalNameValue = within(verifiedFieldsSection).getByText(
+        'Dori Coxen'
+      )
+      expect(verifiedLegalNameValue).toBeInTheDocument()
     })
   })
 })
