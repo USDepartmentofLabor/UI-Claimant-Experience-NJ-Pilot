@@ -19,8 +19,8 @@ describe('Identity Information Page', () => {
   ) => {
     return {
       ...IdentityPageDefinition.initialValues,
-      birthdate,
-      ssn,
+      birthdate: birthDate,
+      ssn: ssn,
     }
   }
 
@@ -29,6 +29,7 @@ describe('Identity Information Page', () => {
     ssn: string | undefined
   ) => {
     const initialValues = makeInitialValues(birthDate, ssn)
+
     ;(useInitialValues as jest.Mock).mockImplementation(
       (values: ClaimantInput) => ({
         initialValues: { ...values, ...initialValues },
@@ -212,6 +213,14 @@ describe('Identity Information Page', () => {
       const ssn = within(verifiedFieldsSection).getByText('123-12-1234')
       expect(verifiedFields.length).toBe(2)
       expect(ssn).toBeInTheDocument()
+    })
+    it('does not show verified fields box', () => {
+      mockClaimantInput(undefined, undefined)
+      render(<Identity />)
+      const verifiedFieldsHeading = screen.queryByText(
+        'verified_fields.default_heading'
+      )
+      expect(verifiedFieldsHeading).not.toBeInTheDocument()
     })
   })
   describe('page layout', () => {

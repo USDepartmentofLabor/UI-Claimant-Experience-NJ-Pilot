@@ -40,7 +40,7 @@ export const Identity: NextPageWithLayout = () => {
     >
       {({ values, initialValues, clearField, clearFields }) => {
         const showWorkAuthorizationFields = values.authorized_to_work
-
+        const showVerifiedFields = initialValues.ssn || initialValues.birthdate
         const showAlienRegistrationNumber =
           values.authorization_type &&
           values.authorization_type !== 'US_citizen_or_national'
@@ -71,7 +71,7 @@ export const Identity: NextPageWithLayout = () => {
 
         return (
           <>
-            {(initialValues.ssn || initialValues.birthdate) && (
+            {showVerifiedFields && (
               <VerifiedFields>
                 {initialValues.ssn && (
                   <VerifiedField

@@ -44,8 +44,8 @@ describe('Personal information component', () => {
     )
   }
 
+  mockClaimantInput('Dori', 'D', 'Coxen')
   it('renders properly without error', () => {
-    mockClaimantInput('Dori', 'D', 'Coxen')
     render(<Personal />)
     const verifiedFieldsSection = screen.getByTestId('verified-fields')
     const verifiedFields = within(verifiedFieldsSection).getAllByRole(
@@ -104,8 +104,31 @@ describe('Personal information component', () => {
     expect(mailingAddress).toBeInTheDocument()
   })
 
+  describe('Missing verified fields', () => {
+    it('Does not show verified fields', () => {
+      mockClaimantInput(undefined, undefined, undefined)
+      render(<Personal />)
+
+      const verifiedFieldsHeading = screen.queryByText(
+        'verified_fields.default_heading'
+      )
+      expect(verifiedFieldsHeading).not.toBeInTheDocument()
+    })
+
+    it('Does not include an undefined name field', () => {
+      mockClaimantInput('Dori', undefined, 'Coxen')
+      render(<Personal />)
+
+      const verifiedFieldsSection = screen.getByTestId('verified-fields')
+      expect(verifiedFieldsSection).toBeInTheDocument()
+      const verifiedLegalNameValue = within(verifiedFieldsSection).getByText(
+        'Dori Coxen'
+      )
+      expect(verifiedLegalNameValue).toBeInTheDocument()
+    })
+  })
+
   describe('page layout', () => {
-    mockClaimantInput('Dori', 'D', 'Coxen')
     it('uses the ClaimFormLayout', () => {
       const Page = Personal
       expect(Page).toHaveProperty('getLayout')
@@ -118,28 +141,6 @@ describe('Personal information component', () => {
       const main = screen.queryByRole('main')
 
       expect(main).toBeInTheDocument()
-    })
-  })
-  describe('Missing verified fields', () => {
-    it('Does not show verified fields', () => {
-      mockClaimantInput(undefined, undefined, undefined)
-
-      render(<Personal />)
-      const verifiedFieldsHeading = screen.queryByText(
-        'verified_fields.default_heading'
-      )
-      expect(verifiedFieldsHeading).not.toBeInTheDocument()
-    })
-    it('Does not include a single missing name field', () => {
-      mockClaimantInput('Dori', undefined, 'Coxen')
-
-      render(<Personal />)
-      const verifiedFieldsSection = screen.getByTestId('verified-fields')
-      expect(verifiedFieldsSection).toBeInTheDocument()
-      const verifiedLegalNameValue = within(verifiedFieldsSection).getByText(
-        'Dori Coxen'
-      )
-      expect(verifiedLegalNameValue).toBeInTheDocument()
     })
   })
 })
