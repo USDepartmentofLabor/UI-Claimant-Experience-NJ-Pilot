@@ -20,6 +20,7 @@ const PageStoryWrapper = (props) => {
   const mockSession = {
     whoAmI: {
       firstName: 'Fakey',
+      middleInitial: undefined,
       lastName: 'McFakerson',
       birthdate: '1990-01-01',
       email: 'fakey@fakedomain.com',
