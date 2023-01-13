@@ -165,9 +165,7 @@ public class ClaimStorageService {
 
         // do we want to add an event for saving the wgpm data? --DELETE comment
         logger.info("Attempting to save recent employer data for claimant {}", claimant.getId());
-        System.out.println("before call ");
         if (existingClaim.isPresent()) {
-            System.out.println("after if ");
 
             Claim claim = existingClaim.get();
             try {
@@ -182,8 +180,6 @@ public class ClaimStorageService {
                         s3Key);
                 return true;
             } catch (JsonProcessingException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getStackTrace());
                 logger.error(
                         "Recent employer data for claim {} payload is unable to be converted to"
                                 + " JSON for storage in S3: {}",

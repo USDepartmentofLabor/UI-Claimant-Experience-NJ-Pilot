@@ -46,7 +46,7 @@ public class RecentEmployersController {
         String claimantIdpId = authentication.getName();
         String ssn = claimStorageService.getSSN(claimantIdpId);
         if (ssn == null) {
-            logger.info("SSN was null for claim id {}", claimantIdpId);
+            logger.info("SSN was null for claimant IdpId {}", claimantIdpId);
             return new ArrayList<WagePotentialResponseEmployer>();
         }
 
@@ -56,7 +56,16 @@ public class RecentEmployersController {
         RecentEmployersResponse recentEmployerResponse =
                 recentEmployersService.getRecentEmployerValues(ssn, claimDate);
 
-        // TODO - save the wgpm response in s3 here
+        boolean savedEmployerData =
+                claimStorageService.saveRecentEmployer(claimantIdpId, recentEmployerResponse);
+
+        if (!savedEmployerData) {
+            logger.error(
+                    "Saving Recent Employer Response failed for claimant id {}, returning an empty"
+                            + " array to client",
+                    claimantIdpId);
+            return new ArrayList<WagePotentialResponseEmployer>();
+        }
 
         // Get just the list of employers and return to client
         ArrayList<WagePotentialResponseEmployer> employerList =

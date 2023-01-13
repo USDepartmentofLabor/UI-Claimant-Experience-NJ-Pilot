@@ -2,6 +2,8 @@ package nj.lwd.ui.claimantintake.controller;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,8 +36,20 @@ public class RecentEmployersControllerTest {
     @MockBean private ClaimStorageService claimStorageService;
     @MockBean private RecentEmployersService recentEmployersService;
 
+    private RecentEmployersResponse validRecentEmployerResponse;
+    private RecentEmployersResponse inValidRecentEmployerResponse;
+
+    public RecentEmployersControllerTest() throws Exception {
+        this.inValidRecentEmployerResponse = getInvalidRecentEmployerResponse();
+        this.validRecentEmployerResponse = getValidRecentEmployerResponse();
+    }
+
     void mockGetSSN() {
         when(claimStorageService.getSSN(anyString())).thenReturn("123456789");
+    }
+
+    void mockSaveRecentEmployer(boolean shouldSave) {
+        when(claimStorageService.saveRecentEmployer(anyString(), any())).thenReturn(shouldSave);
     }
 
     public RecentEmployersResponse getValidRecentEmployerResponse() throws JsonProcessingException {
@@ -97,8 +111,10 @@ public class RecentEmployersControllerTest {
     @WithMockUser
     void shouldReturnRecentEmployers() throws Exception {
         mockGetSSN();
+        mockSaveRecentEmployer(true);
+
         when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
-                .thenReturn(getValidRecentEmployerResponse());
+                .thenReturn(validRecentEmployerResponse);
         String expectedResponse =
                 """
                         [{"employerAddressLine5":null,"employerAddressLine4":"PEABODY MA","employerAddressLine3":"P O BOX 6001","employerAddressLine2":"C/O TALX UC EXPRESS","employerAddressLine1":"DIRECT FUTURE MAIL","employerFein":"031143718000000","employerAddressZip":"01961","employerName":"VICTORIAS SECRET STORES, INC.","employerStatePayrollNumber":null,"employerTelephoneNumber":"6144151035","employerSequenceNumber":"001"},{"employerAddressLine5":null,"employerAddressLine4":"WASHINGTON DC","employerAddressLine3":"SUITE #2","employerAddressLine2":"2212 superhero street","employerAddressLine1":"The Hall of Justice","employerFein":"031143718000011","employerAddressZip":"91121","employerName":"VICTORIAS SECRET STORES, INC.","employerStatePayrollNumber":null,"employerTelephoneNumber":"5554151012","employerSequenceNumber":"001"},{"employerAddressLine5":null,"employerAddressLine4":"Metropolis KS","employerAddressLine3":null,"employerAddressLine2":"#7","employerAddressLine1":"123 Secret Identity Street","employerFein":"031143718000066","employerAddressZip":"12345","employerName":"Daily Planet","employerStatePayrollNumber":null,"employerTelephoneNumber":"1114151035","employerSequenceNumber":"001"}]"""
@@ -113,14 +129,17 @@ public class RecentEmployersControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
+        verify(claimStorageService, times(1))
+                .saveRecentEmployer("user", validRecentEmployerResponse);
     }
 
     @Test
     @WithMockUser
     void shouldNotReturnRecentEmployers() throws Exception {
         mockGetSSN();
+        mockSaveRecentEmployer(true);
         when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
-                .thenReturn(getInvalidRecentEmployerResponse());
+                .thenReturn(inValidRecentEmployerResponse);
         String expectedResponse = "[]";
 
         this.mockMvc
@@ -132,13 +151,14 @@ public class RecentEmployersControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
+        verify(claimStorageService, times(1))
+                .saveRecentEmployer("user", inValidRecentEmployerResponse);
     }
 
     @Test
     @WithMockUser
     void shouldReturnEmptyIfNoSSN() throws Exception {
         when(claimStorageService.getSSN(anyString())).thenReturn(null);
-
         String expectedResponse = "[]";
 
         this.mockMvc
@@ -150,5 +170,28 @@ public class RecentEmployersControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponse));
+        verify(claimStorageService, times(0)).saveRecentEmployer(any(), any());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnEmptyIfUnableToSave() throws Exception {
+        mockGetSSN();
+        mockSaveRecentEmployer(false);
+        when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
+                .thenReturn(validRecentEmployerResponse);
+        String expectedResponse = "[]";
+
+        this.mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get("/recent-employers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResponse));
+        verify(claimStorageService, times(1))
+                .saveRecentEmployer("user", validRecentEmployerResponse);
     }
 }
