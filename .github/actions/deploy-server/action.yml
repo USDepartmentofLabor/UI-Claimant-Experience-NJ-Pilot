@@ -55,7 +55,7 @@ runs:
 
     - name: Deploy Amazon ECS task definition (migrations)
       id: deploy-task-def-migrations
-      uses: aws-actions/amazon-ecs-deploy-task-definition@3cc43061dd30ad47511af35bca46e2c1435b9035
+      uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
       with:
         task-definition: ${{ steps.task-def-migrations.outputs.task-definition }}
         cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
@@ -95,7 +95,7 @@ runs:
         image: ${{ inputs.server-image }}
 
     - name: Deploy Amazon ECS task definition (server)
-      uses: aws-actions/amazon-ecs-deploy-task-definition@3cc43061dd30ad47511af35bca46e2c1435b9035
+      uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
       with:
         task-definition: ${{ steps.task-def-server.outputs.task-definition }}
         service: dol-ui-claimant-intake-server
