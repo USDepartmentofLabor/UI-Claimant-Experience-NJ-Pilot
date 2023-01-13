@@ -172,7 +172,6 @@ public class ClaimStorageService {
             Claim claim = existingClaim.get();
             try {
                 String s3Key = getS3EmployersLocation(claimant, claim);
-                // s3Service.upload(claimsBucket, s3Key, "test", this.claimsBucketKmsKey);
                 s3Service.upload(claimsBucket, s3Key, recentEmployers, this.claimsBucketKmsKey);
 
                 logger.info(
