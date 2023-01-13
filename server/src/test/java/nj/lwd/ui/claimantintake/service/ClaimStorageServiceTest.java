@@ -514,8 +514,6 @@ class ClaimStorageServiceTest {
         var claim = mock(Claim.class);
         var claimId = UUID.randomUUID();
         when(claim.getId()).thenReturn(claimId);
-        // Optional<Claim> optionalClaim=Optional.of(claim);
-        // when(optionalClaim.isPresent()).thenReturn(true);// might not work
 
         // and: a claimant that owns the claim
         var claimant = mock(Claimant.class);
@@ -526,10 +524,10 @@ class ClaimStorageServiceTest {
 
         var expectedS3Key = "%s/%s/wgpm.json".formatted(claimantId, claimId);
 
-        // when: saveClaim is called
+        // when: save recent employer is called is called
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
 
-        // then: the existing claim should be saved
+        // then: the recent employer object should be saved
         assertTrue(result);
 
         verify(s3Service, times(1))
@@ -541,7 +539,7 @@ class ClaimStorageServiceTest {
         // given: an existing partial claim
         var claimId = UUID.randomUUID();
 
-        // and: a claimant that owns the claim
+        // and a claimant but no claim associated
         var claimant = mock(Claimant.class);
         var claimantId = UUID.randomUUID();
 
@@ -550,7 +548,7 @@ class ClaimStorageServiceTest {
 
         var expectedS3Key = "%s/%s/wgpm.json".formatted(claimantId, claimId);
 
-        // when: saveClaim save recent employer
+        // when: save recent employer is called
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
 
         // then: the employer data shouldnt be saved
@@ -565,17 +563,27 @@ class ClaimStorageServiceTest {
         var claim = mock(Claim.class);
         var claimant = mock(Claimant.class);
         var claimantId = UUID.randomUUID();
+        var claimId = UUID.randomUUID();
+        var expectedS3Key = "%s/%s/wgpm.json".formatted(claimantId, claimId);
+
+        // given an existing claim and claimant
         when(claimant.getId()).thenReturn(claimantId);
+        when(claim.getId()).thenReturn(claimId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
         when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
+        // simulate a json processing error
         doThrow(JsonProcessingException.class)
                 .when(s3Service)
                 .upload(anyString(), anyString(), any(), anyString());
 
+        // when: save recent employer is called
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
 
+        // the employer data shouldnt be saved
         assertFalse(result);
+        verify(s3Service, times(1))
+                .upload(CLAIMS_BUCKET, expectedS3Key, validRecentEmployer, CLAIMS_BUCKET_KMS_KEY);
     }
 
     @Test
@@ -583,10 +591,16 @@ class ClaimStorageServiceTest {
         var claim = mock(Claim.class);
         var claimant = mock(Claimant.class);
         var claimantId = UUID.randomUUID();
+        var claimId = UUID.randomUUID();
+        var expectedS3Key = "%s/%s/wgpm.json".formatted(claimantId, claimId);
+
+        // given an existing claim and claimant
         when(claimant.getId()).thenReturn(claimantId);
+        when(claim.getId()).thenReturn(claimId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
         when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
+        // simulate a AWS Service error
         doThrow(AwsServiceException.class)
                 .when(s3Service)
                 .upload(anyString(), anyString(), any(), anyString());
@@ -594,6 +608,8 @@ class ClaimStorageServiceTest {
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
 
         assertFalse(result);
+        verify(s3Service, times(1))
+                .upload(CLAIMS_BUCKET, expectedS3Key, validRecentEmployer, CLAIMS_BUCKET_KMS_KEY);
     }
 
     @Test
@@ -601,10 +617,16 @@ class ClaimStorageServiceTest {
         var claim = mock(Claim.class);
         var claimant = mock(Claimant.class);
         var claimantId = UUID.randomUUID();
+        var claimId = UUID.randomUUID();
+        var expectedS3Key = "%s/%s/wgpm.json".formatted(claimantId, claimId);
+
+        // given an existing claim and claimant
         when(claimant.getId()).thenReturn(claimantId);
+        when(claim.getId()).thenReturn(claimId);
         when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
         when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
 
+        // simulate a SdkClient error
         doThrow(SdkClientException.class)
                 .when(s3Service)
                 .upload(anyString(), anyString(), any(), anyString());
@@ -612,5 +634,7 @@ class ClaimStorageServiceTest {
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
 
         assertFalse(result);
+        verify(s3Service, times(1))
+                .upload(CLAIMS_BUCKET, expectedS3Key, validRecentEmployer, CLAIMS_BUCKET_KMS_KEY);
     }
 }

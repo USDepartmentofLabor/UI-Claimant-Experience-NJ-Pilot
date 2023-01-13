@@ -61,8 +61,8 @@ public class RecentEmployersController {
 
         if (!savedEmployerData) {
             logger.error(
-                    "Saving Recent Employer Response failed for claimant id {}, returning an empty"
-                            + " array to client",
+                    "Saving Recent Employer Response failed for claimant IdpId {}, returning an"
+                            + " empty array to client",
                     claimantIdpId);
             return new ArrayList<WagePotentialResponseEmployer>();
         }
@@ -72,7 +72,8 @@ public class RecentEmployersController {
                 recentEmployerResponse.getWagePotentialMonLookupResponseEmployerDtos();
         if (employerList == null) {
             logger.info(
-                    "No employer list for claimid {} but ssn was found correctly", claimantIdpId);
+                    "No employer list for claimant IdpId {} but ssn was found correctly",
+                    claimantIdpId);
             return new ArrayList<WagePotentialResponseEmployer>();
         }
 

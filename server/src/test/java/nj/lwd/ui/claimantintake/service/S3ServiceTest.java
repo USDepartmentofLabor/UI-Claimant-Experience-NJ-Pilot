@@ -87,14 +87,14 @@ class S3ServiceTest {
     }
 
     @Test
-    void uploadWorksWithRecentEMployersDto() throws Exception {
+    void uploadWorksWithRecentEmployersDto() throws Exception {
         when(s3Client.utilities().getUrl(any(GetUrlRequest.class)))
                 .thenReturn(new URL("http://url-to-uploaded-object"));
         RecentEmployersResponse validRecentEmployer =
                 new RecentEmployersResponse(
                         "0", false, false, 123456789, 1000, "123456789", 1, null, 1234.50);
 
-        // when: upload is called
+        // when: upload is called with Employer object
         s3Service.upload("some-bucket", "my-key", validRecentEmployer, "some-kms-key");
 
         // then: the s3 client makes a put object requests

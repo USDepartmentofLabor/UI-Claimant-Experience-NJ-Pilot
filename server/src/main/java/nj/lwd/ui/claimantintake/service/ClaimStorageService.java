@@ -163,7 +163,6 @@ public class ClaimStorageService {
         Claimant claimant = claimantStorageService.getOrCreateClaimant(claimantIdpId);
         Optional<Claim> existingClaim = claimant.getActivePartialClaim();
 
-        // do we want to add an event for saving the wgpm data? --DELETE comment
         logger.info("Attempting to save recent employer data for claimant {}", claimant.getId());
         if (existingClaim.isPresent()) {
 
