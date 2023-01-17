@@ -1,17 +1,6 @@
-import { renderHook, waitFor } from '@testing-library/react'
-import { useSavePartialClaim } from './useSavePartialClaim'
+import { act, renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { Claim } from 'types/Claim'
-
-jest.mock('utils/http/serverHttpClient', () => ({
-  post: jest.fn().mockImplementation((url, claim: Claim) => {
-    if (claim.email === 'good data') {
-      return true
-    } else {
-      throw new Error('bad data')
-    }
-  }),
-}))
+import { useValidateSSN } from './useValidateSsn'
 
 const wrapper = ({ children }: any) => {
   return (
@@ -21,11 +10,14 @@ const wrapper = ({ children }: any) => {
   )
 }
 
-describe('use save partial claim', () => {
-  it('calls the onSuccess callback if the partial claim was successfully saved', async () => {
-    const hook = renderHook(() => useSavePartialClaim(), { wrapper })
-    hook.result.current.mutate({ email: 'good data' })
-
-    await waitFor(() => expect(hook.result.current.isSuccess).toEqual(true))
+describe('use validateSSN', () => {
+  it('calls the onSuccess callback if the ssn was validated', async () => {
+    const hook = renderHook(() => useValidateSSN(), { wrapper })
+    await act(async () => {
+      hook.result.current.mutate('123-12-1234')
+    })
+    await waitFor(() => expect(hook.result.current.isSuccess).toEqual(true), {
+      timeout: 6000,
+    })
   })
 })

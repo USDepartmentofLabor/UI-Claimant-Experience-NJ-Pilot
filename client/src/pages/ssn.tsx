@@ -15,19 +15,28 @@ import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLay
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { SsnInput } from 'types/claimantInput'
 import { IntakeAppButtons } from 'components/IntakeAppButtons/IntakeAppButtons'
-import { Button } from '@trussworks/react-uswds'
+import { Button, Tooltip } from '@trussworks/react-uswds'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
 import { Routes } from 'constants/routes'
 import styles from 'styles/pages/screener.module.scss'
 import { i18n_ssn } from 'i18n/i18n'
 import { getFormattedSsn } from 'utils/ssn/format'
-
+import { useValidateSSN } from 'queries/useValidateSsn'
+const validateSSN = useValidateSSN()
 const Ssn: NextPageWithLayout = () => {
   const router = useRouter()
   const { t } = useTranslation('ssn')
-
   const { ssnInput, setSsn } = useContext(IntakeAppContext)
   const [showSsn, setShowSsn] = useState<boolean>(false)
+  const [disableButtons, setDisableButtons] = useState<boolean>(false)
+  const [hover, setHover] = useState(false)
+  const onHover = () => {
+    setHover(true)
+  }
+
+  const onLeave = () => {
+    setHover(false)
+  }
   const handleToggleSsn = () => {
     setShowSsn(!showSsn)
   }
@@ -66,17 +75,30 @@ const Ssn: NextPageWithLayout = () => {
         > = async () => {
           await router.push(Routes.HOME) // TODO: change to Nava file a claim page when url is available
         }
-        const validateSSN = () => {
-          //lock the continue and cancel buttons
-          //display loader message  using existing loader componenet above the navigation buttons
-          //TODO --add call to ssn verificaiton service and store response
-          //unlock buttons and turn off loader
-          //return boolean== ssn verification call response
-          return true
+
+        const lockButtonsAndVerifySSN = async () => {
+          if (ssnInput?.ssn) {
+            //lock the continue and cancel buttons
+            setDisableButtons(true)
+            //display loader message  using existing loader componenet above the navigation buttons
+
+            const validateSSNResult = await validateSSN.mutateAsync(
+              ssnInput?.ssn
+            )
+            // TODO -Should be changed to validateSSNResult.status ===200 when using an http call
+            const ssnIsValid = !validateSSNResult.data == null
+            setDisableButtons(false)
+            //unlock buttons and turn off loader
+            return ssnIsValid
+          }
+          return false
         }
-        const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
-          const isValidSSN = validateSSN()
-          if (isValidSSN) {
+        const handleClickNext: MouseEventHandler<
+          HTMLButtonElement
+        > = async () => {
+          //if isValid here? for basic schema check? TODO
+          const isVerifiedSSN = await lockButtonsAndVerifySSN()
+          if (isVerifiedSSN) {
             submitForm().then(async () => {
               if (validRef.current) {
                 await router.push(Routes.SCREENER)
@@ -113,20 +135,31 @@ const Ssn: NextPageWithLayout = () => {
               </div>
             </div>
             <IntakeAppButtons>
-              <Button
-                type="button"
-                disabled={isSubmitting}
-                onClick={handleClickCancel}
-                data-testid="back-button"
-                className="usa-button usa-button--outline width-auto"
+              <Tooltip
+                label={'we loading bruh'}
+                position={'top'}
+                style={hover ? { visibility: 'visible' } : {}}
               >
-                {t('pagination.previous')}
-              </Button>
+                <Button
+                  type="button"
+                  disabled={isSubmitting || disableButtons}
+                  onClick={handleClickCancel}
+                  data-testid="back-button"
+                  className="usa-button usa-button--outline width-auto"
+                  onMouseEnter={onHover}
+                  onMouseLeave={onLeave}
+                >
+                  {t('pagination.previous')}
+                </Button>
+              </Tooltip>
               <Button
                 type="submit"
                 onClick={handleClickNext}
+                disabled={isSubmitting || disableButtons}
                 data-testid="next-button"
                 className="width-auto"
+                onMouseEnter={onHover}
+                onMouseLeave={onLeave}
               >
                 {t('pagination.next')}
               </Button>

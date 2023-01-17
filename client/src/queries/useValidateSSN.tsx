@@ -1,17 +1,17 @@
 import { useMutation } from 'react-query'
 // import serverHttpclient from 'utils/http/serverHttpClient'
 // import { AxiosError, AxiosResponse } from 'axios'
-/**
- * todo make
- */
+
 // TODO - remove this delay function when adding api call
 const delay = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-const validateSSN = (ssn: string) => {
+const validateSSN = async (ssn: string) => {
   console.log('pretending to validate ssn ', ssn)
-  return delay(5000)
+  await delay(5000)
+  console.log('returning')
+  return { data: 'success', status: 200 }
   // TODO - send post here instead
 }
 
@@ -24,4 +24,5 @@ export const useValidateSSN = () => {
       console.log('SSN through error')
     },
   })
+  // return validateSSN()
 }
