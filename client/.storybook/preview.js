@@ -23,7 +23,7 @@ const PageStoryWrapper = (props) => {
       lastName: 'McFakerson',
       birthdate: '1990-01-01',
       email: 'fakey@fakedomain.com',
-      phone: '555-555-5555',
+      phone: '5555555555',
     },
     expires: expirationDate.toString(),
   }
