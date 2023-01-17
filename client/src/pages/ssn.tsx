@@ -66,13 +66,23 @@ const Ssn: NextPageWithLayout = () => {
         > = async () => {
           await router.push(Routes.HOME) // TODO: change to Nava file a claim page when url is available
         }
-
+        const validateSSN = () => {
+          //lock the continue and cancel buttons
+          //display loader message  using existing loader componenet above the navigation buttons
+          //TODO --add call to ssn verificaiton service and store response
+          //unlock buttons and turn off loader
+          //return boolean== ssn verification call response
+          return true
+        }
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = () => {
-          submitForm().then(async () => {
-            if (validRef.current) {
-              await router.push(Routes.SCREENER)
-            }
-          })
+          const isValidSSN = validateSSN()
+          if (isValidSSN) {
+            submitForm().then(async () => {
+              if (validRef.current) {
+                await router.push(Routes.SCREENER)
+              }
+            })
+          }
         }
 
         const showErrorSummary =
