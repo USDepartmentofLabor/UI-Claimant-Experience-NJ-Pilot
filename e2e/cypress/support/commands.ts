@@ -39,6 +39,7 @@
 
 import '@cypress-audit/lighthouse/commands'
 import '@cypress-audit/pa11y/commands'
+import '@testing-library/cypress/add-commands'
 import hkdf from '@panva/hkdf'
 import { EncryptJWT, JWTPayload } from 'jose'
 import Options = Cypress.Options
