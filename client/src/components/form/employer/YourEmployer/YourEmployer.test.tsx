@@ -10,7 +10,7 @@ export const validImportedEditEmployer: Employer = {
   employer_name: 'Lyft Inc.',
   is_imported: true,
   is_full_time: true,
-  is_employer: true,
+  worked_for_imported_employer_in_last_18mo: true,
   payments_received: [
     {
       pay_type: 'none',

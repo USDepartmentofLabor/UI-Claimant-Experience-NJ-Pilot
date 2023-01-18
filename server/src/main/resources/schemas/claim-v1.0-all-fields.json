@@ -277,6 +277,10 @@
         }
       ]
     },
+    "wgpm": {
+      "description": "The raw loops WGPM response",
+      "type": "object"
+    },
     "employer": {
       "$id": "/definitions/employer",
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -288,7 +292,7 @@
           "type": "boolean",
           "default": false
         },
-        "worked_for_imported_employee_in_last_18mo": {
+        "worked_for_imported_employer_in_last_18mo": {
           "description": "Claimant confirmed that they worked for this imported employee in the last 18 months",
           "type": "boolean",
           "if": {
@@ -390,6 +394,21 @@
           },
           "then": {
             "required": ["alternate_employer_name"]
+          }
+        },
+        "imported_address": {
+          "description": "The raw, unparsed address from LOOPS wgpm call for this employer",
+          "type": "object",
+          "if": {
+            "properties": {
+              "is_imported": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["imported_address"]
           }
         },
         "employer_address": {

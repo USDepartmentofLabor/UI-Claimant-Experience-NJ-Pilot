@@ -50,7 +50,8 @@ public class ExternalClaimFormatterService {
                 }
                 claimPayload.put(entry.getKey(), list);
 
-            } else if (!(entry.getValue() instanceof String)
+            } else if (entry.getValue() != null
+                    && !(entry.getValue() instanceof String)
                     && !(entry.getValue() instanceof Boolean)) {
                 claimPayload.put(entry.getKey(), removeLocalValuesFromMap(entry.getValue()));
             }
