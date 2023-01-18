@@ -1,4 +1,5 @@
-import { useMutation } from 'react-query'
+// TODO -uncomment these when adding api call
+//import { useMutation } from 'react-query'
 // import serverHttpclient from 'utils/http/serverHttpClient'
 // import { AxiosError, AxiosResponse } from 'axios'
 
@@ -8,21 +9,25 @@ const delay = (ms: number) => {
 }
 
 const validateSSN = async (ssn: string) => {
-  console.log('pretending to validate ssn ', ssn)
+  console.log('simulating validate ssn api call', ssn)
   await delay(5000)
-  console.log('returning')
   return { data: 'success', status: 200 }
   // TODO - send post here instead
 }
 
 export const useValidateSSN = () => {
-  return useMutation((ssnValue: string) => validateSSN(ssnValue), {
-    onSuccess: () => {
-      console.log('valid ssn')
+  // TODO - Uncomment when sending API request
+  //   return useMutation((ssnValue: string) => validateSSN(ssnValue), {
+  //     onSuccess: () => {
+  //       console.log('valid ssn')
+  //     },
+  //     onError: () => {
+  //       console.log('SSN through error')
+  //     },
+  //   })
+  return {
+    mutateAsync: async (ssn: string) => {
+      return await validateSSN(ssn)
     },
-    onError: () => {
-      console.log('SSN through error')
-    },
-  })
-  // return validateSSN()
+  }
 }

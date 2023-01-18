@@ -15,13 +15,14 @@ import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLay
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { SsnInput } from 'types/claimantInput'
 import { IntakeAppButtons } from 'components/IntakeAppButtons/IntakeAppButtons'
-import { Button, Tooltip } from '@trussworks/react-uswds'
+import { Button } from '@trussworks/react-uswds'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
 import { Routes } from 'constants/routes'
 import styles from 'styles/pages/screener.module.scss'
 import { i18n_ssn } from 'i18n/i18n'
 import { getFormattedSsn } from 'utils/ssn/format'
-import { useValidateSSN } from 'queries/useValidateSsn'
+import { useValidateSSN } from 'queries/useValidateSSN'
+import PageLoader from 'components/loaders/PageLoader'
 const validateSSN = useValidateSSN()
 const Ssn: NextPageWithLayout = () => {
   const router = useRouter()
@@ -29,14 +30,7 @@ const Ssn: NextPageWithLayout = () => {
   const { ssnInput, setSsn } = useContext(IntakeAppContext)
   const [showSsn, setShowSsn] = useState<boolean>(false)
   const [disableButtons, setDisableButtons] = useState<boolean>(false)
-  const [hover, setHover] = useState(false)
-  const onHover = () => {
-    setHover(true)
-  }
 
-  const onLeave = () => {
-    setHover(false)
-  }
   const handleToggleSsn = () => {
     setShowSsn(!showSsn)
   }
@@ -78,17 +72,13 @@ const Ssn: NextPageWithLayout = () => {
 
         const lockButtonsAndVerifySSN = async () => {
           if (ssnInput?.ssn) {
-            //lock the continue and cancel buttons
             setDisableButtons(true)
-            //display loader message  using existing loader componenet above the navigation buttons
-
             const validateSSNResult = await validateSSN.mutateAsync(
               ssnInput?.ssn
             )
-            // TODO -Should be changed to validateSSNResult.status ===200 when using an http call
-            const ssnIsValid = !validateSSNResult.data == null
+
+            const ssnIsValid = validateSSNResult.status === 200
             setDisableButtons(false)
-            //unlock buttons and turn off loader
             return ssnIsValid
           }
           return false
@@ -109,6 +99,9 @@ const Ssn: NextPageWithLayout = () => {
 
         const showErrorSummary =
           submitCount > 0 && Object.keys(errors).length > 0
+        if (disableButtons) {
+          return <PageLoader />
+        }
         return (
           <Form className={styles.screenerForm}>
             {showErrorSummary && (
@@ -135,31 +128,21 @@ const Ssn: NextPageWithLayout = () => {
               </div>
             </div>
             <IntakeAppButtons>
-              <Tooltip
-                label={'we loading bruh'}
-                position={'top'}
-                style={hover ? { visibility: 'visible' } : {}}
+              <Button
+                type="button"
+                disabled={isSubmitting || disableButtons}
+                onClick={handleClickCancel}
+                data-testid="back-button"
+                className="usa-button usa-button--outline width-auto"
               >
-                <Button
-                  type="button"
-                  disabled={isSubmitting || disableButtons}
-                  onClick={handleClickCancel}
-                  data-testid="back-button"
-                  className="usa-button usa-button--outline width-auto"
-                  onMouseEnter={onHover}
-                  onMouseLeave={onLeave}
-                >
-                  {t('pagination.previous')}
-                </Button>
-              </Tooltip>
+                {t('pagination.previous')}
+              </Button>
               <Button
                 type="submit"
                 onClick={handleClickNext}
                 disabled={isSubmitting || disableButtons}
                 data-testid="next-button"
                 className="width-auto"
-                onMouseEnter={onHover}
-                onMouseLeave={onLeave}
               >
                 {t('pagination.next')}
               </Button>
