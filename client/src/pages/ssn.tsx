@@ -86,7 +86,6 @@ const Ssn: NextPageWithLayout = () => {
         const handleClickNext: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
-          //if isValid here? for basic schema check? TODO
           const isVerifiedSSN = await lockButtonsAndVerifySSN()
           if (isVerifiedSSN) {
             submitForm().then(async () => {
