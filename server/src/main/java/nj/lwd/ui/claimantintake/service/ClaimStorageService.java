@@ -172,8 +172,8 @@ public class ClaimStorageService {
                 s3Service.upload(claimsBucket, s3Key, recentEmployers, this.claimsBucketKmsKey);
 
                 logger.info(
-                        "Successfully saved recent employer data for {} for claimant {} at {} in"
-                                + " S3",
+                        "Successfully saved recent employer data for claim {} for claimant {} at {}"
+                                + " in S3",
                         claim.getId(),
                         claimant.getId(),
                         s3Key);
