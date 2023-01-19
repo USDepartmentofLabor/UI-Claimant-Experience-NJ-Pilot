@@ -8,14 +8,18 @@ import {
 } from 'contexts/IntakeAppContext'
 import { Routes } from 'constants/routes'
 
-// import { useValidateSSN } from 'queries/useValidateSSN'
+import { useValidateSSN } from 'queries/useValidateSSN'
 import { SsnInput } from 'types/claimantInput'
+
+jest.mock('queries/useValidateSSN')
+const mockUseValidateSSN = useValidateSSN as jest.Mock
 const mockPush = jest.fn(async () => true)
 jest.mock('next/router', () => ({
   useRouter: () => ({
     push: mockPush,
   }),
 }))
+
 // const mockSuccessfulSSNVerify=()=>{
 //   const mockMutateAsync = jest.fn()
 
@@ -37,6 +41,7 @@ jest.mock('next/router', () => ({
 // }
 
 // const setUpHook =  (status: number) => {
+
 //   const mockMutateAsync = jest.fn()
 //   const mockUseValidateSSN = jest.fn()
 //   mockMutateAsync.mockImplementation(async () => ({
@@ -53,25 +58,26 @@ jest.mock('next/router', () => ({
 //   return  mockMutateAsync
 // }
 // const setUpSSNMock=()=>{
+// jest.mock('queries/useValidateSSN')
 // const mockUseValidateSSN = useValidateSSN as jest.Mock
 // const mockUseValidateMutateAsync= jest.fn(async() =>{
 //     return {status:200}})
-// jest.mock('queries/useValidateSSN',() => jest.fn()
-//   .mockImplementationOnce(() => ({
-//     mutateAsync: mockUseValidateMutateAsync
-//   })))
+// // jest.mock('queries/useValidateSSN',() => jest.fn()
+// // mockUseValidateSSN.mockImplementationOnce(() => ({
+// //     mutateAsync: mockUseValidateMutateAsync
+// //   })))
 
 //   // const mockUseValidateMutateAsync= jest.fn(async() =>{
 //   //   return {status:200}})
 
 // console.log(typeof(mockUseValidateSSN))
-
+// }
 // // mockUseValidateSSN.mockImplementation(() => ({
 // //   mutateAsync: mockUseValidateMutateAsync
 // // }))
 
-// return mockUseValidateMutateAsync
-// }
+// // return mockUseValidateMutateAsync
+// // }
 describe('SSN page', () => {
   it('renders without error', () => {
     render(<Ssn />)
@@ -125,16 +131,24 @@ describe('SSN page', () => {
       </IntakeAppContext.Provider>
     )
 
-    // const mockUseValidateSSN= setUpHook(200)
-    // const mockUseValidateSSN= setUpSSNMock()
+    const mockMutateAsync = jest.fn()
+    // const mockUseValidateSSN = jest.fn()
+    mockMutateAsync.mockImplementation(async (ssnValue: string) => ({
+      status: 200,
+      ssn: ssnValue,
+    }))
+    mockUseValidateSSN.mockImplementation(() => ({
+      mutateAsync: (ssn: string) => mockMutateAsync(ssn),
+    }))
     await user.click(screen.getByRole('button', { name: /next/i }))
-    // expect(mockUseValidateSSN).toHaveBeenCalledTimes(1)
+
     // expect(mockUseValidateSSN).toHaveBeenCalledWith({ssn:ssnValue})
     //fails is not properly mocked
     await waitFor(
       () => expect(mockPush).toHaveBeenCalledWith(Routes.SCREENER),
       { timeout: 6000 }
     )
+    expect(mockMutateAsync).toHaveBeenCalledTimes(1)
   })
 
   it('Goes to the home page when cancel button is clicked', async () => {
