@@ -32,15 +32,18 @@ jest.mock('next/router', () => ({
 describe('the Edit Employer page', () => {
   const fullTimeEmployer = {
     ...validImportedEditEmployer,
-    ...{ is_employer: true, is_full_time: true },
+    ...{ worked_for_imported_employer_in_last_18mo: true, is_full_time: true },
   }
   const partTimeEmployer = {
     ...validImportedEditEmployer,
-    ...{ is_employer: true, is_full_time: false },
+    ...{ worked_for_imported_employer_in_last_18mo: true, is_full_time: false },
   }
   const notAnEmployer = {
     ...validImportedEditEmployer,
-    ...{ is_employer: false, is_full_time: false },
+    ...{
+      worked_for_imported_employer_in_last_18mo: false,
+      is_full_time: false,
+    },
   }
 
   beforeEach(() => {

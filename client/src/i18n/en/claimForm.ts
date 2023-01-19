@@ -68,12 +68,14 @@ const claimForm = {
     heading: 'Recent employers',
     preamble:
       'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount. Please confirm our records of your employers below.',
+    no_employers_on_record:
+      'We do not have recent employers on file for you. You will be able to manually add employment history to your application on the next page.',
     question:
       'In the last 18 months (since {{date}}), did you work at the following employers?',
     work_at: 'Did you work at {{employer}}',
     confirm_employer:
       'Are you sure? Check your pay stubs or W2 to confirm your employer name.',
-    is_employer: {
+    worked_for_imported_employer_in_last_18mo: {
       errors: {
         required:
           'Please say whether you were employed by this employer within the last 18 months',
@@ -207,6 +209,12 @@ const claimForm = {
   employers: {
     preamble:
       'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount.',
+    verified_fields: {
+      employer_name: 'Employer name',
+      employer_address: 'Address',
+      employer_phone: 'Phone number',
+      fein: 'FEIN',
+    },
     separation: {
       heading: 'Change in employment',
       info_alert: {

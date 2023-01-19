@@ -80,10 +80,21 @@ export const Review: NextPageWithLayout = () => {
                 <ul>
                   {saveCompleteClaim.isError &&
                     saveCompleteClaim.error.response && (
-                      <li>{saveCompleteClaim.error.response.data}</li>
+                      <li>
+                        {typeof saveCompleteClaim.error.response.data ===
+                        'object'
+                          ? JSON.stringify(
+                              saveCompleteClaim.error.response.data
+                            )
+                          : saveCompleteClaim.error.response.data}
+                      </li>
                     )}
                   {submitClaim.isError && submitClaim.error.response && (
-                    <li>{submitClaim.error.response.data}</li>
+                    <li>
+                      {typeof submitClaim.error.response.data === 'object'
+                        ? JSON.stringify(submitClaim.error.response.data)
+                        : submitClaim.error.response.data}
+                    </li>
                   )}
                 </ul>
               </Alert>

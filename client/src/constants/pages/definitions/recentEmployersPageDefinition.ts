@@ -4,32 +4,23 @@ import { Routes } from 'constants/routes'
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 
 const validationSchema = object().shape({
-  employers: array().of(
+  recent_employers: array().of(
     object().shape({
-      is_imported: boolean(),
-      is_employer: boolean().when('is_imported', {
-        is: true,
-        then: boolean().required(
-          i18n_claimForm.t('recent_employers.is_employer.errors.required')
-        ),
-      }),
+      worked_for_imported_employer_in_last_18mo: boolean().required(
+        i18n_claimForm.t(
+          'recent_employers.worked_for_imported_employer_in_last_18mo.errors.required'
+        )
+      ),
     })
   ),
 })
 
-const previousPage = () => {
-  return Routes.CLAIM.DEMOGRAPHICS
-}
-
-const nextPage = () => {
-  return Routes.CLAIM.IDENTITY
-}
-
+// This page definition is only useful for claim progress.
+// These initial values are not actually used.
+// A broader decoupling from PageDefinitions may result in this being able to be removed
 export const RecentEmployersPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('recent_employers.heading'),
   path: Routes.CLAIM.RECENT_EMPLOYERS,
-  initialValues: {},
+  initialValues: {}, // This is not used as the page is a custom formik instance
   validationSchema: validationSchema,
-  previousPage: previousPage,
-  nextPage: nextPage,
 }

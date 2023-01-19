@@ -19,8 +19,6 @@ export type PageDefinition = {
   path: string
   initialValues: ClaimantInput
   validationSchema: AnySchema
-  previousPage?: (values: ClaimantInput) => string
-  nextPage?: (values: ClaimantInput) => string
 }
 
 export const pageDefinitions: PageDefinition[] = [

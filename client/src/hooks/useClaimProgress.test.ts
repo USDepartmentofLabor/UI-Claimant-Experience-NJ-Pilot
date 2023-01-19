@@ -3,20 +3,22 @@ import { ClaimantInput, Employer } from 'types/claimantInput'
 
 jest.mock('next-auth/react')
 import React from 'react'
-import { isEmployerArrayValid, useClaimProgress } from 'hooks/useClaimProgress'
+import {
+  areImportedEmployersValid,
+  useClaimProgress,
+} from 'hooks/useClaimProgress'
 import { Routes } from 'constants/routes'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
-import { RecentEmployersPageDefinition } from 'constants/pages/definitions/recentEmployersPageDefinition'
 
 const mockUseContext = jest.fn()
 
 React.useContext = mockUseContext
 
-const employer: Employer = {
+const importedEmployer: Employer = {
   employer_name: 'Lyft Inc.',
   is_imported: true,
   is_full_time: true,
-  is_employer: true,
+  worked_for_imported_employer_in_last_18mo: true,
   payments_received: [
     {
       pay_type: 'none',
@@ -24,15 +26,15 @@ const employer: Employer = {
   ],
   LOCAL_pay_types: ['none'],
   employment_start_date: '2021-12-12',
-  employer_address: {
-    address: '1 John Fitch Plaza',
-    address2: undefined,
-    address3: undefined,
-    city: 'Trenton',
-    state: 'NJ',
-    zipcode: '11111',
+  imported_address: {
+    employerAddressLine1: '1 John Fitch Plaza',
+    employerAddressLine2: ' Trenton NJ',
+    employerAddressLine3: null,
+    employerAddressLine4: null,
+    employerAddressLine5: null,
+    employerAddressZip: '11111',
   },
-  employer_phone: { number: '555-555-5555', sms: false },
+  employer_phone: { number: '555-555-5555' },
   worked_at_employer_address: true,
   is_employer_phone_accurate: true,
   self_employed: false,
@@ -93,29 +95,30 @@ describe('Claim progress hook', () => {
     expect(result.current.continuePath).toEqual(Routes.HOME)
   })
 
-  describe('isEmployerArrayValid', () => {
+  describe('areImportedEmployersValid', () => {
     it('is invalid if the recent-employer page is not valid', () => {
       const values = {
         employers: [
           {
-            ...employer,
-            ...{ is_employer: undefined, is_imported: true },
+            ...importedEmployer,
+            ...{
+              worked_for_imported_employer_in_last_18mo: undefined,
+              is_imported: true,
+            },
           },
         ],
       }
 
-      expect(
-        isEmployerArrayValid(RecentEmployersPageDefinition, values)
-      ).toBeFalsy()
+      expect(areImportedEmployersValid(values)).toBeFalsy()
     })
 
     it('is invalid if there is an employer that has not been filled out yet', () => {
       const values = {
         employers: [
           {
-            ...employer,
+            ...importedEmployer,
             ...{
-              is_employer: undefined,
+              worked_for_imported_employer_in_last_18mo: undefined,
               is_imported: true,
               employer_name: undefined,
             },
@@ -123,18 +126,16 @@ describe('Claim progress hook', () => {
         ],
       }
 
-      expect(
-        isEmployerArrayValid(RecentEmployersPageDefinition, values)
-      ).toBeFalsy()
+      expect(areImportedEmployersValid(values)).toBeFalsy()
     })
 
     it('is valid if none of the employers in the employer array are actually employers', () => {
       const values = {
         employers: [
           {
-            ...employer,
+            ...importedEmployer,
             ...{
-              is_employer: false,
+              worked_for_imported_employer_in_last_18mo: false,
               is_imported: true,
               employer_name: undefined,
             },
@@ -142,24 +143,23 @@ describe('Claim progress hook', () => {
         ],
       }
 
-      expect(
-        isEmployerArrayValid(RecentEmployersPageDefinition, values)
-      ).toBeTruthy()
+      expect(areImportedEmployersValid(values)).toBeTruthy()
     })
 
     it('is valid if all employers in the array are filled out correctly', () => {
       const values = {
         employers: [
           {
-            ...employer,
-            ...{ is_employer: true, is_imported: true },
+            ...importedEmployer,
+            ...{
+              worked_for_imported_employer_in_last_18mo: true,
+              is_imported: true,
+            },
           },
         ],
       }
 
-      expect(
-        isEmployerArrayValid(RecentEmployersPageDefinition, values)
-      ).toBeTruthy()
+      expect(areImportedEmployersValid(values)).toBeTruthy()
     })
   })
 })
