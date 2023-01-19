@@ -1159,7 +1159,7 @@
         "properties": {
           "interpreter_required": {
             "type": "string",
-            "enum": ["interpreter", "tty"]
+            "enum": ["interpreter"]
           }
         }
       },
@@ -1172,7 +1172,7 @@
         "properties": {
           "interpreter_required": {
             "type": "string",
-            "enum": ["interpreter", "tty"]
+            "enum": ["interpreter"]
           },
           "preferred_language": {
             "type": "string",
