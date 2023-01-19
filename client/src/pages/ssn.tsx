@@ -71,23 +71,28 @@ const Ssn: NextPageWithLayout = () => {
         }
 
         const lockButtonsAndVerifySSN = async () => {
+          console.log('locking the buttons')
           if (ssnInput?.ssn) {
+            console.log('ssn is not null')
             setDisableButtons(true)
             const validateSSNResult = await validateSSN.mutateAsync(
               ssnInput?.ssn
             )
-
-            const ssnIsValid = validateSSNResult.status === 200
+            console.log('mutateasync called')
             setDisableButtons(false)
-            return ssnIsValid
+            return validateSSNResult.status === 200
           }
+          console.log('ssn is null')
           return false
         }
         const handleClickNext: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
+          console.log('in click next')
           const isVerifiedSSN = await lockButtonsAndVerifySSN()
+          console.log('checking if ssn is verified')
           if (isVerifiedSSN) {
+            console.log('should send push')
             submitForm().then(async () => {
               if (validRef.current) {
                 await router.push(Routes.SCREENER)
