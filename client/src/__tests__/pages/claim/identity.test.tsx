@@ -13,20 +13,33 @@ jest.mock('queries/useGetPartialClaim')
 jest.mock('next/router')
 
 describe('Identity Information Page', () => {
-  const birthdate = '1980-07-31'
-  const initialValues = {
-    ...IdentityPageDefinition.initialValues,
-    birthdate,
+  const makeInitialValues = (
+    birthDate: string | undefined,
+    ssn: string | undefined
+  ) => {
+    return {
+      ...IdentityPageDefinition.initialValues,
+      birthdate: birthDate,
+      ssn: ssn,
+    }
   }
+
+  const mockClaimantInput = (
+    birthDate: string | undefined,
+    ssn: string | undefined
+  ) => {
+    const initialValues = makeInitialValues(birthDate, ssn)
+
+    ;(useInitialValues as jest.Mock).mockImplementation(
+      (values: ClaimantInput) => ({
+        initialValues: { ...values, ...initialValues },
+        isLoading: false,
+      })
+    )
+  }
+  const birthdate = '1980-07-31'
   const displayedBirthdate = 'July 31, 1980'
-
-  ;(useInitialValues as jest.Mock).mockImplementation(
-    (values: ClaimantInput) => ({
-      initialValues: { ...values, ...initialValues },
-      isLoading: false,
-    })
-  )
-
+  mockClaimantInput(birthdate, undefined)
   it('renders properly', () => {
     render(<Identity />)
 
@@ -176,7 +189,40 @@ describe('Identity Information Page', () => {
       expect(alienRegistrationNumberField).not.toBeInTheDocument()
     })
   })
+  describe('verified fields', () => {
+    it('does not show ssn', () => {
+      render(<Identity />)
+      const verifiedFieldsSection = screen.getByTestId('verified-fields')
+      const verifiedFields = within(verifiedFieldsSection).getAllByRole(
+        'listitem'
+      )
+      const birthDate = within(verifiedFieldsSection).getByText(
+        'birthdate.label'
+      )
+      expect(verifiedFields.length).toBe(1)
+      expect(birthDate).toBeInTheDocument()
+    })
 
+    it('shows ssn', () => {
+      mockClaimantInput(birthdate, '123-12-1234')
+      render(<Identity />)
+      const verifiedFieldsSection = screen.getByTestId('verified-fields')
+      const verifiedFields = within(verifiedFieldsSection).getAllByRole(
+        'listitem'
+      )
+      const ssn = within(verifiedFieldsSection).getByText('123-12-1234')
+      expect(verifiedFields.length).toBe(2)
+      expect(ssn).toBeInTheDocument()
+    })
+    it('does not show verified fields box', () => {
+      mockClaimantInput(undefined, undefined)
+      render(<Identity />)
+      const verifiedFieldsHeading = screen.queryByText(
+        'verified_fields.default_heading'
+      )
+      expect(verifiedFieldsHeading).not.toBeInTheDocument()
+    })
+  })
   describe('page layout', () => {
     it('uses the ClaimFormLayout', () => {
       const Page = Identity

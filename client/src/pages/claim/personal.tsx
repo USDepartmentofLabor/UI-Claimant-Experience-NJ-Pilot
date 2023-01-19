@@ -25,6 +25,24 @@ const previousPage = getPreviousPage(pageDefinition)
 
 const Personal: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
+  const getLegalName = (
+    first_name: string | undefined,
+    middle_initial: string | undefined,
+    last_name: string | undefined
+  ) => {
+    let legalName = ''
+    const nameList = [first_name, middle_initial, last_name]
+    nameList.forEach((name) => {
+      if (name !== undefined) {
+        if (legalName !== '') {
+          legalName += ' '
+        }
+        legalName += name
+      }
+    })
+
+    return legalName
+  }
 
   return (
     <ClaimFormik<PersonalInput>
@@ -34,10 +52,14 @@ const Personal: NextPageWithLayout = () => {
       index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values }) => {
-        const legalName = `${values.claimant_name?.first_name} ${values.claimant_name?.middle_initial} ${values.claimant_name?.last_name}`
+        const legalName = getLegalName(
+          values.claimant_name?.first_name,
+          values.claimant_name?.middle_initial,
+          values.claimant_name?.last_name
+        )
         return (
           <>
-            {legalName && (
+            {legalName !== '' && (
               <VerifiedFields>
                 <VerifiedField
                   label={t('personal.verified_legal_name.label')}

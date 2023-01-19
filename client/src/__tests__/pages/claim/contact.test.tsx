@@ -3,6 +3,7 @@ import Contact from 'pages/claim/contact'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { useInitialValues } from 'hooks/useInitialValues'
+import { ClaimantInput } from 'types/claimantInput'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -11,19 +12,32 @@ jest.mock('queries/useGetPartialClaim')
 jest.mock('next/router')
 
 describe('Contact page', () => {
-  const initialValues = {
-    email: 'boy_who_lived@hogwarts.com',
-    claimant_phone: { number: '2028675309', sms: undefined },
-    alternate_phone: { number: '', sms: undefined },
-    interpreter_required: undefined,
-    preferred_language: undefined,
-    preferred_language_other: undefined,
+  const makeInitialValues = (
+    email: string | undefined,
+    claimant_phone: string | undefined
+  ) => {
+    return {
+      email: email,
+      claimant_phone: { number: claimant_phone, sms: undefined },
+      alternate_phone: { number: '', sms: undefined },
+      interpreter_required: undefined,
+      preferred_language: undefined,
+      preferred_language_other: undefined,
+    }
   }
-  ;(useInitialValues as jest.Mock).mockImplementation((values) => ({
-    initialValues: { ...values, ...initialValues },
-    isLoading: false,
-  }))
-
+  const mockClaimantInput = (
+    email: string | undefined,
+    claimant_phone: string | undefined
+  ) => {
+    const initialValues = makeInitialValues(email, claimant_phone)
+    ;(useInitialValues as jest.Mock).mockImplementation(
+      (values: ClaimantInput) => ({
+        initialValues: { ...values, ...initialValues },
+        isLoading: false,
+      })
+    )
+  }
+  mockClaimantInput('boy_who_lived@hogwarts.com', '2028675309')
   it('renders properly', () => {
     render(<Contact />)
 
@@ -134,15 +148,30 @@ describe('Contact page', () => {
     expect(screen.queryByLabelText('other_language')).toHaveTextContent('')
   })
 
-  it('Autofills the phone number value', async () => {
-    render(<Contact />)
-    const phone = screen.getByRole('textbox', {
-      name: 'claimant_phone.label',
+  describe('Verified fields', () => {
+    it('phone number field is shown', async () => {
+      mockClaimantInput(undefined, '2028675309')
+      render(<Contact />)
+
+      const phone = screen.getByRole('textbox', {
+        name: 'claimant_phone.label',
+      })
+      const email = screen.queryByText('email.label')
+
+      await expect(phone).toHaveValue('2028675309')
+      await expect(email).not.toBeInTheDocument()
     })
 
-    await expect(phone).toHaveValue('2028675309')
-  })
+    it('Verified box does not show if missing all data', async () => {
+      mockClaimantInput(undefined, undefined)
+      render(<Contact />)
 
+      const verifiedFieldsHeading = screen.queryByText(
+        'verified_fields.default_heading'
+      )
+      expect(verifiedFieldsHeading).not.toBeInTheDocument()
+    })
+  })
   describe('page layout', () => {
     it('uses the ClaimFormLayout', () => {
       const Page = Contact
