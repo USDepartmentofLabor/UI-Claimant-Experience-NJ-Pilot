@@ -2,27 +2,32 @@ import { ComponentProps, MouseEventHandler } from 'react'
 import { Button } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
-import { useFormikContext } from 'formik'
+import { FormikValues, useFormikContext } from 'formik'
 import { ClaimantInput } from 'types/claimantInput'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 
-type PreviousPageButtonProps = {
+type PreviousPageButtonProps<Values> = {
   previousPage: string
+  handleSave?: (values: Values) => Promise<void>
 } & Omit<ComponentProps<typeof Button>, 'children' | 'type'>
 
-export const BackButton = ({
+export const BackButton = <
+  Values extends FormikValues = Partial<ClaimantInput>
+>({
   previousPage,
   onClick,
   disabled,
+  handleSave,
   ...remainingButtonProps
-}: PreviousPageButtonProps) => {
+}: PreviousPageButtonProps<Values>) => {
   const router = useRouter()
   const { t } = useTranslation('claimForm')
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
-  const { values, isSubmitting } = useFormikContext<Partial<ClaimantInput>>()
+  const { values, isSubmitting } = useFormikContext<Values>()
 
   const handleGoBack: MouseEventHandler<HTMLButtonElement> = () => {
-    appendAndSaveClaimFormValues(values).then(async () => {
+    const saveFunction = handleSave ? handleSave : appendAndSaveClaimFormValues
+    saveFunction(values).then(async () => {
       await router.push(previousPage)
     })
   }

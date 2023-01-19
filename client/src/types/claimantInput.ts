@@ -35,9 +35,22 @@ export type EmployerInput = {
   employers?: Employer[]
 }
 
-export type Employer = {
+export type ImportedEmployerAddress = {
+  employerAddressLine1: string | null
+  employerAddressLine2: string | null
+  employerAddressLine3: string | null
+  employerAddressLine4: string | null
+  employerAddressLine5: string | null
+  employerAddressZip: string | null
+}
+
+export type ImportedEmployerFields = {
   is_imported?: boolean
-  is_employer?: boolean
+  imported_address?: ImportedEmployerAddress
+  worked_for_imported_employer_in_last_18mo?: boolean
+}
+
+export type Employer = ImportedEmployerFields & {
   employer_address?: EmployerAddressInput
   employer_phone?: PhoneInput
 

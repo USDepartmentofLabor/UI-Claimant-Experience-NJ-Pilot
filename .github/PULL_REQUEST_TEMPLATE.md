@@ -47,7 +47,6 @@
 - [ ] Created/modified automated tests
 - [ ] For any fields that have been edited in or removed from the claim form, corresponding edits have been made in the [json schema](https://github.com/newjersey/dol-ui-claimant-intake/blob/main/schemas/claim-v1.0.json) _and_ synced to the ["all-fields" schema](https://github.com/newjersey/dol-ui-claimant-intake/blob/main/schemas/claim-v1.0-all-fields.json)
 - [ ] For any fields _added_ to the claim form, naming convention was copied from the ["all-fields" schema](https://github.com/newjersey/dol-ui-claimant-intake/blob/main/schemas/claim-v1.0-all-fields.json)
-- [ ] For any edits to the json schema(s), corresponding updates were made to the [Schema fields spreadsheet](https://sonj.sharepoint.com/:x:/r/sites/DOLPublicUIClaimantPortal/Shared%20Documents/General/Schema%20Info/WIP%20Intake%20App%20Schema%20fields.xlsx?d=wd40d93c3565d4eb6aa7eb1a88f3d8bb0&csf=1&web=1&e=ZNi7Px)
 - [ ] Followed guidelines for [zero-downtime deploys](https://spring.io/blog/2016/05/31/zero-downtime-deployment-with-a-database) for any database schema changes
 
 #### Validated user-facing changes ([detailed instructions)](https://github.com/newjersey/dol-ui-claimant-intake/tree/main/docs/a11y-testing-instructions.md):

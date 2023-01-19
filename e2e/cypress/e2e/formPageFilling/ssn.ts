@@ -1,5 +1,5 @@
 const fillSsnField = (options) => {
-  cy.get('input[id="ssn"]').type(options.ssn)
+  cy.findByLabelText(/social security number/i).type(options.ssn)
 }
 
 export default fillSsnField

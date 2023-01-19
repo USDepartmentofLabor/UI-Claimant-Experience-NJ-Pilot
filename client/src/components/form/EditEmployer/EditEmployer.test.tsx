@@ -2,13 +2,25 @@ import { act, render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
 import { EditEmployer } from './EditEmployer'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
-import { Employer } from 'types/claimantInput'
+import { Employer, ImportedEmployerFields } from 'types/claimantInput'
 
-export const validImportedEditEmployer: Employer = {
-  employer_name: 'Lyft Inc.',
+const valueImportedEmployerFields: ImportedEmployerFields = {
   is_imported: true,
+  imported_address: {
+    employerAddressLine1: '1 John Fitch Plaza',
+    employerAddressLine2: 'Trenton NJ',
+    employerAddressLine3: null,
+    employerAddressLine4: null,
+    employerAddressLine5: null,
+    employerAddressZip: '11111',
+  },
+  worked_for_imported_employer_in_last_18mo: true,
+}
+
+export const validBaseEmployerFields: Employer = {
+  employer_name: 'Lyft Inc.',
   is_full_time: true,
-  is_employer: true,
+
   payments_received: [
     {
       pay_type: 'none',
@@ -16,14 +28,6 @@ export const validImportedEditEmployer: Employer = {
   ],
   LOCAL_pay_types: ['none'],
   employment_start_date: '2021-12-12',
-  employer_address: {
-    address: '1 John Fitch Plaza',
-    address2: undefined,
-    address3: undefined,
-    city: 'Trenton',
-    state: 'NJ',
-    zipcode: '11111',
-  },
   employer_phone: { number: '555-555-5555', sms: false },
   worked_at_employer_address: true,
   is_employer_phone_accurate: true,
@@ -35,9 +39,22 @@ export const validImportedEditEmployer: Employer = {
   employment_last_date: '2022-12-03',
 }
 
+export const validImportedEditEmployer: Employer = {
+  ...validBaseEmployerFields,
+  ...valueImportedEmployerFields,
+}
+
 const validManuallyAddedEmployer: Employer = {
-  ...validImportedEditEmployer,
+  ...validBaseEmployerFields,
   is_imported: false,
+  employer_address: {
+    address: '1 John Fitch Plaza',
+    address2: undefined,
+    address3: undefined,
+    city: 'Trenton',
+    state: 'NJ',
+    zipcode: '11111',
+  },
 }
 
 describe('Edit Employer Component', () => {
@@ -50,7 +67,7 @@ describe('Edit Employer Component', () => {
       )
     )
 
-    const heading = screen.getByText(/Lyft Inc./i)
+    const heading = screen.getByText('your_employer.heading')
     const fullTimeQuestion = screen.getByRole('radio', {
       name: 'your_employer.is_full_time.options.full_time',
     })

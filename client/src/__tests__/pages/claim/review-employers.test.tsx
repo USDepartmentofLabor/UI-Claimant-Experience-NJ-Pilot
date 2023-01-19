@@ -45,7 +45,7 @@ const importedNonEmployer = (index: number) => ({
   ...EMPLOYER_SKELETON,
   ...{
     employer_name: `importedNonEmployer${index}`,
-    is_employer: false,
+    worked_for_imported_employer_in_last_18mo: false,
     is_imported: true,
   },
 })
@@ -53,7 +53,7 @@ const importedInvalidEmployer = (index: number) => ({
   ...EMPLOYER_SKELETON,
   ...{
     employer_name: `importedInvalidEmployer${index}`,
-    is_employer: true,
+    worked_for_imported_employer_in_last_18mo: true,
     is_imported: true,
   },
 })
@@ -61,7 +61,7 @@ const importedValidEmployer = (index: number) => ({
   ...validImportedEditEmployer,
   ...{
     employer_name: `importedValidEmployer${index}`,
-    is_employer: true,
+    worked_for_imported_employer_in_last_18mo: true,
     is_imported: true,
   },
 })
@@ -69,7 +69,7 @@ const nonImportedInvalidEmployer = (index: number) => ({
   ...EMPLOYER_SKELETON,
   ...{
     employer_name: `nonImportedInvalidEmployer${index}`,
-    is_employer: true,
+    worked_for_imported_employer_in_last_18mo: true,
     is_imported: false,
   },
 })
@@ -77,7 +77,7 @@ const nonImportedValidEmployer = (index: number) => ({
   ...validImportedEditEmployer,
   ...{
     employer_name: `nonImportedValidEmployer${index}`,
-    is_employer: true,
+    worked_for_imported_employer_in_last_18mo: true,
     is_imported: false,
   },
 })
