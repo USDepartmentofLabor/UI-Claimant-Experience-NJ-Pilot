@@ -7,7 +7,7 @@ set -eu
 
 container_name=$1
 shift
-timeout=$1
+timeout=$2
 
 default_timeout=120
 if [ -z "${timeout}" ]; then
