@@ -5,23 +5,15 @@
 
 set -eu
 
-container_name=$1
-timeout=$2
-
-default_timeout=120
-if [ -z "${timeout}" ]; then
-    timeout=${default_timeout}
-fi
-
-echo "Waiting for ${container_name} to be healthy..."
-for i in $(seq "${timeout} "); do
-    state=$(docker inspect -f '{{ .State.Health.Status }}' "${container_name}")
+echo "Waiting for ${CONTAINER} to be healthy..."
+for i in $(seq "${TIMEOUT} "); do
+    state=$(docker inspect -f '{{ .State.Health.Status }}' "${CONTAINER}")
     if [ "${state}" -eq 0 ]; then
-        echo "${container_name} is healthy after ${i} seconds."
+        echo "${CONTAINER} is healthy after ${i} seconds."
         exit 0
     fi
     sleep 1
 done
 
-echo "Timeout exceeded. Health status returned: $(docker inspect -f '{{ .State.Health.Status }}' "${container_name} ")"
+echo "Timeout exceeded. Health status returned: $(docker inspect -f '{{ .State.Health.Status }}' "${CONTAINER} ")"
 exit 1
