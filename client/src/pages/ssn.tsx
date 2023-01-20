@@ -23,13 +23,14 @@ import { i18n_ssn } from 'i18n/i18n'
 import { getFormattedSsn } from 'utils/ssn/format'
 import { useValidateSSN } from 'queries/useValidateSSN'
 import PageLoader from 'components/loaders/PageLoader'
-const validateSSN = useValidateSSN()
+
 const Ssn: NextPageWithLayout = () => {
   const router = useRouter()
   const { t } = useTranslation('ssn')
   const { ssnInput, setSsn } = useContext(IntakeAppContext)
   const [showSsn, setShowSsn] = useState<boolean>(false)
   const [disableButtons, setDisableButtons] = useState<boolean>(false)
+  const validateSSN = useValidateSSN()
 
   const handleToggleSsn = () => {
     setShowSsn(!showSsn)
@@ -47,7 +48,11 @@ const Ssn: NextPageWithLayout = () => {
           : false
       ),
   })
-  const handleSubmit = (values: SsnInput, helpers: FormikHelpers<SsnInput>) => {
+
+  const handleSubmit = async (
+    values: SsnInput,
+    helpers: FormikHelpers<SsnInput>
+  ) => {
     const { setSubmitting } = helpers
     values.ssn = getFormattedSsn(values.ssn)
     setSsn(values)
@@ -63,42 +68,40 @@ const Ssn: NextPageWithLayout = () => {
       {({ errors, isValid, submitForm, isSubmitting, submitCount }) => {
         const validRef = useRef(isValid)
         validRef.current = isValid
+        const ssnContextRef = useRef(ssnInput?.ssn)
+        ssnContextRef.current = ssnInput?.ssn
 
         const handleClickCancel: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
           await router.push(Routes.HOME) // TODO: change to Nava file a claim page when url is available
         }
-
         const lockButtonsAndVerifySSN = async () => {
-          console.log('locking the buttons')
-          if (ssnInput?.ssn) {
-            console.log('ssn is not null')
+          if (ssnContextRef.current) {
             setDisableButtons(true)
             const validateSSNResult = await validateSSN.mutateAsync(
-              ssnInput?.ssn
+              ssnContextRef.current
             )
-            console.log('mutateasync called')
             setDisableButtons(false)
             return validateSSNResult.status === 200
+            //TODO - change this to handle error states
           }
-          console.log('ssn is null')
           return false
         }
+
         const handleClickNext: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
-          console.log('in click next')
-          const isVerifiedSSN = await lockButtonsAndVerifySSN()
-          console.log('checking if ssn is verified')
-          if (isVerifiedSSN) {
-            console.log('should send push')
-            submitForm().then(async () => {
-              if (validRef.current) {
+          submitForm().then(async () => {
+            if (validRef.current) {
+              const isVerifiedSSN = await lockButtonsAndVerifySSN()
+
+              if (isVerifiedSSN) {
                 await router.push(Routes.SCREENER)
               }
-            })
-          }
+            }
+          })
+          // }
         }
 
         const showErrorSummary =

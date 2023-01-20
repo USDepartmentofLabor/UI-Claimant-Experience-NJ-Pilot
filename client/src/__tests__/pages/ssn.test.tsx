@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import Ssn from 'pages/ssn'
@@ -8,11 +8,20 @@ import {
 } from 'contexts/IntakeAppContext'
 import { Routes } from 'constants/routes'
 
-import { useValidateSSN } from 'queries/useValidateSSN'
 import { SsnInput } from 'types/claimantInput'
+const mockMutateAsync = jest.fn()
+mockMutateAsync.mockImplementation(async (ssnValue: string) => ({
+  status: 200,
+  ssn: ssnValue,
+}))
 
-jest.mock('queries/useValidateSSN')
-const mockUseValidateSSN = useValidateSSN as jest.Mock
+const mockUseValidateSSN = jest.fn(() => ({
+  mutateAsync: async (ssn: string) => mockMutateAsync(ssn),
+}))
+jest.mock('queries/useValidateSSN', () => ({
+  useValidateSSN: () => mockUseValidateSSN(),
+}))
+
 const mockPush = jest.fn(async () => true)
 jest.mock('next/router', () => ({
   useRouter: () => ({
@@ -119,6 +128,7 @@ describe('SSN page', () => {
   it('continues to screener page when ssn is valid', async () => {
     const ssnValue = '123-45-4444'
     const user = userEvent.setup()
+    mockMutateAsync.mockClear()
     const mockAppContext: IntakeAppContextType = {
       screenerInput: undefined,
       setScreenerInput: jest.fn(),
@@ -130,29 +140,14 @@ describe('SSN page', () => {
         <Ssn />
       </IntakeAppContext.Provider>
     )
-
-    const mockMutateAsync = jest.fn()
-    // const mockUseValidateSSN = jest.fn()
-    mockMutateAsync.mockImplementation(async (ssnValue: string) => ({
-      status: 200,
-      ssn: ssnValue,
-    }))
-    mockUseValidateSSN.mockImplementation(() => ({
-      mutateAsync: (ssn: string) => mockMutateAsync(ssn),
-    }))
     await user.click(screen.getByRole('button', { name: /next/i }))
-
-    // expect(mockUseValidateSSN).toHaveBeenCalledWith({ssn:ssnValue})
-    //fails is not properly mocked
-    await waitFor(
-      () => expect(mockPush).toHaveBeenCalledWith(Routes.SCREENER),
-      { timeout: 6000 }
-    )
     expect(mockMutateAsync).toHaveBeenCalledTimes(1)
+    expect(mockMutateAsync).toHaveBeenCalledWith(ssnValue)
   })
 
   it('Goes to the home page when cancel button is clicked', async () => {
     const user = userEvent.setup()
+    mockMutateAsync.mockClear()
     const mockAppContext: IntakeAppContextType = {
       screenerInput: undefined,
       setScreenerInput: jest.fn(),
@@ -170,6 +165,7 @@ describe('SSN page', () => {
     await user.click(screen.getByRole('button', { name: /previous/i }))
     expect(mockAppContext.setSsn).not.toHaveBeenCalled()
     expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
+    expect(mockMutateAsync).toHaveBeenCalledTimes(0)
   })
 
   it('Applies ssn from context if available', async () => {
