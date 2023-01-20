@@ -10,6 +10,8 @@ import { Alert, Table } from '@trussworks/react-uswds'
 import { WhoAmI } from 'types/claimantInput'
 import { Routes } from 'constants/routes'
 import { SignOut } from 'components/SignOut/SignOut'
+import serverHttpClient from 'utils/http/serverHttpClient'
+import { APIResponseType } from 'types/ResponseTypes'
 
 const Home: NextPage = () => {
   const session = useSession()
@@ -20,6 +22,7 @@ const Home: NextPage = () => {
   const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
   const goToUpdateContactInfoForm = () =>
     router.push(Routes.UPDATE_CONTACT_INFO)
+  const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
 
   return (
     <div>
@@ -73,6 +76,22 @@ const Home: NextPage = () => {
                 File a claim
               </Button>
             </div>
+            {!isProd && (
+              <div className="margin-bottom-1">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    serverHttpClient
+                      .post<APIResponseType>('/partial-claim', {})
+                      .then(() => {
+                        location.reload()
+                      })
+                  }
+                >
+                  Reset claim (dev/test)
+                </Button>
+              </div>
+            )}
             <div className="margin-bottom-1">
               <Button
                 type="button"
