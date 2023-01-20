@@ -6,7 +6,6 @@
 set -eu
 
 container_name=$1
-shift
 timeout=$2
 
 default_timeout=120
