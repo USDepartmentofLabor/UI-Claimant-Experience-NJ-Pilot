@@ -77,6 +77,7 @@ const Ssn: NextPageWithLayout = () => {
           await router.push(Routes.HOME) // TODO: change to Nava file a claim page when url is available
         }
         const lockButtonsAndVerifySSN = async () => {
+          console.log('lock buttons and verigy ssn')
           if (ssnContextRef.current) {
             setDisableButtons(true)
             const validateSSNResult = await validateSSN.mutateAsync(
@@ -95,13 +96,12 @@ const Ssn: NextPageWithLayout = () => {
           submitForm().then(async () => {
             if (validRef.current) {
               const isVerifiedSSN = await lockButtonsAndVerifySSN()
-
+              console.log('verified was ', isVerifiedSSN)
               if (isVerifiedSSN) {
                 await router.push(Routes.SCREENER)
               }
             }
           })
-          // }
         }
 
         const showErrorSummary =
