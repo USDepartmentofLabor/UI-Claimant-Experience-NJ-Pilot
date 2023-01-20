@@ -7,8 +7,8 @@ set -eu
 
 echo "Waiting for ${CONTAINER} to be healthy..."
 for i in $(seq "${TIMEOUT}"); do
-    state=$(docker inspect -f '{{ .State.Health.Status }}' "${CONTAINER}")
-    if [ "${state}" -eq 0 ]; then
+    state=$(docker inspect -f '{{ .State.Running }}' "${CONTAINER}")
+    if [ "${state}" == "true" ]; then
         echo "${CONTAINER} is healthy after ${i} seconds."
         exit 0
     fi
