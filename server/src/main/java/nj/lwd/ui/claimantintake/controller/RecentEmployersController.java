@@ -61,13 +61,11 @@ public class RecentEmployersController {
 
         boolean savedEmployerData =
                 claimStorageService.saveRecentEmployer(claimantIdpId, recentEmployerResponse);
-
         if (!savedEmployerData) {
             logger.error(
                     "Saving Recent Employer Response failed for claimant IdpId {}, returning an"
                             + " empty array to client",
                     claimantIdpId);
-
             return new ResponseEntity<>(
                     "Received recent employer response, but could not save",
                     HttpStatus.INTERNAL_SERVER_ERROR);

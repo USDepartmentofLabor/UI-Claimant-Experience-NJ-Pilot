@@ -177,6 +177,8 @@ public class ClaimStorageService {
                         claim.getId(),
                         claimant.getId(),
                         s3Key);
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHED));
+                claimantRepository.save(claimant);
                 return true;
             } catch (JsonProcessingException e) {
                 logger.error(
@@ -184,13 +186,17 @@ public class ClaimStorageService {
                                 + " JSON for storage in S3: {}",
                         claim.getId(),
                         e.getMessage());
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHE_FAILED));
+                claimantRepository.save(claimant);
+                return false;
             } catch (AwsServiceException e) {
                 logger.error(
                         "Amazon S3 unable to process request to save recent employer data for claim"
                                 + " {} to S3: {}",
                         claim.getId(),
                         e.getMessage());
-
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHE_FAILED));
+                claimantRepository.save(claimant);
                 return false;
             } catch (SdkClientException e) {
                 logger.error(
@@ -198,6 +204,8 @@ public class ClaimStorageService {
                                 + " to save recent employer data for claim {} to S3: {}",
                         claim.getId(),
                         e.getMessage());
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHE_FAILED));
+                claimantRepository.save(claimant);
                 return false;
             }
         }

@@ -532,6 +532,19 @@ class ClaimStorageServiceTest {
 
         verify(s3Service, times(1))
                 .upload(CLAIMS_BUCKET, expectedS3Key, validRecentEmployer, CLAIMS_BUCKET_KMS_KEY);
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHED)));
+        verify(claim, times(0))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHE_FAILED)));
+        verify(claimantRepository, times(1)).save(claimant);
     }
 
     @Test
@@ -584,6 +597,19 @@ class ClaimStorageServiceTest {
         assertFalse(result);
         verify(s3Service, times(1))
                 .upload(CLAIMS_BUCKET, expectedS3Key, validRecentEmployer, CLAIMS_BUCKET_KMS_KEY);
+        verify(claim, times(0))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHED)));
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHE_FAILED)));
+        verify(claimantRepository, times(1)).save(claimant);
     }
 
     @Test
@@ -610,6 +636,19 @@ class ClaimStorageServiceTest {
         assertFalse(result);
         verify(s3Service, times(1))
                 .upload(CLAIMS_BUCKET, expectedS3Key, validRecentEmployer, CLAIMS_BUCKET_KMS_KEY);
+        verify(claim, times(0))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHED)));
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHE_FAILED)));
+        verify(claimantRepository, times(1)).save(claimant);
     }
 
     @Test
@@ -636,5 +675,18 @@ class ClaimStorageServiceTest {
         assertFalse(result);
         verify(s3Service, times(1))
                 .upload(CLAIMS_BUCKET, expectedS3Key, validRecentEmployer, CLAIMS_BUCKET_KMS_KEY);
+        verify(claim, times(0))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHED)));
+        verify(claim, times(1))
+                .addEvent(
+                        argThat(
+                                (event) ->
+                                        event.getCategory()
+                                                .equals(ClaimEventCategory.WGPM_CACHE_FAILED)));
+        verify(claimantRepository, times(1)).save(claimant);
     }
 }

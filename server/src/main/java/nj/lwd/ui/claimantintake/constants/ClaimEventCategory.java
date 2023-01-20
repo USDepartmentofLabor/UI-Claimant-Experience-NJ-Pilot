@@ -5,6 +5,8 @@ public enum ClaimEventCategory {
     // clicked "back", clicked "save and exit")
     SAVED, // Claim has been stored in database and S3
     SAVE_FAILED, // The claim was not able to be saved
+    WGPM_CACHED, // WGPM response has been saved in s3
+    WGPM_CACHE_FAILED, // WGPM response failed to save to s3
     INITIATED_COMPLETE, // Claimant has taken action to complete their claim (clicked complete
     // button on final page of claim form)
     COMPLETED, // Claim has been completed (claimant finished the entire form, and the payload was
