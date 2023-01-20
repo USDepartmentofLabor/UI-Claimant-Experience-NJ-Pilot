@@ -1,6 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { useGetRecentEmployers } from './useGetRecentEmployers'
+import { useGetRecentEmployers } from 'queries/useGetRecentEmployers'
 import serverHttpClient from 'utils/http/serverHttpClient'
 import axios from 'axios'
 

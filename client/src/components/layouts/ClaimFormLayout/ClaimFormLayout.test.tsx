@@ -79,7 +79,7 @@ describe('ClaimFormLayout', () => {
       )
 
       const loader = screen.queryByTestId('page-loading')
-      const errorDiv = screen.getByText('Internal Server Error.')
+      const errorDiv = screen.getByText('errorStatus.500.')
 
       expect(loader).not.toBeInTheDocument()
       expect(errorDiv).toBeInTheDocument()

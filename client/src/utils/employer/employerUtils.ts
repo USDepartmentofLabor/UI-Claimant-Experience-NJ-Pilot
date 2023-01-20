@@ -1,5 +1,4 @@
 import { Employer, ImportedEmployerAddress } from 'types/claimantInput'
-import { WgpmEmployer } from 'queries/__mocks__/useGetRecentEmployers'
 
 // Loops WGPM returns FEINs with 15 characters, left aligned and right-padded to 15 characters
 const FORMATTED_FEIN_LENGTH = 15
@@ -23,6 +22,20 @@ export const findFirstImportedEmployerIndex = (employers: Employer[]) =>
  */
 export const formatFein = (fein: string) =>
   fein.padEnd(FORMATTED_FEIN_LENGTH, '0')
+
+export type WgpmEmployer = {
+  employerAddressLine1: string | null
+  employerAddressLine5: string | null
+  employerAddressLine4: string | null
+  employerAddressLine3: string | null
+  employerAddressLine2: string | null
+  employerFein: string | null
+  employerAddressZip: string | null
+  employerName: string | null
+  employerStatePayrollNumber: string | null
+  employerTelephoneNumber: string | null
+  employerSequenceNumber: string | null
+}
 
 /**
  * Transforms the raw WGPM employer format to the intake app Employer format

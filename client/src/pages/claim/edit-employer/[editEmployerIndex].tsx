@@ -18,10 +18,12 @@ import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmpl
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { EmployerBackButton } from 'components/form/ClaimFormButtons/EmployerBackButton/EmployerBackButton'
 import { findLastIndex } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 const nextPage = getNextPage(RecentEmployersPageDefinition)
 
 export const EditEmployers: NextPageWithLayout = () => {
+  const { t: tCommon } = useTranslation('common')
   const { claimFormValues } = useContext(ClaimFormContext)
   const router = useRouter()
   const editEmployerIndex = router.query.editEmployerIndex as string
@@ -38,7 +40,6 @@ export const EditEmployers: NextPageWithLayout = () => {
     const initialValues = claimFormValues?.employers
       ? claimFormValues.employers[parseInt(editEmployerIndex)]
       : EMPLOYER_SKELETON
-
     return { initialValues, isValidIndex }
   }, [editEmployerIndex, claimFormValues])
 
@@ -83,9 +84,8 @@ export const EditEmployers: NextPageWithLayout = () => {
     }
     return nextPage.heading
   }
-
   return !isValidIndex ? (
-    <Error statusCode={404} />
+    <Error title={tCommon('errorStatus.404')} statusCode={404} />
   ) : (
     <EmployerFormik
       index={editEmployerIndex}

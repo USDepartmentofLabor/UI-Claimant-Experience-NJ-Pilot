@@ -43,6 +43,7 @@ const nextPage = getNextPage(pageDefinition)
 
 export const Prequal: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'prequal' })
+  const { t: tCommon } = useTranslation('common')
 
   const {
     data: partialClaim,
@@ -72,7 +73,7 @@ export const Prequal: NextPageWithLayout = () => {
   }, [ssnInput, screenerInput])
 
   if (partialClaimIsError) {
-    return <Error statusCode={500} />
+    return <Error title={tCommon('errorStatus.500')} statusCode={500} />
   }
   return (
     <ClaimFormik<PrequalInput>

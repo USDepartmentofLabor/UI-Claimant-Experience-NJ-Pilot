@@ -12,6 +12,7 @@ import { ClaimFormSideNav } from '../../form/ClaimFormSideNav/ClaimFormSideNav'
 import { ClaimantInput } from 'types/claimantInput'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
+import { useTranslation } from 'next-i18next'
 
 type ClaimFormProps = {
   pageDefinition: PageDefinition
@@ -34,6 +35,8 @@ export const ClaimFormLayout = ({
     isLoading: isLoadingGetPartialClaim,
     isError: partialClaimIsError,
   } = useGetPartialClaim()
+
+  const { t: tCommon } = useTranslation('common')
 
   // Initialize any previous partialClaim into ClaimFormContext
   useEffect(() => {
@@ -60,7 +63,7 @@ export const ClaimFormLayout = ({
   if (isLoading) {
     return <PageLoader />
   } else if (partialClaimIsError) {
-    return <Error statusCode={500} />
+    return <Error title={tCommon('errorStatus.500')} statusCode={500} />
   } else {
     return (
       <ClaimFormContext.Provider
