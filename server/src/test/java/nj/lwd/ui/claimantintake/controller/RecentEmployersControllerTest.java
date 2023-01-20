@@ -159,7 +159,7 @@ public class RecentEmployersControllerTest {
     @WithMockUser
     void shouldReturnEmptyIfNoSSN() throws Exception {
         when(claimStorageService.getSSN(anyString())).thenReturn(null);
-        String expectedResponse = "[]";
+        String expectedResponse = "SSN not found for given claimant, unable to complete request";
 
         this.mockMvc
                 .perform(
@@ -168,8 +168,8 @@ public class RecentEmployersControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(csrf()))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedResponse));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedResponse));
         verify(claimStorageService, times(0)).saveRecentEmployer(any(), any());
     }
 
@@ -180,7 +180,7 @@ public class RecentEmployersControllerTest {
         mockSaveRecentEmployer(false);
         when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
                 .thenReturn(validRecentEmployerResponse);
-        String expectedResponse = "[]";
+        String expectedResponse = "Received recent employer response, but could not save";
 
         this.mockMvc
                 .perform(
@@ -189,8 +189,8 @@ public class RecentEmployersControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .with(csrf()))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedResponse));
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string(expectedResponse));
         verify(claimStorageService, times(1))
                 .saveRecentEmployer("user", validRecentEmployerResponse);
     }

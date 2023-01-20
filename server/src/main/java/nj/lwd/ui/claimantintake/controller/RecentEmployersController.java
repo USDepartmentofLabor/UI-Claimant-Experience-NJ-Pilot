@@ -80,11 +80,9 @@ public class RecentEmployersController {
             logger.info(
                     "No employer list for claimant IdpId {} but ssn was found correctly",
                     claimantIdpId);
-            return new ResponseEntity<>(
-                    "Recieved recent employer response, but could not save",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            employerList = new ArrayList<WagePotentialResponseEmployer>();
         }
 
-        return new ResponseEntity<>(employerList, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(employerList, HttpStatus.OK);
     }
 }
