@@ -6,7 +6,7 @@
 set -eu
 
 echo "Waiting for ${CONTAINER} to be healthy..."
-for i in $(seq "${TIMEOUT} "); do
+for i in $(seq "${TIMEOUT}"); do
     state=$(docker inspect -f '{{ .State.Health.Status }}' "${CONTAINER}")
     if [ "${state}" -eq 0 ]; then
         echo "${CONTAINER} is healthy after ${i} seconds."
