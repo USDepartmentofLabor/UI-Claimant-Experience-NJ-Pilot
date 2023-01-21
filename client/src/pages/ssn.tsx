@@ -65,11 +65,9 @@ const Ssn: NextPageWithLayout = () => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ errors, isValid, submitForm, isSubmitting, submitCount }) => {
+      {({ errors, isValid, submitForm, isSubmitting, submitCount, values }) => {
         const validRef = useRef(isValid)
         validRef.current = isValid
-        const ssnContextRef = useRef(ssnInput?.ssn)
-        ssnContextRef.current = ssnInput?.ssn
 
         const handleClickCancel: MouseEventHandler<
           HTMLButtonElement
@@ -77,12 +75,9 @@ const Ssn: NextPageWithLayout = () => {
           await router.push(Routes.HOME) // TODO: change to Nava file a claim page when url is available
         }
         const lockButtonsAndVerifySSN = async () => {
-          console.log('lock buttons and verigy ssn')
-          if (ssnContextRef.current) {
+          if (values?.ssn) {
             setDisableButtons(true)
-            const validateSSNResult = await validateSSN.mutateAsync(
-              ssnContextRef.current
-            )
+            const validateSSNResult = await validateSSN.mutateAsync(values?.ssn)
             setDisableButtons(false)
             return validateSSNResult.status === 200
             //TODO - change this to handle error states
@@ -96,7 +91,6 @@ const Ssn: NextPageWithLayout = () => {
           submitForm().then(async () => {
             if (validRef.current) {
               const isVerifiedSSN = await lockButtonsAndVerifySSN()
-              console.log('verified was ', isVerifiedSSN)
               if (isVerifiedSSN) {
                 await router.push(Routes.SCREENER)
               }

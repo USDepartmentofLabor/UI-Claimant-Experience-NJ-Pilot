@@ -46,7 +46,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       .contains('Continue')
       .scrollIntoView()
       .should('be.visible')
-      .click({ force: true })
+      .click()
 
     // Screener page
     fillScreenerFields()
