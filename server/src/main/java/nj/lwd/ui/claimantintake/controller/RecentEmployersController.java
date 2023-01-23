@@ -63,11 +63,11 @@ public class RecentEmployersController {
                 claimStorageService.saveRecentEmployer(claimantIdpId, recentEmployerResponse);
         if (!savedEmployerData) {
             logger.error(
-                    "Saving Recent Employer Response failed for claimant IdpId {}, returning an"
-                            + " empty array to client",
+                    "Saving Recent Employer Response to S3 failed for claimant IdpId {}, returning"
+                            + " anerror to client",
                     claimantIdpId);
             return new ResponseEntity<>(
-                    "Received recent employer response, but could not save",
+                    "Received recent employer response, but could not save to S3",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

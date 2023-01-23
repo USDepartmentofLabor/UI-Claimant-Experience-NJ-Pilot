@@ -180,7 +180,7 @@ public class RecentEmployersControllerTest {
         mockSaveRecentEmployer(false);
         when(recentEmployersService.getRecentEmployerValues(anyString(), anyString()))
                 .thenReturn(validRecentEmployerResponse);
-        String expectedResponse = "Received recent employer response, but could not save";
+        String expectedResponse = "Received recent employer response, but could not save to S3";
 
         this.mockMvc
                 .perform(
