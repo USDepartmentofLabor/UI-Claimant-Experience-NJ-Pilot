@@ -126,6 +126,22 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
 
+      - name: Wait for client container
+        shell: bash
+        env:
+          CONTAINER: dol-ui-client
+          TIMEOUT: 120
+        run: |
+          scripts/container-health-check.sh
+
+      - name: Wait for server container
+        shell: bash
+        env:
+          CONTAINER: dol-ui-server
+          TIMEOUT: 120
+        run: |
+          scripts/container-health-check.sh
+
       - name: Run OWASP ZAP Baseline scan to find vulnerabilities
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: zaproxy/action-baseline@7cea08522cd386f6c675776d5e4296aecf61f33b
