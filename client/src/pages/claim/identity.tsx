@@ -40,7 +40,7 @@ export const Identity: NextPageWithLayout = () => {
     >
       {({ values, initialValues, clearField, clearFields }) => {
         const showWorkAuthorizationFields = values.authorized_to_work
-
+        const showVerifiedFields = initialValues.ssn || initialValues.birthdate
         const showAlienRegistrationNumber =
           values.authorization_type &&
           values.authorization_type !== 'US_citizen_or_national'
@@ -71,20 +71,24 @@ export const Identity: NextPageWithLayout = () => {
 
         return (
           <>
-            <VerifiedFields>
-              {initialValues.ssn && (
-                <VerifiedField
-                  label={tSsn('label')}
-                  value={initialValues.ssn}
-                />
-              )}
-              {initialValues.birthdate && (
-                <VerifiedField
-                  label={t('birthdate.label')}
-                  value={formatStoredDateToDisplayDate(initialValues.birthdate)}
-                />
-              )}
-            </VerifiedFields>
+            {showVerifiedFields && (
+              <VerifiedFields>
+                {initialValues.ssn && (
+                  <VerifiedField
+                    label={tSsn('label')}
+                    value={initialValues.ssn}
+                  />
+                )}
+                {initialValues.birthdate && (
+                  <VerifiedField
+                    label={t('birthdate.label')}
+                    value={formatStoredDateToDisplayDate(
+                      initialValues.birthdate
+                    )}
+                  />
+                )}
+              </VerifiedFields>
+            )}
             <TextField
               label={t('drivers_license_or_state_id_number.label')}
               name="drivers_license_or_state_id_number"

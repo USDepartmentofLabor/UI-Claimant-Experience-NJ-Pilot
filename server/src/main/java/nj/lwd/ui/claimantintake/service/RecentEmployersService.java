@@ -26,7 +26,7 @@ public class RecentEmployersService {
                         "DIRECT FUTURE MAIL",
                         "031143718000000",
                         "01961",
-                        "VICTORIAS SECRET STORES, INC.",
+                        "EPIC COFFEE, INC",
                         null,
                         "6144151035",
                         "001");
@@ -40,7 +40,7 @@ public class RecentEmployersService {
                         "The Hall of Justice",
                         "031143718000011",
                         "91121",
-                        "VICTORIAS SECRET STORES, INC.",
+                        "Justice for All",
                         null,
                         "5554151012",
                         "001");

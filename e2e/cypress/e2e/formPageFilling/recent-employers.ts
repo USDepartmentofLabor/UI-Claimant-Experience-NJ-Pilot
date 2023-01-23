@@ -15,10 +15,5 @@ const fillRecentEmployersFields = () => {
   )
     .parent()
     .click()
-  cy.get(
-    'input[id=recent_employers\\[3\\]\\.worked_for_imported_employer_in_last_18mo\\.no'
-  )
-    .parent()
-    .click()
 }
 export default fillRecentEmployersFields

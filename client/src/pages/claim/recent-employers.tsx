@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+import { useGetRecentEmployers } from 'queries/useGetRecentEmployers'
 import { formatLast18monthsEmployersDate } from 'utils/date/format'
 import {
   Alert,
@@ -38,6 +38,7 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
 import { Employer } from 'types/claimantInput'
+import Error from 'next/error'
 
 const pageDefinition = RecentEmployersPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -52,10 +53,14 @@ type RecentEmployerValues = {
 // TODO: Prevent claimant from using the same FEIN on multiple employers
 export const RecentEmployers: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
+  const { t: tCommon } = useTranslation('common')
   const headingRef = useRef<HTMLHeadingElement>(null)
   const { claimFormValues } = useContext(ClaimFormContext)
-  const { data: wgpmEmployers, isLoading: isLoadingRecentEmployers } =
-    useGetRecentEmployers()
+  const {
+    data: wgpmEmployers,
+    isLoading: isLoadingRecentEmployers,
+    isError: isRecentEmployersError,
+  } = useGetRecentEmployers()
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
   const date = formatLast18monthsEmployersDate(String(new Date()))
 
@@ -79,22 +84,6 @@ export const RecentEmployers: NextPageWithLayout = () => {
     handleSaveRecentEmployers(values).then(async () => await cognitoSignOut())
   }
 
-  const initialValues: RecentEmployerValues = useMemo(() => {
-    const transformedWgpmEmployers = wgpmEmployers.map((wgpmEmployer) =>
-      transformWgpmEmployer(wgpmEmployer)
-    )
-    const previouslyImportedEmployers = claimFormValues?.employers?.filter(
-      (employer) => employer.is_imported
-    )
-    const recentEmployers = mergeEmployers(
-      transformedWgpmEmployers,
-      previouslyImportedEmployers
-    )
-    return {
-      recent_employers: recentEmployers,
-    }
-  }, [])
-
   const handleSubmit = (
     values: RecentEmployerValues,
     helpers: FormikHelpers<RecentEmployerValues>
@@ -103,113 +92,136 @@ export const RecentEmployers: NextPageWithLayout = () => {
     handleSaveRecentEmployers(values).then(() => setSubmitting(false))
   }
 
-  return isLoadingRecentEmployers ? (
-    <PageLoader />
-  ) : (
-    <>
-      <PageHeading
-        ref={headingRef}
-        aria-label={`${pageDefinition.heading} ${t('step_progress', {
-          step,
-          totalStep,
-        })}`}
-      >
-        {pageDefinition.heading}
-      </PageHeading>
-      <Formik<RecentEmployerValues>
-        onSubmit={handleSubmit}
-        initialValues={initialValues}
-        validationSchema={pageDefinition.validationSchema}
-      >
-        {({ values, errors, submitCount, isSubmitting }) => {
-          const firstImportedEmployerIndex = findFirstImportedEmployerIndex(
-            values.recent_employers
-          )
+  if (isLoadingRecentEmployers) {
+    return <PageLoader />
+  } else if (isRecentEmployersError) {
+    return <Error title={tCommon('errorStatus.500')} statusCode={500} />
+  } else {
+    const calculateInitialValues = (): RecentEmployerValues => {
+      const transformedWgpmEmployers =
+        wgpmEmployers === undefined
+          ? []
+          : wgpmEmployers.map((wgpmEmployer) =>
+              transformWgpmEmployer(wgpmEmployer)
+            )
+      const previouslyImportedEmployers = claimFormValues?.employers?.filter(
+        (employer) => employer.is_imported
+      )
+      const recentEmployers = mergeEmployers(
+        transformedWgpmEmployers,
+        previouslyImportedEmployers
+      )
+      return {
+        recent_employers: recentEmployers,
+      }
+    }
 
-          const { nextPageLocal, nextStep } = useMemo(() => {
-            if (firstImportedEmployerIndex === -1) {
-              return {
-                nextPageLocal: nextPage.path,
-                nextStep: nextPage.heading,
+    return (
+      <>
+        <PageHeading
+          ref={headingRef}
+          aria-label={`${pageDefinition.heading} ${t('step_progress', {
+            step,
+            totalStep,
+          })}`}
+        >
+          {pageDefinition.heading}
+        </PageHeading>
+        <Formik<RecentEmployerValues>
+          onSubmit={handleSubmit}
+          initialValues={calculateInitialValues()}
+          validationSchema={pageDefinition.validationSchema}
+        >
+          {({ values, errors, submitCount, isSubmitting }) => {
+            const firstImportedEmployerIndex = findFirstImportedEmployerIndex(
+              values.recent_employers
+            )
+
+            const { nextPageLocal, nextStep } = useMemo(() => {
+              if (firstImportedEmployerIndex === -1) {
+                return {
+                  nextPageLocal: nextPage.path,
+                  nextStep: nextPage.heading,
+                }
               }
-            }
-            return {
-              nextPageLocal: `${Routes.CLAIM.EDIT_EMPLOYER}/${firstImportedEmployerIndex}`,
-              nextStep: EditEmployerPageDefinition.heading,
-            }
-          }, [firstImportedEmployerIndex])
+              return {
+                nextPageLocal: `${Routes.CLAIM.EDIT_EMPLOYER}/${firstImportedEmployerIndex}`,
+                nextStep: EditEmployerPageDefinition.heading,
+              }
+            }, [firstImportedEmployerIndex])
 
-          const showErrorSummary =
-            submitCount > 0 && Object.keys(errors).length > 0
+            const showErrorSummary =
+              submitCount > 0 && Object.keys(errors).length > 0
 
-          return (
-            <Form className={styles.claimForm}>
-              {showErrorSummary && (
-                <FormErrorSummary key={submitCount} errors={errors} />
-              )}
-              <SummaryBox>
-                <SummaryBoxContent>
-                  {t('recent_employers.preamble')}
-                </SummaryBoxContent>
-              </SummaryBox>
-              {values.recent_employers.length === 0 ? (
+            return (
+              <Form className={styles.claimForm}>
+                {showErrorSummary && (
+                  <FormErrorSummary key={submitCount} errors={errors} />
+                )}
                 <SummaryBox>
                   <SummaryBoxContent>
-                    {t('recent_employers.no_employers_on_record')}
+                    {t('recent_employers.preamble')}
                   </SummaryBoxContent>
                 </SummaryBox>
-              ) : (
-                <Fieldset
-                  legend={<b>{t('recent_employers.question', { date })}</b>}
-                >
-                  {values.recent_employers.map((employer, index) => {
-                    return (
-                      <div key={index}>
-                        <YesNoQuestion
-                          name={`recent_employers[${index}].worked_for_imported_employer_in_last_18mo`}
-                          question={
-                            <>
-                              <span className="screen-reader-only">
-                                {t('recent_employers.work_at', {
-                                  employer: employer.employer_name,
-                                })}
-                              </span>
-                              <span aria-hidden={true}>
-                                {employer.employer_name}
-                              </span>
-                            </>
-                          }
-                        />
-                        {employer.worked_for_imported_employer_in_last_18mo ===
-                          false && (
-                          <Alert headingLevel="h3" slim={true} type="warning">
-                            {t('recent_employers.confirm_employer')}
-                          </Alert>
-                        )}
-                      </div>
-                    )
-                  })}
-                </Fieldset>
-              )}
-              <ClaimFormButtons nextStep={nextStep}>
-                <BackButton<RecentEmployerValues>
-                  previousPage={previousPage.path}
-                  handleSave={handleSaveRecentEmployers}
-                />
-                <NextButton nextPage={nextPageLocal} />
-              </ClaimFormButtons>
-              <div className="margin-top-1 text-center">
-                <SaveAndExitLink
-                  disabled={isSubmitting}
-                  onClick={() => handleSaveAndExit(values)}
-                />
-              </div>
-            </Form>
-          )
-        }}
-      </Formik>
-    </>
-  )
+                {values.recent_employers.length === 0 ? (
+                  <SummaryBox>
+                    <SummaryBoxContent>
+                      {t('recent_employers.no_employers_on_record')}
+                    </SummaryBoxContent>
+                  </SummaryBox>
+                ) : (
+                  <Fieldset
+                    legend={<b>{t('recent_employers.question', { date })}</b>}
+                  >
+                    {values.recent_employers.map((employer, index) => {
+                      return (
+                        <div key={index}>
+                          <YesNoQuestion
+                            name={`recent_employers[${index}].worked_for_imported_employer_in_last_18mo`}
+                            question={
+                              <>
+                                <span className="screen-reader-only">
+                                  {t('recent_employers.work_at', {
+                                    employer: employer.employer_name,
+                                  })}
+                                </span>
+                                <span aria-hidden={true}>
+                                  {employer.employer_name}
+                                </span>
+                              </>
+                            }
+                          />
+                          {employer.worked_for_imported_employer_in_last_18mo ===
+                            false && (
+                            <Alert headingLevel="h3" slim={true} type="warning">
+                              {t('recent_employers.confirm_employer')}
+                            </Alert>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </Fieldset>
+                )}
+                <ClaimFormButtons nextStep={nextStep}>
+                  <BackButton<RecentEmployerValues>
+                    previousPage={previousPage.path}
+                    handleSave={handleSaveRecentEmployers}
+                  />
+                  <NextButton nextPage={nextPageLocal} />
+                </ClaimFormButtons>
+                <div className="margin-top-1 text-center">
+                  <SaveAndExitLink
+                    disabled={isSubmitting}
+                    onClick={() => handleSaveAndExit(values)}
+                  />
+                </div>
+              </Form>
+            )
+          }}
+        </Formik>
+      </>
+    )
+  }
 }
 
 RecentEmployers.getLayout = (page: ReactNode) => {

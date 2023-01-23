@@ -69,7 +69,6 @@ repos:
   - repo: https://github.com/sirosen/check-jsonschema
     rev: 0.6.0
     hooks:
-      - id: check-github-workflows
       - id: check-jsonschema
         name: "Check UI schema"
         language: python

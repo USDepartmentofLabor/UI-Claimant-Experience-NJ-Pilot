@@ -1,16 +1,18 @@
 import { waitFor, screen, render, within } from '@testing-library/react'
-import RecentEmployers from '../../../pages/claim/recent-employers'
+import RecentEmployers from 'pages/claim/recent-employers'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { Routes } from 'constants/routes'
-import { ClaimantInput } from 'types/claimantInput'
+import { WgpmEmployer } from 'utils/employer/employerUtils'
+import { useGetRecentEmployers } from 'queries/useGetRecentEmployers'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
 jest.mock('hooks/useSaveClaimFormValues')
 jest.mock('queries/useGetPartialClaim')
 jest.mock('next/router')
+jest.mock('queries/useGetRecentEmployers')
+const mockUseGetRecentEmployers = useGetRecentEmployers as jest.Mock
 
 const mockPush = jest.fn(async () => true)
 jest.mock('next/router', () => ({
@@ -34,8 +36,24 @@ jest.mock('utils/signout/cognitoSignOut', () => ({
 afterEach(() => jest.clearAllMocks())
 
 describe('Recent employers page', () => {
+  const renderRecentEmployers = (hookReturn?: {
+    isLoading: boolean
+    isError: boolean
+    data: WgpmEmployer[]
+  }) => {
+    if (hookReturn) {
+      mockUseGetRecentEmployers.mockReturnValue(hookReturn)
+    }
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <RecentEmployers />
+      </QueryClientProvider>
+    )
+  }
+
   it('renders properly without error', async () => {
-    render(<RecentEmployers />)
+    renderRecentEmployers()
     expect(screen.getByText('recent_employers.preamble')).toBeInTheDocument()
     expect(screen.getByText('recent_employers.question')).toBeInTheDocument()
 
@@ -44,7 +62,6 @@ describe('Recent employers page', () => {
     expect(screen.getByText('Wendys')).toBeInTheDocument()
     expect(screen.getByText('PLAIN OLE CLOTHES, INC.')).toBeInTheDocument()
 
-    //const employer = screen.getByText(/did you work at Apple/i)
     const employer = await screen
       .findAllByRole('group', {
         name: /recent_employers.work_at/,
@@ -57,7 +74,7 @@ describe('Recent employers page', () => {
   })
 
   it('displays an alert when user selects that they did not work for an employer', async () => {
-    render(<RecentEmployers />)
+    renderRecentEmployers()
     const user = userEvent.setup()
     expect(
       screen.queryByText('recent_employers.confirm_employer')
@@ -78,7 +95,7 @@ describe('Recent employers page', () => {
   })
   it('next page goes to edit employer page if worked for imported employer', async () => {
     const user = userEvent.setup()
-    render(<RecentEmployers />)
+    renderRecentEmployers()
 
     const [firstEmployerYes] = screen.getAllByRole('radio', { name: 'yes' })
     await user.click(firstEmployerYes)
@@ -105,7 +122,7 @@ describe('Recent employers page', () => {
   })
 
   it('calls save handler on click of back button', async () => {
-    render(<RecentEmployers />)
+    renderRecentEmployers()
     const backButton = screen.getByRole('button', {
       name: 'pagination.previous',
     })
@@ -114,7 +131,7 @@ describe('Recent employers page', () => {
   })
 
   it('calls save handler on click of next button', async () => {
-    render(<RecentEmployers />)
+    renderRecentEmployers()
     const nextButton = screen.getByRole('button', {
       name: 'pagination.previous',
     })
@@ -123,27 +140,8 @@ describe('Recent employers page', () => {
   })
 
   it('calls save and exit handler with corresponding button click', async () => {
-    const setClaimFormValues = jest.fn()
-    const claimFormValues: ClaimantInput = {
-      employers: [
-        {
-          is_imported: true,
-          employer_name: 'Special Co.',
-          payments_received: [],
-          LOCAL_pay_types: [],
-        },
-      ],
-    }
-    render(
-      <ClaimFormContext.Provider
-        value={{
-          claimFormValues,
-          setClaimFormValues,
-        }}
-      >
-        <RecentEmployers />
-      </ClaimFormContext.Provider>
-    )
+    renderRecentEmployers()
+
     const saveAndExitButton = screen.getByRole('button', {
       name: 'pagination.save_and_exit',
     })
@@ -151,8 +149,23 @@ describe('Recent employers page', () => {
     expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
     await waitFor(() => expect(mockCognitoSignOut).toHaveBeenCalledTimes(1))
   })
-  // Write test when implementing actual call so that it can be mocked
-  it.todo('shows the loader when page is loading')
+  it('shows the loader when page is loading', async () => {
+    renderRecentEmployers({
+      isLoading: true,
+      isError: false,
+      data: [],
+    })
+    expect(screen.getByTestId('page-loading')).toBeInTheDocument()
+  })
+
+  it('shows error when api call fails', async () => {
+    renderRecentEmployers({
+      isLoading: false,
+      isError: true,
+      data: [],
+    })
+    expect(screen.getByText('errorStatus.500.')).toBeInTheDocument()
+  })
 
   describe('page layout', () => {
     it('uses the ClaimFormLayout', () => {

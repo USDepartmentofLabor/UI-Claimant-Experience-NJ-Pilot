@@ -128,6 +128,10 @@ const common = {
     sr_countdown_one: '{{count}} minute, {{seconds}} seconds',
     sr_countdown_other: '{{count}} minutes, {{seconds}} seconds',
   },
+  errorStatus: {
+    '500': 'Internal server error',
+    '404': 'This page could not be found',
+  },
 }
 
 export default common

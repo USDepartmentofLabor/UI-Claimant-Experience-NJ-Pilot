@@ -36,9 +36,10 @@ import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/Veri
 
 export const EditEmployer = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
+  const { t: tCommon } = useTranslation('common')
   const { values } = useFormikContext<Employer>()
-
-  if (!values) return <Error statusCode={404} />
+  if (!values)
+    return <Error title={tCommon('errorStatus.404')} statusCode={404} />
 
   const isImported = values.is_imported
 
