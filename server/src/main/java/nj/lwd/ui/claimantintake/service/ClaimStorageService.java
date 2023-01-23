@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
+import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.exception.ClaimDataRetrievalException;
 import nj.lwd.ui.claimantintake.model.Claim;
 import nj.lwd.ui.claimantintake.model.ClaimEvent;
@@ -157,6 +158,60 @@ public class ClaimStorageService {
         }
     }
 
+    public boolean saveRecentEmployer(
+            String claimantIdpId, RecentEmployersResponse recentEmployers) {
+        Claimant claimant = claimantStorageService.getOrCreateClaimant(claimantIdpId);
+        Optional<Claim> existingClaim = claimant.getActivePartialClaim();
+
+        logger.info("Attempting to save recent employer data for claimant {}", claimant.getId());
+        if (existingClaim.isPresent()) {
+
+            Claim claim = existingClaim.get();
+            try {
+                String s3Key = getS3EmployersLocation(claimant, claim);
+                s3Service.upload(claimsBucket, s3Key, recentEmployers, this.claimsBucketKmsKey);
+
+                logger.info(
+                        "Successfully saved recent employer data for claim {} for claimant {} at {}"
+                                + " in S3",
+                        claim.getId(),
+                        claimant.getId(),
+                        s3Key);
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHED));
+                claimantRepository.save(claimant);
+                return true;
+            } catch (JsonProcessingException e) {
+                logger.error(
+                        "Recent employer data for claim {} payload is unable to be converted to"
+                                + " JSON for storage in S3: {}",
+                        claim.getId(),
+                        e.getMessage());
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHE_FAILED));
+                claimantRepository.save(claimant);
+                return false;
+            } catch (AwsServiceException e) {
+                logger.error(
+                        "Amazon S3 unable to process request to save recent employer data for claim"
+                                + " {} to S3: {}",
+                        claim.getId(),
+                        e.getMessage());
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHE_FAILED));
+                claimantRepository.save(claimant);
+                return false;
+            } catch (SdkClientException e) {
+                logger.error(
+                        "Unable to contact Amazon S3 or unable to parse the response while trying"
+                                + " to save recent employer data for claim {} to S3: {}",
+                        claim.getId(),
+                        e.getMessage());
+                claim.addEvent(new ClaimEvent(ClaimEventCategory.WGPM_CACHE_FAILED));
+                claimantRepository.save(claimant);
+                return false;
+            }
+        }
+        return false;
+    }
+
     public Optional<Map<String, Object>> getPartialClaim(String claimantIdpId)
             throws ClaimDataRetrievalException {
         logger.info("Checking for partial claim data associated with user {}", claimantIdpId);
@@ -257,5 +312,9 @@ public class ClaimStorageService {
 
     private String getS3Location(Claimant claimant, Claim claim) {
         return "%s/%s.json".formatted(claimant.getId(), claim.getId());
+    }
+
+    private String getS3EmployersLocation(Claimant claimant, Claim claim) {
+        return "%s/%s/wgpm.json".formatted(claimant.getId(), claim.getId());
     }
 }

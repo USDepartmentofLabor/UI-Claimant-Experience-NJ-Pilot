@@ -12,6 +12,8 @@ import nj.lwd.ui.claimantintake.service.RecentEmployersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,13 +43,14 @@ public class RecentEmployersController {
     }
 
     @GetMapping()
-    public ArrayList<WagePotentialResponseEmployer> getRecentEmployers(
-            Authentication authentication) {
+    public ResponseEntity<?> getRecentEmployers(Authentication authentication) {
         String claimantIdpId = authentication.getName();
         String ssn = claimStorageService.getSSN(claimantIdpId);
         if (ssn == null) {
-            logger.info("SSN was null for claim id {}", claimantIdpId);
-            return new ArrayList<WagePotentialResponseEmployer>();
+            logger.info("SSN was null for claimant IdpId {}", claimantIdpId);
+            return new ResponseEntity<>(
+                    "SSN not found for given claimant, unable to complete request",
+                    HttpStatus.BAD_REQUEST);
         }
 
         String claimDate = getClaimDate();
@@ -56,17 +59,28 @@ public class RecentEmployersController {
         RecentEmployersResponse recentEmployerResponse =
                 recentEmployersService.getRecentEmployerValues(ssn, claimDate);
 
-        // TODO - save the wgpm response in s3 here
+        boolean savedEmployerData =
+                claimStorageService.saveRecentEmployer(claimantIdpId, recentEmployerResponse);
+        if (!savedEmployerData) {
+            logger.error(
+                    "Saving Recent Employer Response to S3 failed for claimant IdpId {}, returning"
+                            + " anerror to client",
+                    claimantIdpId);
+            return new ResponseEntity<>(
+                    "Received recent employer response, but could not save to S3",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         // Get just the list of employers and return to client
         ArrayList<WagePotentialResponseEmployer> employerList =
                 recentEmployerResponse.getWagePotentialMonLookupResponseEmployerDtos();
         if (employerList == null) {
             logger.info(
-                    "No employer list for claimid {} but ssn was found correctly", claimantIdpId);
-            return new ArrayList<WagePotentialResponseEmployer>();
+                    "No employer list for claimant IdpId {} but ssn was found correctly",
+                    claimantIdpId);
+            employerList = new ArrayList<WagePotentialResponseEmployer>();
         }
 
-        return employerList;
+        return new ResponseEntity<>(employerList, HttpStatus.OK);
     }
 }

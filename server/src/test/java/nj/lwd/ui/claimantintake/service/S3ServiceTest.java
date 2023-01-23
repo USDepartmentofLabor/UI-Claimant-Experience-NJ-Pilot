@@ -13,6 +13,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import java.net.URL;
 import java.util.Map;
+import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,5 +84,20 @@ class S3ServiceTest {
                                             return req.bucket().equals("bucket")
                                                     && req.key().equals("key");
                                         }));
+    }
+
+    @Test
+    void uploadWorksWithRecentEmployersDto() throws Exception {
+        when(s3Client.utilities().getUrl(any(GetUrlRequest.class)))
+                .thenReturn(new URL("http://url-to-uploaded-object"));
+        RecentEmployersResponse validRecentEmployer =
+                new RecentEmployersResponse(
+                        "0", false, false, 123456789, 1000, "123456789", 1, null, 1234.50);
+
+        // when: upload is called with Employer object
+        s3Service.upload("some-bucket", "my-key", validRecentEmployer, "some-kms-key");
+
+        // then: the s3 client makes a put object requests
+        verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
     }
 }
