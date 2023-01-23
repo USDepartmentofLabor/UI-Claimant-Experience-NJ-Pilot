@@ -106,12 +106,14 @@ jobs:
           COGNITO_CLIENT_SECRET: ${{secrets.COGNITO_CLIENT_SECRET}}
           COGNITO_ISSUER: ${{secrets.COGNITO_ISSUER}}
           COGNITO_DOMAIN: ${{secrets.COGNITO_DOMAIN}}
+          COGNITO_IDENTITY_PROVIDER_NAME: ${{secrets.COGNITO_IDENTITY_PROVIDER_NAME}}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
         run: |
           echo "COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID" >> .env
           echo "COGNITO_CLIENT_SECRET=$COGNITO_CLIENT_SECRET" >> .env
           echo "COGNITO_ISSUER=$COGNITO_ISSUER" >> .env
           echo "COGNITO_DOMAIN=$COGNITO_DOMAIN" >> .env
+          echo "COGNITO_IDENTITY_PROVIDER_NAME=$COGNITO_IDENTITY_PROVIDER_NAME" >> .env
           echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env
 
       - name: Create server/.env file
