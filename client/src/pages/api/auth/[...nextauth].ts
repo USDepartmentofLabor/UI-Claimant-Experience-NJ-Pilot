@@ -57,6 +57,8 @@ async function refreshAccessToken(token: JWT) {
 }
 
 export const authOptions: NextAuthOptions = {
+  // see https://github.com/nextauthjs/next-auth/discussions/3551 for context
+  // related to the pkce, state, nonce check
   providers: [
     CognitoProvider({
       clientId: process.env.COGNITO_CLIENT_ID || '',
