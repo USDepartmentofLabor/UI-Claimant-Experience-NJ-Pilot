@@ -51,6 +51,7 @@ services:
       MOCK_LOOPS_PATH: /mockloopspath
       LOOPS_HOST: ${LOOPS_HOST}
       LOOPS_PATH: ${LOOPS_PATH}
+
   db:
     image: postgres:14.3
     container_name: dol-ui-db
