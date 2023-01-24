@@ -72,7 +72,7 @@ runs:
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@f15ed65f9cc12455139db0f8e8ff6f6aaad6dfda
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
       with:
         task-definition: ops/ecs/client-task-definition.json
         container-name: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
