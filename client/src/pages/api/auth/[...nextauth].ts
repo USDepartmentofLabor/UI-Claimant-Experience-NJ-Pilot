@@ -55,7 +55,6 @@ async function refreshAccessToken(token: JWT) {
     }
   }
 }
-console.log('redirect condition', process.env.ENABLE_IDP_REDIRECT == 'true')
 export const authOptions: NextAuthOptions = {
   // see https://github.com/nextauthjs/next-auth/discussions/3551 for context
   // related to the pkce, state, nonce check
