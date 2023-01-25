@@ -20,6 +20,7 @@ import fillReviewEmployersFields from './formPageFilling/review-employers'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
+    //,{defaultCommandTimeout:6000}
     const whoAmI = generateWhoAmI()
     cy.login({
       sub: faker.datatype.uuid(),
