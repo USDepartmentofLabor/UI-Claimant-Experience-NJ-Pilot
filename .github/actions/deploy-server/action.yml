@@ -22,7 +22,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-python@5ccb29d8773c3f3f653e1705f474dfaa8a06a912
+    - uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435
       with:
         python-version: "3.10"
 
@@ -47,7 +47,7 @@ runs:
 
     - name: Fill in the new image ID in the Amazon ECS task definition (migrations)
       id: task-def-migrations
-      uses: aws-actions/amazon-ecs-render-task-definition@f15ed65f9cc12455139db0f8e8ff6f6aaad6dfda
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
       with:
         task-definition: ops/ecs/db-migrations-task-definition.json
         container-name: dol-ui-claimant-intake-db-migrate-${{ inputs.deploy-env }}
@@ -88,7 +88,7 @@ runs:
 
     - name: Fill in the new image ID in the Amazon ECS task definition (server)
       id: task-def-server
-      uses: aws-actions/amazon-ecs-render-task-definition@f15ed65f9cc12455139db0f8e8ff6f6aaad6dfda
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
       with:
         task-definition: ops/ecs/server-task-definition.json
         container-name: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}

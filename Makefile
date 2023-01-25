@@ -149,6 +149,9 @@ server-task-definition: ## Update the environment placeholders in the server ECS
 db-migrations-task-definition: ## Update the environment placeholders in the db migration ECS task definition, e.g., dev/test/prod (only used in CI)
 	./scripts/render-task-definition --taskdef ops/ecs/db-migrations-task-definition.json.tmpl --environment $(environment) > ops/ecs/db-migrations-task-definition.json
 
+wait-for-server: ## Wait for the server health check to return 200
+	./scripts/wait-for-url.py --url http://localhost:8080/intake-api/actuator/health
+
 nginx-cert: ## Create a self-signed certificate for local development with nginx
 	./scripts/generate-nginx-cert
 

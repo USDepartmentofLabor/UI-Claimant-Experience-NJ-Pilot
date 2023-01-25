@@ -4,9 +4,7 @@ import {
   yupEditEmployer,
 } from 'components/form/EditEmployer/EditEmployer'
 import Error from 'next/error'
-import { Employer } from 'types/claimantInput'
 import { ReactNode, useContext, useMemo } from 'react'
-import { findLastIndex } from 'lodash'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { useRouter } from 'next/router'
 import { NextPageWithLayout } from 'pages/_app'
@@ -19,10 +17,13 @@ import { Routes } from 'constants/routes'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { EmployerBackButton } from 'components/form/ClaimFormButtons/EmployerBackButton/EmployerBackButton'
+import { findLastIndex } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 const nextPage = getNextPage(RecentEmployersPageDefinition)
 
 export const EditEmployers: NextPageWithLayout = () => {
+  const { t: tCommon } = useTranslation('common')
   const { claimFormValues } = useContext(ClaimFormContext)
   const router = useRouter()
   const editEmployerIndex = router.query.editEmployerIndex as string
@@ -33,20 +34,22 @@ export const EditEmployers: NextPageWithLayout = () => {
       claimFormValues?.employers &&
       claimFormValues.employers.length > editEmployerIndexNum &&
       editEmployerIndexNum >= 0 &&
-      claimFormValues.employers[parseInt(editEmployerIndex)].is_employer
+      claimFormValues.employers[parseInt(editEmployerIndex)]
+        .worked_for_imported_employer_in_last_18mo
 
     const initialValues = claimFormValues?.employers
       ? claimFormValues.employers[parseInt(editEmployerIndex)]
-      : (EMPLOYER_SKELETON as unknown as Employer)
-
+      : EMPLOYER_SKELETON
     return { initialValues, isValidIndex }
   }, [editEmployerIndex, claimFormValues])
 
   const getNextIndex = () => {
     const employers = claimFormValues?.employers
-    const index = employers?.findIndex((employer, index) => {
-      return index > editEmployerIndexNum && employer.is_employer
-    })
+    const index = employers?.findIndex(
+      (employer, index) =>
+        index > editEmployerIndexNum &&
+        employer.worked_for_imported_employer_in_last_18mo
+    )
     return index !== -1 ? index : null
   }
 
@@ -54,9 +57,7 @@ export const EditEmployers: NextPageWithLayout = () => {
     const employers = claimFormValues?.employers
     const index = findLastIndex(
       employers?.slice(0, editEmployerIndexNum),
-      (emp: Employer) => {
-        return emp.is_employer ? emp.is_employer : false
-      }
+      (employer) => employer.worked_for_imported_employer_in_last_18mo == true
     )
     return index !== -1 ? index : null
   }
@@ -83,9 +84,8 @@ export const EditEmployers: NextPageWithLayout = () => {
     }
     return nextPage.heading
   }
-
   return !isValidIndex ? (
-    <Error statusCode={404} />
+    <Error title={tCommon('errorStatus.404')} statusCode={404} />
   ) : (
     <EmployerFormik
       index={editEmployerIndex}

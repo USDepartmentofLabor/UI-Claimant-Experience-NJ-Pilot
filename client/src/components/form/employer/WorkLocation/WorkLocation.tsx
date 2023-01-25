@@ -9,6 +9,7 @@ import { useFormikContext } from 'formik'
 import { useClearFields } from 'hooks/useClearFields'
 import { ChangeEventHandler } from 'react'
 import { Trans } from 'react-i18next'
+import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
 
 export const WorkLocation = () => {
   const { values } = useFormikContext<Employer>()
@@ -33,14 +34,22 @@ export const WorkLocation = () => {
     }
   }
 
+  const employerCityAndState =
+    values.is_imported && values.imported_address
+      ? parseCityAndStateFromImportedAddress(values.imported_address)
+      : {
+          city: values?.employer_address?.city,
+          state: values.employer_address?.state,
+        }
+
   return (
     <>
       <Fieldset legend={<b>{t('section_title')} </b>}>
         <YesNoQuestion
           question={
             <Trans t={t} i18nKey="worked_at_employer_address.label">
-              {values?.employer_address?.city}
-              {values?.employer_address?.state}
+              {employerCityAndState.city}
+              {employerCityAndState.state}
             </Trans>
           }
           name={`worked_at_employer_address`}

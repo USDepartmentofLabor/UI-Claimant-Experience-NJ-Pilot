@@ -1,7 +1,6 @@
 import { useTranslation } from 'next-i18next'
-import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+import { useGetRecentEmployers } from 'queries/useGetRecentEmployers'
 import { formatLast18monthsEmployersDate } from 'utils/date/format'
-import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 import {
   Alert,
   Fieldset,
@@ -18,97 +17,211 @@ import {
   getPreviousPage,
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useContext, useMemo, useRef } from 'react'
 import { NextPageWithLayout } from 'pages/_app'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { Routes } from 'constants/routes'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
+import {
+  findFirstImportedEmployerIndex,
+  mergeEmployers,
+  transformWgpmEmployer,
+} from 'utils/employer/employerUtils'
+import { Form, Formik, FormikHelpers } from 'formik'
+import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
+import * as React from 'react'
+import { SaveAndExitLink } from 'components/form/ClaimFormButtons/SaveAndExitLink/SaveAndExitLink'
+import { cognitoSignOut } from 'utils/signout/cognitoSignOut'
+import PageLoader from 'components/loaders/PageLoader'
+import styles from 'components/form/ClaimFormik/ClaimFormik.module.scss'
+import { ClaimFormContext } from 'contexts/ClaimFormContext'
+import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
+import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
+import { Employer } from 'types/claimantInput'
+import Error from 'next/error'
 
 const pageDefinition = RecentEmployersPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
+const step = pageDefinitions.indexOf(RecentEmployersPageDefinition) + 1
+const totalStep = pageDefinitions.length
 
+type RecentEmployerValues = {
+  recent_employers: Employer[]
+}
+
+// TODO: Prevent claimant from using the same FEIN on multiple employers
 export const RecentEmployers: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
-  const { data } = useGetRecentEmployers()
+  const { t: tCommon } = useTranslation('common')
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  const { claimFormValues } = useContext(ClaimFormContext)
+  const {
+    data: wgpmEmployers,
+    isLoading: isLoadingRecentEmployers,
+    isError: isRecentEmployersError,
+  } = useGetRecentEmployers()
+  const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
   const date = formatLast18monthsEmployersDate(String(new Date()))
 
-  return (
-    <ClaimFormik
-      initialValues={pageDefinition.initialValues}
-      validationSchema={pageDefinition.validationSchema}
-      heading={pageDefinition.heading}
-      index={pageDefinitions.indexOf(pageDefinition)}
-    >
-      {({ values }) => {
-        if (!values.employers?.length) {
-          values.employers = data
-        }
+  const handleSaveRecentEmployers = async (values: RecentEmployerValues) => {
+    const importedEmployers = values.recent_employers
+    const manuallyAddedEmployers =
+      claimFormValues?.employers?.filter((employer) => !employer.is_imported) ||
+      []
 
-        const firstImportedEmployerIndex = values?.employers?.findIndex(
-          (employer) => {
-            return employer.is_employer && employer.is_imported
-          }
-        )
+    const reconciledEmployers = [
+      ...importedEmployers,
+      ...manuallyAddedEmployers,
+    ]
 
-        const { nextPageLocal, nextStep } = useMemo(() => {
-          if (firstImportedEmployerIndex === -1) {
-            return { nextPageLocal: nextPage.path, nextStep: nextPage.heading }
-          }
-          return {
-            nextPageLocal: `${Routes.CLAIM.EDIT_EMPLOYER}/${firstImportedEmployerIndex}`,
-            nextStep: EditEmployerPageDefinition.heading,
-          }
-        }, [firstImportedEmployerIndex])
+    await appendAndSaveClaimFormValues({
+      employers: reconciledEmployers,
+    })
+  }
 
-        return (
-          <>
-            <SummaryBox>
-              <SummaryBoxContent>
-                {t('recent_employers.preamble')}
-              </SummaryBoxContent>
-            </SummaryBox>
-            <Fieldset
-              legend={<b>{t('recent_employers.question', { date })}</b>}
-            >
-              {values.employers
-                ?.filter((employer) => employer.is_imported)
-                .map((employer, index) => {
-                  return (
-                    <div key={index}>
-                      <YesNoQuestion
-                        name={`employers[${index}].is_employer`}
-                        question={
-                          <>
-                            <span className="screen-reader-only">
-                              {t('recent_employers.work_at', {
-                                employer: employer.employer_name,
-                              })}
-                            </span>
-                            <span aria-hidden={true}>
-                              {employer.employer_name}
-                            </span>
-                          </>
-                        }
-                      />
-                      {employer.is_employer === false && (
-                        <Alert headingLevel="h3" slim={true} type="warning">
-                          {t('recent_employers.confirm_employer')}
-                        </Alert>
-                      )}
-                    </div>
-                  )
-                })}
-            </Fieldset>
-            <ClaimFormButtons nextStep={nextStep}>
-              <BackButton previousPage={previousPage.path} />
-              <NextButton nextPage={nextPageLocal} />
-            </ClaimFormButtons>
-          </>
-        )
-      }}
-    </ClaimFormik>
-  )
+  const handleSaveAndExit = (values: RecentEmployerValues) => {
+    handleSaveRecentEmployers(values).then(async () => await cognitoSignOut())
+  }
+
+  const handleSubmit = (
+    values: RecentEmployerValues,
+    helpers: FormikHelpers<RecentEmployerValues>
+  ) => {
+    const { setSubmitting } = helpers
+    handleSaveRecentEmployers(values).then(() => setSubmitting(false))
+  }
+
+  if (isLoadingRecentEmployers) {
+    return <PageLoader />
+  } else if (isRecentEmployersError) {
+    return <Error title={tCommon('errorStatus.500')} statusCode={500} />
+  } else {
+    const calculateInitialValues = (): RecentEmployerValues => {
+      const transformedWgpmEmployers =
+        wgpmEmployers === undefined
+          ? []
+          : wgpmEmployers.map((wgpmEmployer) =>
+              transformWgpmEmployer(wgpmEmployer)
+            )
+      const previouslyImportedEmployers = claimFormValues?.employers?.filter(
+        (employer) => employer.is_imported
+      )
+      const recentEmployers = mergeEmployers(
+        transformedWgpmEmployers,
+        previouslyImportedEmployers
+      )
+      return {
+        recent_employers: recentEmployers,
+      }
+    }
+
+    return (
+      <>
+        <PageHeading
+          ref={headingRef}
+          aria-label={`${pageDefinition.heading} ${t('step_progress', {
+            step,
+            totalStep,
+          })}`}
+        >
+          {pageDefinition.heading}
+        </PageHeading>
+        <Formik<RecentEmployerValues>
+          onSubmit={handleSubmit}
+          initialValues={calculateInitialValues()}
+          validationSchema={pageDefinition.validationSchema}
+        >
+          {({ values, errors, submitCount, isSubmitting }) => {
+            const firstImportedEmployerIndex = findFirstImportedEmployerIndex(
+              values.recent_employers
+            )
+
+            const { nextPageLocal, nextStep } = useMemo(() => {
+              if (firstImportedEmployerIndex === -1) {
+                return {
+                  nextPageLocal: nextPage.path,
+                  nextStep: nextPage.heading,
+                }
+              }
+              return {
+                nextPageLocal: `${Routes.CLAIM.EDIT_EMPLOYER}/${firstImportedEmployerIndex}`,
+                nextStep: EditEmployerPageDefinition.heading,
+              }
+            }, [firstImportedEmployerIndex])
+
+            const showErrorSummary =
+              submitCount > 0 && Object.keys(errors).length > 0
+
+            return (
+              <Form className={styles.claimForm}>
+                {showErrorSummary && (
+                  <FormErrorSummary key={submitCount} errors={errors} />
+                )}
+                <SummaryBox>
+                  <SummaryBoxContent>
+                    {t('recent_employers.preamble')}
+                  </SummaryBoxContent>
+                </SummaryBox>
+                {values.recent_employers.length === 0 ? (
+                  <SummaryBox>
+                    <SummaryBoxContent>
+                      {t('recent_employers.no_employers_on_record')}
+                    </SummaryBoxContent>
+                  </SummaryBox>
+                ) : (
+                  <Fieldset
+                    legend={<b>{t('recent_employers.question', { date })}</b>}
+                  >
+                    {values.recent_employers.map((employer, index) => {
+                      return (
+                        <div key={index}>
+                          <YesNoQuestion
+                            name={`recent_employers[${index}].worked_for_imported_employer_in_last_18mo`}
+                            question={
+                              <>
+                                <span className="screen-reader-only">
+                                  {t('recent_employers.work_at', {
+                                    employer: employer.employer_name,
+                                  })}
+                                </span>
+                                <span aria-hidden={true}>
+                                  {employer.employer_name}
+                                </span>
+                              </>
+                            }
+                          />
+                          {employer.worked_for_imported_employer_in_last_18mo ===
+                            false && (
+                            <Alert headingLevel="h3" slim={true} type="warning">
+                              {t('recent_employers.confirm_employer')}
+                            </Alert>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </Fieldset>
+                )}
+                <ClaimFormButtons nextStep={nextStep}>
+                  <BackButton<RecentEmployerValues>
+                    previousPage={previousPage.path}
+                    handleSave={handleSaveRecentEmployers}
+                  />
+                  <NextButton nextPage={nextPageLocal} />
+                </ClaimFormButtons>
+                <div className="margin-top-1 text-center">
+                  <SaveAndExitLink
+                    disabled={isSubmitting}
+                    onClick={() => handleSaveAndExit(values)}
+                  />
+                </div>
+              </Form>
+            )
+          }}
+        </Formik>
+      </>
+    )
+  }
 }
 
 RecentEmployers.getLayout = (page: ReactNode) => {

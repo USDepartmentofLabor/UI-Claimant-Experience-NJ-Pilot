@@ -32,15 +32,18 @@ jest.mock('next/router', () => ({
 describe('the Edit Employer page', () => {
   const fullTimeEmployer = {
     ...validImportedEditEmployer,
-    ...{ is_employer: true, is_full_time: true },
+    ...{ worked_for_imported_employer_in_last_18mo: true, is_full_time: true },
   }
   const partTimeEmployer = {
     ...validImportedEditEmployer,
-    ...{ is_employer: true, is_full_time: false },
+    ...{ worked_for_imported_employer_in_last_18mo: true, is_full_time: false },
   }
   const notAnEmployer = {
     ...validImportedEditEmployer,
-    ...{ is_employer: false, is_full_time: false },
+    ...{
+      worked_for_imported_employer_in_last_18mo: false,
+      is_full_time: false,
+    },
   }
 
   beforeEach(() => {
@@ -58,7 +61,6 @@ describe('the Edit Employer page', () => {
       },
       push: async (str: string) => await mockPush(str),
     }))
-
     const setClaimFormValues = (formData: ClaimantInput) => {
       claimFormValues = formData
     }
@@ -79,11 +81,11 @@ describe('the Edit Employer page', () => {
     const editEmployerComponent = screen.queryByTestId(
       'edit-employer-component'
     )
-    const loadFailArray = screen.queryAllByText(/This page could not be found/)
+    const loadFailArray = screen.queryAllByText('errorStatus.404.')
     const loadFailComponent =
       loadFailArray.length === 0
         ? null
-        : screen.queryAllByText(/This page could not be found/)[0]
+        : screen.queryAllByText('errorStatus.404.')[0]
 
     return { editEmployerComponent, loadFailComponent }
   }
@@ -96,7 +98,6 @@ describe('the Edit Employer page', () => {
     it('Loads when there are no employers in the context', async () => {
       const claimFormValues = {}
       renderEditEmployerPage('0', claimFormValues)
-
       const { editEmployerComponent, loadFailComponent } =
         await renderEditEmployerPage('0', claimFormValues)
       expect(editEmployerComponent).not.toBeInTheDocument()

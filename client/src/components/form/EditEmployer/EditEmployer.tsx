@@ -31,12 +31,15 @@ import {
 import Error from 'next/error'
 import { SummaryBox, SummaryBoxContent } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
+import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
+import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
 
 export const EditEmployer = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
+  const { t: tCommon } = useTranslation('common')
   const { values } = useFormikContext<Employer>()
-
-  if (!values) return <Error statusCode={404} />
+  if (!values)
+    return <Error title={tCommon('errorStatus.404')} statusCode={404} />
 
   const isImported = values.is_imported
 
@@ -44,10 +47,50 @@ export const EditEmployer = () => {
     <>
       {
         <div data-testid="edit-employer-component">
-          <div data-testid="edit-employer-test-subheader">
-            This is the employer name {values.employer_name}
-          </div>
-          {isImported ? null /*(<VerifiedFields></VerifiedFields>)*/ : (
+          {isImported ? (
+            <VerifiedFields>
+              <VerifiedField
+                label={t('verified_fields.employer_name')}
+                value={values.employer_name}
+              />
+              {values.imported_address &&
+                (values.imported_address.employerAddressLine1 ||
+                  values.imported_address.employerAddressLine2 ||
+                  values.imported_address.employerAddressLine3 ||
+                  values.imported_address.employerAddressLine4 ||
+                  values.imported_address.employerAddressLine5 ||
+                  values.imported_address.employerAddressZip) && (
+                  <VerifiedField label={t('verified_fields.employer_address')}>
+                    {values.imported_address?.employerAddressLine1 && (
+                      <div>{values.imported_address?.employerAddressLine1}</div>
+                    )}
+                    {values.imported_address?.employerAddressLine2 && (
+                      <div>{values.imported_address?.employerAddressLine2}</div>
+                    )}
+                    {values.imported_address?.employerAddressLine3 && (
+                      <div>{values.imported_address?.employerAddressLine3}</div>
+                    )}
+                    {values.imported_address?.employerAddressLine4 && (
+                      <div>{values.imported_address?.employerAddressLine4}</div>
+                    )}
+                    {values.imported_address?.employerAddressLine5 && (
+                      <div>{values.imported_address?.employerAddressLine5}</div>
+                    )}
+                    {values.imported_address?.employerAddressZip && (
+                      <div>{values.imported_address?.employerAddressZip}</div>
+                    )}
+                  </VerifiedField>
+                )}
+              <VerifiedField
+                label={t('verified_fields.employer_phone')}
+                value={values.employer_phone?.number}
+              />
+              <VerifiedField
+                label={t('verified_fields.fein')}
+                value={values.fein}
+              />
+            </VerifiedFields>
+          ) : (
             <SummaryBox>
               <SummaryBoxContent>{t('preamble')}</SummaryBoxContent>
             </SummaryBox>
@@ -63,8 +106,7 @@ export const EditEmployer = () => {
   )
 }
 
-/* THIS IS WHERE YOU DEFINE THE INITIAL VALUES */
-export const EMPLOYER_SKELETON = {
+export const EMPLOYER_SKELETON: Employer = {
   isInitiated: true,
   is_imported: undefined,
   // Your Employer
@@ -101,7 +143,6 @@ export const EMPLOYER_SKELETON = {
 }
 
 export const yupEditEmployer = object().shape({
-  /* THIS IS WHERE WE DEFINE THE SCHEMA FOR THE EDIT EMPLOYER PAGE */
   is_imported: boolean(),
   // Your Employer
   employer_name: string()

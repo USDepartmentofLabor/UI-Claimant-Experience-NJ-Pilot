@@ -47,7 +47,6 @@ export const ReviewEmployers: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
   const { claimFormValues } = useContext(ClaimFormContext)
   const employers = claimFormValues?.employers
-  //const router = useRouter()
   const { deleteEmployerAndSaveClaimFormValues } = useSaveClaimFormValues()
   const [state, setState] = useState<ReviewEmployerState>(REVIEW)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
@@ -57,19 +56,11 @@ export const ReviewEmployers: NextPageWithLayout = () => {
   const hasEmployersFunc = () => {
     if (claimFormValues?.employers) {
       return !!claimFormValues.employers.find((employer) => {
-        return employer.is_employer
+        return employer.worked_for_imported_employer_in_last_18mo
       })
     }
     return false
   }
-  // const hasEmployers = useMemo(() => {
-  //   if (claimFormValues?.employers) {
-  //     return !!claimFormValues.employers.find((employer) => {
-  //       return employer.is_employer
-  //     })
-  //   }
-  //   return false
-  // }, [router.asPath, state])
 
   const hasEmployers = hasEmployersFunc()
 
@@ -116,7 +107,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
 
             const employers = values?.employers
             const lastEmployerIndex = findLastIndex(employers, (employer) => {
-              return employer.is_employer ? employer.is_employer : false
+              return !!employer.worked_for_imported_employer_in_last_18mo
             })
 
             const { previousPageLocal } = useMemo(() => {
@@ -182,7 +173,10 @@ export const ReviewEmployers: NextPageWithLayout = () => {
                   </SummaryBoxContent>
                 </SummaryBox>
                 {employers?.map((employer, index) => {
-                  if (!employer.is_employer) return
+                  if (
+                    employer.worked_for_imported_employer_in_last_18mo === false
+                  )
+                    return
 
                   return (
                     <div

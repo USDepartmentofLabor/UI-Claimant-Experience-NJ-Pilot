@@ -1,7 +1,15 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import Home from 'pages'
 import userEvent from '@testing-library/user-event'
 import { Routes } from 'constants/routes'
+
+const mockAxiosPost = jest.fn().mockImplementation(() => {
+  return { then: jest.fn() }
+})
+
+jest.mock('utils/http/serverHttpClient', () => ({
+  post: (a: any, b: any) => mockAxiosPost(a, b),
+}))
 
 jest.mock('next-auth/react')
 import { useSession, signIn, signOut } from 'next-auth/react'
@@ -38,6 +46,10 @@ describe('home page', () => {
       name: 'update_contact_info_button',
     })
 
+    const resetButton = screen.queryByRole('button', {
+      name: 'Reset claim (dev/test)',
+    })
+
     return {
       heading,
       loader,
@@ -46,6 +58,7 @@ describe('home page', () => {
       taxDocButton,
       updatePaymentButton,
       updateContactInfoButton,
+      resetButton,
     }
   }
 
@@ -173,6 +186,47 @@ describe('home page', () => {
     expect(mockNavigateUpdatePayment).toHaveBeenCalledWith(
       Routes.UPDATE_PAYMENT_INFO
     )
+  })
+
+  it('resets the claim when it clicks the reset button', async () => {
+    process.env.NEXT_PUBLIC_APP_ENV = 'test'
+    const user = userEvent.setup()
+
+    mockUseSession.mockReturnValue({
+      status: 'authenticated',
+      data: {
+        user: {
+          email: 'testy.mctestface@test.com',
+        },
+        whoAmI: {
+          firstName: 'Harry',
+          lastName: 'Potter',
+          middleInitial: 'J',
+          birthdate: '1980-07-31',
+          email: 'boy_who_lived@hogwarts.com',
+          phone: '2028675309',
+        },
+      },
+    })
+
+    const { resetButton } = renderHomePage()
+
+    expect(resetButton).toBeInTheDocument()
+
+    if (resetButton) await user.click(resetButton)
+
+    await waitFor(
+      async () => await expect(mockAxiosPost).toHaveBeenCalledTimes(1)
+    )
+    expect(mockAxiosPost).toHaveBeenCalledWith('/partial-claim', {})
+  })
+
+  it('does not display the reset button if the environment is production', () => {
+    process.env.NEXT_PUBLIC_APP_ENV = 'production'
+
+    const { resetButton } = renderHomePage()
+
+    expect(resetButton).not.toBeInTheDocument()
   })
 
   it('takes the user to the update contact info form page', async () => {
