@@ -29,69 +29,12 @@ jest.mock('next/router', () => ({
   }),
 }))
 
-// const mockSuccessfulSSNVerify=()=>{
-//   const mockMutateAsync = jest.fn()
-
-//   const mockUseValidateSSN = jest.fn()
-//   mockMutateAsync.mockImplementation(async () => ({
-//     status: 200,
-//   }))
-//   mockUseValidateSSN.mockImplementation(() => ({
-//     mutateAsync:  mockMutateAsync()})
-//     // async() => ({
-//     //   status: 200,
-//     // })})
-//   )
-//   jest.mock('queries/useValidateSSN', () => ({
-//     useSavePartialClaim: () => mockUseValidateSSN(),
-//   }))
-
-//     return mockUseValidateSSN
-// }
-
-// const setUpHook =  (status: number) => {
-
-//   const mockMutateAsync = jest.fn()
-//   const mockUseValidateSSN = jest.fn()
-//   mockMutateAsync.mockImplementation(async () => ({
-//     status: status,
-//   }))
-//   mockUseValidateSSN.mockImplementation(() => ({
-//     mutateAsync: async (ssn:string) => mockMutateAsync(ssn),
-//   }))
-
-//   jest.mock('queries/useValidateSSN', () => ({
-//     useValidateSSN: () => mockUseValidateSSN(),
-//   }))
-
-//   return  mockMutateAsync
-// }
-// const setUpSSNMock=()=>{
-// jest.mock('queries/useValidateSSN')
-// const mockUseValidateSSN = useValidateSSN as jest.Mock
-// const mockUseValidateMutateAsync= jest.fn(async() =>{
-//     return {status:200}})
-// // jest.mock('queries/useValidateSSN',() => jest.fn()
-// // mockUseValidateSSN.mockImplementationOnce(() => ({
-// //     mutateAsync: mockUseValidateMutateAsync
-// //   })))
-
-//   // const mockUseValidateMutateAsync= jest.fn(async() =>{
-//   //   return {status:200}})
-
-// console.log(typeof(mockUseValidateSSN))
-// }
-// // mockUseValidateSSN.mockImplementation(() => ({
-// //   mutateAsync: mockUseValidateMutateAsync
-// // }))
-
-// // return mockUseValidateMutateAsync
-// // }
 describe('SSN page', () => {
   it('renders without error', () => {
     render(<Ssn />)
     expect(screen.getByLabelText('label')).toBeInTheDocument()
   })
+
   it('can toggle showing and hiding the ssn', async () => {
     const user = userEvent.setup()
     render(<Ssn />)
@@ -125,6 +68,7 @@ describe('SSN page', () => {
     await user.click(screen.getByRole('button', { name: /next/i }))
     expect(mockAppContext.setSsn).toHaveBeenCalledWith({ ssn: ssnValue })
   })
+
   it('continues to screener page when ssn is valid', async () => {
     const ssnValue = '123-45-4444'
     const user = userEvent.setup()
@@ -143,6 +87,7 @@ describe('SSN page', () => {
     await user.click(screen.getByRole('button', { name: /next/i }))
     expect(mockMutateAsync).toHaveBeenCalledTimes(1)
     expect(mockMutateAsync).toHaveBeenCalledWith(ssnValue)
+    expect(mockPush).toHaveBeenCalledWith(Routes.SCREENER)
   })
 
   it('Goes to the home page when cancel button is clicked', async () => {

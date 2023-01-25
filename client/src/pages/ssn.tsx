@@ -68,7 +68,7 @@ const Ssn: NextPageWithLayout = () => {
       {({ errors, isValid, submitForm, isSubmitting, submitCount, values }) => {
         const validRef = useRef(isValid)
         validRef.current = isValid
-
+        const isLoadingSSN = isSubmitting || disableButtons
         const handleClickCancel: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
@@ -100,7 +100,7 @@ const Ssn: NextPageWithLayout = () => {
 
         const showErrorSummary =
           submitCount > 0 && Object.keys(errors).length > 0
-        if (disableButtons) {
+        if (isLoadingSSN) {
           return <PageLoader />
         }
         return (
@@ -131,7 +131,7 @@ const Ssn: NextPageWithLayout = () => {
             <IntakeAppButtons>
               <Button
                 type="button"
-                disabled={isSubmitting || disableButtons}
+                disabled={isLoadingSSN}
                 onClick={handleClickCancel}
                 data-testid="back-button"
                 className="usa-button usa-button--outline width-auto"
@@ -141,7 +141,7 @@ const Ssn: NextPageWithLayout = () => {
               <Button
                 type="submit"
                 onClick={handleClickNext}
-                disabled={isSubmitting || disableButtons}
+                disabled={isLoadingSSN}
                 data-testid="next-button"
                 className="width-auto"
               >
