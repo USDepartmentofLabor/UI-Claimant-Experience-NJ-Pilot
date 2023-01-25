@@ -125,8 +125,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     fillEditEmployerFields()
-    //TODO: Reenable the a11y check when NJWDS changes link color
-    //cy.checkA11y()
+    cy.checkA11y()
     cy.lighthouse()
     cy.clickNext()
 

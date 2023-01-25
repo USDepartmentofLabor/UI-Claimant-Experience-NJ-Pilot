@@ -40,6 +40,9 @@ const nextConfig = {
     ]
   },
   i18n,
+  sassOptions: {
+    includePaths: ['./node_modules/', './node_modules/@uswds/uswds/packages'],
+  },
 }
 
 module.exports = nextConfig

@@ -143,13 +143,10 @@ describe('home page', () => {
     expect(signOutButton).toHaveClass('usa-button')
     expect(taxDocButton).toBeInTheDocument()
     expect(taxDocButton).toHaveClass('usa-button')
-    expect(taxDocButton).toHaveClass('usa-button--secondary')
     expect(updatePaymentButton).toBeInTheDocument()
     expect(updatePaymentButton).toHaveClass('usa-button')
-    expect(updatePaymentButton).toHaveClass('usa-button--secondary')
     expect(updateContactInfoButton).toBeInTheDocument()
     expect(updateContactInfoButton).toHaveClass('usa-button')
-    expect(updateContactInfoButton).toHaveClass('usa-button--secondary')
 
     await user.click(signOutButton as HTMLElement)
 
