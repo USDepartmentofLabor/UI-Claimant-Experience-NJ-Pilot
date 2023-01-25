@@ -17,6 +17,7 @@ interface ITextAreaFieldProps extends TextareaProps {
   labelClassName?: string
   labelHint?: string
   hint?: ReactNode
+  characterLimit?: number
 }
 
 export const TextAreaField = ({
@@ -24,6 +25,7 @@ export const TextAreaField = ({
   labelClassName,
   labelHint,
   hint,
+  characterLimit,
   ...textareaProps
 }: ITextAreaFieldProps) => {
   const [fieldProps, metaProps] = useField({
@@ -60,6 +62,11 @@ export const TextAreaField = ({
         error={showError}
         onInvalid={(e) => e.preventDefault()}
       />
+      {characterLimit && (
+        <span className="usa-hint" id={'character_limit_hint'}>
+          {`${characterLimit} characters allowed`}
+        </span>
+      )}
     </FormGroup>
   )
 }

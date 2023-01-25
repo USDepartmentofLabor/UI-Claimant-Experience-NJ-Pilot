@@ -367,6 +367,16 @@
       "type": "string",
       "pattern": "^[0-9]{3}-[0-9]{3}-[0-9]{3}$"
     },
+    "job_title": {
+      "description": "Job title entered by claimant",
+      "type": "string",
+      "maxLength": 255
+    },
+    "job_description": {
+      "description": "Job description entered by claimant",
+      "type": "string",
+      "maxLength": 255
+    },
     "attending_college_or_job_training": {
       "description": "If the claimant is currently attending college or job training",
       "type": "boolean"

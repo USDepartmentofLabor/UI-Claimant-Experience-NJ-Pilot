@@ -11,6 +11,7 @@ import fillIdentityFields from './formPageFilling/identity'
 import fillDisabilityFields from './formPageFilling/disability'
 import fillPaymentFields from './formPageFilling/payment'
 import fillSsnField from './formPageFilling/ssn'
+import fillOccupationFields from './formPageFilling/occupation'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
 import fillRecentEmployersFields from './formPageFilling/recent-employers'
@@ -131,6 +132,15 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     //review employer page
     fillReviewEmployersFields()
+    cy.checkA11y()
+    cy.lighthouse()
+    cy.clickNext()
+
+    // Occupation page
+    fillOccupationFields({
+      job_title: 'Software Engineer',
+      job_description: 'Good at Googling',
+    })
     cy.checkA11y()
     cy.lighthouse()
     cy.clickNext()
