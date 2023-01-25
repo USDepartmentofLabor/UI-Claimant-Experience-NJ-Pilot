@@ -2,6 +2,7 @@ package nj.lwd.ui.claimantintake.service;
 
 import java.util.ArrayList;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
+import nj.lwd.ui.claimantintake.dto.WagePotentialMonLookupRequest;
 import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ public class RecentEmployersService {
     private final Logger logger = LoggerFactory.getLogger(RecentEmployersService.class);
 
     public RecentEmployersResponse getRecentEmployerValues(String ssn, String claimDate) {
+        WagePotentialMonLookupRequest request = new WagePotentialMonLookupRequest(ssn, claimDate);
 
         // TODO - delete everything below and send the wgpm api call
         // parameters for call are ssn and claimdate
@@ -75,6 +77,7 @@ public class RecentEmployersService {
                         681.00,
                         employerList,
                         817.00);
+
         return recentEmployerResponse;
     }
 }
