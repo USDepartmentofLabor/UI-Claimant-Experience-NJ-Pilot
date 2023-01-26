@@ -7,29 +7,24 @@ import nj.lwd.ui.claimantintake.dto.WagePotentialMonLookupRequest;
 import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
+// import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
 public class RecentEmployersService {
     private final Logger logger = LoggerFactory.getLogger(RecentEmployersService.class);
-    @Autowired final int size = 16 * 1024 * 1024;
-    final ExchangeStrategies strategies =
-            ExchangeStrategies.builder()
-                    .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
-                    .build();
-    //     private final WebClient webClient=WebClient
-    //     .builder()
-    //     .baseUrl("https://countriesnow.space/api/v0.1/countriespopulation/cities")
-    //     .defaultCookie("cookieKey", "cookieValue").exchangeStrategies(strategies)
-    //     .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-    //     .build();
+    //     @Autowired final int size = 16 * 1024 * 1024;
+    //     final ExchangeStrategies strategies =
+    //             ExchangeStrategies.builder()
+    //                     .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+    //                     .build();
+    // Should the size be adjusted??
+
     private final WebClient webClient;
 
     public RecentEmployersService() {
@@ -37,8 +32,7 @@ public class RecentEmployersService {
                 WebClient.builder()
                         .baseUrl(
                                 "http://claimsbatchst:8080/loops-online-integration-1.0.0/loopsmqapi/v1/wagepotentialmonlookup/json")
-                        //     .defaultCookie("cookieKey",
-                        // "cookieValue").exchangeStrategies(strategies)
+                        // .exchangeStrategies(strategies) // add back in if decide to adjust size
 
                         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .filter(logRequest()) // delete me
