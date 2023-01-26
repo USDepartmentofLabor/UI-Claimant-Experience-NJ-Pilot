@@ -24,7 +24,6 @@ import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/
 import { WorkLocation } from '../employer/WorkLocation/WorkLocation'
 import PaymentsReceived from '../employer/PaymentsReceived/PaymentsReceived'
 import {
-  ADDRESS_WITHOUT_STREET_SKELETON,
   EMPLOYER_ADDRESS_SKELETON,
   PHONE_SKELETON,
 } from 'constants/initialValues'
@@ -117,7 +116,7 @@ export const EMPLOYER_SKELETON: Employer = {
   is_full_time: undefined,
   // Work Location
   worked_at_employer_address: undefined,
-  alternate_physical_work_address: { ...ADDRESS_WITHOUT_STREET_SKELETON },
+  alternate_physical_work_address: undefined,
   is_employer_phone_accurate: undefined,
   work_location_phone: { ...PHONE_SKELETON },
   // Business Interests

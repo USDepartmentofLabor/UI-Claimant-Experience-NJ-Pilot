@@ -26,7 +26,12 @@ declare global {
        * @example cy.check_a11y()
        */
       checkA11y(options?: Options): Chainable<Element>
-      clickNext(): Chainable<Element>
+      checkLighthouse(thresholds?: Cypress.LighthouseThresholds): any
+      clickNext(name?: string): Chainable<Element>
+      clickBack(): Chainable<Element>
+      clickAddEmployer(): Chainable<Element>
+      clickEditEmployer(employerName: string): Chainable<Element>
+      clickDeleteEmployer(employerName: string): Chainable<Element>
       clickSubmit(): Chainable<Element>
       login(userObj: JWTPayload)
     }

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "$id": "https://unemployment.nj.gov/schemas/claim-v1.0.json",
   "title": "UI Claimant Intake Form",
   "description": "NJ Unemployment Insurance claimant application form schema",
@@ -7,8 +7,6 @@
   "definitions": {
     "person_name": {
       "$id": "/definitions/person_name",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/person_name",
       "type": "object",
       "properties": {
         "first_name": {
@@ -33,8 +31,6 @@
     },
     "address": {
       "$id": "/definitions/address",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/address",
       "type": "object",
       "properties": {
         "address": {
@@ -59,8 +55,6 @@
     },
     "addressWithoutPOBox": {
       "$id": "/definitions/addressWithoutPOBox",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/addressWithoutPOBox",
       "type": "object",
       "properties": {
         "address": {
@@ -85,9 +79,7 @@
       "required": ["address", "city", "state", "zipcode"]
     },
     "address_without_street": {
-      "$id": "/definitions/address",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/address",
+      "$id": "/definitions/address_without_street",
       "type": "object",
       "properties": {
         "city": {
@@ -104,12 +96,10 @@
           "pattern": "^\\d{5}(-\\d{4})?$"
         }
       },
-      "required": ["address", "city", "state", "zipcode"]
+      "required": ["city", "state", "zipcode"]
     },
     "employer_address": {
       "$id": "/definitions/employer_address",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/employer_address",
       "type": "object",
       "properties": {
         "address": {
@@ -142,8 +132,6 @@
     },
     "phone": {
       "$id": "/definitions/phone",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/phone",
       "type": "object",
       "properties": {
         "number": {
@@ -160,15 +148,13 @@
     },
     "phoneWithSMS": {
       "$id": "/definitions/phoneWithSMS",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/phoneWithSMS",
       "type": "object",
       "properties": {
         "number": {
           "type": "string",
           "minLength": 10,
           "maxLength": 32,
-          "comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
+          "$comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
           "pattern": "^[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}$"
         },
         "sms": {
@@ -179,8 +165,6 @@
     },
     "state": {
       "$id": "/definitions/state",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/state",
       "type": "string",
       "enum": [
         "AK",
@@ -238,15 +222,11 @@
     },
     "canadian_province": {
       "$id": "/definitions/canadian_province",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/canadian_province",
       "type": "string",
       "enum": ["AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK"]
     },
     "territory": {
       "$id": "/definitions/territory",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/territory",
       "type": "string",
       "enum": ["AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI"]
     },
@@ -283,8 +263,6 @@
     },
     "employer": {
       "$id": "/definitions/employer",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/employer",
       "type": "object",
       "properties": {
         "is_imported": {
@@ -304,27 +282,12 @@
             }
           },
           "then": {
-            "required": ["worked_for_imported_employee_in_last_18mo"]
+            "required": ["worked_for_imported_employer_in_last_18mo"]
           }
         },
         "employer_name": {
-          "type": "string",
-          "$comment": "The following conditional may not work since federal_work_in_last_18mo and was_federal are outside of the employer definition. This should be revisited when pulled into the active schema",
-          "if": {
-            "properties": {
-              "federal_work_in_last_18mo": {
-                "type": "boolean",
-                "const": false
-              },
-              "was_federal": {
-                "type": "boolean",
-                "const": false
-              }
-            }
-          },
-          "then": {
-            "required": ["employer_name"]
-          }
+          "description": "The name of the employer",
+          "type": "string"
         },
         "was_federal": {
           "description": "This was a federal employer",
@@ -398,18 +361,7 @@
         },
         "imported_address": {
           "description": "The raw, unparsed address from LOOPS wgpm call for this employer",
-          "type": "object",
-          "if": {
-            "properties": {
-              "is_imported": {
-                "type": "boolean",
-                "const": true
-              }
-            }
-          },
-          "then": {
-            "required": ["imported_address"]
-          }
+          "type": "object"
         },
         "employer_address": {
           "description": "Employer's address",
@@ -425,7 +377,7 @@
           "maxLength": 15,
           "pattern": "^[\\d]{0,15}$"
         },
-        "was_full_time": {
+        "is_full_time": {
           "description": "Job was more than 32 hours per week",
           "type": "boolean"
         },
@@ -436,40 +388,14 @@
         "alternate_physical_work_address": {
           "description": "Physical work location",
           "type": "object",
-          "$ref": "#/definitions/address_without_street",
-          "if": {
-            "properties": {
-              "worked_at_employer_address": {
-                "type": "boolean",
-                "const": false
-              }
-            }
-          },
-          "then": {
-            "required": ["alternate_physical_work_address"]
-          }
+          "$ref": "#/definitions/address_without_street"
         },
         "is_employer_phone_accurate": {
           "type": "boolean"
         },
         "work_location_phone": {
           "description": "Phone number at physical work location",
-          "$ref": "#/definitions/phone",
-          "if": {
-            "properties": {
-              "is_employer_phone_accurate": {
-                "type": "boolean",
-                "const": false
-              },
-              "is_imported": {
-                "type": "boolean",
-                "const": true
-              }
-            }
-          },
-          "then": {
-            "required": ["work_location_phone"]
-          }
+          "$ref": "#/definitions/phone"
         },
         "self_employed": {
           "description": "Claimant was self-employed at this business",
@@ -561,7 +487,18 @@
             "school_employee_on_break",
             "self_employed",
             "shared_work_program"
-          ]
+          ],
+          "if": {
+            "properties": {
+              "separation_circumstance": {
+                "type": "string",
+                "enum": ["still_employed"]
+              }
+            }
+          },
+          "then": {
+            "required": ["reason_still_employed"]
+          }
         },
         "hours_reduced_twenty_percent": {
           "type": "boolean",
@@ -585,18 +522,7 @@
         "employment_last_date": {
           "description": "Last date employed by this employer",
           "type": "string",
-          "format": "date",
-          "if": {
-            "properties": {
-              "separation_circumstance": {
-                "type": "string",
-                "enum": ["still_employed"]
-              }
-            }
-          },
-          "then": {
-            "required": ["employment_last_date"]
-          }
+          "format": "date"
         },
         "discharge_date": {
           "description": "Date employee was discharged by this employer",
@@ -654,7 +580,7 @@
           "type": "boolean",
           "if": {
             "properties": {
-              "definite_recall": {
+              "expect_to_be_recalled": {
                 "type": "boolean",
                 "const": true
               }
@@ -665,49 +591,91 @@
           }
         },
         "payments_received": {
-          "definition": "Pay received since last day of work",
+          "description": "Pay received since last day of work",
           "type": "array",
           "items": {
             "$ref": "#/definitions/payments_received_detail"
           }
         }
       },
-      "required": [
-        "employer_address",
-        "fein",
-        "worked_at_employer_address",
-        "self_employed",
-        "is_owner",
-        "corporate_officer_or_stock_ownership",
-        "separate_circumstance",
-        "employment_start_date",
-        "expect_to_be_recalled",
-        "payments_received",
-        "was_full_time",
-        "is_imported"
+      "allOf": [
+        {
+          "if": {
+            "not": {
+              "properties": {
+                "worked_for_imported_employer_in_last_18mo": {
+                  "type": "boolean",
+                  "const": false
+                }
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "employer_name",
+              "fein",
+              "worked_at_employer_address",
+              "self_employed",
+              "is_owner",
+              "corporate_officer_or_stock_ownership",
+              "separation_circumstance",
+              "employment_start_date",
+              "employment_last_date",
+              "expect_to_be_recalled",
+              "payments_received",
+              "is_full_time",
+              "is_imported"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "is_imported": {
+                "type": "boolean",
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["imported_address"]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "is_imported": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["employer_address"]
+          }
+        }
       ]
     },
     "payments_received_detail": {
       "$id": "/definitions/payments_received_detail",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/payments_received_detail",
       "type": "object",
       "properties": {
         "pay_type": {
           "description": "Type of pay received from employer(s)",
           "type": "string",
           "enum": [
-            "vacation_sick_or_pto",
+            "vacation_sick_pto",
             "final_paycheck",
-            "pension_annuity_or_retirement",
+            "pension_annuity_retirement",
             "severance_or_continuation",
-            "other_payment",
+            "other_pay",
             "none"
           ]
         },
         "total": {
           "description": "Total pay (stored in cents) received from employer for a specific type after becoming unemployed.",
-          "type": "integer"
+          "type": "string",
+          "pattern": "^\\d+$"
         },
         "date_pay_began": {
           "description": "Start date of this pay",
@@ -717,7 +685,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["vacation_sick_or_pto", "severance_or_continuation"]
+                "enum": ["vacation_sick_pto", "severance_or_continuation"]
               }
             }
           },
@@ -732,7 +700,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["vacation_sick_or_pto", "severance_or_continuation"]
+                "enum": ["vacation_sick_pto", "severance_or_continuation"]
               }
             }
           },
@@ -757,6 +725,7 @@
           }
         }
       },
+      "required": ["pay_type"],
       "if": {
         "not": {
           "properties": {
@@ -767,7 +736,7 @@
           }
         },
         "then": {
-          "required": ["pay_type", "total"]
+          "required": ["total"]
         }
       }
     }

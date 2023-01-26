@@ -4,7 +4,7 @@ type dateField = {
   yr: string
 }
 type ChangeInEmploymentOptions = {
-  separation_circumstance: string
+  separation_circumstance?: string
   separation_circumstance_details?: string
   expect_to_be_recalled?: boolean
   employment_start_date?: dateField
@@ -18,11 +18,13 @@ type ChangeInEmploymentOptions = {
 }
 
 export const fillChangeInEmployment = (options: ChangeInEmploymentOptions) => {
-  cy.get(
-    `input[id=separation_circumstance\\.${options.separation_circumstance}`
-  )
-    .parent()
-    .click()
+  if (options.separation_circumstance) {
+    cy.get(
+      `input[id=separation_circumstance\\.${options.separation_circumstance}`
+    )
+      .parent()
+      .click()
+  }
   if (options.reason_still_employed) {
     cy.get(
       `input[id=reason_still_employed\\.${options.reason_still_employed}]`
@@ -30,9 +32,9 @@ export const fillChangeInEmployment = (options: ChangeInEmploymentOptions) => {
   }
 
   if (options.separation_circumstance_details) {
-    cy.get(`textarea[name=separation_circumstance_details]`).type(
-      options.separation_circumstance_details
-    )
+    cy.get(`textarea[name=separation_circumstance_details]`)
+      .clear()
+      .type(options.separation_circumstance_details)
   }
 
   if (options.employment_start_date) {

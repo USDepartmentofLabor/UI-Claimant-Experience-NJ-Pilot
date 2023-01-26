@@ -104,21 +104,66 @@ Cypress.Commands.add('login', (userObj: JWTPayload) => {
 
 // TODO: remove hideElements when pa11y uses WCAG 3
 Cypress.Commands.add('checkA11y', (options: Options = {}) => {
-  cy.pa11y({
-    hideElements: '.nav-future',
-    runners: ['htmlcs'],
-    standard: 'WCAG2AA',
-    actions: ['wait for element #page-loading to be hidden'],
-    ...options,
-  })
+  if (!(Cypress.env('SKIP_CHECKS') === 'enabled')) {
+    cy.pa11y({
+      hideElements: '.nav-future',
+      runners: ['htmlcs'],
+      standard: 'WCAG2AA',
+      actions: ['wait for element #page-loading to be hidden'],
+      ...options,
+    })
+  }
 })
 
-Cypress.Commands.add('clickNext', () => {
+Cypress.Commands.add(
+  'checkLighthouse',
+  (thresholds: Cypress.LighthouseThresholds = undefined) => {
+    if (!(Cypress.env('SKIP_CHECKS') === 'enabled')) {
+      if (thresholds) return cy.lighthouse(thresholds)
+      else return cy.lighthouse()
+    }
+    return
+  }
+)
+
+Cypress.Commands.add('clickNext', (name = 'Next') => {
   cy.get('[data-testid=next-button]')
-    .contains('Next')
+    .contains(name)
     .scrollIntoView()
     .should('be.visible')
     .click()
+})
+
+Cypress.Commands.add('clickBack', () => {
+  cy.get('[data-testid=back-button]')
+    .contains('Back')
+    .scrollIntoView()
+    .should('be.visible')
+    .click()
+})
+
+Cypress.Commands.add('clickAddEmployer', () => {
+  cy.get(`button[data-testid=button]`)
+    .contains('Add Employer')
+    .should('be.visible')
+    .click()
+  cy.contains('h1', 'Add Employer')
+})
+
+Cypress.Commands.add('clickEditEmployer', (employerName: string) => {
+  cy.get(`div[data-testid="${employerName}"]`)
+    .contains('Edit Details')
+    .should('be.visible')
+    .click()
+  cy.contains('h1', 'Edit Employer')
+})
+
+Cypress.Commands.add('clickDeleteEmployer', (employerName: string) => {
+  cy.get(`div[data-testid="${employerName}"]`)
+    .contains('Delete')
+    .should('be.visible')
+    .click()
+  cy.contains(employerName).should('not.exist')
 })
 
 Cypress.Commands.add('clickSubmit', () => {

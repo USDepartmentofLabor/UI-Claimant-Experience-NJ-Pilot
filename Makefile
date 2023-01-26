@@ -41,6 +41,9 @@ e2e-deps: ## installs dependencies for client
 e2e-test-gui-local: ## Runs Cypress tests in browser running the app on localhost
 	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
+e2e-test-gui-local-fast: ## Runs Cypress tests without lighthouse or a11y
+	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000" --env "SKIP_CHECKS=enabled,SERVER_BASE_URL=http://localhost:8080"
+
 e2e-test-gui-docker: ## Runs Cypress tests in browser running the app dockerized
 	cd e2e && yarn run cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
 
