@@ -1,5 +1,7 @@
 package nj.lwd.ui.claimantintake.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 public class RecentEmployersResponse {
@@ -14,16 +16,20 @@ public class RecentEmployersResponse {
             wagePotentialMonLookupResponseEmployerDtos;
     private final double potentialPartialWeeklyBenefitRate;
 
+    @JsonCreator
     public RecentEmployersResponse(
-            String responseStatus,
-            boolean indeterminateInd,
-            boolean invalidMonetaryInd,
-            long claimDateEcho,
-            double grossMaxBenefitAllowance,
-            String ssnEcho,
-            double weeklyBenefitRate,
-            ArrayList<WagePotentialResponseEmployer> wagePotentialMonLookupResponseEmployerDtos,
-            double potentialPartialWeeklyBenefitRate) {
+            @JsonProperty("responseStatus") String responseStatus,
+            @JsonProperty("indeterminateInd") boolean indeterminateInd,
+            @JsonProperty("invalidMonetaryInd") boolean invalidMonetaryInd,
+            @JsonProperty("claimDateEcho") long claimDateEcho,
+            @JsonProperty("grossMaxBenefitAllowance") double grossMaxBenefitAllowance,
+            @JsonProperty("ssnEcho") String ssnEcho,
+            @JsonProperty("weeklyBenefitRate") double weeklyBenefitRate,
+            @JsonProperty("wagePotentialMonLookupResponseEmployerDtos")
+                    ArrayList<WagePotentialResponseEmployer>
+                            wagePotentialMonLookupResponseEmployerDtos,
+            @JsonProperty("potentialPartialWeeklyBenefitRate")
+                    double potentialPartialWeeklyBenefitRate) {
 
         this.responseStatus = responseStatus;
         this.indeterminateInd = indeterminateInd;

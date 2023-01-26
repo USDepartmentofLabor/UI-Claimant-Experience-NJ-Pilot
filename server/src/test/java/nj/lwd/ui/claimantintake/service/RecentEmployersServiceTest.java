@@ -11,7 +11,7 @@ public class RecentEmployersServiceTest {
     void returnsData() {
         RecentEmployersService recentEmployersService = new RecentEmployersService();
         RecentEmployersResponse returnVal =
-                recentEmployersService.getRecentEmployerValues("fake snn", "fake claim date");
+                recentEmployersService.getRecentEmployerValues("600207092", "2022-07-22");
 
         assertTrue(returnVal != null);
         assertTrue(returnVal.getWagePotentialMonLookupResponseEmployerDtos() != null);
