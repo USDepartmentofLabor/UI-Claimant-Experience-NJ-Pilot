@@ -49,6 +49,14 @@
           "name": "COGNITO_DOMAIN"
         },
         {
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/cognito-idp-name",
+          "name": "COGNITO_IDENTITY_PROVIDER_NAME"
+        },
+        {
+	          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/enable-idp-redirect",
+	          "name": "ENABLE_IDP_REDIRECT"
+	      },
+        {
           "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/nextauth-secret",
           "name": "NEXTAUTH_SECRET"
         },
