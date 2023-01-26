@@ -1,4 +1,4 @@
-@import 'src/styles/uswds';
+@use 'uswds-core' as *;
 
 .screenerForm > :first-child,
 .screenerForm > :first-child legend {

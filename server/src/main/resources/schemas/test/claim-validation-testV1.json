@@ -1,5 +1,5 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "$id": "https://unemployment.nj.gov/schemas/claim-v1.0.json",
   "title": "UI Claimant Intake Form",
   "description": "NJ Unemployment Insurance claimant application form schema",
@@ -7,8 +7,6 @@
   "definitions": {
     "person_name": {
       "$id": "/definitions/person_name",
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "$anchor": "#/definitions/person_name",
       "type": "object",
       "properties": {
         "first_name": { "type": "string", "maxLength": 28 },

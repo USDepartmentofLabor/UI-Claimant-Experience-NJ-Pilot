@@ -24,7 +24,7 @@ export type ClaimantInput = ScreenerInput &
   IdentityInput &
   EmployerInput &
   ReviewEmployersInput &
-  // OccupationInput &
+  OccupationInput &
   EducationAndTrainingInput &
   UnionInput &
   DisabilityStatusInput &
@@ -221,6 +221,11 @@ export type IdentityInput = {
   authorization_type?: AuthorizationTypeOption
   alien_registration_number?: string
   drivers_license_or_state_id_number?: string
+}
+
+export type OccupationInput = {
+  job_title?: string
+  job_discription?: string
 }
 
 export type EducationAndTrainingInput = Partial<{

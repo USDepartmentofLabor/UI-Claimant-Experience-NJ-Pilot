@@ -80,6 +80,7 @@ const Home: NextPage = () => {
               <div className="margin-bottom-1">
                 <Button
                   type="button"
+                  secondary
                   onClick={() =>
                     serverHttpClient
                       .post<APIResponseType>('/partial-claim', {})
@@ -95,7 +96,6 @@ const Home: NextPage = () => {
             <div className="margin-bottom-1">
               <Button
                 type="button"
-                secondary
                 onClick={goToUpdatePaymentForm}
                 data-testid="go-to-update-payment"
               >
@@ -105,7 +105,6 @@ const Home: NextPage = () => {
             <div className="margin-bottom-1">
               <Button
                 type="button"
-                secondary
                 onClick={goToUpdateContactInfoForm}
                 data-testid="go-to-update-contact-info"
               >
@@ -115,7 +114,6 @@ const Home: NextPage = () => {
             <div>
               <Button
                 type="button"
-                secondary
                 onClick={goToTaxDocumentsPage}
                 data-testid="go-to-tax-documents"
               >

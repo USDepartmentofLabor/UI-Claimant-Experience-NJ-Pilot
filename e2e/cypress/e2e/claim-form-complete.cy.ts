@@ -11,6 +11,7 @@ import fillIdentityFields from './formPageFilling/identity'
 import fillDisabilityFields from './formPageFilling/disability'
 import fillPaymentFields from './formPageFilling/payment'
 import fillSsnField from './formPageFilling/ssn'
+import fillOccupationFields from './formPageFilling/occupation'
 import fillEducationAndTrainingFields from './formPageFilling/education_and_training'
 import fillReviewFields from './formPageFilling/review'
 import fillRecentEmployersFields from './formPageFilling/recent-employers'
@@ -20,6 +21,7 @@ import fillReviewEmployersFields from './formPageFilling/review-employers'
 
 context('Initial Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
+    //,{defaultCommandTimeout:6000}
     const whoAmI = generateWhoAmI()
     cy.login({
       sub: faker.datatype.uuid(),
@@ -40,7 +42,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     const ssnUnformatted = '987654321'
     fillSsnField({ ssn: ssnUnformatted })
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.get('[data-testid=next-button]')
       .contains('Continue')
       .scrollIntoView()
@@ -50,7 +52,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Screener page
     fillScreenerFields()
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Home page
@@ -59,7 +61,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Prequal page
     fillPrequalFields()
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Identity page
@@ -73,7 +75,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     const ssnFormatted = '987-65-4321'
     cy.get('[data-testid=verified-field-value]').first().contains(ssnFormatted)
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Personal page
@@ -91,7 +93,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       }
     )
     cy.checkA11y()
-    cy.lighthouse({
+    cy.checkLighthouse({
       accessibility: 100,
       'best-practices': 90,
       seo: 90,
@@ -103,7 +105,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     // Contact page
     fillContactFields()
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Demographics page
@@ -114,25 +116,34 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       education_level: 'bachelors',
     })
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     //Recent Employers
     fillRecentEmployersFields()
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     fillEditEmployerFields()
     //TODO: Reenable the a11y check when NJWDS changes link color
     //cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     //review employer page
-    fillReviewEmployersFields()
+    fillReviewEmployersFields('EPIC COFFEE, INC')
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
+    cy.clickNext()
+
+    // Occupation page
+    fillOccupationFields({
+      job_title: 'Software Engineer',
+      job_description: 'Good at Googling',
+    })
+    cy.checkA11y()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Education and training page
@@ -141,7 +152,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       training_through_hiring_hall_or_career_center: 'yes',
     })
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Union page
@@ -151,7 +162,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       union_local_number: '12345',
     })
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Disability page
@@ -164,7 +175,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       contacted_last_employer_after_recovery: 'yes',
     })
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Payment page
@@ -177,7 +188,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
       apply_for_increased_payment_for_dependents: 'yes',
     })
     cy.checkA11y()
-    cy.lighthouse()
+    cy.checkLighthouse()
     cy.clickNext()
 
     // Review page
