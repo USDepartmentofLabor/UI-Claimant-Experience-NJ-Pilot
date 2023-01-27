@@ -871,8 +871,7 @@
     },
     "country_of_origin": {
       "description": "Country of origin",
-      "type": "string",
-      "enum": { "$ref": "https://unemployment.nj.gov/schemas/country" }
+      "$ref": "countries-v1.0.json"
     },
     "employers": {
       "description": "Employers of the claimant in the past 18 months",

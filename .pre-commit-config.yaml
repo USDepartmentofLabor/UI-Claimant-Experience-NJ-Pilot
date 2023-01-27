@@ -67,7 +67,7 @@ repos:
         language: system
 
   - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.6.0
+    rev: 0.21.0
     hooks:
       - id: check-jsonschema
         name: "Check UI schema"
