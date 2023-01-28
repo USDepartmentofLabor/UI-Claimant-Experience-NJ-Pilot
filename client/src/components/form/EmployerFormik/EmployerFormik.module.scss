@@ -1,4 +1,4 @@
-@import 'src/styles/uswds';
+@use 'uswds-core' as *;
 
 .claimForm > :first-child,
 .claimForm > :first-child legend {

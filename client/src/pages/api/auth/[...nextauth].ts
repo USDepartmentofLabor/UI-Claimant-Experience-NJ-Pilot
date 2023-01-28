@@ -55,14 +55,22 @@ async function refreshAccessToken(token: JWT) {
     }
   }
 }
-
 export const authOptions: NextAuthOptions = {
+  // see https://github.com/nextauthjs/next-auth/discussions/3551 for context
+  // related to the pkce, state, nonce check
   providers: [
     CognitoProvider({
       clientId: process.env.COGNITO_CLIENT_ID || '',
       clientSecret: process.env.COGNITO_CLIENT_SECRET || '',
       issuer: process.env.COGNITO_ISSUER,
-      checks: 'nonce',
+      checks: ['pkce', 'state', 'nonce'],
+      ...(process.env.ENABLE_IDP_REDIRECT == 'true' && {
+        authorization: {
+          params: {
+            identity_provider: process.env.COGNITO_IDENTITY_PROVIDER_NAME,
+          },
+        },
+      }),
     }),
   ],
   session: {

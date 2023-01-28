@@ -19,9 +19,11 @@ runs:
         ignore-unfixed: true
         vuln-type: "os,library"
         security-checks: "vuln,secret"
-    - name: Run Anchore vulnerability scan
-      uses: anchore/scan-action@9a22e4caae42db0d4c687ab5431e1c3699d0def1
-      with:
-        image: ${{inputs.image}}
-        severity-cutoff: "negligible"
-        output-format: "table"
+    # Commenting out the grype scan until the following issue is resolved:
+    # https://github.com/anchore/scan-action/issues/211
+    # - name: Run Anchore vulnerability scan
+    #   uses: anchore/scan-action@84aa2c1d0eba986ed2274869c27f1e35a625449f
+    #   with:
+    #     image: ${{inputs.image}}
+    #     severity-cutoff: "negligible"
+    #     output-format: "table"

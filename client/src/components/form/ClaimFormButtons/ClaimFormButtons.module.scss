@@ -1,4 +1,4 @@
-@import 'src/styles/uswds';
+@use 'uswds-core' as *;
 
 .pagination {
   margin: units(2) 0;

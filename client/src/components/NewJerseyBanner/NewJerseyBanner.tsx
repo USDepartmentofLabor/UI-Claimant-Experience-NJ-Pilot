@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
-import dotGovIcon from 'uswds/src/img/icon-dot-gov.svg'
-import httpsIcon from 'uswds/src/img/icon-https.svg'
+import dotGovIcon from '@uswds/uswds/img/icon-dot-gov.svg'
+import httpsIcon from '@uswds/uswds/img/icon-https.svg'
 import nj_flag_small from 'assets/img/nj_flag_small.png'
 import {
   BannerHeader,

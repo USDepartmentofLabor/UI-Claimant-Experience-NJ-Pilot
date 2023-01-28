@@ -660,19 +660,28 @@ const claimForm = {
     },
   },
   occupation: {
+    heading: 'Occupation information',
     search: 'Search',
     choose_the_occupation:
-      'Choose the occupation that best matches what you entered above. If nothing matches, please try another search.',
-    what_is_your_occupation: {
-      label: 'What is your occupation?',
-      required: 'Occupation is required',
+      'If you have multiple occupations, choose your main one or the one you’re most comfortable with. We use your answer for your <0>reemployment profile</0> and for statistical purposes.',
+    reemployment_profile_link:
+      'https://www.dol.gov/agencies/eta/american-job-centers/worker-profiling-remployment-services',
+    job_title: {
+      label: 'What is your main occupation?',
+      errors: {
+        required: 'Occupation is required',
+      },
       min_length: 'Occupation must be at least three characters',
     },
     hint: "If you're not sure, see our",
     list_of_occupations: 'list of occupations',
-    short_description: {
-      label: 'Give a short description of your job:',
-      required: 'Job description is required',
+    job_description: {
+      label: 'Give a short description of your main occupation:',
+      errors: {
+        required: 'Job description is required',
+        maxLength:
+          'Please shorten your occupation description to 255 characters or less (including spaces).',
+      },
     },
     bls_code: {
       required: 'Please select the occupation that best matches your selection',
