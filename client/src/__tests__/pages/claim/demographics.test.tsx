@@ -10,8 +10,7 @@ import {
   raceOptions,
   sexOptions,
 } from 'constants/formOptions'
-
-import { QueryClientProvider, QueryClient } from 'react-query'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -227,9 +226,7 @@ describe('Demographics page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

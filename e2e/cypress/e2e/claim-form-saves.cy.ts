@@ -1,6 +1,8 @@
 import { generateWhoAmI } from './utils/generateWhoAmI'
 import fillPrequalFields from './formPageFilling/prequal'
 import { faker } from '@faker-js/faker'
+import fillSsnField from './formPageFilling/ssn'
+import fillScreenerFields from './formPageFilling/screener'
 
 context('Claim form', { scrollBehavior: 'center' }, () => {
   it('saves completed claim', () => {
@@ -9,7 +11,17 @@ context('Claim form', { scrollBehavior: 'center' }, () => {
       sub: faker.datatype.uuid(),
       whoAmI,
     })
-    cy.visit('/claim/prequal')
+
+    cy.visit('/ssn')
+    fillSsnField({ ssn: '555-55-5555' })
+    cy.get('[data-testid=next-button]')
+      .contains('Continue')
+      .scrollIntoView()
+      .click()
+
+    // screener page
+    fillScreenerFields()
+    cy.clickNext()
 
     fillPrequalFields()
     cy.clickNext()

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { OccupationPageDefinition } from 'constants/pages/definitions/occupationPageDefinition'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import Occupation from 'pages/claim/occupation'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -124,9 +124,7 @@ describe('Occupation page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

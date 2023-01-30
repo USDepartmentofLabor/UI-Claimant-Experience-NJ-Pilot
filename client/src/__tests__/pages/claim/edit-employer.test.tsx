@@ -7,7 +7,7 @@ import { RecentEmployersPageDefinition } from 'constants/pages/definitions/recen
 import { Routes } from 'constants/routes'
 import { validImportedEditEmployer } from 'components/form/EditEmployer/EditEmployer.test'
 import { getNextPage } from 'constants/pages/pageDefinitions'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('queries/useGetPartialClaim')
@@ -360,9 +360,7 @@ describe('the Edit Employer page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 
