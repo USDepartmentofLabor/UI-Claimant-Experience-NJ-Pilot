@@ -1,9 +1,9 @@
 import { screen, render, within } from '@testing-library/react'
 import Contact from 'pages/claim/contact'
 import userEvent from '@testing-library/user-event'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import { useInitialValues } from 'hooks/useInitialValues'
 import { ClaimantInput } from 'types/claimantInput'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -178,9 +178,7 @@ describe('Contact page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

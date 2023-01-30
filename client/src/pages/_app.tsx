@@ -7,16 +7,15 @@ import { LiveAnnouncer } from 'react-aria-live'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextPage } from 'next'
-import { ReactNode, useState } from 'react'
-import { ScreenerInput, SsnInput } from 'types/claimantInput'
-import { IntakeAppContext } from 'contexts/IntakeAppContext'
-
+import { ReactNode } from 'react'
 import 'i18n/i18n'
-import { DefaultLayout } from 'components/layouts/DefaultLayout/DefaultLayout'
 
-import 'styles/styles.scss'
+import { DefaultLayout } from 'components/layouts/DefaultLayout/DefaultLayout'
 import { ActiveSessionHandler } from 'components/ActiveSessionHandler/ActiveSessionHandler'
 import { SessionManager } from 'components/SessionManager/SessionManager'
+import { AppContextProviders } from 'components/AppContextProviders/AppContextProviders'
+
+import 'styles/styles.scss'
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,
@@ -35,10 +34,6 @@ function ClaimApp({
   Component,
   pageProps: { session, ...pageProps },
 }: CustomAppProps) {
-  const [screenerInput, setScreenerInput] = useState<ScreenerInput | undefined>(
-    undefined
-  )
-  const [ssnInput, setSsn] = useState<SsnInput | undefined>(undefined)
   const getLayout = Component.getLayout ?? ((page) => page)
   const page = <Component {...pageProps} />
 
@@ -62,21 +57,14 @@ function ClaimApp({
         <QueryClientProvider client={queryClient}>
           <LiveAnnouncer>
             <ReactQueryDevtools initialIsOpen={false} />
-            <IntakeAppContext.Provider
-              value={{
-                screenerInput,
-                setScreenerInput,
-                ssnInput,
-                setSsn,
-              }}
-            >
+            <AppContextProviders>
               <DefaultLayout>
                 <SessionManager forceOpen={false}></SessionManager>
                 <GridContainer className="margin-top-2">
                   {getLayout(page)}
                 </GridContainer>
               </DefaultLayout>
-            </IntakeAppContext.Provider>
+            </AppContextProviders>
           </LiveAnnouncer>
         </QueryClientProvider>
       </ActiveSessionHandler>

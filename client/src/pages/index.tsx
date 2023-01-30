@@ -1,10 +1,10 @@
+import { useContext, useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@trussworks/react-uswds'
 import { useRouter } from 'next/router'
 import { useSession, signIn } from 'next-auth/react'
-import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import PageLoader from 'components/loaders/PageLoader'
 import { Alert, Table } from '@trussworks/react-uswds'
 import { WhoAmI } from 'types/claimantInput'
@@ -12,19 +12,61 @@ import { Routes } from 'constants/routes'
 import { SignOut } from 'components/SignOut/SignOut'
 import serverHttpClient from 'utils/http/serverHttpClient'
 import { APIResponseType } from 'types/ResponseTypes'
+import { useClaimProgress } from 'hooks/useClaimProgress'
+import { ClaimFormContext } from 'contexts/ClaimFormContext'
+import { useGetPartialClaim } from 'queries/useGetPartialClaim'
+import { IntakeAppContext } from 'contexts/IntakeAppContext'
+import Error from 'next/error'
 
 const Home: NextPage = () => {
   const session = useSession()
   const router = useRouter()
   const { t } = useTranslation('home')
-  const goToFirstPageOfClaimForm = () => router.push(pageDefinitions[0].path)
+  const { t: tCommon } = useTranslation('common')
+  const { continuePath } = useClaimProgress()
+
+  const {
+    data: partialClaim,
+    isLoading: isLoadingGetPartialClaim,
+    isError: partialClaimIsError,
+  } = useGetPartialClaim()
+
+  const goToLastUnfinishedClaimFormPage = () => {
+    // TODO: handle what to do if they have a completed claim
+    let path
+    if (partialClaim?.ssn === undefined && ssnInput?.ssn === undefined) {
+      path = Routes.SSN
+    } else if (
+      partialClaim?.screener_current_country_us === undefined &&
+      screenerInput === undefined
+    ) {
+      path = Routes.SCREENER
+    } else {
+      path = continuePath
+    }
+    router.push(path)
+  }
   const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
   const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
   const goToUpdateContactInfoForm = () =>
     router.push(Routes.UPDATE_CONTACT_INFO)
   const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
 
-  return (
+  const { setClaimFormValues } = useContext(ClaimFormContext)
+  const { ssnInput, screenerInput } = useContext(IntakeAppContext)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const hasInProgressClaim =
+    partialClaim !== undefined && Object.keys(partialClaim).length > 0
+  useEffect(() => {
+    if (!isLoadingGetPartialClaim) {
+      if (partialClaim !== undefined) {
+        setClaimFormValues(partialClaim)
+      }
+      setIsLoading(false)
+    }
+  }, [partialClaim, isLoadingGetPartialClaim])
+
+  const renderedHomePage = (
     <div>
       <Head>
         <title>{t('page_title')}</title>
@@ -70,10 +112,12 @@ const Home: NextPage = () => {
             <div className="margin-bottom-1">
               <Button
                 type="button"
-                onClick={goToFirstPageOfClaimForm}
+                onClick={goToLastUnfinishedClaimFormPage}
                 data-testid="go-to-claim-form"
               >
-                File a claim
+                {hasInProgressClaim
+                  ? t('continue_claim_button')
+                  : t('file_a_claim_button')}
               </Button>
             </div>
             {!isProd && (
@@ -96,6 +140,7 @@ const Home: NextPage = () => {
             <div className="margin-bottom-1">
               <Button
                 type="button"
+                secondary
                 onClick={goToUpdatePaymentForm}
                 data-testid="go-to-update-payment"
               >
@@ -105,6 +150,7 @@ const Home: NextPage = () => {
             <div className="margin-bottom-1">
               <Button
                 type="button"
+                secondary
                 onClick={goToUpdateContactInfoForm}
                 data-testid="go-to-update-contact-info"
               >
@@ -114,6 +160,7 @@ const Home: NextPage = () => {
             <div>
               <Button
                 type="button"
+                secondary
                 onClick={goToTaxDocumentsPage}
                 data-testid="go-to-tax-documents"
               >
@@ -129,6 +176,14 @@ const Home: NextPage = () => {
       </main>
     </div>
   )
+
+  if (isLoading) {
+    return <PageLoader />
+  } else if (partialClaimIsError) {
+    return <Error title={tCommon('errorStatus.500')} statusCode={500} />
+  } else {
+    return renderedHomePage
+  }
 }
 
 export default Home

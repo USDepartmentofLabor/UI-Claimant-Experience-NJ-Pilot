@@ -2,8 +2,8 @@ import { render, screen, within } from '@testing-library/react'
 import Personal from 'pages/claim/personal'
 import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
 import { ClaimantInput } from 'types/claimantInput'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import { useInitialValues } from 'hooks/useInitialValues'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -134,9 +134,7 @@ describe('Personal information component', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

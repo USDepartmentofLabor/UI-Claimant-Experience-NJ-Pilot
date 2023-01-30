@@ -1,4 +1,3 @@
-import { useContext, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import styles from 'styles/pages/claim/prequal.module.scss'
@@ -16,11 +15,6 @@ import DropdownField, {
   DropdownOption,
 } from 'components/form/fields/DropdownField/DropdownField'
 import { statesTerritoriesAndProvinces } from 'fixtures/states_territories_provinces'
-import { useGetPartialClaim } from 'queries/useGetPartialClaim'
-import { IntakeAppContext } from 'contexts/IntakeAppContext'
-import { ClaimFormContext } from 'contexts/ClaimFormContext'
-import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
-import Error from 'next/error'
 
 const stateProvincesTerritoriesDropdownOptions: Record<
   string,
@@ -43,38 +37,7 @@ const nextPage = getNextPage(pageDefinition)
 
 export const Prequal: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'prequal' })
-  const { t: tCommon } = useTranslation('common')
 
-  const {
-    data: partialClaim,
-    isLoading: isLoadingGetPartialClaim,
-    isError: partialClaimIsError,
-  } = useGetPartialClaim()
-  const { ssnInput, screenerInput } = useContext(IntakeAppContext)
-  const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
-  const { claimFormValues } = useContext(ClaimFormContext)
-
-  useEffect(() => {
-    if (!isLoadingGetPartialClaim) {
-      const intakeAppValues = { ...ssnInput, ...screenerInput }
-      if (
-        partialClaim !== undefined &&
-        Object.keys(intakeAppValues).length !== 0
-      ) {
-        let appendedValues
-        if (Object.keys(partialClaim).length === 0) {
-          appendedValues = intakeAppValues
-        } else {
-          appendedValues = { ...claimFormValues, ...intakeAppValues }
-        }
-        appendAndSaveClaimFormValues({ ...partialClaim, ...appendedValues })
-      }
-    }
-  }, [ssnInput, screenerInput])
-
-  if (partialClaimIsError) {
-    return <Error title={tCommon('errorStatus.500')} statusCode={500} />
-  }
   return (
     <ClaimFormik<PrequalInput>
       initialValues={pageDefinition.initialValues}

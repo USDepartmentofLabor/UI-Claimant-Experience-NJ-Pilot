@@ -6,7 +6,7 @@ import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 import userEvent from '@testing-library/user-event'
 import { validImportedEditEmployer } from 'components/form/EditEmployer/EditEmployer.test'
 import RecentEmployers from 'pages/claim/recent-employers'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 
@@ -609,7 +609,6 @@ describe('The Review Employers page', () => {
       expect(editEmployerUpdated).not.toBeInTheDocument()
       expect(addEmployerUpdated).not.toBeInTheDocument()
 
-      screen.debug()
       // Disable validation temporarily so that we don't have to fill the whole form
       // const employer = screen.queryByText('Circuit City')
       // expect(employer).toBeInTheDocument()
@@ -787,9 +786,7 @@ describe('The Review Employers page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

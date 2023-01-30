@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { AxiosError } from 'axios'
 import { useQuery } from 'react-query'
-import serverHttpClient from 'utils/http/serverHttpClient'
 
+import serverHttpClient from 'utils/http/serverHttpClient'
 import { PartialClaimResponseType } from 'types/ResponseTypes'
+import { useSession } from 'next-auth/react'
 
 const getPartialClaim = async () => {
   try {
@@ -25,7 +26,10 @@ const getPartialClaim = async () => {
 }
 
 export const useGetPartialClaim = () => {
-  return useQuery<PartialClaimResponseType, AxiosError>('getPartialClaim', () =>
-    getPartialClaim()
+  const session = useSession()
+  return useQuery<PartialClaimResponseType, AxiosError>(
+    'getPartialClaim',
+    () => getPartialClaim(),
+    { enabled: !!session.data?.user }
   )
 }

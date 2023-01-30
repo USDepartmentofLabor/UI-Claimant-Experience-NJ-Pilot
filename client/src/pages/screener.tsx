@@ -23,12 +23,14 @@ import { getClearFieldsFunctions } from 'hooks/useClearFields'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 
 import styles from 'styles/pages/screener.module.scss'
+import { useGetPartialClaim } from '../queries/useGetPartialClaim'
 
 const Screener: NextPageWithLayout = () => {
   const { t } = useTranslation('screener')
   const router = useRouter()
   const { ssnInput, setScreenerInput } = useContext(IntakeAppContext)
-  const { appendValuesToClaimFormContext } = useSaveClaimFormValues()
+  const { data: partialClaim } = useGetPartialClaim()
+  const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
 
   const initialValues = {
     screener_current_country_us: undefined,
@@ -192,11 +194,14 @@ const Screener: NextPageWithLayout = () => {
               if (shouldRedirect) {
                 await router.push(Routes.SCREENER_REDIRECT)
               } else {
-                await appendValuesToClaimFormContext({
-                  ...ssnInput,
-                  ...values,
-                })
-                await router.push(Routes.HOME)
+                const intakeAppValues = { ...ssnInput, ...values }
+                if (
+                  partialClaim !== undefined &&
+                  Object.keys(intakeAppValues).length !== 0
+                ) {
+                  await appendAndSaveClaimFormValues(intakeAppValues)
+                }
+                await router.push(Routes.CLAIM.PREQUAL)
               }
             }
           })

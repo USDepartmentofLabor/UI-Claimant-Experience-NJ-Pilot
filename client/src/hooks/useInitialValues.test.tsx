@@ -1,13 +1,15 @@
 import { renderHook, waitFor } from '@testing-library/react'
+import { useSession } from 'next-auth/react'
+
 import { useInitialValues } from 'hooks/useInitialValues'
 import { ClaimantInput, WhoAmI } from 'types/claimantInput'
-
-jest.mock('next-auth/react')
-import { useSession } from 'next-auth/react'
 import {
   ClaimFormContext,
   ClaimFormContextType,
 } from 'contexts/ClaimFormContext'
+
+jest.mock('next-auth/react')
+
 const mockUseSession = useSession as jest.Mock
 mockUseSession.mockImplementation()
 
