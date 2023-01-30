@@ -5,7 +5,7 @@ public class WagePotentialMonLookupRequest {
     private final String claimDate;
 
     public WagePotentialMonLookupRequest(String ssn, String claimDate) {
-        this.ssn = ssn;
+        this.ssn = ssn.replaceAll("-", "");
         this.claimDate = claimDate;
     }
 

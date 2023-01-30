@@ -84,6 +84,7 @@ public class RecentEmployersService {
     public RecentEmployersResponse getRecentEmployerValues(String ssn, String claimDate)
             throws WGPMClientException, WGPMServerException {
         WagePotentialMonLookupRequest request = new WagePotentialMonLookupRequest(ssn, claimDate);
+        System.out.println("sending with ssn as" + ssn);
         return webClient
                 .post()
                 .uri("")

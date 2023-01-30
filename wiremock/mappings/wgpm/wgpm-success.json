@@ -1,11 +1,59 @@
 {
   "request": {
-    "method": "GET",
-    "urlPath": "/mockloopspath/wagepotentialmonlookup/json"
+    "method": "POST",
+    "urlPath": "/mockloopspath/wagepotentialmonlookup/json",
+    "bodyPatterns": [
+      {
+        "equalToJson": { "ssn": "123456789" },
+        "ignoreArrayOrder": true,
+        "ignoreExtraElements": true
+      }
+    ]
   },
   "response": {
     "status": 200,
-    "jsonBody": { "status": "Success", "message": "Hello, world!" },
+    "jsonBody": {
+      "responseStatus": "0",
+      "ssnEcho": "123456789",
+      "claimDateEcho": 1658462400000,
+      "grossMaxBenefitAllowance": 11256.0,
+      "weeklyBenefitRate": 804.0,
+      "invalidMonetaryInd": false,
+      "indeterminateInd": false,
+      "wagePotentialMonLookupResponseEmployerDtos": [
+        {
+          "employerAddressLine1": "DIRECT FUTURE MAIL",
+          "employerAddressLine2": "C/O TALX UC EXPRESS",
+          "employerAddressLine3": "P O BOX 6001",
+          "employerAddressLine4": "PEABODY MA",
+          "employerAddressLine5": null,
+          "employerAddressZip": "01961",
+          "employerTelephoneNumber": "6144151035",
+          "employerStatePayrollNumber": null,
+          "employerSequenceNumber": "001",
+          "wagePotentialMonLookupResponseEmpWageDtos": [
+            {
+              "year": "2021",
+              "nameControl": "\u0000\u0000\u0000\u0000",
+              "quarterNumber": "3",
+              "quarterWages": 50000.0,
+              "quarterWeeksWorked": 5
+            },
+            {
+              "year": "2021",
+              "nameControl": "\u0000\u0000\u0000\u0000",
+              "quarterNumber": "2",
+              "quarterWages": 90000.0,
+              "quarterWeeksWorked": 9
+            }
+          ],
+          "employerFein": "031143718000000",
+          "employerName": "VICTORIA'S SECRET STORES, INC."
+        }
+      ],
+      "potentialPartialWeeklyBenefitRate": 964.0
+    },
+
     "headers": {
       "Content-Type": "application/json"
     }
