@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import { BetaBanner } from 'components/BetaBanner/BetaBanner'
 import { TestSiteBanner } from 'components/TestSiteBanner/TestSiteBanner'
 import { NewJerseyBanner } from 'components/NewJerseyBanner/NewJerseyBanner'
 import { NewJerseyHeader } from 'components/NewJerseyHeader/NewJerseyHeader'
@@ -18,6 +18,7 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
       <div>
         {showTestBanner && <TestSiteBanner />}
         <NewJerseyBanner />
+        <BetaBanner />
         <NewJerseyHeader />
         {children}
         <Footer />
