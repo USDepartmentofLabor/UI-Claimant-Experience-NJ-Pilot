@@ -79,6 +79,10 @@ const common = {
     lock_title: 'Lock',
     lock_description: 'A locked padlock',
   },
+  beta_banner: {
+    description: 'This site is in beta.',
+    disclaimer: 'Pages are being tested and improved.',
+  },
   test_banner: ' Test Site - do not use real personal information',
   verified_fields: {
     default_heading:

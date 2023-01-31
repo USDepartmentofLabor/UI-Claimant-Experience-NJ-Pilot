@@ -17,7 +17,28 @@ jest.mock('next/router', () => ({
   }),
 }))
 
+const mockUseGetPartialClaim = jest.fn()
+jest.mock('queries/useGetPartialClaim', () => ({
+  useGetPartialClaim: () => mockUseGetPartialClaim(),
+}))
+
+const mockAppendAndSaveClaimFormValues = jest.fn(async () => Promise.resolve())
+jest.mock('hooks/useSaveClaimFormValues', () => ({
+  useSaveClaimFormValues: () => ({
+    appendAndSaveClaimFormValues: mockAppendAndSaveClaimFormValues,
+  }),
+}))
+
 describe('Screener page', () => {
+  beforeEach(() => {
+    const emptyPartialClaim = {}
+    mockUseGetPartialClaim.mockImplementation(() => ({
+      isLoading: false,
+      data: emptyPartialClaim,
+    }))
+    mockAppendAndSaveClaimFormValues.mockClear()
+  })
+
   const Screener = () => {
     return (
       <QueryClientProvider client={new QueryClient()}>
@@ -25,6 +46,34 @@ describe('Screener page', () => {
       </QueryClientProvider>
     )
   }
+
+  const canUseFormValues = {
+    screener_current_country_us: true,
+    screener_live_in_canada: undefined,
+    screener_job_last_eighteen_months: true,
+    screener_all_work_nj: true,
+    screener_any_work_nj: undefined,
+    screener_currently_disabled: false,
+    screener_military_service_eighteen_months: false,
+    screener_federal_work_in_last_eighteen_months: false,
+    screener_maritime_employer_eighteen_months: false,
+  }
+
+  const fillScreenerFields = async (
+    user: UserEvent,
+    formValues: { [key: string]: boolean | undefined }
+  ) => {
+    for (const k of Object.keys(formValues)) {
+      if (formValues[`${k}`] !== undefined) {
+        await user.click(
+          within(
+            screen.getByRole('group', { name: `${k}.label` })
+          ).getByLabelText(formValues[`${k}`] === true ? 'yes' : 'no')
+        )
+      }
+    }
+  }
+
   it('renders properly', () => {
     render(<Screener />)
 
@@ -278,33 +327,6 @@ describe('Screener page', () => {
       setSsn: jest.fn(),
     }
 
-    const canUseFormValues = {
-      screener_current_country_us: true,
-      screener_live_in_canada: undefined,
-      screener_job_last_eighteen_months: true,
-      screener_all_work_nj: true,
-      screener_any_work_nj: undefined,
-      screener_currently_disabled: false,
-      screener_military_service_eighteen_months: false,
-      screener_federal_work_in_last_eighteen_months: false,
-      screener_maritime_employer_eighteen_months: false,
-    }
-
-    const fillScreenerFields = async (
-      user: UserEvent,
-      formValues: { [key: string]: boolean | undefined }
-    ) => {
-      for (const k of Object.keys(formValues)) {
-        if (formValues[`${k}`] !== undefined) {
-          await user.click(
-            within(
-              screen.getByRole('group', { name: `${k}.label` })
-            ).getByLabelText(formValues[`${k}`] === true ? 'yes' : 'no')
-          )
-        }
-      }
-    }
-
     const testSubmitWithValues = async (disqualifyingValues: {
       [key: string]: boolean
     }) => {
@@ -383,7 +405,41 @@ describe('Screener page', () => {
       expect(mockAppContext.setScreenerInput).toHaveBeenCalledWith(
         canUseFormValues
       )
-      expect(mockPush).toHaveBeenCalledWith(Routes.HOME)
+      expect(mockPush).toHaveBeenCalledWith(Routes.CLAIM.PREQUAL)
     })
+  })
+
+  it('saves a claim with IntakeApp context values upon next', async () => {
+    const user = userEvent.setup()
+
+    const intakeAppContext = {
+      setScreenerInput: jest.fn(),
+      setSsn: jest.fn(),
+      ssnInput: { ssn: '123' },
+      screenerInput: { screener_job_last_eighteen_months: true },
+    }
+
+    const formValues: { [key: string]: boolean | undefined } = {
+      ...canUseFormValues,
+    }
+
+    const intakeAppValues = {
+      ssn: '123',
+      ...canUseFormValues,
+    }
+
+    render(
+      <IntakeAppContext.Provider value={intakeAppContext}>
+        <Screener />
+      </IntakeAppContext.Provider>
+    )
+
+    await fillScreenerFields(user, formValues)
+
+    await user.click(screen.getByRole('button', { name: /next/i }))
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
+      intakeAppValues
+    )
   })
 })

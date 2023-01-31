@@ -10,6 +10,7 @@ import {
   ClaimFormContextType,
 } from 'contexts/ClaimFormContext'
 import { ClaimantInput } from 'types/claimantInput'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('hooks/useInitialValues')
 jest.mock('hooks/useSaveClaimFormValues')
@@ -312,9 +313,7 @@ describe('Review page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

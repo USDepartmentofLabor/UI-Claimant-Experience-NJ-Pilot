@@ -1,18 +1,20 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 import Error from 'next/error'
+import { useTranslation } from 'next-i18next'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { StepIndicator, StepIndicatorStep } from '@trussworks/react-uswds'
+
+import { Routes } from 'constants/routes'
 import {
   PageDefinition,
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
 import PageLoader from 'components/loaders/PageLoader'
-
-import Head from 'next/head'
-import { ClaimFormSideNav } from '../../form/ClaimFormSideNav/ClaimFormSideNav'
-import { ClaimantInput } from 'types/claimantInput'
+import { ClaimFormSideNav } from 'components/form/ClaimFormSideNav/ClaimFormSideNav'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
-import { useTranslation } from 'next-i18next'
+import { useClaimProgress } from 'hooks/useClaimProgress'
 
 type ClaimFormProps = {
   pageDefinition: PageDefinition
@@ -26,18 +28,18 @@ export const ClaimFormLayout = ({
   pageDefinition,
   index,
 }: ClaimFormProps) => {
-  const [claimFormValues, setClaimFormValues] = useState<
-    ClaimantInput | undefined
-  >(undefined)
+  const { setClaimFormValues } = useContext(ClaimFormContext)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const router = useRouter()
   const {
     data: partialClaim,
     isLoading: isLoadingGetPartialClaim,
     isError: partialClaimIsError,
   } = useGetPartialClaim()
+  const { continuePath } = useClaimProgress()
 
   const { t: tCommon } = useTranslation('common')
-
+  const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'development'
   // Initialize any previous partialClaim into ClaimFormContext
   useEffect(() => {
     if (!isLoadingGetPartialClaim) {
@@ -47,6 +49,28 @@ export const ClaimFormLayout = ({
       setIsLoading(false)
     }
   }, [partialClaim, isLoadingGetPartialClaim])
+
+  useEffect(() => {
+    if (!isDev) {
+      if (partialClaim !== undefined) {
+        const screenerPageNotSaved =
+          partialClaim.screener_current_country_us === undefined
+        if (partialClaim.ssn === undefined || screenerPageNotSaved) {
+          router.push(Routes.SSN)
+        } else if (!isLoading && continuePath !== Routes.HOME) {
+          const continuePageIndex = pageDefinitions.findIndex(
+            (page) => page.path === continuePath
+          )
+          const currentPageIndex = pageDefinitions.findIndex(
+            (page) => pageDefinition.path === page.path
+          )
+          if (continuePageIndex < currentPageIndex) {
+            router.push(pageDefinitions[`${continuePageIndex}`].path)
+          }
+        }
+      }
+    }
+  }, [isLoading, continuePath])
 
   const { heading } = pageDefinition // TODO: Pass in heading and index to avoid dependency on pageDefinition?
   const currentPageIndex = index
@@ -66,12 +90,7 @@ export const ClaimFormLayout = ({
     return <Error title={tCommon('errorStatus.500')} statusCode={500} />
   } else {
     return (
-      <ClaimFormContext.Provider
-        value={{
-          claimFormValues,
-          setClaimFormValues,
-        }}
-      >
+      <>
         <Head>
           <title>{heading}</title>
         </Head>
@@ -102,7 +121,7 @@ export const ClaimFormLayout = ({
             {children}
           </main>
         </div>
-      </ClaimFormContext.Provider>
+      </>
     )
   }
 }

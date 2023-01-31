@@ -6,8 +6,7 @@ import {
   disabilityPaymentTypeOptions,
 } from 'constants/formOptions'
 import { DisabilityPageDefinition } from 'constants/pages/definitions/disabilityPageDefinition'
-
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -441,9 +440,7 @@ describe('DisabilityStatus component', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

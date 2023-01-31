@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import { Union } from 'pages/claim/union'
 import userEvent from '@testing-library/user-event'
 import { UnionPageDefinition } from 'constants/pages/definitions/unionPageDefinition'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -137,9 +137,7 @@ describe('Union page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

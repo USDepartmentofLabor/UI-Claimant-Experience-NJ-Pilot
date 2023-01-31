@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker'
 
 import fillScreenerFields from './formPageFilling/screener'
-import homePage from './formPageFilling/home'
 import fillPrequalFields from './formPageFilling/prequal'
 import fillPersonalFields from './formPageFilling/personal'
 import fillDemographicsFields from './formPageFilling/demographics'
@@ -34,11 +33,21 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     //  - What will the app do if the user is not logged in already?
     //  - What will the app do if the user is logged in already?
     //  - How will the user know that they are logged in?
+
+    // Home page
     cy.visit('/')
+    cy.get("h1[data-testid='home-page-heading']").contains(
+      'Apply for Unemployment Insurance'
+    )
+    cy.checkA11y()
+    cy.checkLighthouse()
     cy.get('[data-testid=sign-out-button-cmp]').should('be.visible')
+    cy.get("button[data-testid='go-to-claim-form']")
+      .scrollIntoView()
+      .should('be.visible')
+      .click()
 
     // Ssn (Access your records) page
-    cy.visit('/ssn')
     const ssnUnformatted = '987654321'
     fillSsnField({ ssn: ssnUnformatted })
     cy.checkA11y()
@@ -54,9 +63,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.checkA11y()
     cy.checkLighthouse()
     cy.clickNext()
-
-    // Home page
-    homePage()
 
     // Prequal page
     fillPrequalFields()

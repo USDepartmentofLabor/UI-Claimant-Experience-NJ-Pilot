@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import PaymentInformation from 'pages/claim/payment'
 import { accountTypeOptions, paymentMethodOptions } from 'constants/formOptions'
 import { PaymentPageDefinition } from 'constants/pages/definitions/paymentPageDefinition'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -277,9 +277,7 @@ describe('Payment page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 

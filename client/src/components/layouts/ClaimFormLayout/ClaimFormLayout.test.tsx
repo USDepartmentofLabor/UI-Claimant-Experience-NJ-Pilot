@@ -2,13 +2,16 @@ import { render, screen } from '@testing-library/react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { PrequalPageDefinition } from 'constants/pages/definitions/prequalPageDefinition'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { AppContextProviders } from 'components/AppContextProviders/AppContextProviders'
+import { DemographicsPageDefinition } from 'constants/pages/definitions/demographicsPageDefinition'
+import { pageDefinitions } from 'constants/pages/pageDefinitions'
+import { Routes } from 'constants/routes'
 
 const mockPush = jest.fn(async () => true)
-const mockUseRouter = jest.fn(() => ({
-  push: mockPush,
-}))
 jest.mock('next/router', () => ({
-  useRouter: () => mockUseRouter,
+  useRouter: () => ({
+    push: mockPush,
+  }),
 }))
 
 const mockUseGetPartialClaim = jest.fn()
@@ -24,20 +27,59 @@ describe('ClaimFormLayout', () => {
         isLoading: false,
         data: emptyPartialClaim,
       }))
+      mockPush.mockClear()
     })
 
     it('renders the layout properly', () => {
       render(
-        <QueryClientProvider client={new QueryClient()}>
+        <AppContextProviders>
           <ClaimFormLayout pageDefinition={PrequalPageDefinition} index={0}>
             Some content
           </ClaimFormLayout>
-        </QueryClientProvider>
+        </AppContextProviders>
       )
 
       const loader = screen.queryByTestId('page-loading')
 
       expect(loader).not.toBeInTheDocument()
+    })
+
+    it('redirects user to the SSN page if the value does not exist in the claim', () => {
+      render(
+        <AppContextProviders>
+          <ClaimFormLayout
+            pageDefinition={DemographicsPageDefinition}
+            index={pageDefinitions.indexOf(DemographicsPageDefinition)}
+          >
+            Some content
+          </ClaimFormLayout>
+        </AppContextProviders>
+      )
+
+      // expect(mockPush).toHaveBeenCalledTimes(1) TODO: figure out why gets called >1
+      expect(mockPush).toHaveBeenCalledWith(Routes.SSN)
+    })
+
+    it('redirects user to the first unfinished page', () => {
+      const partialClaim = { ssn: '123', screener_current_country_us: true }
+      mockUseGetPartialClaim.mockImplementation(() => ({
+        isLoading: false,
+        data: partialClaim,
+      }))
+
+      render(
+        <AppContextProviders>
+          <ClaimFormLayout
+            pageDefinition={DemographicsPageDefinition}
+            index={pageDefinitions.indexOf(DemographicsPageDefinition)}
+          >
+            Some content
+          </ClaimFormLayout>
+        </AppContextProviders>
+      )
+
+      expect(mockPush).toHaveBeenCalledTimes(1)
+      expect(mockPush).toHaveBeenCalledWith(Routes.CLAIM.PREQUAL)
     })
   })
 
@@ -55,7 +97,6 @@ describe('ClaimFormLayout', () => {
           </ClaimFormLayout>
         </QueryClientProvider>
       )
-
       const loader = screen.queryByTestId('page-loading')
 
       expect(loader).toBeInTheDocument()

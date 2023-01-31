@@ -2,9 +2,9 @@ import { Identity } from 'pages/claim/identity'
 import { screen, render, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IdentityPageDefinition } from 'constants/pages/definitions/identityPageDefinition'
-import { QueryClient, QueryClientProvider } from 'react-query'
 import { useInitialValues } from 'hooks/useInitialValues'
 import { ClaimantInput } from 'types/claimantInput'
+import { WrappingProviders } from 'utils/testUtils'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -229,9 +229,7 @@ describe('Identity Information Page', () => {
       expect(Page).toHaveProperty('getLayout')
 
       render(
-        <QueryClientProvider client={new QueryClient()}>
-          {Page.getLayout?.(<Page />)}
-        </QueryClientProvider>
+        <WrappingProviders>{Page.getLayout?.(<Page />)}</WrappingProviders>
       )
       const main = screen.queryByRole('main')
 
