@@ -14,10 +14,10 @@
     "status": 200,
     "jsonBody": {
       "responseStatus": "0",
-      "ssnEcho": "123456789",
-      "claimDateEcho": 1658462400000,
-      "grossMaxBenefitAllowance": 11256.0,
-      "weeklyBenefitRate": 804.0,
+      "ssnEcho": "600207195",
+      "claimDateEcho": 1658462,
+      "grossMaxBenefitAllowance": 9534.0,
+      "weeklyBenefitRate": 681.0,
       "invalidMonetaryInd": false,
       "indeterminateInd": false,
       "wagePotentialMonLookupResponseEmployerDtos": [
@@ -28,30 +28,67 @@
           "employerAddressLine4": "PEABODY MA",
           "employerAddressLine5": null,
           "employerAddressZip": "01961",
-          "employerTelephoneNumber": "6144151035",
+          "employerTelephoneNumber": "2015265000",
           "employerStatePayrollNumber": null,
           "employerSequenceNumber": "001",
           "wagePotentialMonLookupResponseEmpWageDtos": [
             {
-              "year": "2021",
+              "year": "2022",
               "nameControl": "\u0000\u0000\u0000\u0000",
-              "quarterNumber": "3",
-              "quarterWages": 50000.0,
+              "quarterNumber": "1",
+              "quarterWages": 14000.0,
               "quarterWeeksWorked": 5
-            },
-            {
-              "year": "2021",
-              "nameControl": "\u0000\u0000\u0000\u0000",
-              "quarterNumber": "2",
-              "quarterWages": 90000.0,
-              "quarterWeeksWorked": 9
             }
           ],
           "employerFein": "031143718000000",
-          "employerName": "VICTORIA'S SECRET STORES, INC."
+          "employerName": "VICTORIA'S SECRET"
+        },
+        {
+          "employerAddressLine1": "The Hall of Justice",
+          "employerAddressLine2": "2212 superhero street",
+          "employerAddressLine3": "SUITE #2",
+          "employerAddressLine4": "WASHINGTON DC",
+          "employerAddressLine5": null,
+          "employerAddressZip": "91121",
+          "employerTelephoneNumber": "5554151012",
+          "employerStatePayrollNumber": null,
+          "employerSequenceNumber": "002",
+          "wagePotentialMonLookupResponseEmpWageDtos": [
+            {
+              "year": "2022",
+              "nameControl": "\u0000\u0000\u0000\u0000",
+              "quarterNumber": "1",
+              "quarterWages": 14000.0,
+              "quarterWeeksWorked": 5
+            }
+          ],
+          "employerFein": "031143718000011",
+          "employerName": "JUSTICE LEAGUE"
+        },
+        {
+          "employerAddressLine1": "123 Secret Identity Street",
+          "employerAddressLine2": "Metropolis KS",
+          "employerAddressLine3": null,
+          "employerAddressLine4": null,
+          "employerAddressLine5": null,
+          "employerAddressZip": "12345",
+          "employerTelephoneNumber": "6092924542",
+          "employerStatePayrollNumber": null,
+          "employerSequenceNumber": "003",
+          "wagePotentialMonLookupResponseEmpWageDtos": [
+            {
+              "year": "2022",
+              "nameControl": "\u0000\u0000\u0000\u0000",
+              "quarterNumber": "1",
+              "quarterWages": 14000.0,
+              "quarterWeeksWorked": 5
+            }
+          ],
+          "employerFein": "022248181800000",
+          "employerName": "THE DAILY PLANET"
         }
       ],
-      "potentialPartialWeeklyBenefitRate": 964.0
+      "potentialPartialWeeklyBenefitRate": 720.0
     },
 
     "headers": {

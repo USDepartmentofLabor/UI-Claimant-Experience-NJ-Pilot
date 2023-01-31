@@ -1,29 +1,27 @@
 package nj.lwd.ui.claimantintake.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.dto.WagePotentialEmployerWages;
 import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
+import nj.lwd.ui.claimantintake.exception.WGPMClientException;
+import nj.lwd.ui.claimantintake.exception.WGPMServerException;
 import org.junit.jupiter.api.Test;
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertTrue;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.Mockito.mock;
-// import static org.mockito.Mockito.mockStatic;
-// import static org.mockito.Mockito.when;
-// import org.reactivestreams.Publisher;
-
-// import org.springframework.core.env.Environment;
-// import org.springframework.web.reactive.function.client.WebClient;
-
-// import nj.lwd.ui.claimantintake.dto.WagePotentialMonLookupRequest;
-
-// import reactor.core.publisher.Mono;
+import org.springframework.core.env.Environment;
 
 public class RecentEmployersServiceTest {
+    final String testDate = "2022-07-22";
+
     public RecentEmployersResponse getValidRecentEmployerAPIResponse() {
         WagePotentialEmployerWages employerWageValue =
-                new WagePotentialEmployerWages("2022", 14000.00, 13, "\u0000\u0000");
+                new WagePotentialEmployerWages(
+                        "2022", 14000.00, "1", 5, "\u0000\u0000\u0000\u0000");
         ArrayList<WagePotentialEmployerWages> wageList =
                 new ArrayList<WagePotentialEmployerWages>();
         wageList.add(employerWageValue);
@@ -36,7 +34,7 @@ public class RecentEmployersServiceTest {
                         "DIRECT FUTURE MAIL",
                         "031143718000000",
                         "01961",
-                        "EPIC COFFEE, INC",
+                        "VICTORIA'S SECRET",
                         null,
                         "6144151035",
                         "001",
@@ -51,25 +49,25 @@ public class RecentEmployersServiceTest {
                         "The Hall of Justice",
                         "031143718000011",
                         "91121",
-                        "Justice for All",
+                        "Justice League",
                         null,
                         "5554151012",
-                        "001",
+                        "002",
                         wageList);
 
         WagePotentialResponseEmployer employer3 =
                 new WagePotentialResponseEmployer(
                         null,
-                        "Metropolis KS",
                         null,
-                        "#7",
+                        null,
+                        "Metropolis KS",
                         "123 Secret Identity Street",
-                        "031143718000066",
+                        "022248181800000",
                         "12345",
                         "Daily Planet",
                         null,
-                        "1114151035",
-                        "001",
+                        "6092924542",
+                        "003",
                         wageList);
         ArrayList<WagePotentialResponseEmployer> employerList = new ArrayList<>();
         employerList.add(employer1);
@@ -82,68 +80,67 @@ public class RecentEmployersServiceTest {
                         "0",
                         false,
                         false,
-                        16584624,
+                        1658462,
                         9534.00,
-                        "244555527",
+                        "600207195",
                         681.00,
                         employerList,
                         817.00);
 
         return recentEmployerResponse;
     }
-    // @BeforeEach
-    // void beforeEach() {
 
-    //     var environment = mock(Environment.class);
-    //     when(environment.getProperty("loops.url")).thenReturn("testurl");
     @Test
     void returnsData() {
-        // String testSSN="600207092";
-        // String testDate="2022-07-22";
-        // var environment = mock(Environment.class);
-        // var webclientStatic = mockStatic(WebClient.class);
-        // var builder = mock(WebClient.Builder.class);
-        // var webClient= mock(WebClient.class);
-        // var postMock= mock(WebClient.RequestBodyUriSpec.class);
-        // var requestBody= mock(WebClient.RequestBodySpec.class);
-        // var requestHeaders=mock(WebClient.RequestHeadersSpec.class);
-        // var response = mock(WebClient.ResponseSpec.class);
-        // // var requestbodyParams= mock(<WagePotentialMonLookupRequest,
-        // Publisher<WagePotentialMonLookupRequest>> WebClient.RequestHeadersSpec<?> )
-        // WagePotentialMonLookupRequest expectedRequest=new
-        // WagePotentialMonLookupRequest(testSSN,testDate);
-        // when(requestHeaders.header(any(),any())).thenReturn(requestHeaders);
+        String testSSN = "123456789";
+        // mock api success call
+        var environment = mock(Environment.class);
+        when(environment.getProperty("loops.url"))
+                .thenReturn("http://localhost:9090/mockloopspath");
 
-        // when(webClient.post()).thenReturn(postMock);
-        // when(postMock.uri("")).thenReturn(requestBody);
-        // when(requestBody.accept(any())).thenReturn(requestBody);
-        // when(requestBody.body(Mono.just(expectedRequest),
-        // WagePotentialMonLookupRequest.class)).thenReturn(requestHeaders);
-        // when(requestHeaders.retrieve()).thenReturn(response);
-        // when(response.bodyToMono(RecentEmployersResponse.class))
-        // .thenReturn(Mono.just(getValidRecentEmployerAPIResponse()));
-        // // when(requestBody.body(any(), WagePotentialMonLookupRequest.class)).thenReturn(null)
-        // when(environment.getProperty("loops.url")).thenReturn("http://localhost:9090/mockloopspath");
-        // webclientStatic.when(WebClient::builder).thenReturn(builder);
-        // when(builder.baseUrl(any())).thenReturn(builder);
-        // when(builder.defaultHeader(any(), any())).thenReturn(builder);
-        // when(builder.filter(any())).thenReturn(builder);
+        RecentEmployersResponse expectedResponse = getValidRecentEmployerAPIResponse();
+        ArrayList<WagePotentialResponseEmployer> expectedEmployers =
+                expectedResponse.getWagePotentialMonLookupResponseEmployerDtos();
+        RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
+        RecentEmployersResponse returnVal =
+                recentEmployersService.getRecentEmployerValues(testSSN, testDate);
+        ArrayList<WagePotentialResponseEmployer> returnedEmployers =
+                returnVal.getWagePotentialMonLookupResponseEmployerDtos();
 
-        // //
-        // when(webclient.builder().baseUrl(any()).defaultHeader(any(),any()).build()).thenReturn(webclient);
-        // when(builder.build()).thenReturn(webClient);
+        assertTrue(returnVal != null);
+        assertTrue(returnedEmployers != null);
+        assertEquals(expectedEmployers.size(), returnedEmployers.size());
+    }
 
-        // // when(webClient.post().uri("").accept(any()).body(any(),
-        // WagePotentialMonLookupRequest.class).retrieve()
-        // .bodyToMono(RecentEmployersResponse.class)
-        // // .block()).thenReturn(getValidRecentEmployerAPIResponse());
+    @Test
+    void returnsClientExceptionOnBadRequest() {
+        String testSSN = "0000000000";
+        var environment = mock(Environment.class);
+        when(environment.getProperty("loops.url"))
+                .thenReturn("http://localhost:9090/error400/mockloopspath");
 
-        // RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
-        // RecentEmployersResponse returnVal =
-        //         recentEmployersService.getRecentEmployerValues("600207092", "2022-07-22");
+        RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
 
-        // assertTrue(returnVal != null);
-        // assertTrue(returnVal.getWagePotentialMonLookupResponseEmployerDtos() != null);
-        // assertEquals(3, returnVal.getWagePotentialMonLookupResponseEmployerDtos().size());
+        assertThrows(
+                WGPMClientException.class,
+                () -> {
+                    recentEmployersService.getRecentEmployerValues(testSSN, testDate);
+                });
+    }
+
+    @Test
+    void returnsClientExceptionOnApiServerError() {
+        String testSSN = "0000000000";
+        var environment = mock(Environment.class);
+        when(environment.getProperty("loops.url"))
+                .thenReturn("http://localhost:9090/error500/mockloopspath");
+
+        RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
+
+        assertThrows(
+                WGPMServerException.class,
+                () -> {
+                    recentEmployersService.getRecentEmployerValues(testSSN, testDate);
+                });
     }
 }

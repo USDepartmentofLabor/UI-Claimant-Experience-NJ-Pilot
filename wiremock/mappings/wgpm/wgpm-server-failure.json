@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/error500/mockloopspath/wagepotentialmonlookup/json",
+    "bodyPatterns": [
+      {
+        "equalToJson": { "ssn": "0000000000" },
+        "ignoreArrayOrder": true,
+        "ignoreExtraElements": true
+      }
+    ]
+  },
+  "response": {
+    "status": 500,
+    "jsonBody": "Internal Server Error",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

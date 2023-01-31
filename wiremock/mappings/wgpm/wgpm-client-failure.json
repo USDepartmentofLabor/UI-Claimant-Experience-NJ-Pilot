@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/error400/mockloopspath/wagepotentialmonlookup/json",
+    "bodyPatterns": [
+      {
+        "equalToJson": { "ssn": "0000000000" },
+        "ignoreArrayOrder": true,
+        "ignoreExtraElements": true
+      }
+    ]
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": "Error from client",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
