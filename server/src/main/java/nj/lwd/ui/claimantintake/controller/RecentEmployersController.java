@@ -57,14 +57,15 @@ public class RecentEmployersController {
         }
 
         String claimDate = getClaimDate();
-        System.out.println("ssn in is " + ssn); // delete
-        // hit WGPM api with ssnNumber, claimDate  and get back employer data
+
         try {
+            // hit WGPM api with ssnNumber, claimDate  and get back employer data
             RecentEmployersResponse recentEmployerResponse =
                     recentEmployersService.getRecentEmployerValues(ssn, claimDate);
 
             boolean savedEmployerData =
                     claimStorageService.saveRecentEmployer(claimantIdpId, recentEmployerResponse);
+
             if (!savedEmployerData) {
                 logger.error(
                         "Saving Recent Employer Response to S3 failed for claimant IdpId {},"
@@ -78,6 +79,7 @@ public class RecentEmployersController {
             // Get just the list of employers and return to client
             ArrayList<WagePotentialResponseEmployer> employerList =
                     recentEmployerResponse.getWagePotentialMonLookupResponseEmployerDtos();
+
             if (employerList == null) {
                 logger.info(
                         "No employer list for claimant IdpId {} but ssn was found correctly",
@@ -86,6 +88,7 @@ public class RecentEmployersController {
             }
 
             return new ResponseEntity<>(employerList, HttpStatus.OK);
+
         } catch (WGPMClientException | WGPMServerException e) {
             externalErrorMsg =
                     String.format(

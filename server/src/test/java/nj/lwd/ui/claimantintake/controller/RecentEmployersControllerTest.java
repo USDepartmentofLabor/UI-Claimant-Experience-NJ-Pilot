@@ -1,7 +1,9 @@
 package nj.lwd.ui.claimantintake.controller;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.dto.WagePotentialEmployerWages;
 import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
+import nj.lwd.ui.claimantintake.exception.WGPMClientException;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.RecentEmployersService;
 import org.junit.jupiter.api.Test;
@@ -27,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(controllers = RecentEmployersController.class)
@@ -207,5 +211,34 @@ public class RecentEmployersControllerTest {
                 .andExpect(content().string(expectedResponse));
         verify(claimStorageService, times(1))
                 .saveRecentEmployer("user", validRecentEmployerResponse);
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnEmptyIfWGPMThrowsException() throws Exception {
+        mockGetSSN();
+        doThrow(WGPMClientException.class)
+                .when(recentEmployersService)
+                .getRecentEmployerValues(anyString(), anyString());
+
+        String expectedResponse =
+                "Unable to retrieve recent employer data as api returned with the";
+
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                MockMvcRequestBuilders.get("/recent-employers")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isNotAcceptable())
+                        .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        verify(claimStorageService, times(0))
+                .saveRecentEmployer("user", validRecentEmployerResponse);
+        assertTrue(content.contains(expectedResponse));
     }
 }

@@ -45,7 +45,14 @@ public class WagePotentialResponseEmployer {
         this.employerStatePayrollNumber = employerStatePayrollNumber;
         this.employerTelephoneNumber = employerTelephoneNumber;
         this.employerSequenceNumber = employerSequenceNumber;
-        this.wagePotentialMonLookupResponseEmpWageDtos = wagePotentialMonLookupResponseEmpWageDtos;
+        this.wagePotentialMonLookupResponseEmpWageDtos =
+                copyArrayList(wagePotentialMonLookupResponseEmpWageDtos);
+    }
+
+    public ArrayList<WagePotentialEmployerWages> copyArrayList(
+            ArrayList<WagePotentialEmployerWages> listToCopy) {
+        ArrayList<WagePotentialEmployerWages> copyEmployerWages = new ArrayList<>(listToCopy);
+        return copyEmployerWages;
     }
 
     public String getEmployerAddressLine5() {
@@ -93,6 +100,6 @@ public class WagePotentialResponseEmployer {
     }
 
     public ArrayList<WagePotentialEmployerWages> getWagePotentialMonLookupResponseEmpWageDtos() {
-        return wagePotentialMonLookupResponseEmpWageDtos;
+        return copyArrayList(this.wagePotentialMonLookupResponseEmpWageDtos);
     }
 }
