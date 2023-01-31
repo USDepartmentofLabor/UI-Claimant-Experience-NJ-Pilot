@@ -20,4 +20,3 @@ aws:
     endpoint-url: http://localhost:4566
 loops:
   url: http://localhost:9090/mockloopspath
-#TODO- change to use localhost info from above
