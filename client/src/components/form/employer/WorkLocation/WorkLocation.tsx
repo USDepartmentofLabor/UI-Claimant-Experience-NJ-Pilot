@@ -83,7 +83,7 @@ export const WorkLocation = () => {
         <YesNoQuestion
           question={
             <Trans t={t} i18nKey="is_employer_phone_accurate.label">
-              {values.employer_phone}
+              {values.employer_phone?.number}
             </Trans>
           }
           name={`is_employer_phone_accurate`}
