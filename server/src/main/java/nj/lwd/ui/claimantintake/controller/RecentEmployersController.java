@@ -98,6 +98,6 @@ public class RecentEmployersController {
             logger.error(externalErrorMsg);
         }
 
-        return new ResponseEntity<>(externalErrorMsg, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(externalErrorMsg, HttpStatus.SERVICE_UNAVAILABLE);
     }
 }

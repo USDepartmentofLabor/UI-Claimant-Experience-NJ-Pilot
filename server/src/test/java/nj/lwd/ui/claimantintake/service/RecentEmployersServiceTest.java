@@ -34,7 +34,7 @@ public class RecentEmployersServiceTest {
                         "DIRECT FUTURE MAIL",
                         "031143718000000",
                         "01961",
-                        "VICTORIA'S SECRET",
+                        "EPIC COFFEE, INC",
                         null,
                         "6144151035",
                         "001",
@@ -92,7 +92,7 @@ public class RecentEmployersServiceTest {
 
     @Test
     void returnsData() {
-        String testSSN = "123456789";
+        String testSSN = "987654321";
         // mock api success call
         var environment = mock(Environment.class);
         when(environment.getProperty("loops.url"))

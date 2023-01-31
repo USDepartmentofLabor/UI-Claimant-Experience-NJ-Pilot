@@ -232,7 +232,7 @@ public class RecentEmployersControllerTest {
                                         .accept(MediaType.APPLICATION_JSON)
                                         .with(csrf()))
                         .andDo(print())
-                        .andExpect(status().isNotAcceptable())
+                        .andExpect(status().isServiceUnavailable())
                         .andReturn();
 
         String content = result.getResponse().getContentAsString();

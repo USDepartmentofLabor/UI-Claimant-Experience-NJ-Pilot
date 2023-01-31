@@ -12,8 +12,6 @@ spring:
 logging:
   level:
     nj.lwd.ui: DEBUG
-MOCK_LOOPS_HOST: http://localhost:9090
-MOCK_LOOPS_PATH: /mockloopspath
 aws:
   accessKeyId: test
   secretKey: test
@@ -21,4 +19,5 @@ aws:
   s3:
     endpoint-url: http://localhost:4566
 loops:
-  url: ${MOCK_LOOPS_HOST}${MOCK_LOOPS_PATH}
+  url: http://localhost:9090/mockloopspath
+#TODO- change to use localhost info from above

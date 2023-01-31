@@ -22,11 +22,11 @@ public class RecentEmployersService {
 
     @Autowired
     public RecentEmployersService(Environment environment) {
-        String endpointUrl = environment.getProperty("loops.url") + "/wagepotentialmonlookup/json";
-        System.out.println("endpoint is " + endpointUrl);
+        String endpointURL = environment.getProperty("loops.url") + "/wagepotentialmonlookup/json";
+
         this.webClient =
                 WebClient.builder()
-                        .baseUrl(endpointUrl)
+                        .baseUrl(endpointURL)
                         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .build();
     }
@@ -34,7 +34,6 @@ public class RecentEmployersService {
     public RecentEmployersResponse getRecentEmployerValues(String ssn, String claimDate)
             throws WGPMClientException, WGPMServerException {
         WagePotentialMonLookupRequest request = new WagePotentialMonLookupRequest(ssn, claimDate);
-        System.out.println("sending with ssn as" + ssn);
         return webClient
                 .post()
                 .uri("")

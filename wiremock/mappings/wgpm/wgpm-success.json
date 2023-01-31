@@ -4,7 +4,7 @@
     "urlPath": "/mockloopspath/wagepotentialmonlookup/json",
     "bodyPatterns": [
       {
-        "equalToJson": { "ssn": "123456789" },
+        "equalToJson": { "ssn": "987654321" },
         "ignoreArrayOrder": true,
         "ignoreExtraElements": true
       }
@@ -41,7 +41,7 @@
             }
           ],
           "employerFein": "031143718000000",
-          "employerName": "VICTORIA'S SECRET"
+          "employerName": "EPIC COFFEE, INC"
         },
         {
           "employerAddressLine1": "The Hall of Justice",

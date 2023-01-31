@@ -30,10 +30,10 @@ const fillReviewEmployersFields = (employer_name: string) => {
   cy.get(`textarea[name=separation_circumstance_details]`).contains(
     separationMessage
   )
-  cy.get(`input[name=employment_last_date\\.month]`).should('have.value', '2')
+  cy.get(`input[name=employment_last_date\\.month]`).should('have.value', '02')
   cy.get(`input[name=employment_last_date\\.day]`).should('have.value', '21')
   cy.get(`input[name=employment_last_date\\.year]`).should('have.value', '2022')
-  cy.get(`input[name=employment_start_date\\.month]`).should('have.value', '1')
+  cy.get(`input[name=employment_start_date\\.month]`).should('have.value', '01')
   cy.get(`input[name=employment_start_date\\.day]`).should('have.value', '13')
   cy.get(`input[name=employment_start_date\\.year]`).should(
     'have.value',
