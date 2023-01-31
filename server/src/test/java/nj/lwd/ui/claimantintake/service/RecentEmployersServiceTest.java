@@ -117,7 +117,7 @@ public class RecentEmployersServiceTest {
         String testSSN = "0000000000";
         var environment = mock(Environment.class);
         when(environment.getProperty("loops.url"))
-                .thenReturn("http://localhost:9090/error400/mockloopspath");
+                .thenReturn("http://localhost:9090/mockloopspath");
 
         RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
 
@@ -133,7 +133,7 @@ public class RecentEmployersServiceTest {
         String testSSN = "0000000000";
         var environment = mock(Environment.class);
         when(environment.getProperty("loops.url"))
-                .thenReturn("http://localhost:9090/error500/mockloopspath");
+                .thenReturn("http://localhost:9090/mockloopspath");
 
         RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
 

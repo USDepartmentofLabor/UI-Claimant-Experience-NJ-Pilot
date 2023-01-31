@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/error400/mockloopspath/wagepotentialmonlookup/json",
+    "urlPath": "/mockloopspath/wagepotentialmonlookup/json",
     "bodyPatterns": [
       {
         "equalToJson": { "ssn": "0000000000" },
