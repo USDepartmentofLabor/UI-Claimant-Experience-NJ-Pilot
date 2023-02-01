@@ -12,6 +12,7 @@ spring:
 logging:
   level:
     nj.lwd.ui: DEBUG
+
 aws:
   accessKeyId: test
   secretKey: test

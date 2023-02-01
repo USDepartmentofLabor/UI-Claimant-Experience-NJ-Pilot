@@ -69,7 +69,7 @@ public class RecentEmployersController {
             if (!savedEmployerData) {
                 logger.error(
                         "Saving Recent Employer Response to S3 failed for claimant IdpId {},"
-                                + " returning anerror to client",
+                                + " returning an error to client",
                         claimantIdpId);
                 return new ResponseEntity<>(
                         "Received recent employer response, but could not save to S3",
