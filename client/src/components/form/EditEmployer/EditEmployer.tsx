@@ -32,6 +32,7 @@ import { SummaryBox, SummaryBoxContent } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
 import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
+import { formatStoredToDisplayPhone } from 'utils/phone/format'
 
 export const EditEmployer = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
@@ -82,7 +83,9 @@ export const EditEmployer = () => {
                 )}
               <VerifiedField
                 label={t('verified_fields.employer_phone')}
-                value={values.employer_phone?.number}
+                value={formatStoredToDisplayPhone(
+                  values.employer_phone?.number
+                )}
               />
               <VerifiedField
                 label={t('verified_fields.fein')}
