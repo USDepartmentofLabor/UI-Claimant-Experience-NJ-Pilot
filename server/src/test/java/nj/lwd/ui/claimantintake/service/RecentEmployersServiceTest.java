@@ -22,8 +22,8 @@ import org.springframework.core.env.Environment;
 @WireMockTest
 public class RecentEmployersServiceTest {
 
-    final String testDate = "2022-07-22";
-    final String testSSN = "987654321";
+    static final String testDate = "2022-07-22";
+    static final String testSSN = "987654321";
 
     public void mockEnvironment(String wiremockUrl) {
         var environment = mock(Environment.class);
