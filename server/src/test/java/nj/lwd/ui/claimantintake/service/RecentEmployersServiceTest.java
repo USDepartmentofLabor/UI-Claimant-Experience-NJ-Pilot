@@ -1,11 +1,15 @@
 package nj.lwd.ui.claimantintake.service;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.util.ArrayList;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.dto.WagePotentialEmployerWages;
@@ -15,13 +19,104 @@ import nj.lwd.ui.claimantintake.exception.WGPMServerException;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.env.Environment;
 
+@WireMockTest
 public class RecentEmployersServiceTest {
+
     final String testDate = "2022-07-22";
+    final String testSSN = "987654321";
+
+    public void mockEnvironment(String wiremockUrl) {
+        var environment = mock(Environment.class);
+        when(environment.getProperty("loops.url")).thenReturn(wiremockUrl);
+    }
+
+    public String getValidResponseStr() {
+        return """
+            {
+            "responseStatus": "0",
+            "ssnEcho": "600207195",
+            "claimDateEcho": 1658462,
+            "grossMaxBenefitAllowance": 9534.0,
+            "weeklyBenefitRate": 681.0,
+            "invalidMonetaryInd": false,
+            "indeterminateInd": false,
+            "wagePotentialMonLookupResponseEmployerDtos": [
+              {
+                "employerAddressLine1": "DIRECT FUTURE MAIL",
+                "employerAddressLine2": "C/O TALX UC EXPRESS",
+                "employerAddressLine3": "P O BOX 6001",
+                "employerAddressLine4": "PEABODY MA",
+                "employerAddressLine5": null,
+                "employerAddressZip": "01961",
+                "employerTelephoneNumber": "2015265000",
+                "employerStatePayrollNumber": null,
+                "employerSequenceNumber": "001",
+                "wagePotentialMonLookupResponseEmpWageDtos": [
+                  {
+                    "year": "2022",
+                    "nameControl": "\\u0000\\u0000\\u0000\\u0000",
+                    "quarterNumber": "1",
+                    "quarterWages": 14000.0,
+                    "quarterWeeksWorked": 5
+                  }
+                ],
+                "employerFein": "031143718000000",
+                "employerName": "EPIC COFFEE, INC"
+              },
+              {
+                "employerAddressLine1": "The Hall of Justice",
+                "employerAddressLine2": "2212 superhero street",
+                "employerAddressLine3": "SUITE #2",
+                "employerAddressLine4": "WASHINGTON DC",
+                "employerAddressLine5": null,
+                "employerAddressZip": "91121",
+                "employerTelephoneNumber": "5554151012",
+                "employerStatePayrollNumber": null,
+                "employerSequenceNumber": "002",
+                "wagePotentialMonLookupResponseEmpWageDtos": [
+                  {
+                    "year": "2022",
+                    "nameControl": "\\u0000\\u0000\\u0000\\u0000",
+                    "quarterNumber": "1",
+                    "quarterWages": 14000.0,
+                    "quarterWeeksWorked": 5
+                  }
+                ],
+                "employerFein": "031143718000011",
+                "employerName": "JUSTICE LEAGUE"
+              },
+              {
+                "employerAddressLine1": "123 Secret Identity Street",
+                "employerAddressLine2": "Metropolis KS",
+                "employerAddressLine3": null,
+                "employerAddressLine4": null,
+                "employerAddressLine5": null,
+                "employerAddressZip": "12345",
+                "employerTelephoneNumber": "6092924542",
+                "employerStatePayrollNumber": null,
+                "employerSequenceNumber": "003",
+                "wagePotentialMonLookupResponseEmpWageDtos": [
+                  {
+                    "year": "2022",
+                    "nameControl": "\\u0000\\u0000\\u0000\\u0000",
+                    "quarterNumber": "1",
+                    "quarterWages": 14000.0,
+                    "quarterWeeksWorked": 5
+                  }
+                ],
+                "employerFein": "022248181800000",
+                "employerName": "THE DAILY PLANET"
+              }
+            ],
+            "potentialPartialWeeklyBenefitRate": 720.0
+          }"""
+                .strip();
+    }
 
     public RecentEmployersResponse getValidRecentEmployerAPIResponse() {
         WagePotentialEmployerWages employerWageValue =
                 new WagePotentialEmployerWages(
-                        "2022", 14000.00, "1", 5, "\u0000\u0000\u0000\u0000");
+                        "2022", 14000.00, "1", 5, "\\u0000\\u0000\\u0000\\u0000");
         ArrayList<WagePotentialEmployerWages> wageList =
                 new ArrayList<WagePotentialEmployerWages>();
         wageList.add(employerWageValue);
@@ -91,12 +186,19 @@ public class RecentEmployersServiceTest {
     }
 
     @Test
-    void returnsData() {
-        String testSSN = "987654321";
+    void returnsData(WireMockRuntimeInfo wmRuntimeInfo) {
+
         // mock api success call
+        WireMock wireMock = wmRuntimeInfo.getWireMock();
+        wireMock.register(
+                post("/wagepotentialmonlookup/json")
+                        .willReturn(
+                                ok().withHeader("Content-Type", "application/json")
+                                        .withBody(getValidResponseStr())));
+
+        String baseURL = wmRuntimeInfo.getHttpBaseUrl();
         var environment = mock(Environment.class);
-        when(environment.getProperty("loops.url"))
-                .thenReturn("http://localhost:9090/mockloopspath");
+        when(environment.getProperty("loops.url")).thenReturn(baseURL);
 
         RecentEmployersResponse expectedResponse = getValidRecentEmployerAPIResponse();
         ArrayList<WagePotentialResponseEmployer> expectedEmployers =
@@ -113,11 +215,19 @@ public class RecentEmployersServiceTest {
     }
 
     @Test
-    void returnsClientExceptionOnBadRequest() {
-        String testSSN = "0000000000";
+    void returnsClientExceptionOnBadRequest(WireMockRuntimeInfo wmRuntimeInfo) {
+        WireMock wireMock = wmRuntimeInfo.getWireMock();
+        wireMock.register(
+                post("/wagepotentialmonlookup/json")
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(400)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withBody("Client error")));
+
+        String baseURL = wmRuntimeInfo.getHttpBaseUrl();
         var environment = mock(Environment.class);
-        when(environment.getProperty("loops.url"))
-                .thenReturn("http://localhost:9090/mockloopspath");
+        when(environment.getProperty("loops.url")).thenReturn(baseURL);
 
         RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
 
@@ -129,11 +239,19 @@ public class RecentEmployersServiceTest {
     }
 
     @Test
-    void returnsClientExceptionOnApiServerError() {
-        String testSSN = "0000000000";
+    void returnsClientExceptionOnApiServerError(WireMockRuntimeInfo wmRuntimeInfo) {
+        WireMock wireMock = wmRuntimeInfo.getWireMock();
+        wireMock.register(
+                post("/wagepotentialmonlookup/json")
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(500)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withBody("Internal server error")));
+
+        String baseURL = wmRuntimeInfo.getHttpBaseUrl();
         var environment = mock(Environment.class);
-        when(environment.getProperty("loops.url"))
-                .thenReturn("http://localhost:9090/mockloopspath");
+        when(environment.getProperty("loops.url")).thenReturn(baseURL);
 
         RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
 
