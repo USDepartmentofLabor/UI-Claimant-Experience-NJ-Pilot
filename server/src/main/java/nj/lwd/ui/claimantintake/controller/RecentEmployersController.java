@@ -40,7 +40,7 @@ public class RecentEmployersController {
         // TODO- change this to be a service call
         // create claim date as previous sunday
         return LocalDate.now()
-                .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
