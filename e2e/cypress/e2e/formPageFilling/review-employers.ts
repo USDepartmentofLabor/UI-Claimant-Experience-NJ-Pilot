@@ -15,8 +15,8 @@ const fillReviewEmployersFields = (employer_name: string) => {
   fillChangeInEmployment({
     separation_circumstance: 'quit_or_retired',
     separation_circumstance_details: separationMessage,
-    employment_start_date: { mo: '01', day: '13', yr: '2012' },
-    employment_last_date: { mo: '02', day: '21', yr: '2022' },
+    employment_start_date: { mo: '1', day: '13', yr: '2012' },
+    employment_last_date: { mo: '2', day: '21', yr: '2022' },
     expect_to_be_recalled: false,
   })
 
@@ -30,10 +30,10 @@ const fillReviewEmployersFields = (employer_name: string) => {
   cy.get(`textarea[name=separation_circumstance_details]`).contains(
     separationMessage
   )
-  cy.get(`input[name=employment_last_date\\.month]`).should('have.value', '02')
+  cy.get(`input[name=employment_last_date\\.month]`).should('have.value', '2')
   cy.get(`input[name=employment_last_date\\.day]`).should('have.value', '21')
   cy.get(`input[name=employment_last_date\\.year]`).should('have.value', '2022')
-  cy.get(`input[name=employment_start_date\\.month]`).should('have.value', '01')
+  cy.get(`input[name=employment_start_date\\.month]`).should('have.value', '1')
   cy.get(`input[name=employment_start_date\\.day]`).should('have.value', '13')
   cy.get(`input[name=employment_start_date\\.year]`).should(
     'have.value',
