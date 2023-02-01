@@ -19,4 +19,4 @@ aws:
   s3:
     endpoint-url: http://localhost:4566
 loops:
-  url: http://localhost:9090/mockloopspath
+  url: http://localhost:9090/mockloopspath/wagepotentialmonlookup/json

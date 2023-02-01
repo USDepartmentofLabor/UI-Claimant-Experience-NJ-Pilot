@@ -24,6 +24,7 @@ public class RecentEmployersServiceTest {
 
     static final String testDate = "2022-07-22";
     static final String testSSN = "987654321";
+    static final String mockedEndpoint = "/mockloopspath/wagepotentialmonlookup/json";
 
     public void mockEnvironment(String wiremockUrl) {
         var environment = mock(Environment.class);
@@ -191,14 +192,14 @@ public class RecentEmployersServiceTest {
         // mock api success call
         WireMock wireMock = wmRuntimeInfo.getWireMock();
         wireMock.register(
-                post("/wagepotentialmonlookup/json")
+                post(mockedEndpoint)
                         .willReturn(
                                 ok().withHeader("Content-Type", "application/json")
                                         .withBody(getValidResponseStr())));
 
         String baseURL = wmRuntimeInfo.getHttpBaseUrl();
         var environment = mock(Environment.class);
-        when(environment.getProperty("loops.url")).thenReturn(baseURL);
+        when(environment.getProperty("loops.url")).thenReturn(baseURL + mockedEndpoint);
 
         RecentEmployersResponse expectedResponse = getValidRecentEmployerAPIResponse();
         ArrayList<WagePotentialResponseEmployer> expectedEmployers =
@@ -218,7 +219,7 @@ public class RecentEmployersServiceTest {
     void returnsClientExceptionOnBadRequest(WireMockRuntimeInfo wmRuntimeInfo) {
         WireMock wireMock = wmRuntimeInfo.getWireMock();
         wireMock.register(
-                post("/wagepotentialmonlookup/json")
+                post("/mockloopspath/wagepotentialmonlookup/json")
                         .willReturn(
                                 aResponse()
                                         .withStatus(400)
@@ -227,7 +228,7 @@ public class RecentEmployersServiceTest {
 
         String baseURL = wmRuntimeInfo.getHttpBaseUrl();
         var environment = mock(Environment.class);
-        when(environment.getProperty("loops.url")).thenReturn(baseURL);
+        when(environment.getProperty("loops.url")).thenReturn(baseURL + mockedEndpoint);
 
         RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
 
@@ -242,7 +243,7 @@ public class RecentEmployersServiceTest {
     void returnsClientExceptionOnApiServerError(WireMockRuntimeInfo wmRuntimeInfo) {
         WireMock wireMock = wmRuntimeInfo.getWireMock();
         wireMock.register(
-                post("/wagepotentialmonlookup/json")
+                post("/mockloopspath/wagepotentialmonlookup/json")
                         .willReturn(
                                 aResponse()
                                         .withStatus(500)
@@ -251,7 +252,7 @@ public class RecentEmployersServiceTest {
 
         String baseURL = wmRuntimeInfo.getHttpBaseUrl();
         var environment = mock(Environment.class);
-        when(environment.getProperty("loops.url")).thenReturn(baseURL);
+        when(environment.getProperty("loops.url")).thenReturn(baseURL + mockedEndpoint);
 
         RecentEmployersService recentEmployersService = new RecentEmployersService(environment);
 

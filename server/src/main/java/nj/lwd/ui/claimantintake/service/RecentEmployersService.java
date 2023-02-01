@@ -23,7 +23,7 @@ public class RecentEmployersService {
     @Autowired
     public RecentEmployersService(Environment environment) {
 
-        String endpointURL = environment.getProperty("loops.url") + "/wagepotentialmonlookup/json";
+        String endpointURL = environment.getProperty("loops.url");
         logger.debug("recent employer service endpoint is ", endpointURL);
         this.webClient =
                 WebClient.builder()
