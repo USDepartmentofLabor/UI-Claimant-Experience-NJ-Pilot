@@ -41,7 +41,7 @@ public class RecentEmployersController {
         // create claim date as previous sunday
         return LocalDate.now()
                 .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
-                .format(DateTimeFormatter.ofPattern("yyyy-dd-MM"));
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     @GetMapping()
