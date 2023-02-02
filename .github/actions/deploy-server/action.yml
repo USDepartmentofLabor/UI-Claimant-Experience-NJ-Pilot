@@ -7,18 +7,18 @@ inputs:
   aws-role-to-assume:
     description: The AWS role to assume
     required: true
-  server-image:
-    description: The server image to deploy
-    required: true
-  image-tag:
-    description: The tag for the server image to deploy
-    required: true
   db-migrations-subnet:
     description: The subnet to run db migrations in
     required: true
   db-migrations-security-group:
     description: The security group for use by db migration tasks
     required: true
+  image-uri:
+    description: Image uri if provided by workflow
+outputs:
+  image-uri:
+    description: The uri for the server image pushed to AWS ECR
+    value: ${{ inputs.image-uri == '' && steps.build-server.outputs.image-uri || inputs.image-uri }}
 runs:
   using: "composite"
   steps:
@@ -36,9 +36,13 @@ runs:
         role-to-assume: ${{ inputs.aws-role-to-assume }}
         aws-region: us-east-1
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@261a7de32bda11ba01f4d75c4ed6caf3739e54be
+    - name: Build, Push, and Scan Server Image
+      if: ${{ inputs.image-uri == '' }}
+      uses: ./.github/actions/build-server
+      id: build-server
+      with:
+        deploy-env: ${{ inputs.deploy-env }}
+        aws-role-to-assume: ${{ inputs.aws-role-to-assume }}
 
     - name: Set environment name in ECS task definition template (migrations)
       shell: bash
@@ -51,7 +55,8 @@ runs:
       with:
         task-definition: ops/ecs/db-migrations-task-definition.json
         container-name: dol-ui-claimant-intake-db-migrate-${{ inputs.deploy-env }}
-        image: ${{ inputs.server-image }}
+        image: ${{ inputs.image-uri == '' && steps.build-server.outputs.image-uri || inputs.image-uri }}
+        # If not provided image, create it
 
     - name: Deploy Amazon ECS task definition (migrations)
       id: deploy-task-def-migrations
@@ -64,7 +69,7 @@ runs:
       shell: bash
       env:
         RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
-        IMAGE_TAG: ${{ inputs.image-tag }}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         scripts/snapshot-rds.sh
 
@@ -92,7 +97,9 @@ runs:
       with:
         task-definition: ops/ecs/server-task-definition.json
         container-name: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}
-        image: ${{ inputs.server-image }}
+        image:
+          ${{ inputs.image-uri == '' && steps.build-server.outputs.image-uri || inputs.image-uri }}
+          # If not provided image, create it
 
     - name: Deploy Amazon ECS task definition (server)
       uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
