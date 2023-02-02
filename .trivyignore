@@ -10,3 +10,13 @@ CVE-2022-41854
 # Ignore CVE-2016-1000027 while we research the finding
 # See https://github.com/newjersey/dol-ui-claimant-intake/issues/1224
 CVE-2016-1000027
+# Ignore the following Java vulnerabilities until we upgrade the application's
+# Java version
+# https://github.com/newjersey/dol-ui-claimant-intake/issues/1408
+CVE-2022-21618
+CVE-2022-21619
+CVE-2022-21624
+CVE-2022-21628
+CVE-2022-39399
+CVE-2023-21835
+CVE-2023-21843
