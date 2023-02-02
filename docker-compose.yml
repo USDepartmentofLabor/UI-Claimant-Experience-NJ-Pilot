@@ -48,7 +48,7 @@ services:
       DB_HOST: db
       DB_PORT: 5432
       MOCK_LOOPS_HOST: http://wiremock:8080
-      MOCK_LOOPS_PATH: /mockloopspath
+      MOCK_LOOPS_PATH: /mockloopspath/wagepotentialmonlookup/json
       LOOPS_HOST: ${LOOPS_HOST:-}
       LOOPS_PATH: ${LOOPS_PATH:-}
 
