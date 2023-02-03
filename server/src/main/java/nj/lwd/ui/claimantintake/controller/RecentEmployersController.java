@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @RestController
 @RequestMapping("/recent-employers")
@@ -45,7 +46,6 @@ public class RecentEmployersController {
     @GetMapping()
     public ResponseEntity<?> getRecentEmployers(Authentication authentication) {
         String claimantIdpId = authentication.getName();
-        String externalErrorMsg = "";
         String ssn = claimStorageService.getSSN(claimantIdpId);
         if (ssn == null) {
             logger.info("SSN was null for claimant IdpId {}", claimantIdpId);
@@ -87,13 +87,15 @@ public class RecentEmployersController {
 
             return new ResponseEntity<>(employerList, HttpStatus.OK);
 
-        } catch (RuntimeException e) {
-            logger.error(
-                    "Unable to retrieve recent employer data as api returned with the"
-                            + " following error: {}",
-                    e.getMessage());
-        }
+        } catch (HttpStatusCodeException e) {
+            var externalErrorMsg =
+                    String.format(
+                            "Unable to retrieve recent employer data as api returned with the"
+                                    + " following error: %s",
+                            e.getMessage());
 
-        return new ResponseEntity<>(externalErrorMsg, HttpStatus.SERVICE_UNAVAILABLE);
+            logger.error(externalErrorMsg);
+            return new ResponseEntity<>(externalErrorMsg, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 }
