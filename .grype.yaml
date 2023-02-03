@@ -24,3 +24,27 @@ ignore:
   - vulnerability: GHSA-w37g-rhq8-7m4j
     package:
       name: snakeyaml
+  # Ignore the following Java vulnerabilities until we upgrade the application's
+  # Java version
+  # https://github.com/newjersey/dol-ui-claimant-intake/issues/1408
+  - vulnerability: CVE-2022-21618
+    package:
+      name: openjdk-17-jre-headless
+  - vulnerability: CVE-2022-21619
+    package:
+      name: openjdk-17-jre-headless
+  - vulnerability: CVE-2022-21624
+    package:
+      name: openjdk-17-jre-headless
+  - vulnerability: CVE-2022-21628
+    package:
+      name: openjdk-17-jre-headless
+  - vulnerability: CVE-2022-39399
+    package:
+      name: openjdk-17-jre-headless
+  - vulnerability: CVE-2023-21835
+    package:
+      name: openjdk-17-jre-headless
+  - vulnerability: CVE-2023-21843
+    package:
+      name: openjdk-17-jre-headless
