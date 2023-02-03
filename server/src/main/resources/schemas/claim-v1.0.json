@@ -742,6 +742,16 @@
     }
   },
   "properties": {
+    "is_ssn_ssa_verified": {
+      "description": "The social security number has been verified through the SSA",
+      "type": "boolean",
+      "default": false
+    },
+    "is_drivers_license_or_state_id_verified": {
+      "description": "The id/license number has been verified through NJ MVC lookup",
+      "type": "boolean",
+      "default": false
+    },
     "claimant_name": {
       "$ref": "#/definitions/person_name"
     },
