@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import TextAreaField from '../../fields/TextAreaField/TextAreaField'
 import { DateInputField } from '../../fields/DateInputField/DateInputField'
 import { CurrencyField } from '../../fields/CurrencyField/CurrencyField'
-import { PayTypeOption } from 'constants/formOptions'
+import { PayTypeOption, payTypesWithDates } from 'constants/formOptions'
 
 const PaymentsReceivedDetail = (props: {
   name: string
@@ -18,9 +18,8 @@ const PaymentsReceivedDetail = (props: {
   })
   const lowerLabel = label.charAt(0).toLowerCase() + label.slice(1)
   const showNote = payType === 'other_pay'
-  const showDates =
-    payType === 'vacation_sick_pto' || payType === 'severance_or_continuation'
-
+  const showDates = payTypesWithDates.includes(payType)
+  const dateHint = payType === 'holiday' ? 'holiday' : 'default'
   return (
     <div
       data-testid={`payDetail-${name}`}
@@ -54,13 +53,9 @@ const PaymentsReceivedDetail = (props: {
         {showDates && (
           <>
             <p>
-              {name === 'vacation_sick_pto'
-                ? t(
-                    'payments_received.payments_received_detail.dates_hint.vacation_sick_pto'
-                  )
-                : t(
-                    'payments_received.payments_received_detail.dates_hint.severance_or_continuation'
-                  )}
+              {t(
+                `payments_received.payments_received_detail.dates_hint.label.${dateHint}`
+              )}
             </p>
             <DateInputField
               legend={t(

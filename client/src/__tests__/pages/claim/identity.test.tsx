@@ -1,5 +1,5 @@
 import { Identity } from 'pages/claim/identity'
-import { screen, render, waitFor, within } from '@testing-library/react'
+import { screen, render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { IdentityPageDefinition } from 'constants/pages/definitions/identityPageDefinition'
 import { useInitialValues } from 'hooks/useInitialValues'
@@ -23,6 +23,14 @@ describe('Identity Information Page', () => {
       ssn: ssn,
     }
   }
+
+  window.open = jest.fn()
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value: {
+      assign: window.open,
+    },
+  })
 
   const mockClaimantInput = (
     birthDate: string | undefined,
@@ -51,143 +59,274 @@ describe('Identity Information Page', () => {
     const verifiedBirthdateValue = within(verifiedFieldsSection).getByText(
       displayedBirthdate
     )
-    const idNumber = screen.queryByLabelText(
-      'drivers_license_or_state_id_number.label'
-    )
-    const authorizedToWorkInUSRadioGroup = screen.getByRole('group', {
-      name: 'work_authorization.authorized_to_work.label',
+
+    const hasNJIssuedIDQuestion = screen.getByRole('group', {
+      name: 'has_nj_issued_id.label',
     })
-    const yesAuthorizedToWorkInUS = within(
-      authorizedToWorkInUSRadioGroup
-    ).queryByLabelText('yes')
-    const noAuthorizedToWorkInUS = within(
-      authorizedToWorkInUSRadioGroup
-    ).queryByLabelText('no')
+    const hasNJIssuedIDYesAnswer = within(hasNJIssuedIDQuestion).getByRole(
+      'radio',
+      { name: 'yes' }
+    )
+    const hasNJIssuedIDNoAnswer = within(hasNJIssuedIDQuestion).getByRole(
+      'radio',
+      { name: 'no' }
+    )
+
+    const authorizationType = screen.getByRole('group', {
+      name: 'work_authorization.authorization_type.label',
+    })
 
     expect(verifiedBirthdateLabel).toBeInTheDocument()
     expect(verifiedBirthdateValue).toBeInTheDocument()
 
-    expect(idNumber).toBeInTheDocument()
-    expect(yesAuthorizedToWorkInUS).toBeInTheDocument()
-    expect(noAuthorizedToWorkInUS).toBeInTheDocument()
+    expect(hasNJIssuedIDYesAnswer).toBeInTheDocument()
+    expect(hasNJIssuedIDNoAnswer).toBeInTheDocument()
+
+    expect(authorizationType).toBeInTheDocument()
   })
 
-  it('hides and shows explanation field', async () => {
+  it("Clears NJ driver's license or state ID", async () => {
     const user = userEvent.setup()
     render(<Identity />)
 
-    const authorizedToWorkInUSRadioGroup = screen.getByRole('group', {
-      name: 'work_authorization.authorized_to_work.label',
+    const hasNJIssuedIDQuestion = screen.getByRole('group', {
+      name: 'has_nj_issued_id.label',
     })
-    const yesAuthorizedToWorkInUS = within(
-      authorizedToWorkInUSRadioGroup
-    ).getByLabelText('yes')
-    const noAuthorizedToWorkInUS = within(
-      authorizedToWorkInUSRadioGroup
-    ).getByLabelText('no')
-
-    expect(yesAuthorizedToWorkInUS).toBeInTheDocument()
-    expect(noAuthorizedToWorkInUS).toBeInTheDocument()
-    // Field is hidden
-    expect(
-      screen.queryByLabelText(
-        'work_authorization.not_authorized_to_work_explanation.label'
-      )
-    ).not.toBeInTheDocument()
-
-    // Toggle field to show up
-    await user.click(noAuthorizedToWorkInUS)
-    const notAllowedToWorkInUSExplanationField = await screen.findByLabelText(
-      'work_authorization.not_authorized_to_work_explanation.label'
+    const hasNJIssuedIDYesAnswer = within(hasNJIssuedIDQuestion).getByRole(
+      'radio',
+      { name: 'yes' }
     )
-    expect(notAllowedToWorkInUSExplanationField).toBeInTheDocument()
+    const hasNJIssuedIDNoAnswer = within(hasNJIssuedIDQuestion).getByRole(
+      'radio',
+      { name: 'no' }
+    )
 
-    // Toggle field to hidden
-    await user.click(yesAuthorizedToWorkInUS)
-    await waitFor(() => {
-      expect(notAllowedToWorkInUSExplanationField).not.toBeInTheDocument()
+    // Toggle NJ issued ID 'Yes' to show driver's license or state id text field
+    await user.click(hasNJIssuedIDYesAnswer)
+
+    const driversLicenseOrStateIDNumber = screen.getByRole('textbox', {
+      name: 'drivers_license_or_state_id_number.label',
     })
+
+    // Input text into driver's license or state id text field
+    await userEvent.type(driversLicenseOrStateIDNumber, '1234567890')
+    expect(driversLicenseOrStateIDNumber).toHaveValue('1234567890')
+
+    // Toggle NJ issued ID 'No', then 'Yes' to hide and show driver's license or state id text field
+    await user.click(hasNJIssuedIDNoAnswer)
+    await user.click(hasNJIssuedIDYesAnswer)
+
+    // Check that driver's license or state id text field is cleared
+    const driversLicenseOrStateIDNumberReturned = screen.getByRole('textbox', {
+      name: 'drivers_license_or_state_id_number.label',
+    })
+    expect(driversLicenseOrStateIDNumberReturned).toHaveValue('')
   })
 
-  it('hides and shows work authorization fields', async () => {
+  it('Click USCIS/Alien registration number help modal link', async () => {
     const user = userEvent.setup()
-
     render(<Identity />)
 
-    const authorizedToWorkInUSRadioGroup = screen.getByRole('group', {
-      name: 'work_authorization.authorized_to_work.label',
+    const authorizationType = screen.getByRole('group', {
+      name: 'work_authorization.authorization_type.label',
     })
-    const yesAuthorizedToWorkInUS = within(
-      authorizedToWorkInUSRadioGroup
-    ).getByLabelText('yes')
-    const noAuthorizedToWorkInUS = within(
-      authorizedToWorkInUSRadioGroup
-    ).getByLabelText('no')
-
-    expect(yesAuthorizedToWorkInUS).toBeInTheDocument()
-    expect(noAuthorizedToWorkInUS).toBeInTheDocument()
-
-    // Dropdown is hidden
-    expect(
-      screen.queryByLabelText('work_authorization.authorization_type.label')
-    ).not.toBeInTheDocument()
-
-    // Toggle the field to show up
-    await user.click(yesAuthorizedToWorkInUS)
-    const authorizationTypeDropdown = await screen.findByLabelText(
-      'work_authorization.authorization_type.label'
-    )
-    const usCitizenOption = within(authorizationTypeDropdown).getByText(
-      'work_authorization.authorization_type.options.US_citizen_or_national'
-    )
-    const permanentResidentOption = within(authorizationTypeDropdown).getByText(
-      'work_authorization.authorization_type.options.permanent_resident'
-    )
-    const temporaryLegalWorkerOption = within(
-      authorizationTypeDropdown
-    ).getByText(
-      'work_authorization.authorization_type.options.temporary_legal_worker'
-    )
-
-    expect(usCitizenOption).toBeInTheDocument()
-    expect(permanentResidentOption).toBeInTheDocument()
-    expect(temporaryLegalWorkerOption).toBeInTheDocument()
-
-    // Field is hidden
-    expect(
-      screen.queryByLabelText(
-        'work_authorization.alien_registration_number.label'
-      )
-    ).not.toBeInTheDocument()
-
-    // Field stays hidden
-    await user.selectOptions(authorizationTypeDropdown, usCitizenOption)
-    expect(
-      screen.queryByLabelText(
-        'work_authorization.alien_registration_number.label'
-      )
-    ).not.toBeInTheDocument()
-
-    // Toggle field to show up
-    await user.selectOptions(authorizationTypeDropdown, permanentResidentOption)
-    const alienRegistrationNumberField = await screen.findByLabelText(
-      'work_authorization.alien_registration_number.label'
-    )
-    expect(alienRegistrationNumberField).toBeInTheDocument()
-
-    // Field stays shown for this option
-    await user.selectOptions(
-      authorizationTypeDropdown,
-      temporaryLegalWorkerOption
-    )
-    expect(alienRegistrationNumberField).toBeInTheDocument()
-
-    // Toggle field and dropdown to hidden
-    await user.click(noAuthorizedToWorkInUS)
-    await waitFor(() => {
-      expect(authorizationTypeDropdown).not.toBeInTheDocument()
-      expect(alienRegistrationNumberField).not.toBeInTheDocument()
+    const authorizationTypeAuthorizationCard = within(
+      authorizationType
+    ).getByRole('radio', {
+      name: 'work_authorization.authorization_type.options.employment_authorization_or_card_or_doc',
     })
+
+    // Select 'Yes; I have an employment authorization card/document' radio button
+    await user.click(authorizationTypeAuthorizationCard)
+
+    // Click USCIS/Alien registration number help link to open modal
+    const alienRegistrationNumberLink = screen.getByText(
+      'work_authorization.alien_registration_number.hint',
+      {
+        exact: false,
+      }
+    )
+    await user.click(alienRegistrationNumberLink)
+
+    // Click 'Continue' button to open link and check if it was called
+    const alienRegistrationNumberModalContinue = screen.getByText('Continue', {
+      exact: false,
+    })
+    await user.click(alienRegistrationNumberModalContinue)
+
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    expect(window.open).toHaveBeenCalledTimes(1)
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    expect(window.open).toHaveBeenCalledWith(
+      'https://www.immigrationhelp.org/learning-center/what-is-an-alien-registration-number/'
+    )
+  })
+
+  it('Fills and clears all fields from employement authorization section', async () => {
+    const user = userEvent.setup()
+    render(<Identity />)
+
+    const authorizationType = screen.getByRole('group', {
+      name: 'work_authorization.authorization_type.label',
+    })
+    const authorizationTypeUSCitizen = within(authorizationType).getByRole(
+      'radio',
+      {
+        name: 'work_authorization.authorization_type.options.US_citizen_or_national',
+      }
+    )
+    const authorizationTypeAuthorizationCard = within(
+      authorizationType
+    ).getByRole('radio', {
+      name: 'work_authorization.authorization_type.options.employment_authorization_or_card_or_doc',
+    })
+
+    // Select 'Yes; I have an employment authorization card/document' radio button
+    await user.click(authorizationTypeAuthorizationCard)
+
+    // Input first name, middle initial, last name, and suffix
+    const alienFirstName = screen.getByLabelText('first_name.label', {
+      exact: false,
+    })
+    const alienMiddleInitial = screen.getByLabelText('middle_initial.label', {
+      exact: false,
+    })
+    const alienLastName = screen.getByLabelText('last_name.label', {
+      exact: false,
+    })
+    const alienSuffixDropdown = screen.getByLabelText('suffix.label', {
+      exact: false,
+    })
+
+    await userEvent.type(alienFirstName, 'John')
+    expect(alienFirstName).toHaveValue('John')
+
+    await userEvent.type(alienMiddleInitial, 'D')
+    expect(alienMiddleInitial).toHaveValue('D')
+
+    await userEvent.type(alienLastName, 'Doe')
+    expect(alienLastName).toHaveValue('Doe')
+
+    await user.selectOptions(alienSuffixDropdown, 'I')
+    expect(alienSuffixDropdown).toHaveValue('I')
+
+    // Input USCIS/Alien registration number
+    const alienRegistrationNumber = screen.getByLabelText(
+      'work_authorization.alien_registration_number.label',
+      {
+        exact: false,
+      }
+    )
+    const reEnterAlienRegistrationNumber = screen.getByLabelText(
+      'work_authorization.re_enter_alien_registration_number.label',
+      {
+        exact: false,
+      }
+    )
+
+    await userEvent.type(alienRegistrationNumber, '123456789')
+    expect(alienRegistrationNumber).toHaveValue('123456789')
+
+    await userEvent.type(reEnterAlienRegistrationNumber, '123456789')
+    expect(reEnterAlienRegistrationNumber).toHaveValue('123456789')
+
+    // Select country of origin
+    const countryOfOriginDropdown = screen.getByLabelText(
+      'country_of_origin.label',
+      {
+        exact: false,
+      }
+    )
+
+    await user.selectOptions(countryOfOriginDropdown, 'Anguilla')
+    expect(countryOfOriginDropdown).toHaveValue('Anguilla')
+
+    // Input employment valid from / issued on and expiration date
+    const queryForAuthorizationCardValidParent = () =>
+      screen.getByTestId('employment_authorization_start_date.parent-div')
+
+    const getMonthAuthorizationCardValid = () =>
+      within(queryForAuthorizationCardValidParent()).getByRole('textbox', {
+        name: /month/i,
+      })
+    const getDayAuthorizationCardValid = () =>
+      within(queryForAuthorizationCardValidParent()).getByRole('textbox', {
+        name: /day/i,
+      })
+    const getYearAuthorizationCardValid = () =>
+      within(queryForAuthorizationCardValidParent()).getByRole('textbox', {
+        name: /year/i,
+      })
+
+    const authorizationCardValidDayField = getDayAuthorizationCardValid()
+    const authorizationCardValidMonthField = getMonthAuthorizationCardValid()
+    const authorizationCardValidYearField = getYearAuthorizationCardValid()
+
+    await user.type(authorizationCardValidDayField, '01')
+    await user.type(authorizationCardValidMonthField, '06')
+    await user.type(authorizationCardValidYearField, '2023')
+
+    expect(authorizationCardValidDayField).toHaveValue('01')
+    expect(authorizationCardValidMonthField).toHaveValue('06')
+    expect(authorizationCardValidYearField).toHaveValue('2023')
+
+    // Toggle 'Yes; I am a U.S. citizen/national' and 'Yes; I have an employment authorization card/document' radio buttons
+    await user.click(authorizationTypeUSCitizen)
+    await user.click(authorizationTypeAuthorizationCard)
+
+    // Expect all filled fields before to be empty
+    const alienFirstNameReturned = screen.getByLabelText('first_name.label', {
+      exact: false,
+    })
+    const alienMiddleInitialReturned = screen.getByLabelText(
+      'middle_initial.label',
+      {
+        exact: false,
+      }
+    )
+    const alienLastNameReturned = screen.getByLabelText('last_name.label', {
+      exact: false,
+    })
+    const alienSuffixDropdownReturned = screen.getByLabelText('suffix.label', {
+      exact: false,
+    })
+
+    const alienRegistrationNumberReturned = screen.getByLabelText(
+      'work_authorization.alien_registration_number.label',
+      {
+        exact: false,
+      }
+    )
+    const reEnterAlienRegistrationNumberReturned = screen.getByLabelText(
+      'work_authorization.re_enter_alien_registration_number.label',
+      {
+        exact: false,
+      }
+    )
+    const countryOfOriginDropdownReturned = screen.getByLabelText(
+      'country_of_origin.label',
+      {
+        exact: false,
+      }
+    )
+
+    const authorizationCardValidDayFieldReturned =
+      getDayAuthorizationCardValid()
+    const authorizationCardValidMonthFieldReturned =
+      getMonthAuthorizationCardValid()
+    const authorizationCardValidYearFieldReturned =
+      getYearAuthorizationCardValid()
+
+    expect(alienFirstNameReturned).toHaveValue('')
+    expect(alienMiddleInitialReturned).toHaveValue('')
+    expect(alienLastNameReturned).toHaveValue('')
+    expect(alienSuffixDropdownReturned).toHaveValue('')
+    expect(alienRegistrationNumberReturned).toHaveValue('')
+    expect(reEnterAlienRegistrationNumberReturned).toHaveValue('')
+    expect(countryOfOriginDropdownReturned).toHaveValue('')
+    expect(authorizationCardValidDayFieldReturned).toHaveValue('')
+    expect(authorizationCardValidMonthFieldReturned).toHaveValue('')
+    expect(authorizationCardValidYearFieldReturned).toHaveValue('')
   })
   describe('verified fields', () => {
     it('does not show ssn', () => {
@@ -210,7 +349,7 @@ describe('Identity Information Page', () => {
       const verifiedFields = within(verifiedFieldsSection).getAllByRole(
         'listitem'
       )
-      const ssn = within(verifiedFieldsSection).getByText('123-12-1234')
+      const ssn = within(verifiedFieldsSection).getByText('privacy')
       expect(verifiedFields.length).toBe(2)
       expect(ssn).toBeInTheDocument()
     })

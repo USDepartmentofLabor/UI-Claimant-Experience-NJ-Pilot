@@ -36,7 +36,7 @@ export const fillValidEditEmployer = () => {
   })
   fillPaymentsReceived([
     {
-      pay_type: 'vacation_sick_pto',
+      pay_type: 'holiday',
       total: '5000.25',
       date_pay_began: '2021-01-15',
       date_pay_ended: '2021-02-18',
@@ -94,7 +94,7 @@ export const fillValidAddEmployer1 = () => {
       total: '500000.00',
     },
     {
-      pay_type: 'severance_or_continuation',
+      pay_type: 'continuation',
       total: '1000.13',
       date_pay_began: '2021-01-11',
       date_pay_ended: '2021-01-20',

@@ -667,7 +667,10 @@
             "vacation_sick_pto",
             "final_paycheck",
             "pension_annuity_retirement",
-            "severance_or_continuation",
+            "severance",
+            "continuation",
+            "payment_in_lieu_of_notice",
+            "holiday",
             "other_pay",
             "none"
           ]
@@ -685,7 +688,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["vacation_sick_pto", "severance_or_continuation"]
+                "enum": ["continuation", "holiday", "payment_in_lieu_of_notice"]
               }
             }
           },
@@ -700,7 +703,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["vacation_sick_pto", "severance_or_continuation"]
+                "enum": ["continuation", "holiday", "payment_in_lieu_of_notice"]
               }
             }
           },
@@ -716,7 +719,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["other_payment"]
+                "enum": ["other_pay"]
               }
             }
           },
@@ -742,8 +745,13 @@
     }
   },
   "properties": {
-    "is_proofed_with_SSA_MVC": {
-      "description": "The social security number and id/license number have been verified",
+    "is_ssn_ssa_verified": {
+      "description": "The social security number has been verified through the SSA",
+      "type": "boolean",
+      "default": false
+    },
+    "is_drivers_license_or_state_id_verified": {
+      "description": "The id/license number has been verified through NJ MVC lookup",
       "type": "boolean",
       "default": false
     },
@@ -847,10 +855,10 @@
     },
     "drivers_license_or_state_id_number": {
       "description": "Driver’s license or state ID number",
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-zA-Z][\\d]{14}$"
     },
-
-    "work_authorization": {
+    "authorization_type": {
       "description": "Are you legally allowed to work in the United States",
       "type": "string",
       "enum": [
@@ -867,11 +875,235 @@
     "alien_registration_number": {
       "description": "Alien registration number",
       "type": "string",
-      "pattern": "^[0-9]{3}-[0-9]{3}-[0-9]{3}$"
+      "pattern": "^[\\d]{7,9}$"
     },
     "country_of_origin": {
       "description": "Country of origin",
-      "$ref": "countries-v1.0.json"
+      "type": "string",
+      "enum": [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Anguilla",
+        "Antigua & Barbuda",
+        "Argentina",
+        "Armenia",
+        "Aruba",
+        "Australia",
+        "Austria",
+        "Azerbaijan",
+        "Bahamas",
+        "Bahrain",
+        "Bangladesh",
+        "Barbados",
+        "Belarus",
+        "Belgium",
+        "Belize",
+        "Benin",
+        "Bermuda",
+        "Bhutan",
+        "Bolivia",
+        "Bosnia & Herzegovina",
+        "Botswana",
+        "Brazil",
+        "Brunei Darussalam",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Cambodia",
+        "Cameroon",
+        "Canada",
+        "Cape Verde",
+        "Central African Republic",
+        "Chad",
+        "Chile",
+        "China",
+        "Colombia",
+        "Comoros",
+        "Congo",
+        "Costa Rica",
+        "Cote d'Ivoire",
+        "Croatia",
+        "Cuba",
+        "Cyprus",
+        "Czech Republic",
+        "Czechoslovakia",
+        "Dem. Republic of Congo",
+        "Denmark",
+        "Djibouti",
+        "Dominica",
+        "Dominican Republic",
+        "East Timor",
+        "Ecuador",
+        "Egypt",
+        "El Salvador",
+        "Equatorial Guinea",
+        "Eritrea",
+        "Estonia",
+        "Ethiopia",
+        "Fiji",
+        "Finland",
+        "Former Rep of Macedonia",
+        "France",
+        "Gabon",
+        "Gambia",
+        "Georgia",
+        "Germany",
+        "Ghana",
+        "Greece",
+        "Greenland",
+        "Grenada",
+        "Guadeloupe",
+        "Guam",
+        "Guatemala",
+        "Guinea",
+        "Guinea - Bissau",
+        "Guyana",
+        "Haiti",
+        "Honduras",
+        "Hong-Kong",
+        "Hungary",
+        "Iceland",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Jamaica",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Kiribati",
+        "Korea",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Lao People's Demo Republi",
+        "Latvia",
+        "Lebanon",
+        "Lesotho",
+        "Liberia",
+        "Libyan ArabJamahiriya",
+        "Liechtenstein",
+        "Lithuania",
+        "Luxembourg",
+        "Madagascar",
+        "Malawi",
+        "Malaysia",
+        "Maldives",
+        "Mali",
+        "Malta",
+        "Marshall Islands",
+        "Mauritania",
+        "Mauritius",
+        "Mexico",
+        "Micronesia",
+        "Moldova",
+        "Monaco",
+        "Mongolia",
+        "Montserrat",
+        "Morocco",
+        "Mozambique",
+        "Myanmar",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Netherland Antilles",
+        "Netherlands",
+        "New Zealand",
+        "Nicaragua",
+        "Niger",
+        "Nigeria",
+        "Niue",
+        "Norway",
+        "Oman",
+        "Pakistan",
+        "Palau",
+        "Palestine",
+        "Panama",
+        "Papua New Guinea",
+        "Paraguay",
+        "Peru",
+        "Philippines",
+        "Poland",
+        "Portugal",
+        "Qatar",
+        "Republic of Korea",
+        "Republic of Moldova",
+        "Reunion",
+        "Romania",
+        "Russian Federation",
+        "Rwanda",
+        "Saint Kitts & Nevis",
+        "Saint Lucia",
+        "Samoa",
+        "San Marino",
+        "Sao Tome & Principe",
+        "Saudi Arabia",
+        "Scotland",
+        "Senegal",
+        "Seychelles",
+        "Sierra Leone",
+        "Singapore",
+        "Slovakia",
+        "Slovenia",
+        "Solomon Islands",
+        "Somalia",
+        "South Africa",
+        "Spain",
+        "Sri Lanka",
+        "St. Helena",
+        "St. Togo",
+        "St. Vincent & Grenadines",
+        "Sudan",
+        "Suriname",
+        "Swaziland",
+        "Sweden",
+        "Switzerland",
+        "Syrian Arab Republic",
+        "Taiwan",
+        "Tajikistan",
+        "Thailand",
+        "Tobago",
+        "Tokelau",
+        "Tonga",
+        "Trinidad",
+        "Trinidad & Tobago",
+        "Tunisia",
+        "Turkey",
+        "Turkmenistan",
+        "Tuvalu",
+        "Uganda",
+        "UK Great Britain&N Irelan",
+        "Ukraine",
+        "United Arab Emirates",
+        "United Republic Tanzania",
+        "United States of America",
+        "Uruguay",
+        "Uzbekistan",
+        "Vanuatu",
+        "Venezuela",
+        "Viet Nam",
+        "West Bank",
+        "Western Sahara",
+        "Yemen",
+        "Yugoslavia",
+        "Zaire",
+        "Zambia",
+        "Zimbabwe"
+      ]
+    },
+    "employment_authorization_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "employment_authorization_end_date": {
+      "type": "string",
+      "format": "date"
     },
     "employers": {
       "description": "Employers of the claimant in the past 18 months",
@@ -1057,7 +1289,7 @@
     "ssn",
     "birthdate",
     "has_nj_issued_id",
-    "authorized_to_work",
+    "authorization_type",
     "employers",
     "occucoder_description",
     "occucoder_code",
@@ -1178,25 +1410,6 @@
     {
       "if": {
         "properties": {
-          "authorized_to_work": {
-            "type": "boolean",
-            "const": true
-          },
-          "authorization_type": {
-            "not": {
-              "type": "string",
-              "enum": ["US_citizen_or_national"]
-            }
-          }
-        }
-      },
-      "then": {
-        "required": ["alien_registration_number"]
-      }
-    },
-    {
-      "if": {
-        "properties": {
           "has_nj_issued_id": {
             "type": "boolean",
             "const": true
@@ -1210,35 +1423,28 @@
     {
       "if": {
         "properties": {
-          "work_authorization": {
-            "type": "string",
-            "enum": [
-              "permanent_resident",
-              "H1B_visa",
-              "employment_authorization_or_card_or_doc",
-              "not_legally_allowed_to_work_in_US"
-            ]
+          "authorization_type": {
+            "not": {
+              "type": "string",
+              "enum": ["US_citizen_or_national"]
+            }
           }
-        },
-        "then": {
-          "required": [
-            "employment_authorization_document_name",
-            "alien_registration_number",
-            "country_of_origin"
-          ]
         }
+      },
+      "then": {
+        "required": [
+          "employment_authorization_document_name",
+          "alien_registration_number",
+          "country_of_origin"
+        ]
       }
     },
     {
       "if": {
         "properties": {
-          "work_authorization": {
+          "authorization_type": {
             "type": "string",
-            "enum": [
-              "permanent_resident",
-              "H1B_visa",
-              "employment_authorization_or_card_or_doc"
-            ]
+            "enum": ["employment_authorization_or_card_or_doc"]
           }
         },
         "then": {
