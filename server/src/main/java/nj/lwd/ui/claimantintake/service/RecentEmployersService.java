@@ -27,7 +27,7 @@ public class RecentEmployersService {
             this.webClient = null;
         } else {
             String endpointURL = environment.getProperty("loops.url") + "";
-            logger.debug("recent employer service endpoint is ", endpointURL);
+            logger.debug("recent employer service endpoint is {}", endpointURL);
             this.webClient =
                     WebClient.builder()
                             .baseUrl(endpointURL)
@@ -43,7 +43,8 @@ public class RecentEmployersService {
         WagePotentialMonLookupRequest request = new WagePotentialMonLookupRequest(ssn, claimDate);
         if (webClient == null) {
             logger.error("Webclient is null, endpoint may invalid");
-            throw new WGPMServerException("Unable to create connection to the server");
+            throw new WGPMServerException(
+                    HttpStatus.INTERNAL_SERVER_ERROR, "Unable to create connection to the server");
         }
         return webClient
                 .post()
@@ -52,40 +53,26 @@ public class RecentEmployersService {
                 .body(Mono.just(request), WagePotentialMonLookupRequest.class)
                 .retrieve()
                 .onStatus(
-                        HttpStatus.BAD_REQUEST::equals,
-                        clientResponse -> {
-                            Mono<String> errorMsg = clientResponse.bodyToMono(String.class);
-
-                            return errorMsg.flatMap(
-                                    msg -> {
-                                        logger.error(
-                                                "Bad Request sent to wgpm endpoint, error response"
-                                                        + " was:  ",
-                                                msg);
-                                        throw new WGPMClientException(
-                                                String.format(
-                                                        "Client sent bad request to WGPM endpoint."
-                                                                + " Actual Error msg is: %s",
-                                                        msg));
-                                    });
+                        HttpStatus::is4xxClientError,
+                        response -> {
+                            var statusCode = response.statusCode();
+                            return response.bodyToMono(String.class)
+                                    .flatMap(
+                                            errorMessage ->
+                                                    Mono.error(
+                                                            new WGPMClientException(
+                                                                    statusCode, errorMessage)));
                         })
                 .onStatus(
-                        HttpStatus.INTERNAL_SERVER_ERROR::equals,
-                        clientResponse -> {
-                            Mono<String> errorMsg = clientResponse.bodyToMono(String.class);
-
-                            return errorMsg.flatMap(
-                                    msg -> {
-                                        logger.error(
-                                                "WGPM endpoint hit Internal Server Error, response"
-                                                        + " was:  ",
-                                                msg);
-                                        throw new WGPMServerException(
-                                                String.format(
-                                                        "WGPM endpoint hit Internal Server Error."
-                                                                + " Actual Error msg is: %s",
-                                                        msg));
-                                    });
+                        HttpStatus::is5xxServerError,
+                        response -> {
+                            var statusCode = response.statusCode();
+                            return response.bodyToMono(String.class)
+                                    .flatMap(
+                                            errorMessage ->
+                                                    Mono.error(
+                                                            new WGPMServerException(
+                                                                    statusCode, errorMessage)));
                         })
                 .bodyToMono(RecentEmployersResponse.class)
                 .block();

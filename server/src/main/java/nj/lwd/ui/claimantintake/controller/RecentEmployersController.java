@@ -82,18 +82,16 @@ public class RecentEmployersController {
                 logger.info(
                         "No employer list for claimant IdpId {} but ssn was found correctly",
                         claimantIdpId);
-                employerList = new ArrayList<WagePotentialResponseEmployer>();
+                employerList = new ArrayList<>();
             }
 
             return new ResponseEntity<>(employerList, HttpStatus.OK);
 
         } catch (RuntimeException e) {
-            externalErrorMsg =
-                    String.format(
-                            "Unable to retrieve recent employer data as api returned with the"
-                                    + " following error: {}",
-                            e.getMessage());
-            logger.error(externalErrorMsg);
+            logger.error(
+                    "Unable to retrieve recent employer data as api returned with the"
+                            + " following error: {}",
+                    e.getMessage());
         }
 
         return new ResponseEntity<>(externalErrorMsg, HttpStatus.SERVICE_UNAVAILABLE);

@@ -1,7 +1,10 @@
 package nj.lwd.ui.claimantintake.exception;
 
-public class WGPMServerException extends RuntimeException {
-    public WGPMServerException(String message) {
-        super(message);
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpServerErrorException;
+
+public class WGPMServerException extends HttpServerErrorException {
+    public WGPMServerException(HttpStatus status, String message) {
+        super(status, message);
     }
 }
