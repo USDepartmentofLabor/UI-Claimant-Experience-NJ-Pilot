@@ -47,10 +47,10 @@ services:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
       DB_HOST: db
       DB_PORT: 5432
-      MOCK_LOOPS_HOST: http://localhost:9090
-      MOCK_LOOPS_PATH: /mockloopspath
-      LOOPS_HOST: ${LOOPS_HOST:-}
-      LOOPS_PATH: ${LOOPS_PATH:-}
+      MOCK_WGPM_HOST: http://wiremock:8080
+      MOCK_WGPM_PATH: /wgpm
+      WGPM_HOST: ${WGPM_HOST:-}
+      WGPM_PATH: ${WGPM_PATH:-}
 
   db:
     image: postgres:14.3

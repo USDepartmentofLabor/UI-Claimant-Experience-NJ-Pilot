@@ -27,11 +27,11 @@ export const fillValidEditEmployer = () => {
   fillChangeInEmployment({
     separation_circumstance: 'laid_off',
 
-    employment_start_date: { mo: '02', day: '20', yr: '2014' },
-    employment_last_date: { mo: '02', day: '24', yr: '2022' },
+    employment_start_date: { mo: '2', day: '20', yr: '2014' },
+    employment_last_date: { mo: '2', day: '24', yr: '2022' },
     expect_to_be_recalled: true,
     has_definite_recall_date: true,
-    definite_recall_date: { mo: '02', day: '24', yr: '2024' },
+    definite_recall_date: { mo: '2', day: '24', yr: '2024' },
     is_seasonal_work: true,
   })
   fillPaymentsReceived([
@@ -128,8 +128,8 @@ export const fillValidAddEmployer2 = () => {
   fillChangeInEmployment({
     separation_circumstance: 'still_employed',
     reason_still_employed: 'reduction_in_hours_by_claimant',
-    employment_start_date: { mo: '01', day: '15', yr: '2015' },
-    employment_last_date: { mo: '02', day: '22', yr: '2022' },
+    employment_start_date: { mo: '1', day: '15', yr: '2015' },
+    employment_last_date: { mo: '2', day: '22', yr: '2022' },
     expect_to_be_recalled: false,
   })
   fillPaymentsReceived([
