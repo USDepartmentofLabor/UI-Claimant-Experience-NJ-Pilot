@@ -4,6 +4,7 @@ import {
   FormGroup,
   Label,
   Textarea,
+  CharacterCount,
   ErrorMessage,
 } from '@trussworks/react-uswds'
 
@@ -53,19 +54,27 @@ export const TextAreaField = ({
 
       {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
 
-      <Textarea
-        {...fieldProps}
-        value={fieldProps.value || ''}
-        id={textareaProps.id || textareaProps.name}
-        {...textareaProps}
-        inputRef={textareaRef}
-        error={showError}
-        onInvalid={(e) => e.preventDefault()}
-      />
-      {characterLimit && (
-        <span className="usa-hint" id={'character_limit_hint'}>
-          {`${characterLimit} characters allowed`}
-        </span>
+      {characterLimit ? (
+        <CharacterCount
+          {...fieldProps}
+          value={fieldProps.value || ''}
+          id={textareaProps.id || textareaProps.name}
+          inputRef={textareaRef}
+          error={showError}
+          maxLength={characterLimit}
+          isTextArea
+          aria-describedby={`${textareaProps.id || textareaProps.name}-info`}
+        />
+      ) : (
+        <Textarea
+          {...fieldProps}
+          value={fieldProps.value || ''}
+          id={textareaProps.id || textareaProps.name}
+          {...textareaProps}
+          inputRef={textareaRef}
+          error={showError}
+          onInvalid={(e) => e.preventDefault()}
+        />
       )}
     </FormGroup>
   )
