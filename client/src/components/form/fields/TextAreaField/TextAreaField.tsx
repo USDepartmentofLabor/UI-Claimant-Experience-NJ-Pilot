@@ -57,7 +57,7 @@ export const TextAreaField = ({
       {characterLimit ? (
         <CharacterCount
           {...fieldProps}
-          value={fieldProps.value || ''}
+          defaultValue={fieldProps.value || ''}
           id={textareaProps.id || textareaProps.name}
           inputRef={textareaRef}
           error={showError}
