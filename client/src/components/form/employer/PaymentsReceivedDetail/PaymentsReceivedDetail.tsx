@@ -39,6 +39,7 @@ const PaymentsReceivedDetail = (props: {
                 payType: lowerLabel,
               }
             )}
+            characterLimit={1024}
           />
         )}
         <CurrencyField
