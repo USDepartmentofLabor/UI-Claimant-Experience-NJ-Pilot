@@ -589,11 +589,24 @@ const claimForm = {
               description:
                 "Pay you received from this employer's retirement plan (not a loan)",
             },
-            severance_or_continuation: {
-              label:
-                'Severance pay, continuation pay, or payment in lieu of notice',
+            severance: {
+              label: 'Severance pay',
               description:
-                'Payment due to separation based on your contract, by law, or as a gift',
+                'Pay you received due to policy, contract, or other note about your job ending',
+            },
+            continuation: {
+              label: 'Continuation pay',
+              description:
+                'Pay you received without performing work for the time after your last day of work through the end of the employment date given by your employer',
+            },
+            payment_in_lieu_of_notice: {
+              label: 'Payment in lieu of notice',
+              description:
+                'Pay you received specifically if your company was required to give you advance notice of your job ending',
+            },
+            holiday: {
+              label: 'Holiday pay',
+              description: 'Pay you received specifically for holidays',
             },
             other_pay: {
               label: 'Other type of pay',
@@ -628,10 +641,12 @@ const claimForm = {
           },
         },
         dates_hint: {
-          vacation_sick_pto:
-            'What was the time period on the paycheck including this pay? If you are not sure or it does not have a set timeframe, put your last day of work.',
-          severance_or_continuation:
-            'If the payment covers a set period of time, for example the next two weeks, enter the start date and end date that period covers. If you are not sure or it does not have a set timeframe, put your last day of work.',
+          label: {
+            default:
+              'If the payment covers a set period of time, for example the next two weeks, enter the start date and end date that period covers. If you are not sure or it does not have a set timeframe, put your last day of work for both start and end date.',
+            holiday:
+              'What was the time period on the paycheck including this pay? If you are not sure or it does not have a set timeframe, put your last day of work for both start and end date.',
+          },
         },
         date_pay_began: {
           label: 'Start date of this pay',

@@ -667,7 +667,10 @@
             "vacation_sick_pto",
             "final_paycheck",
             "pension_annuity_retirement",
-            "severance_or_continuation",
+            "severance",
+            "continuation",
+            "payment_in_lieu_of_notice",
+            "holiday",
             "other_pay",
             "none"
           ]
@@ -685,7 +688,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["vacation_sick_pto", "severance_or_continuation"]
+                "enum": ["continuation", "holiday", "payment_in_lieu_of_notice"]
               }
             }
           },
@@ -700,7 +703,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["vacation_sick_pto", "severance_or_continuation"]
+                "enum": ["continuation", "holiday", "payment_in_lieu_of_notice"]
               }
             }
           },
@@ -716,7 +719,7 @@
             "properties": {
               "pay_type": {
                 "type": "string",
-                "enum": ["other_payment"]
+                "enum": ["other_pay"]
               }
             }
           },

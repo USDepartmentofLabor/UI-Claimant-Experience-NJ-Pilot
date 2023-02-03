@@ -125,8 +125,17 @@ export const payTypeOptions = [
   'vacation_sick_pto',
   'final_paycheck',
   'pension_annuity_retirement',
-  'severance_or_continuation',
+  'severance',
+  'continuation',
+  'payment_in_lieu_of_notice',
+  'holiday',
   'other_pay',
   'none',
 ] as const
 export type PayTypeOption = typeof payTypeOptions[number]
+
+export const payTypesWithDates = [
+  'continuation',
+  'holiday',
+  'payment_in_lieu_of_notice',
+]

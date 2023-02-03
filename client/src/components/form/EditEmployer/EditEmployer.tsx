@@ -425,7 +425,7 @@ export const yupEditEmployer = object().shape({
         )
         .when('pay_type', {
           is: (payType: PayTypeOption) =>
-            ['vacation_sick_pto', 'severance_or_continuation'].includes(
+            ['holiday', 'payment_in_lieu_of_notice', 'continuation'].includes(
               payType
             ),
           then: (schema) =>
@@ -460,7 +460,7 @@ export const yupEditEmployer = object().shape({
         })
         .when('pay_type', {
           is: (payType: PayTypeOption) =>
-            ['vacation_sick_pto', 'severance_or_continuation'].includes(
+            ['holiday', 'payment_in_lieu_of_notice', 'continuation'].includes(
               payType
             ),
           then: (schema) =>
