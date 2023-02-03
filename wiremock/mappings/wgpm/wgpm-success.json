@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/mockloopspath/wagepotentialmonlookup/json",
+    "urlPath": "/wgpm",
     "bodyPatterns": [
       {
         "equalToJson": { "ssn": "987654321" },

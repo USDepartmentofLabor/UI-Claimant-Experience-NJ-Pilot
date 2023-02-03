@@ -7,8 +7,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.dto.WagePotentialResponseEmployer;
-import nj.lwd.ui.claimantintake.exception.WGPMClientException;
-import nj.lwd.ui.claimantintake.exception.WGPMServerException;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.RecentEmployersService;
 import org.slf4j.Logger;
@@ -89,7 +87,7 @@ public class RecentEmployersController {
 
             return new ResponseEntity<>(employerList, HttpStatus.OK);
 
-        } catch (WGPMClientException | WGPMServerException e) {
+        } catch (RuntimeException e) {
             externalErrorMsg =
                     String.format(
                             "Unable to retrieve recent employer data as api returned with the"

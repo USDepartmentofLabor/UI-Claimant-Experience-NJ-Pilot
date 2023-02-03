@@ -24,7 +24,7 @@ public class RecentEmployersServiceTest {
 
     static final String testDate = "2022-07-22";
     static final String testSSN = "987654321";
-    static final String mockedEndpoint = "/mockloopspath/wagepotentialmonlookup/json";
+    static final String mockedEndpoint = "/wgpm";
 
     public void mockEnvironment(String wiremockUrl) {
         var environment = mock(Environment.class);
@@ -219,7 +219,7 @@ public class RecentEmployersServiceTest {
     void returnsClientExceptionOnBadRequest(WireMockRuntimeInfo wmRuntimeInfo) {
         WireMock wireMock = wmRuntimeInfo.getWireMock();
         wireMock.register(
-                post("/mockloopspath/wagepotentialmonlookup/json")
+                post("/wgpm")
                         .willReturn(
                                 aResponse()
                                         .withStatus(400)
@@ -243,7 +243,7 @@ public class RecentEmployersServiceTest {
     void returnsClientExceptionOnApiServerError(WireMockRuntimeInfo wmRuntimeInfo) {
         WireMock wireMock = wmRuntimeInfo.getWireMock();
         wireMock.register(
-                post("/mockloopspath/wagepotentialmonlookup/json")
+                post("/wgpm")
                         .willReturn(
                                 aResponse()
                                         .withStatus(500)
