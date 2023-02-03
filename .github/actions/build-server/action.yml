@@ -1,0 +1,64 @@
+name: Build Server Image
+description: Build a docker image for the backend server, tag the image, and upload it to AWS ECR
+inputs:
+  deploy-env:
+    description: The environment being deployed (e.g., dev, test, prod)
+    required: true
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+outputs:
+  image-uri:
+    description: The uri for the server image pushed to AWS ECR
+    value: ${{ steps.construct-image-uri.outputs.image-uri }}
+  image-uri-without-aws-id:
+    description: The uri for the server image pushed to AWS ECR without the AWS ID
+    value: ${{ steps.construct-image-uri.outputs.image-uri-without-aws-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@261a7de32bda11ba01f4d75c4ed6caf3739e54be
+
+    - name: Construct image URI
+      id: construct-image-uri
+      env:
+        GIT_BRANCH: ${{ github.ref_name }}
+        GIT_COMMIT: ${{ github.sha }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        DEPLOY_ENV: ${{ inputs.deploy-env }}
+      shell: bash
+      run: |
+        BUILD_TIME=$(date '+%Y%m%d%H%M%S')
+        IMAGE_TAG="${GIT_BRANCH}-${GIT_COMMIT}-${BUILD_TIME}"
+        IMAGE_URI_WITHOUT_ID="/dol-ui-claimant-intake-server-${DEPLOY_ENV}:${IMAGE_TAG}"
+        IMAGE_URI="${ECR_REGISTRY}${IMAGE_URI_WITHOUT_ID}"
+        echo "image-uri-without-aws-id=$IMAGE_URI_WITHOUT_ID" >> $GITHUB_OUTPUT
+        echo "image-uri=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325
+
+    - name: Build & Push image
+      id: build-image
+      uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+      with:
+        push: true
+        provenance: false
+        context: server
+        tags: ${{ steps.construct-image-uri.outputs.image-uri }}
+
+    - name: Scan server image
+      uses: ./.github/actions/image-scan
+      with:
+        image: ${{ steps.construct-image-uri.outputs.image-uri }}

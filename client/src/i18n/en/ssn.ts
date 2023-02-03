@@ -1,6 +1,7 @@
 const ssn = {
   heading: 'Access your records',
   label: 'Social Security number',
+  privacy: '(Hidden for your privacy)',
   showSsn: 'Show number',
   hideSsn: 'Hide number',
   hint: 'Use format 000-00-0000',

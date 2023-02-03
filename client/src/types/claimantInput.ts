@@ -12,6 +12,7 @@ import {
   AuthorizationTypeOption,
   EducationLevelOption,
   SuffixOption,
+  CountryOfOriginOption,
 } from 'constants/formOptions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -214,13 +215,17 @@ export type ClaimantNameInput = {
 }
 
 export type IdentityInput = {
-  birthdate?: string
   ssn?: string
-  authorized_to_work?: boolean
-  not_authorized_to_work_explanation?: string
-  authorization_type?: AuthorizationTypeOption
-  alien_registration_number?: string
+  birthdate?: string
+  has_nj_issued_id?: boolean
   drivers_license_or_state_id_number?: string
+  authorization_type?: AuthorizationTypeOption
+  employment_authorization_document_name?: PersonNameInput
+  alien_registration_number?: string
+  LOCAL_re_enter_alien_registration_number?: string
+  country_of_origin?: CountryOfOriginOption
+  employment_authorization_start_date?: string
+  employment_authorization_end_date?: string
 }
 
 export type OccupationInput = {

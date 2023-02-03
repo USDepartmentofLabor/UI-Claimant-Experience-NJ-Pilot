@@ -1,38 +1,39 @@
 import { i18n_claimForm } from 'i18n/i18n'
-import { boolean, object, string } from 'yup'
-import { authorizationTypeOptions } from 'constants/formOptions'
+import { boolean, mixed, object, ref, string } from 'yup'
+import {
+  authorizationTypeOptions,
+  countryOfOriginOptions,
+} from 'constants/formOptions'
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { Routes } from 'constants/routes'
+import { yupDate, yupName } from 'validations/yup/custom'
+import dayjs from 'dayjs'
+import { PERSON_NAME_SKELETON } from 'constants/initialValues'
 
 const { t } = i18n_claimForm
 const pageSchema = object().shape({
-  // ssn: string()
-  //   .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, t('ssn.errors.badFormat'))
-  //   .required(t('ssn.errors.required')),
-  // birthdate: yupDate(t('birthdate.label'))
-  //   .max(dayjs(new Date()).format('YYYY-MM-DD'), t('birthdate.errors.maxDate'))
-  //   .required(t('birthdate.errors.required')),
-  drivers_license_or_state_id_number: string().required(
-    t('drivers_license_or_state_id_number.errors.required')
-  ),
-  authorized_to_work: boolean().required(
-    t('work_authorization.authorized_to_work.errors.required')
-  ),
-  not_authorized_to_work_explanation: string().when('authorized_to_work', {
-    is: false,
-    then: (schema) =>
-      schema.required(
-        t(
-          'work_authorization.not_authorized_to_work_explanation.errors.required'
-        )
-      ),
-  }),
-  authorization_type: string().when('authorized_to_work', {
+  birthdate: yupDate(t('birthdate.label'))
+    .max(dayjs(new Date()).format('YYYY-MM-DD'), t('birthdate.errors.maxDate'))
+    .required(t('birthdate.errors.required')),
+  has_nj_issued_id: boolean().required(t('has_nj_issued_id.errors.required')),
+  drivers_license_or_state_id_number: string().when('has_nj_issued_id', {
     is: true,
     then: (schema) =>
       schema
-        .oneOf([...authorizationTypeOptions])
-        .required(t('work_authorization.authorization_type.errors.required')),
+        .matches(
+          /^[a-zA-Z][\d]{14}$/,
+          t('drivers_license_or_state_id_number.errors.matches')
+        )
+        .required(t('drivers_license_or_state_id_number.errors.required')),
+  }),
+  authorization_type: string()
+    .oneOf([...authorizationTypeOptions])
+    .required(t('work_authorization.authorization_type.errors.required')),
+  employment_authorization_document_name: mixed().when('authorization_type', {
+    is: (alienRegistrationType: string) =>
+      alienRegistrationType &&
+      alienRegistrationType !== 'US_citizen_or_national',
+    then: yupName,
   }),
   alien_registration_number: string().when('authorization_type', {
     is: (alienRegistrationType: string) =>
@@ -41,12 +42,95 @@ const pageSchema = object().shape({
     then: (schema) =>
       schema
         .matches(
-          /^[0-9]{3}-?[0-9]{3}-?[0-9]{3}$/,
+          /^[\d]{7,9}$/,
           t('work_authorization.alien_registration_number.errors.format')
         )
         .required(
           t('work_authorization.alien_registration_number.errors.required')
         ),
+  }),
+  LOCAL_re_enter_alien_registration_number: string().when(
+    'authorization_type',
+    {
+      is: (alienRegistrationType: string) =>
+        alienRegistrationType &&
+        alienRegistrationType !== 'US_citizen_or_national',
+      then: (schema) =>
+        schema
+          .oneOf(
+            [ref('alien_registration_number'), null],
+            i18n_claimForm.t(
+              'work_authorization.re_enter_alien_registration_number.errors.mustMatch'
+            )
+          )
+          .required(
+            i18n_claimForm.t(
+              'work_authorization.re_enter_alien_registration_number.errors.required'
+            )
+          ),
+    }
+  ),
+  country_of_origin: string()
+    .oneOf([...countryOfOriginOptions])
+    .when('authorization_type', {
+      is: (alienRegistrationType: string) =>
+        alienRegistrationType &&
+        alienRegistrationType !== 'US_citizen_or_national',
+      then: string().required(
+        i18n_claimForm.t('work_authorization.country_of_origin.errors.required')
+      ),
+    }),
+  employment_authorization_start_date: mixed().when('authorization_type', {
+    is: (alienRegistrationType: string) =>
+      alienRegistrationType === 'employment_authorization_or_card_or_doc',
+    then: yupDate(
+      i18n_claimForm.t(
+        'work_authorization.employment_authorization_start_date.label'
+      )
+    )
+      .max(
+        dayjs(new Date()).format('YYYY-MM-DD'),
+        i18n_claimForm.t(
+          'work_authorization.employment_authorization_start_date.errors.maxDate'
+        )
+      )
+      .required(
+        i18n_claimForm.t(
+          'work_authorization.employment_authorization_start_date.errors.required'
+        )
+      ),
+  }),
+  employment_authorization_end_date: mixed().when('authorization_type', {
+    is: (alienRegistrationType: string) =>
+      alienRegistrationType === 'employment_authorization_or_card_or_doc',
+    then: yupDate(
+      i18n_claimForm.t(
+        'work_authorization.employment_authorization_end_date.label'
+      )
+    )
+      .max(
+        dayjs(new Date()).format('YYYY-MM-DD'),
+        i18n_claimForm.t(
+          'work_authorization.employment_authorization_end_date.errors.maxDate'
+        )
+      )
+      .when('employment_authorization_start_date', {
+        is: (dateValue: string | undefined) => {
+          return !!dateValue
+        },
+        then: (schema) =>
+          schema.min(
+            ref('employment_authorization_start_date'),
+            i18n_claimForm.t(
+              'work_authorization.employment_authorization_end_date.errors.minDate'
+            )
+          ),
+      })
+      .required(
+        i18n_claimForm.t(
+          'work_authorization.employment_authorization_end_date.errors.required'
+        )
+      ),
   }),
 })
 
@@ -55,11 +139,15 @@ export const IdentityPageDefinition: PageDefinition = {
   path: Routes.CLAIM.IDENTITY,
   initialValues: {
     birthdate: '',
-    authorized_to_work: undefined,
-    not_authorized_to_work_explanation: undefined,
-    authorization_type: undefined,
-    alien_registration_number: undefined,
+    has_nj_issued_id: undefined,
     drivers_license_or_state_id_number: '',
+    authorization_type: undefined,
+    employment_authorization_document_name: { ...PERSON_NAME_SKELETON },
+    alien_registration_number: undefined,
+    LOCAL_re_enter_alien_registration_number: undefined,
+    country_of_origin: undefined,
+    employment_authorization_start_date: '',
+    employment_authorization_end_date: '',
   },
   validationSchema: pageSchema,
 }

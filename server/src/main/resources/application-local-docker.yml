@@ -18,4 +18,4 @@ aws:
   s3:
     endpoint-url: ${AWS_S3_ENDPOINT_URL}
 loops:
-  url: ${MOCK_LOOPS_HOST}${MOCK_LOOPS_PATH}
+  url: ${MOCK_WGPM_HOST}${MOCK_WGPM_PATH}

@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/wgpm",
+    "bodyPatterns": [
+      {
+        "equalToJson": { "ssn": "123456789" },
+        "ignoreArrayOrder": true,
+        "ignoreExtraElements": true
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "responseStatus": "0",
+      "ssnEcho": "123456789",
+      "claimDateEcho": 1658462,
+      "grossMaxBenefitAllowance": 9534.0,
+      "weeklyBenefitRate": 681.0,
+      "invalidMonetaryInd": false,
+      "indeterminateInd": false,
+      "wagePotentialMonLookupResponseEmployerDtos": [],
+      "potentialPartialWeeklyBenefitRate": 720.0
+    },
+
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
