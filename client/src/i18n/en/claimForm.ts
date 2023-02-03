@@ -167,43 +167,80 @@ const claimForm = {
     errors: { required: 'Education level must be selected' },
   },
   work_authorization: {
-    authorized_to_work: {
-      label: 'Are you legally allowed to work in the United States?',
-      errors: {
-        required: 'Please say whether you are authorized to work',
-      },
-    },
-    not_authorized_to_work_explanation: {
-      label: 'Please share more about why you can’t work in the United States:',
-      errors: {
-        required:
-          'Please share more about why you can’t work in the United States',
-      },
-    },
     authorization_type: {
-      label: 'Select your authorization:',
+      label: 'Are you legally allowed to work in the United States?',
       options: {
-        US_citizen_or_national: 'U.S. citizen/national',
-        permanent_resident: 'Permanent resident',
-        temporary_legal_worker: 'Temporary legal worker',
+        US_citizen_or_national: 'Yes; I am a U.S. citizen/national',
+        permanent_resident: 'Yes; I am a permanent resident',
+        H1B_visa: 'Yes; I have an H1B visa',
+        employment_authorization_or_card_or_doc:
+          'Yes; I have an employment authorization card/document',
+        not_legally_allowed_to_work_in_US:
+          'No; I am not legally allowed to work in the United States',
       },
       errors: {
         required: 'You must select an authorization status',
       },
     },
+    employment_authorization_document_name: {
+      section_title:
+        'Enter the following information as it appears on your alien registration card',
+    },
     alien_registration_number: {
-      label: 'Alien registration number',
+      label: 'USCIS / Alien registration number',
+      hint: '<0>Need help finding it?</0> This is a 7-9 digit number, sometimes starting with “A”',
+      modal: {
+        heading:
+          'You are navigating to immigrationhelp.org, a website not managed by the State of New Jersey.',
+      },
       errors: {
         format:
-          'Please enter a valid Alien registration number with format 123-456-789',
-        required: 'Alien registration number is required',
+          'Please enter a valid USCIS / Alien registration number with only numbers and a length of 7-9',
+        required: 'USCIS / Alien registration number is required',
       },
+    },
+    re_enter_alien_registration_number: {
+      label: 'Re-enter USCIS / Alien registration number',
+      errors: {
+        mustMatch: 'Must match USCIS / Alien registration number',
+        required: 'Re-enter USCIS / Alien registration number is required',
+      },
+    },
+    country_of_origin: {
+      label: 'Country of origin',
+      errors: {
+        required: 'Country of origin is required',
+      },
+    },
+    employment_authorization_start_date: {
+      label: 'Valid from / issued on',
+      errors: {
+        required: 'Valid from / issued on date is required',
+        maxDate: "Valid from / issued on date can't be in the future",
+      },
+    },
+    employment_authorization_end_date: {
+      label: 'Expiration date',
+      errors: {
+        required: 'Expiration date is required',
+        maxDate: "Expiration date can't be in the future",
+        minDate: "Expiration date can't be before valid from / issued on date",
+      },
+    },
+  },
+  has_nj_issued_id: {
+    label: 'Do you have a New Jersey driver’s license or state ID?',
+    errors: {
+      required:
+        'Please say whether you have a New Jersey driver’s license or state ID',
     },
   },
   drivers_license_or_state_id_number: {
     label: 'Driver’s license or state ID number',
     errors: {
       required: 'Driver’s license or state ID number is required',
+      matches:
+        'Please enter a driver’s license or state ID number like D12345678901234',
     },
   },
   employers: {

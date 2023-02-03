@@ -852,35 +852,260 @@
     },
     "drivers_license_or_state_id_number": {
       "description": "Driver’s license or state ID number",
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-zA-Z][\\d]{14}$"
     },
     "employers": {
       "description": "Employers of the claimant in the past 18 months",
       "type": "array",
       "items": { "$ref": "#/definitions/employer" }
     },
-    "authorized_to_work": {
-      "description": "Legally allowed to work in the US",
-      "type": "boolean"
-    },
     "authorization_type": {
-      "description": "Type of work authorization",
+      "description": "Are you legally allowed to work in the United States",
       "type": "string",
       "enum": [
         "US_citizen_or_national",
         "permanent_resident",
-        "temporary_legal_worker"
+        "H1B_visa",
+        "employment_authorization_or_card_or_doc",
+        "not_legally_allowed_to_work_in_US"
       ]
     },
-    "not_authorized_to_work_explanation": {
-      "description": "Reason not authorized to work in the US",
-      "type": "string",
-      "maxLength": 1024
+    "employment_authorization_document_name": {
+      "$ref": "#/definitions/person_name"
     },
     "alien_registration_number": {
       "description": "Alien registration number",
       "type": "string",
-      "pattern": "^[0-9]{3}-[0-9]{3}-[0-9]{3}$"
+      "pattern": "^[\\d]{7,9}$"
+    },
+    "country_of_origin": {
+      "description": "Country of origin",
+      "type": "string",
+      "enum": [
+        "Afghanistan",
+        "Albania",
+        "Algeria",
+        "Andorra",
+        "Angola",
+        "Anguilla",
+        "Antigua & Barbuda",
+        "Argentina",
+        "Armenia",
+        "Aruba",
+        "Australia",
+        "Austria",
+        "Azerbaijan",
+        "Bahamas",
+        "Bahrain",
+        "Bangladesh",
+        "Barbados",
+        "Belarus",
+        "Belgium",
+        "Belize",
+        "Benin",
+        "Bermuda",
+        "Bhutan",
+        "Bolivia",
+        "Bosnia & Herzegovina",
+        "Botswana",
+        "Brazil",
+        "Brunei Darussalam",
+        "Bulgaria",
+        "Burkina Faso",
+        "Burundi",
+        "Cambodia",
+        "Cameroon",
+        "Canada",
+        "Cape Verde",
+        "Central African Republic",
+        "Chad",
+        "Chile",
+        "China",
+        "Colombia",
+        "Comoros",
+        "Congo",
+        "Costa Rica",
+        "Cote d'Ivoire",
+        "Croatia",
+        "Cuba",
+        "Cyprus",
+        "Czech Republic",
+        "Czechoslovakia",
+        "Dem. Republic of Congo",
+        "Denmark",
+        "Djibouti",
+        "Dominica",
+        "Dominican Republic",
+        "East Timor",
+        "Ecuador",
+        "Egypt",
+        "El Salvador",
+        "Equatorial Guinea",
+        "Eritrea",
+        "Estonia",
+        "Ethiopia",
+        "Fiji",
+        "Finland",
+        "Former Rep of Macedonia",
+        "France",
+        "Gabon",
+        "Gambia",
+        "Georgia",
+        "Germany",
+        "Ghana",
+        "Greece",
+        "Greenland",
+        "Grenada",
+        "Guadeloupe",
+        "Guam",
+        "Guatemala",
+        "Guinea",
+        "Guinea - Bissau",
+        "Guyana",
+        "Haiti",
+        "Honduras",
+        "Hong-Kong",
+        "Hungary",
+        "Iceland",
+        "India",
+        "Indonesia",
+        "Iran",
+        "Iraq",
+        "Ireland",
+        "Israel",
+        "Italy",
+        "Jamaica",
+        "Japan",
+        "Jordan",
+        "Kazakhstan",
+        "Kenya",
+        "Kiribati",
+        "Korea",
+        "Kuwait",
+        "Kyrgyzstan",
+        "Lao People's Demo Republi",
+        "Latvia",
+        "Lebanon",
+        "Lesotho",
+        "Liberia",
+        "Libyan ArabJamahiriya",
+        "Liechtenstein",
+        "Lithuania",
+        "Luxembourg",
+        "Madagascar",
+        "Malawi",
+        "Malaysia",
+        "Maldives",
+        "Mali",
+        "Malta",
+        "Marshall Islands",
+        "Mauritania",
+        "Mauritius",
+        "Mexico",
+        "Micronesia",
+        "Moldova",
+        "Monaco",
+        "Mongolia",
+        "Montserrat",
+        "Morocco",
+        "Mozambique",
+        "Myanmar",
+        "Namibia",
+        "Nauru",
+        "Nepal",
+        "Netherland Antilles",
+        "Netherlands",
+        "New Zealand",
+        "Nicaragua",
+        "Niger",
+        "Nigeria",
+        "Niue",
+        "Norway",
+        "Oman",
+        "Pakistan",
+        "Palau",
+        "Palestine",
+        "Panama",
+        "Papua New Guinea",
+        "Paraguay",
+        "Peru",
+        "Philippines",
+        "Poland",
+        "Portugal",
+        "Qatar",
+        "Republic of Korea",
+        "Republic of Moldova",
+        "Reunion",
+        "Romania",
+        "Russian Federation",
+        "Rwanda",
+        "Saint Kitts & Nevis",
+        "Saint Lucia",
+        "Samoa",
+        "San Marino",
+        "Sao Tome & Principe",
+        "Saudi Arabia",
+        "Scotland",
+        "Senegal",
+        "Seychelles",
+        "Sierra Leone",
+        "Singapore",
+        "Slovakia",
+        "Slovenia",
+        "Solomon Islands",
+        "Somalia",
+        "South Africa",
+        "Spain",
+        "Sri Lanka",
+        "St. Helena",
+        "St. Togo",
+        "St. Vincent & Grenadines",
+        "Sudan",
+        "Suriname",
+        "Swaziland",
+        "Sweden",
+        "Switzerland",
+        "Syrian Arab Republic",
+        "Taiwan",
+        "Tajikistan",
+        "Thailand",
+        "Tobago",
+        "Tokelau",
+        "Tonga",
+        "Trinidad",
+        "Trinidad & Tobago",
+        "Tunisia",
+        "Turkey",
+        "Turkmenistan",
+        "Tuvalu",
+        "Uganda",
+        "UK Great Britain&N Irelan",
+        "Ukraine",
+        "United Arab Emirates",
+        "United Republic Tanzania",
+        "United States of America",
+        "Uruguay",
+        "Uzbekistan",
+        "Vanuatu",
+        "Venezuela",
+        "Viet Nam",
+        "West Bank",
+        "Western Sahara",
+        "Yemen",
+        "Yugoslavia",
+        "Zaire",
+        "Zambia",
+        "Zimbabwe"
+      ]
+    },
+    "employment_authorization_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "employment_authorization_end_date": {
+      "type": "string",
+      "format": "date"
     },
     "job_title": {
       "description": "Job title entered by claimant",
@@ -1049,8 +1274,8 @@
     "education_level",
     "birthdate",
     "employers",
-    "drivers_license_or_state_id_number",
-    "authorized_to_work",
+    "has_nj_issued_id",
+    "authorization_type",
     "attending_college_or_job_training",
     "required_to_seek_work_through_hiring_hall",
     "disability_applied_to_or_received",
@@ -1158,36 +1383,19 @@
     {
       "if": {
         "properties": {
-          "authorized_to_work": {
-            "type": "string",
+          "has_nj_issued_id": {
+            "type": "boolean",
             "const": true
           }
+        },
+        "then": {
+          "required": ["drivers_license_or_state_id_number"]
         }
-      },
-      "then": {
-        "required": ["authorization_type"]
       }
     },
     {
       "if": {
         "properties": {
-          "authorized_to_work": {
-            "type": "boolean",
-            "const": false
-          }
-        }
-      },
-      "then": {
-        "required": ["not_authorized_to_work_explanation"]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "authorized_to_work": {
-            "type": "boolean",
-            "const": true
-          },
           "authorization_type": {
             "not": {
               "type": "string",
@@ -1197,19 +1405,19 @@
         }
       },
       "then": {
-        "required": ["alien_registration_number"]
+        "required": [
+          "employment_authorization_document_name",
+          "alien_registration_number",
+          "country_of_origin"
+        ]
       }
     },
     {
       "if": {
         "properties": {
-          "work_authorization": {
+          "authorization_type": {
             "type": "string",
-            "enum": [
-              "permanent_resident",
-              "H1B_visa",
-              "employment_authorization_or_card_or_doc"
-            ]
+            "enum": ["employment_authorization_or_card_or_doc"]
           }
         },
         "then": {
