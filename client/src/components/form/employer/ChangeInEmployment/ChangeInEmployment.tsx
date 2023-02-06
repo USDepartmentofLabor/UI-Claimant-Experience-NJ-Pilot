@@ -1,5 +1,6 @@
 import { Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
+import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import {
   changeInEmploymentOptions,
   reasonStillEmployedOptions,
@@ -75,7 +76,7 @@ export const ChangeInEmployment = () => {
     }
   }
   const handleStillEmployedReasonChange: ChangeEventHandler<
-    HTMLInputElement
+    HTMLSelectElement
   > = async (e) => {
     if (e.target.value !== 'reduction_in_hours_by_employer') {
       await clearField(`hours_reduced_twenty_percent`)
@@ -114,9 +115,10 @@ export const ChangeInEmployment = () => {
           </div>
         </div>
         {showStillEmployed && (
-          <RadioField
+          <DropdownField
+            startEmpty
             name={`reason_still_employed`}
-            legend={t('separation.reasons.still_employed.option_heading')}
+            label={t('separation.reasons.still_employed.option_heading')}
             options={reasonStillEmployedOptions.map((option) => {
               return {
                 label: t(`separation.reasons.still_employed.options.${option}`),
