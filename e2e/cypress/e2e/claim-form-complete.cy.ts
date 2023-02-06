@@ -72,14 +72,27 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
 
     // Identity page
     fillIdentityFields({
-      drivers_license: 'D12345678912345',
+      has_nj_issued_id: 'yes',
+      drivers_license_or_state_id_number: 'D12345678912345',
       work_authorization: {
-        authorized_to_work: true,
-        authorization_type: 'US_citizen_or_national',
+        authorization_type: 'employment_authorization_or_card_or_doc',
+        employment_authorization_document_name: {
+          first_name: 'Jane',
+          middle_initial: 'D',
+          last_name: 'Doe',
+          suffix: 'I',
+        },
+        alien_registration_number: '123456789',
+        re_enter_alien_registration_number: '123456789',
+        country_of_origin: 'Anguilla',
+        employment_authorization_start_date: {
+          mo: '01',
+          day: '05',
+          yr: '2019',
+        },
+        employment_authorization_end_date: { mo: '01', day: '05', yr: '2020' },
       },
     })
-    const ssnFormatted = '987-65-4321'
-    cy.get('[data-testid=verified-field-value]').first().contains(ssnFormatted)
     cy.checkA11y()
     cy.checkLighthouse()
     cy.clickNext()

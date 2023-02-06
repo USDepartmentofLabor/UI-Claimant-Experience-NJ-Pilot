@@ -39,49 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          aws-region: us-east-1
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@261a7de32bda11ba01f4d75c4ed6caf3739e54be
-
-      - name: Construct image tag
-        id: construct-image-tag
-        env:
-          GIT_BRANCH: ${{ github.ref_name }}
-          GIT_COMMIT: ${{ github.sha }}
-        run: |
-          BRANCH_PREFIX="$GIT_BRANCH"
-          # use a generic prefix for all non-main branches
-          if [[ "$BRANCH_PREFIX" != "main" ]]; then
-            BRANCH_PREFIX="branch"
-          fi
-          BUILD_TIME=$(date '+%Y%m%d%H%M%S')
-          IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
-          echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325
-
-      - name: Build & Push image
-        id: build-image
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
-        with:
-          push: true
-          provenance: false
-          context: server
-          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-server-dev:${{ steps.construct-image-tag.outputs.image-tag }}
-
       - name: Deploy server
         uses: ./.github/actions/deploy-server
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          server-image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-server-dev:${{ steps.construct-image-tag.outputs.image-tag }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
-          image-tag: ${{ steps.construct-image-tag.outputs.image-tag }}

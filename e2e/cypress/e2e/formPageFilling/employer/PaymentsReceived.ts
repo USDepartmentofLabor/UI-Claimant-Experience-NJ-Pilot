@@ -1,3 +1,5 @@
+import { payTypeOptions, PayTypeOption } from 'constants/formOptions'
+
 export type PaymentsReceivedDetailInput = {
   pay_type: PayTypeOption
   note?: string
@@ -5,16 +7,6 @@ export type PaymentsReceivedDetailInput = {
   date_pay_began?: string
   date_pay_ended?: string
 }
-
-export const payTypeOptions = [
-  'vacation_sick_pto',
-  'final_paycheck',
-  'pension_annuity_retirement',
-  'severance_or_continuation',
-  'other_pay',
-  'none',
-] as const
-export type PayTypeOption = typeof payTypeOptions[number]
 
 export const fillPaymentsReceived = (
   optionsList: PaymentsReceivedDetailInput[]

@@ -30,4 +30,4 @@ aws:
     claims-bucket: ${S3_CLAIMS_BUCKET:dol-ui-claims}
     claims-bucket-kms-key: ${S3_CLAIMS_BUCKET_KMS_KEY:localdev-mock-kms-key}
 loops:
-  url: ${LOOPS_HOST}${LOOPS_PATH}
+  url: ${WGPM_HOST:http://localhost:9090}${WGPM_PATH:/wgpm}

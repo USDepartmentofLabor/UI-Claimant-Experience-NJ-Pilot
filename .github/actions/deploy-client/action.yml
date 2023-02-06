@@ -26,45 +26,14 @@ runs:
         role-to-assume: ${{ inputs.aws-role-to-assume }}
         aws-region: us-east-1
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@261a7de32bda11ba01f4d75c4ed6caf3739e54be
-
-    - name: Construct image tag
-      id: construct-image-tag
-      env:
-        GIT_BRANCH: ${{ github.ref_name }}
-        GIT_COMMIT: ${{ github.sha }}
-      shell: bash
-      run: |
-        BRANCH_PREFIX="$GIT_BRANCH"
-        # use a generic prefix for all non-main branches
-        if [[ "$BRANCH_PREFIX" != "main" ]]; then
-          BRANCH_PREFIX="branch"
-        fi
-        BUILD_TIME=$(date '+%Y%m%d%H%M%S')
-        IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
-        echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325
-
-    - name: Build & Push image
-      id: build-image
-      uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+    - name: Build, Push, and Scan Client Image
+      uses: ./.github/actions/build-client
+      id: build-client
       with:
-        push: true
-        provenance: false
-        context: client
-        tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-${{ inputs.deploy-env }}:${{ steps.construct-image-tag.outputs.image-tag }}
-        build-args: |
-          NEXT_PUBLIC_SERVER_BASE_URL=${{ inputs.server-base-url }}
-          NEXT_PUBLIC_APP_ENV=${{ inputs.app-env }}
-
-    - name: Scan client image
-      uses: ./.github/actions/image-scan
-      with:
-        image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-${{ inputs.deploy-env }}:${{ steps.construct-image-tag.outputs.image-tag }}
+        deploy-env: ${{ inputs.deploy-env }}
+        aws-role-to-assume: ${{ inputs.aws-role-to-assume }}
+        server-base-url: ${{ inputs.server-base-url }}
+        app-env: ${{ inputs.app-env }}
 
     - name: Set environment name in ECS task definition template
       shell: bash
@@ -77,7 +46,7 @@ runs:
       with:
         task-definition: ops/ecs/client-task-definition.json
         container-name: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}
-        image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-client-${{ inputs.deploy-env }}:${{ steps.construct-image-tag.outputs.image-tag }}
+        image: ${{ steps.build-client.outputs.image-uri }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a

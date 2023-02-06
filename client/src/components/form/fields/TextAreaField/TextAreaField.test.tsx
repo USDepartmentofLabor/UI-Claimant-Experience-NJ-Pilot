@@ -76,6 +76,35 @@ describe('TextAreaField component', () => {
     expect(queryByLabelText('First Name')).toHaveClass('myCustomInputClass')
   })
 
+  it('shows character counter', () => {
+    const mockMeta = {
+      touched: false,
+      error: '',
+      initialError: '',
+      initialTouched: false,
+      initialValue: '',
+      value: '',
+    }
+    const mockField = {
+      value: '',
+      checked: false,
+      onChange: jest.fn(),
+      onBlur: jest.fn(),
+      multiple: undefined,
+      name: 'firstName',
+    }
+
+    mockUseField.mockReturnValue([mockField, mockMeta])
+
+    const { queryByTestId } = render(
+      <TextAreaField name="firstName" characterLimit={10} label="First Name" />
+    )
+
+    expect(queryByTestId('characterCountMessage')?.textContent).toBe(
+      '10 characters allowed'
+    )
+  })
+
   describe('with an error message', () => {
     it('does not show the error message if the input is untouched', () => {
       const mockMeta = {

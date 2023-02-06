@@ -12,7 +12,7 @@ describe('PaymentsReceivedDetail component', () => {
       name: 'paid_time_off',
       label: 'Paid Time Off',
       description: 'I am your salvation',
-      payType: 'vacation_sick_pto' as Exclude<PayTypeOption, 'none'>,
+      payType: 'holiday' as Exclude<PayTypeOption, 'none'>,
     }
     render(
       <Formik initialValues={{}} onSubmit={noop}>
@@ -46,7 +46,7 @@ describe('PaymentsReceivedDetail component', () => {
     const props = {
       name: 'bonus',
       label: 'Bonus',
-      payType: 'severance_or_continuation' as Exclude<PayTypeOption, 'none'>,
+      payType: 'continuation' as Exclude<PayTypeOption, 'none'>,
     }
     render(
       <Formik
@@ -105,26 +105,12 @@ describe('PaymentsReceivedDetail component', () => {
     expect(endDayField).toHaveValue('22')
     expect(endYearField).toHaveValue('2020')
   })
-  // it('shows date hint',async () => {
-  //   const props = {
-  //     name: 'severance',
-  //     label: 'Severance Snape',
-  //     payType: 'severance_or_continuation'  as Exclude<PayTypeOption, 'none'>,
-  //   }
-  //   render(
-  //     <Formik initialValues={{}} onSubmit={noop}>
-  //       <PaymentsReceivedDetail {...props} />
-  //     </Formik>
-  //   )
-  //   const hintText=screen.getByText('payments_received.payments_received_detail.dates_hint.severance_or_continuation')
-  //   expect(hintText).toBeInTheDocument()
-  // }
-  // )
-  it('shows date hint vacation', async () => {
+
+  it('shows date hint holiday', async () => {
     const props = {
-      name: 'vacation_sick_pto',
-      label: 'Severance Snape',
-      payType: 'vacation_sick_pto' as Exclude<PayTypeOption, 'none'>,
+      name: 'holiday',
+      label: 'Holiday pay',
+      payType: 'holiday' as Exclude<PayTypeOption, 'none'>,
     }
     render(
       <Formik initialValues={{}} onSubmit={noop}>
@@ -132,7 +118,41 @@ describe('PaymentsReceivedDetail component', () => {
       </Formik>
     )
     const hintText = screen.getByText(
-      'payments_received.payments_received_detail.dates_hint.vacation_sick_pto'
+      'payments_received.payments_received_detail.dates_hint.label.holiday'
+    )
+    expect(hintText).toBeInTheDocument()
+  })
+
+  it('shows date hint continuation', async () => {
+    const props = {
+      name: 'continuation',
+      label: 'Continuation',
+      payType: 'continuation' as Exclude<PayTypeOption, 'none'>,
+    }
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <PaymentsReceivedDetail {...props} />
+      </Formik>
+    )
+    const hintText = screen.getByText(
+      'payments_received.payments_received_detail.dates_hint.label.default'
+    )
+    expect(hintText).toBeInTheDocument()
+  })
+
+  it('shows date hint payment in lieu of notice', async () => {
+    const props = {
+      name: 'payment_in_lieu_of_notice',
+      label: 'Payment in lieu of notice',
+      payType: 'payment_in_lieu_of_notice' as Exclude<PayTypeOption, 'none'>,
+    }
+    render(
+      <Formik initialValues={{}} onSubmit={noop}>
+        <PaymentsReceivedDetail {...props} />
+      </Formik>
+    )
+    const hintText = screen.getByText(
+      'payments_received.payments_received_detail.dates_hint.label.default'
     )
     expect(hintText).toBeInTheDocument()
   })

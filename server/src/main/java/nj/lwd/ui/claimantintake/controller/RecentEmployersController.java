@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @RestController
 @RequestMapping("/recent-employers")
@@ -38,8 +39,8 @@ public class RecentEmployersController {
         // TODO- change this to be a service call
         // create claim date as previous sunday
         return LocalDate.now()
-                .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
-                .format(DateTimeFormatter.ofPattern("yyyy-dd-MM"));
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     @GetMapping()
@@ -55,32 +56,46 @@ public class RecentEmployersController {
 
         String claimDate = getClaimDate();
 
-        // hit WGPM api with ssnNumber, claimDate  and get back employer data
-        RecentEmployersResponse recentEmployerResponse =
-                recentEmployersService.getRecentEmployerValues(ssn, claimDate);
+        try {
+            // hit WGPM api with ssnNumber, claimDate  and get back employer data
+            RecentEmployersResponse recentEmployerResponse =
+                    recentEmployersService.getRecentEmployerValues(ssn, claimDate);
 
-        boolean savedEmployerData =
-                claimStorageService.saveRecentEmployer(claimantIdpId, recentEmployerResponse);
-        if (!savedEmployerData) {
-            logger.error(
-                    "Saving Recent Employer Response to S3 failed for claimant IdpId {}, returning"
-                            + " anerror to client",
-                    claimantIdpId);
-            return new ResponseEntity<>(
-                    "Received recent employer response, but could not save to S3",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            boolean savedEmployerData =
+                    claimStorageService.saveRecentEmployer(claimantIdpId, recentEmployerResponse);
+
+            if (!savedEmployerData) {
+                logger.error(
+                        "Saving Recent Employer Response to S3 failed for claimant IdpId {},"
+                                + " returning an error to client",
+                        claimantIdpId);
+                return new ResponseEntity<>(
+                        "Received recent employer response, but could not save to S3",
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            // Get just the list of employers and return to client
+            ArrayList<WagePotentialResponseEmployer> employerList =
+                    recentEmployerResponse.getWagePotentialMonLookupResponseEmployerDtos();
+
+            if (employerList == null) {
+                logger.info(
+                        "No employer list for claimant IdpId {} but ssn was found correctly",
+                        claimantIdpId);
+                employerList = new ArrayList<>();
+            }
+
+            return new ResponseEntity<>(employerList, HttpStatus.OK);
+
+        } catch (HttpStatusCodeException e) {
+            var externalErrorMsg =
+                    String.format(
+                            "Unable to retrieve recent employer data as api returned with the"
+                                    + " following error: %s",
+                            e.getMessage());
+
+            logger.error(externalErrorMsg);
+            return new ResponseEntity<>(externalErrorMsg, HttpStatus.SERVICE_UNAVAILABLE);
         }
-
-        // Get just the list of employers and return to client
-        ArrayList<WagePotentialResponseEmployer> employerList =
-                recentEmployerResponse.getWagePotentialMonLookupResponseEmployerDtos();
-        if (employerList == null) {
-            logger.info(
-                    "No employer list for claimant IdpId {} but ssn was found correctly",
-                    claimantIdpId);
-            employerList = new ArrayList<WagePotentialResponseEmployer>();
-        }
-
-        return new ResponseEntity<>(employerList, HttpStatus.OK);
     }
 }
