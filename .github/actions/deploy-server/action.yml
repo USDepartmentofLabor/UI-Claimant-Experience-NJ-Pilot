@@ -18,7 +18,7 @@ inputs:
 outputs:
   image-uri-without-aws-id:
     description: The uri for the server image pushed to AWS ECR without the AWS ID
-    value: steps.build-server.outputs.image-uri-without-aws-id
+    value: ${{ steps.build-server.outputs.image-uri-without-aws-id }}
 runs:
   using: "composite"
   steps:

@@ -19,5 +19,3 @@ aws:
   region: us-east-1
   s3:
     endpoint-url: http://localhost:4566
-loops:
-  url: ${MOCK_LOOPS_HOST}${MOCK_LOOPS_PATH}

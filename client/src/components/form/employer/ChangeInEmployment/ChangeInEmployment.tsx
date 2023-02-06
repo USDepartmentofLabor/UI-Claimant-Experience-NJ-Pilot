@@ -134,6 +134,7 @@ export const ChangeInEmployment = () => {
               'separation.separation_circumstance_details.required_label'
             )}
             name={`separation_circumstance_details`}
+            characterLimit={255}
           />
         )}
         <DateInputField

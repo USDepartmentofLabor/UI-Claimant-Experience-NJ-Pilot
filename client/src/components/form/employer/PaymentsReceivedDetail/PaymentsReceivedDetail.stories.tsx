@@ -31,7 +31,15 @@ Default.args = {
   name: 'severance',
   label: 'Severance Snape',
   description: 'Potion Master',
-  payType: 'severance_or_continuation',
+  payType: 'severance',
+}
+
+export const WithDates = Template.bind({})
+WithDates.args = {
+  name: 'holiday',
+  label: 'Holiday pay',
+  description: 'Holiday money',
+  payType: 'holiday',
 }
 
 export const WithoutDatesValues = Template.bind({})
