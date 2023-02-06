@@ -866,7 +866,7 @@ const claimForm = {
     },
   },
   contact: {
-    heading: 'Contact Information',
+    heading: 'Contact information',
     claimant_phone: {
       label: 'Phone number',
       errors: {
