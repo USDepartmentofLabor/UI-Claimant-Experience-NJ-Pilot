@@ -10,6 +10,7 @@ import { useClearFields } from 'hooks/useClearFields'
 import { ChangeEventHandler } from 'react'
 import { Trans } from 'react-i18next'
 import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
+import { formatStoredToDisplayPhone } from 'utils/phone/format'
 
 export const WorkLocation = () => {
   const { values, setFieldValue } = useFormikContext<Employer>()
@@ -83,7 +84,7 @@ export const WorkLocation = () => {
         <YesNoQuestion
           question={
             <Trans t={t} i18nKey="is_employer_phone_accurate.label">
-              {values.employer_phone?.number}
+              {formatStoredToDisplayPhone(values.employer_phone?.number)}
             </Trans>
           }
           name={`is_employer_phone_accurate`}
