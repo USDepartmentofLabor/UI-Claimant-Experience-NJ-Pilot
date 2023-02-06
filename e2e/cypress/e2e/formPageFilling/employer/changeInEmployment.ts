@@ -27,7 +27,7 @@ export const fillChangeInEmployment = (options: ChangeInEmploymentOptions) => {
   }
   if (options.reason_still_employed) {
     cy.get(
-      `input[id=reason_still_employed\\.${options.reason_still_employed}]`
+      `select[id=reason_still_employed\\.${options.reason_still_employed}]`
     ).click({ force: true })
   }
 
