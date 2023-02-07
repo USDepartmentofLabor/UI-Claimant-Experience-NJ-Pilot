@@ -39,8 +39,13 @@ runs:
         DEPLOY_ENV: ${{ inputs.deploy-env }}
       shell: bash
       run: |
+        BRANCH_PREFIX="$GIT_BRANCH"
+        # use a generic prefix for all non-main branches
+        if [[ "$BRANCH_PREFIX" != "main" ]]; then
+          BRANCH_PREFIX="branch"
+        fi
         BUILD_TIME=$(date '+%Y%m%d%H%M%S')
-        IMAGE_TAG="${GIT_BRANCH}-${GIT_COMMIT}-${BUILD_TIME}"
+        IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
         IMAGE_URI_WITHOUT_ID="/dol-ui-claimant-intake-server-${DEPLOY_ENV}:${IMAGE_TAG}"
         IMAGE_URI="${ECR_REGISTRY}${IMAGE_URI_WITHOUT_ID}"
         echo "image-uri-without-aws-id=$IMAGE_URI_WITHOUT_ID" >> $GITHUB_OUTPUT
