@@ -27,10 +27,12 @@ public class CompletedClaimController {
 
     @Autowired
     public CompletedClaimController(
-            ClaimStorageService claimStorageService, ClaimValidatorService claimValidatorService) {
+            ClaimStorageService claimStorageService,
+            ClaimValidatorService claimValidatorService,
+            ExternalClaimFormatterService externalClaimFormatterService) {
         this.claimStorageService = claimStorageService;
         this.claimValidatorService = claimValidatorService;
-        this.externalClaimFormatterService = new ExternalClaimFormatterService();
+        this.externalClaimFormatterService = externalClaimFormatterService;
     }
 
     @PostMapping()
@@ -41,7 +43,7 @@ public class CompletedClaimController {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, Object> externalClaim =
-                    externalClaimFormatterService.formatClaim(completedClaimPayload);
+                    externalClaimFormatterService.formatClaim(completedClaimPayload, claimantIdpId);
             Set<ValidationMessage> errorSet =
                     claimValidatorService.validateAgainstSchema(
                             objectMapper.writeValueAsString(externalClaim));

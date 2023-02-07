@@ -6,12 +6,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import nj.lwd.ui.claimantintake.exception.RecentEmployerDataRetrievalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ExternalClaimFormatterService {
+    private final ClaimStorageService claimStorageService;
+    private final Logger logger = LoggerFactory.getLogger(ExternalClaimFormatterService.class);
 
-    public ExternalClaimFormatterService() {}
+    @Autowired
+    public ExternalClaimFormatterService(ClaimStorageService claimStorageService) {
+        this.claimStorageService = claimStorageService;
+        System.out.println("in constructor mock bean is " + claimStorageService);
+    }
 
     private Object removeLocalValuesFromMap(Object possibleMapObject) {
         Object returnVObject;
@@ -59,8 +70,24 @@ public class ExternalClaimFormatterService {
         return claimPayload;
     }
 
-    public Map<String, Object> formatClaim(Map<String, Object> claimPayload) {
+    public Map<String, Object> formatClaim(Map<String, Object> claimPayload, String claimantIdpId) {
 
-        return _formatClaimHelper(claimPayload);
+        Map<String, Object> formattedClaim = _formatClaimHelper(claimPayload);
+        Optional<Map<String, Object>> recentEmployers = Optional.empty();
+        try {
+            recentEmployers = claimStorageService.getRecentEmployers(claimantIdpId);
+
+        } catch (RecentEmployerDataRetrievalException e) {
+            formattedClaim.put("wgpm", null);
+            logger.error(
+                    "WGPM will return as an empty object from formatter as exception was thrown."
+                            + " Schema validation is expected to fail");
+        }
+        if (recentEmployers.isEmpty()) {
+            formattedClaim.put("wgpm", null);
+        } else {
+            formattedClaim.put("wgpm", recentEmployers.get());
+        }
+        return formattedClaim;
     }
 }

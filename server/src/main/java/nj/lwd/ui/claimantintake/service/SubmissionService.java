@@ -19,11 +19,13 @@ public class SubmissionService {
     private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
     @Autowired
-    public SubmissionService(ClaimantRepository claimantRepository) {
+    public SubmissionService(
+            ClaimantRepository claimantRepository,
+            ExternalClaimFormatterService externalClaimFormatterService) {
         // TODO -Nava api connection info here
 
         this.claimantRepository = claimantRepository;
-        this.externalClaimFormatterService = new ExternalClaimFormatterService();
+        this.externalClaimFormatterService = externalClaimFormatterService;
     }
 
     private boolean saveInitiatedSubmission(String claimantIdpId) {
@@ -116,7 +118,7 @@ public class SubmissionService {
         boolean isSubmitEventSaved = false;
         boolean isInitiatedEventSaved = saveInitiatedSubmission(claimantIdpId);
         Map<String, Object> externalClaimPayload =
-                externalClaimFormatterService.formatClaim(validatedClaimPayload);
+                externalClaimFormatterService.formatClaim(validatedClaimPayload, claimantIdpId);
 
         if (isInitiatedEventSaved) {
             submissionSuccess = sendClaim(externalClaimPayload);
