@@ -75,7 +75,7 @@ public class ExternalClaimFormatterServiceTest {
                                     }
                                     """,
                                 new TypeReference<>() {});
-        // set the recentEmployerCall to return fake data
+
         when(mockClaimStorage.getRecentEmployers(claimantIdpId))
                 .thenReturn(validRecentEmployerOptional);
         Map<String, Object> alteredClaim =
