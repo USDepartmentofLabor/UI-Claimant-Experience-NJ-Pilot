@@ -108,16 +108,16 @@ const Ssn: NextPageWithLayout = () => {
             {showErrorSummary && (
               <FormErrorSummary key={submitCount} errors={errors} />
             )}
-            <div className="margin-bottom-8 maxw-desktop maxw-mobile maxw-tablet">
+            <div className="margin-bottom-1">
               <TextField
                 label={t('label')}
                 name="ssn"
                 type={showSsn ? 'text' : 'password'}
                 maxLength={11}
                 minLength={9}
-                className="maxw-desktop  maxw-mobile maxw-tablet"
+                className=""
               />
-              <div className="text-right">
+              <div className="text-right maxw-mobile-lg">
                 <button
                   className="usa-button usa-button--unstyled text-right"
                   type="button"
