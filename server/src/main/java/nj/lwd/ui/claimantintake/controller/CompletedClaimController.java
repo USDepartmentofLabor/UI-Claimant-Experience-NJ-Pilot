@@ -26,7 +26,7 @@ public class CompletedClaimController {
     private final ExternalClaimFormatterService externalClaimFormatterService;
 
     @Autowired
-    public CompletedClaimController(
+    CompletedClaimController(
             ClaimStorageService claimStorageService,
             ClaimValidatorService claimValidatorService,
             ExternalClaimFormatterService externalClaimFormatterService) {

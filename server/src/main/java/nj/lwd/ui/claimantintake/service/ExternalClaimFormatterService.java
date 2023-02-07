@@ -19,7 +19,7 @@ public class ExternalClaimFormatterService {
     private final Logger logger = LoggerFactory.getLogger(ExternalClaimFormatterService.class);
 
     @Autowired
-    public ExternalClaimFormatterService(ClaimStorageService claimStorageService) {
+    ExternalClaimFormatterService(ClaimStorageService claimStorageService) {
         this.claimStorageService = claimStorageService;
         System.out.println("in constructor mock bean is " + claimStorageService);
     }

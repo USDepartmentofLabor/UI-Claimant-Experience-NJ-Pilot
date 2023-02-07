@@ -19,7 +19,7 @@ public class SubmissionService {
     private final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
     @Autowired
-    public SubmissionService(
+    SubmissionService(
             ClaimantRepository claimantRepository,
             ExternalClaimFormatterService externalClaimFormatterService) {
         // TODO -Nava api connection info here

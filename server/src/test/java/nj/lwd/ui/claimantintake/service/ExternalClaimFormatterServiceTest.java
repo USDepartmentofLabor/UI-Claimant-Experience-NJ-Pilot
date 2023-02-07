@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 public class ExternalClaimFormatterServiceTest {
 
     private ExternalClaimFormatterService externalClaimFormatterService;
-    private final String claimantIdpId = "fakeId";
+    private static final String claimantIdpId = "fakeId";
     private final Map<String, Object> validRecentEmployerMap =
             new HashMap<String, Object>() {
                 {
