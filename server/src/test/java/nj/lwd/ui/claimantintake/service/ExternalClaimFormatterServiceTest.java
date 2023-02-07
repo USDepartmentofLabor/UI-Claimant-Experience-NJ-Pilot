@@ -38,7 +38,6 @@ public class ExternalClaimFormatterServiceTest {
 
     @Test
     void formatClaimWithLocalValues() throws Exception {
-        System.out.println(this.mockClaimStorage);
         Map<String, Object> validClaim =
                 (new ObjectMapper())
                         .readValue(

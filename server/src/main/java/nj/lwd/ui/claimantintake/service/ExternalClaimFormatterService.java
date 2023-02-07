@@ -21,7 +21,6 @@ public class ExternalClaimFormatterService {
     @Autowired
     ExternalClaimFormatterService(ClaimStorageService claimStorageService) {
         this.claimStorageService = claimStorageService;
-        System.out.println("in constructor mock bean is " + claimStorageService);
     }
 
     private Object removeLocalValuesFromMap(Object possibleMapObject) {
