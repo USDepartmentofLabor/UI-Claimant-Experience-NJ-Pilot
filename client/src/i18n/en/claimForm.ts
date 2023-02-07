@@ -69,7 +69,7 @@ const claimForm = {
     preamble:
       'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount. Please confirm our records of your employers below.',
     no_employers_on_record:
-      'We do not have recent employers on file for you. You will be able to manually add employment history to your application on the next page.',
+      'We do not have recent employers on file for you. We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount. Please manually add employment history to your application on the next page.',
     question:
       'In the last 18 months (since {{date}}), did you work at the following employers?',
     work_at: 'Did you work at {{employer}}',
