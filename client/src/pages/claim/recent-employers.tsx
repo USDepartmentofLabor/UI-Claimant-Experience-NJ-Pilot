@@ -175,13 +175,9 @@ export const RecentEmployers: NextPageWithLayout = () => {
                     )}
                     headingLevel={'h1'}
                   >
-                    {
-                      <p>
-                        {t(
-                          'recent_employers.employer_retrieval_warning.header_description'
-                        )}
-                      </p>
-                    }
+                    {t(
+                      'recent_employers.employer_retrieval_warning.header_description'
+                    )}
                   </Alert>
                 )}
                 <SummaryBox>
