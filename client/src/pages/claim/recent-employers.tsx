@@ -60,6 +60,7 @@ export const RecentEmployers: NextPageWithLayout = () => {
     data: wgpmEmployers,
     isLoading: isLoadingRecentEmployers,
     isError: isRecentEmployersError,
+    error: recentEmployerError,
   } = useGetRecentEmployers()
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
   const date = formatLast18monthsEmployersDate(String(new Date()))
@@ -94,7 +95,10 @@ export const RecentEmployers: NextPageWithLayout = () => {
 
   if (isLoadingRecentEmployers) {
     return <PageLoader />
-  } else if (isRecentEmployersError) {
+  } else if (
+    isRecentEmployersError &&
+    recentEmployerError?.response?.status !== 503
+  ) {
     return <Error title={tCommon('errorStatus.500')} statusCode={500} />
   } else {
     const calculateInitialValues = (): RecentEmployerValues => {
@@ -154,10 +158,38 @@ export const RecentEmployers: NextPageWithLayout = () => {
               submitCount > 0 && Object.keys(errors).length > 0
 
             const hasRecentEmployers = values.recent_employers.length !== 0
+            const showWarning = isRecentEmployersError
+              ? recentEmployerError?.response?.status === 503
+              : false
+
             return (
               <Form className={styles.claimForm}>
                 {showErrorSummary && (
                   <FormErrorSummary key={submitCount} errors={errors} />
+                )}
+                {showWarning && (
+                  <Alert
+                    type="warning"
+                    heading={t(
+                      'recent_employers.employer_retrieval_warning.heading'
+                    )}
+                    headingLevel={'h1'}
+                  >
+                    {
+                      <p>
+                        <p>
+                          {t(
+                            'recent_employers.employer_retrieval_warning.header_description.line1'
+                          )}
+                        </p>
+                        <p style={{ marginTop: 0 }}>
+                          {t(
+                            'recent_employers.employer_retrieval_warning.header_description.line2'
+                          )}
+                        </p>
+                      </p>
+                    }
+                  </Alert>
                 )}
                 <SummaryBox>
                   <SummaryBoxContent>

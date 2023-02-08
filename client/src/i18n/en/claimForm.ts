@@ -75,6 +75,13 @@ const claimForm = {
     work_at: 'Did you work at {{employer}}',
     confirm_employer:
       'Are you sure? Check your pay stubs or W2 to confirm your employer name.',
+    employer_retrieval_warning: {
+      heading: 'Unable to look up employers',
+      header_description: {
+        line1: 'We are unable to look up your employment records at this time.',
+        line2: 'Please check here later, or manulally add your employers now.',
+      },
+    },
     worked_for_imported_employer_in_last_18mo: {
       errors: {
         required:
