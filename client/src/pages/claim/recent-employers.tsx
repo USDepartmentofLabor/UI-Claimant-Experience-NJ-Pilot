@@ -177,16 +177,9 @@ export const RecentEmployers: NextPageWithLayout = () => {
                   >
                     {
                       <p>
-                        <p>
-                          {t(
-                            'recent_employers.employer_retrieval_warning.header_description.line1'
-                          )}
-                        </p>
-                        <p style={{ marginTop: 0 }}>
-                          {t(
-                            'recent_employers.employer_retrieval_warning.header_description.line2'
-                          )}
-                        </p>
+                        {t(
+                          'recent_employers.employer_retrieval_warning.header_description'
+                        )}
                       </p>
                     }
                   </Alert>
