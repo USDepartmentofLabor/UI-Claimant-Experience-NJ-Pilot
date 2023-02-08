@@ -12,7 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: 16.18.1
+  JAVA_VERSION: 17.0.6+10
+  NODE_VERSION: 16.19.0
 
 jobs:
   lint-build-and-test:
@@ -46,7 +47,7 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b
         with:
-          java-version: "17.0.4+8"
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: "temurin"
 
       - name: Validate Gradle wrapper
