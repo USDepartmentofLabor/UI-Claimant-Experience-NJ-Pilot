@@ -21,6 +21,7 @@ runs:
       id: pr-type
       if: contains( 'edited, opened, synchronize, or reopened', github.event.action ) == 'false'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
 
     - name: Get changed client and server files
       id: changed-client-server-files
@@ -34,6 +35,7 @@ runs:
       id: client-or-server
       if: steps.changed-client-server-files.outputs.any_changed == 'false'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
 
     - name: Get s3 schema file change
       id: s3-schema-file
@@ -45,6 +47,7 @@ runs:
       id: s3-claim-schema
       if: steps.s3-schema-file.outputs.any_changed == 'true'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
 
     - name: Get DB schema file change
       id: db-schema-file
@@ -56,21 +59,26 @@ runs:
       id: db-schema
       if: teps.db-schema-file.outputs.any_changed == 'true'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
 
     - name: Get Codeowners file
       id: codeowners
       run: echo "codeowners=$(cat .github/CODEOWNERS)" >> $GITHUB_OUTPUT
+      shell: bash
 
     - name: Check PR owner has deployment preview permission
       id: privileges
       if: contains( steps.codeowners.outputs.codeowners, github.actor ) == 'false'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
 
     - name: Check PR description includes deployment preview flag
       id: dp-flag
       if: contains( github.event.pull_request.body, '[x] Deploy Preview Environment') == 'false'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
 
     - name: Set env value to output
       id: set-output
       run: echo "run-deployment-preview=$RUN_DEPLOYMENT_PREVIEW" >> $GITHUB_OUTPUT
+      shell: bash
