@@ -26,9 +26,9 @@ export const fillChangeInEmployment = (options: ChangeInEmploymentOptions) => {
       .click()
   }
   if (options.reason_still_employed) {
-    cy.get(
-      `select[id=reason_still_employed]`
-    ).select(options.reason_still_employed)
+    cy.get(`select[id=reason_still_employed]`).select(
+      options.reason_still_employed
+    )
   }
 
   if (options.separation_circumstance_details) {
@@ -114,7 +114,8 @@ export const fillChangeInEmployment = (options: ChangeInEmploymentOptions) => {
   }
   if (options.is_seasonal_work !== undefined) {
     cy.get(
-      `input[id=is_seasonal_work\\.${options.is_seasonal_work ? 'yes' : 'no'}]`
+      `input[id=is_seasonal_work\\
+      .${options.is_seasonal_work ? 'yes' : 'no'}]`
     ).click({ force: true })
   }
 }
