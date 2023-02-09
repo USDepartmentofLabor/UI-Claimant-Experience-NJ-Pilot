@@ -10,3 +10,11 @@ CVE-2022-41854
 # Ignore CVE-2016-1000027 while we research the finding
 # See https://github.com/newjersey/dol-ui-claimant-intake/issues/1224
 CVE-2016-1000027
+# Ignore the following OpenSSL vulnerabilities until patches are available
+# in the application's base images
+# https://github.com/newjersey/dol-ui-claimant-intake/issues/1463
+CVE-2022-2097
+CVE-2022-4304
+CVE-2022-4450
+CVE-2023-0215
+CVE-2023-0286

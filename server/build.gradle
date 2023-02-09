@@ -51,7 +51,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 
     // Environment Configuration
-    implementation 'me.paulschwarz:spring-dotenv:2.5.4'
+    implementation 'me.paulschwarz:spring-dotenv:3.0.0'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

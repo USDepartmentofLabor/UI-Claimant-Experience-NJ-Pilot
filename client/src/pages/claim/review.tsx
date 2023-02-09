@@ -26,6 +26,8 @@ import { useSubmitClaim } from 'queries/useSubmitClaim'
 import { Routes } from 'constants/routes'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useRouter } from 'next/router'
+import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
+import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
@@ -111,6 +113,9 @@ export const Review: NextPageWithLayout = () => {
                 </ul>
               </SummaryBoxContent>
             </SummaryBox>
+
+            <PersonalReview />
+            <HorizontalRule />
 
             <CheckboxField
               name="certify"
