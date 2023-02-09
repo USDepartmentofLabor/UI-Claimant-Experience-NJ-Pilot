@@ -1,0 +1,25 @@
+name: Deploy Preview Destroy
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        required: true
+        description: Pull Request ID to be destroyed.
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Nothing here yet
+        shell: bash
+        run: echo "Nothing to delete yet"
