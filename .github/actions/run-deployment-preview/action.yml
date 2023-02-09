@@ -57,7 +57,7 @@ runs:
 
     - name: Check PR changes does not include rds db schema files
       id: db-schema
-      if: teps.db-schema-file.outputs.any_changed == 'true'
+      if: steps.db-schema-file.outputs.any_changed == 'true'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
 
