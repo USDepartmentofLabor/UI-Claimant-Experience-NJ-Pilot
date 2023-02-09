@@ -6,7 +6,7 @@ const claimForm = {
     next_step: 'Next: {{stepName}}',
     save_and_exit: 'Save and exit',
     save_notice:
-      'Your answers are automatically saved when you complete a page and click “Next.”',
+      'Answers are automatically saved when you complete a page and click "Next".',
     submit: 'Submit',
   },
   prequal: {
