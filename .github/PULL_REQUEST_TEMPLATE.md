@@ -50,7 +50,7 @@
 Check the box below like this: `[x]` if you want a temporary deployment preview environment. If a deployment preview is created, you can visit your deployment preview at https://<branch-name>.claimant-intake-dev1.dol.nj.gov/
 This feature is still under development and is not available yet.
 
-- \[\] Deploy Preview Environment
+- [ ] Deploy Preview Environment
 
 ## Code Review Verification Steps
 

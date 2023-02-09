@@ -19,6 +19,7 @@ jobs:
       contents: read
 
     steps:
+      - uses: actions/checkout@v3
       - name: Check whether deployment preview should be built
         id: dp-check
         uses: ./.github/actions/run-deployment-preview
