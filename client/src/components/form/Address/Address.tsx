@@ -78,6 +78,7 @@ export const Address = ({
           type="text"
           data-testid={`${basename}.city`}
           className={styles.city}
+          errorClassName={styles.city_error}
           onChange={onChange}
         />
         <StatesDropdown
