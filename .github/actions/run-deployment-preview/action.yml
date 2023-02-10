@@ -63,13 +63,14 @@ runs:
     - name: Get Codeowners file
       id: codeowners
       run: |
-        CODEOWNERS=$(cat .github/CODEOWNERS | grep -o '@\w*')
-        echo "codeowners=$CODEOWNERS" >> $GITHUB_OUTPUT
+        echo 'CODEOWNERS<<EOF' >> $GITHUB_OUTPUT
+        cat .github/CODEOWNERS | grep -o '@\w*' >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Check PR owner has deployment preview permission
       id: privileges
-      if: contains( steps.codeowners.outputs.codeowners, github.actor ) == 'false'
+      if: contains( steps.codeowners.outputs.CODEOWNERS, github.actor ) == 'false'
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
 
