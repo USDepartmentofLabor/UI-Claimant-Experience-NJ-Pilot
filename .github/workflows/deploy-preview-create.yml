@@ -1,0 +1,84 @@
+name: Deploy Preview Create
+
+on:
+  workflow_run:
+    workflows: [Test and Lint]
+    types:
+      - completed
+
+jobs:
+  run-deploy-preview:
+    runs-on: ubuntu-latest
+    environment: dev
+    outputs:
+      run-deployment-preview: ${{ steps.dp-check.outputs.run-deployment-preview }}
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check whether deployment preview should be built
+        id: dp-check
+        uses: ./.github/actions/run-deployment-preview
+
+  deploy-preview-create:
+    needs: [run-deploy-preview]
+    if: github.event.workflow_run.conclusion == 'success' && needs.run-deploy-preview.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compose server base url
+        id: server-base-url
+        env:
+          GIT_BRANCH: ${{ github.ref_name }}
+          DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+        shell: bash
+        run: |
+          SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
+          SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
+
+      - name: Build client image
+        id: build-client
+        uses: ./.github/actions/build-client
+        with:
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          app-env: development
+
+      - name: Build server image
+        id: build-server
+        uses: ./.github/actions/build-server
+        with:
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+
+  deploy-preview-will-not-create:
+    needs: [run-deploy-preview]
+    if: github.event.workflow_run.conclusion == 'failure' || needs.run-deploy-preview.outputs.run-deployment-preview == 'false'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deployment preview will not run
+        shell: bash
+        run: echo "Deployment preview will not run"
