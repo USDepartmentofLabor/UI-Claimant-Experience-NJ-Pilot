@@ -7,12 +7,16 @@ import {
   ImportedEmployerAddress,
   AddressWithoutStreetInput,
   Employer,
+  PaymentsReceivedDetailInput,
 } from 'types/claimantInput'
 import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
 import { formatStoredToDisplayPhone } from 'utils/phone/format'
 import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
+import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+
 import { Trans } from 'react-i18next'
+import { payTypeOptions, PayTypeOption } from 'constants/formOptions'
 export const buildAlternateEmployerAddress = (
   alternateEmployerAddress: AddressWithoutStreetInput | undefined
 ) => {
@@ -74,6 +78,72 @@ export const buildImportedEmployerAddress = (
   }
   return addr
 }
+export const PaymentReview = ({
+  paymentDetail,
+  payTypeOption,
+}: {
+  paymentDetail: PaymentsReceivedDetailInput
+  payTypeOption: PayTypeOption
+}) => {
+  console.log('In payment review')
+  const { t } = useTranslation('claimForm', {
+    keyPrefix: 'employers.payments_received.payments_received_detail',
+  })
+  return (
+    <>
+      <legend style={{ marginTop: 24, fontWeight: 'bold', paddingTop: 3 }}>
+        {t(`pay_type.options.${payTypeOption}.label`)}
+      </legend>
+      <ReviewElement label={t('other_note.label')} value={paymentDetail.note} />
+      <ReviewElement label={t('total.label')} value={paymentDetail.total} />
+      <ReviewElement
+        label={t('date_pay_began.label')}
+        value={paymentDetail.date_pay_began}
+      />
+      <ReviewElement
+        label={t('date_pay_ended.label')}
+        value={paymentDetail.date_pay_ended}
+      />
+    </>
+  )
+}
+export const PaymentsReview = ({
+  paymentsReceivedArray,
+}: {
+  paymentsReceivedArray: PaymentsReceivedDetailInput[]
+}) => {
+  // const { t } = useTranslation('claimForm', { keyPrefix: 'employers.payments_received' })
+  if (
+    paymentsReceivedArray === undefined ||
+    paymentsReceivedArray.length === 0 ||
+    (paymentsReceivedArray.length == 1 &&
+      paymentsReceivedArray[0].pay_type === 'none')
+  ) {
+    return null
+  }
+  const findIndexOfPaymentReceived = (payType: PayTypeOption) => {
+    console.log('in find index')
+    const x = paymentsReceivedArray?.findIndex((p) => p.pay_type === payType)
+    console.log('x is ', x)
+    return x
+  }
+  return (
+    <>
+      {payTypeOptions.map(
+        (payType) =>
+          findIndexOfPaymentReceived(payType) > -1 && (
+            <PaymentReview
+              key={payType}
+              payTypeOption={payType}
+              paymentDetail={
+                paymentsReceivedArray[findIndexOfPaymentReceived(payType)]
+              }
+            />
+          )
+      )}
+    </>
+  )
+}
 export const EmployerReview = ({
   employer,
   index,
@@ -98,6 +168,23 @@ export const EmployerReview = ({
           city: employer?.employer_address?.city,
           state: employer?.employer_address?.state,
         }
+  const formatPaymentsReceivedList = (
+    paymentsReceived: PaymentsReceivedDetailInput[]
+  ) => {
+    let paymentListString = ''
+    for (const payment of paymentsReceived) {
+      //TODO- does order matter here, its in an array so values could move around, but do we care?
+      if (paymentListString !== '') {
+        paymentListString = paymentListString.concat('\n')
+      }
+      paymentListString = paymentListString.concat(
+        t(
+          `payments_received.payments_received_detail.pay_type.options.${payment.pay_type}.label`
+        )
+      )
+    }
+    return paymentListString
+  }
 
   return (
     <ReviewSection heading={employer.employer_name} editUrl={path}>
@@ -168,14 +255,73 @@ export const EmployerReview = ({
         value={employer?.employer_is_sole_proprietorship}
       />
 
+      {employer?.related_to_owner_or_child_of_owner_under_18 && (
+        <ReviewElement
+          label={t(
+            'business_interests.related_to_owner_or_child_of_owner_under_18.label'
+          )}
+          value={t(
+            `business_interests.related_to_owner_or_child_of_owner_under_18.options.${employer.related_to_owner_or_child_of_owner_under_18}.label`
+          )}
+        />
+      )}
+      {employer?.separation_circumstance && (
+        <ReviewElement
+          label={t('separation.reason.label')}
+          value={t(
+            `separation.reasons.${employer.separation_circumstance}.label`
+          )}
+        />
+      )}
+      {employer?.reason_still_employed && (
+        <ReviewElement
+          label={t('separation.reasons.still_employed.option_heading')}
+          value={t(
+            `separation.reasons.still_employed.options.${employer.reason_still_employed}`
+          )}
+        />
+      )}
       <ReviewElement
-        label={t(
-          'business_interests.related_to_owner_or_child_of_owner_under_18.label'
-        )}
-        value={t(
-          `business_interests.related_to_owner_or_child_of_owner_under_18.options.${employer?.related_to_owner_or_child_of_owner_under_18}.label`
-        )}
+        label={t('separation.separation_circumstance_details.required_label')}
+        value={employer.separation_circumstance_details}
       />
+      <ReviewElement
+        label={t('employment_start_date.label')}
+        value={employer.employment_start_date}
+      />
+      <ReviewElement
+        label={t('employment_last_date.label')}
+        value={employer.employment_last_date}
+      />
+      <ReviewYesNo
+        label={t('hours_reduced_twenty_percent.label')}
+        value={employer.hours_reduced_twenty_percent}
+      />
+      <ReviewElement
+        label={t('discharge_date.label')}
+        value={employer.discharge_date}
+      />
+      <ReviewYesNo
+        label={t('separation.expect_to_be_recalled.label')}
+        value={employer.expect_to_be_recalled}
+      />
+      <ReviewYesNo
+        label={t('separation.definite_recall.label')}
+        value={employer.definite_recall}
+      />
+      <ReviewElement
+        label={t('separation.definite_recall_date.label')}
+        value={employer.definite_recall_date}
+      />
+      <ReviewYesNo
+        label={t('separation.is_seasonal_work.label')}
+        value={employer.is_seasonal_work}
+      />
+      <ReviewElement
+        label={t('payments_received.payments_received_detail.pay_type.label')}
+        value={formatPaymentsReceivedList(employer.payments_received)}
+      />
+      <PaymentsReview paymentsReceivedArray={employer.payments_received} />
     </ReviewSection>
   )
 }
@@ -187,11 +333,15 @@ export const EmployersReview = () => {
       {claimFormValues?.employers &&
         claimFormValues?.employers.length > 0 &&
         claimFormValues?.employers.map((employer, idx) => (
-          <EmployerReview
-            employer={employer}
-            index={idx}
-            key={idx}
-          ></EmployerReview>
+          <>
+            <EmployerReview
+              employer={employer}
+              index={idx}
+              key={idx}
+            ></EmployerReview>
+            {claimFormValues?.employers &&
+              idx !== claimFormValues?.employers.length && <HorizontalRule />}
+          </>
         ))}
     </>
   )
