@@ -28,6 +28,7 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+import { EmployersReview } from 'components/review/sections/EmployerReview/EmployerReview'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
@@ -116,7 +117,7 @@ export const Review: NextPageWithLayout = () => {
 
             <PersonalReview />
             <HorizontalRule />
-
+            <EmployersReview />
             <CheckboxField
               name="certify"
               formGroupClassName="padding-top-05"
