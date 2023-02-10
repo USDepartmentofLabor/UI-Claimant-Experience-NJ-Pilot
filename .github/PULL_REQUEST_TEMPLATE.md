@@ -35,6 +35,23 @@
     ```
 --->
 
+## Deployment Preview
+
+<!--
+  This feature is still under development, so keeping it un-checked by default for now. Add an x like [x] to select.
+  We build a temporary environment with a preview of your pull reques by default if the following criteria are met:
+  1. A pull request is edited, opened, synchronize, or reopened
+  2. There are changes to the client or server folders
+  3. The database or claim json schemas are not changed, as we cannot support that right now, but will in the future
+  4. The person creating the pull request has write permission on this repo
+  5. *The check box below is checked* (no spaces between the x and the brackets as the workflow looks for that text exactly)
+ -->
+
+Check the box below like this: `[x]` if you want a temporary deployment preview environment. If a deployment preview is created, you can visit your deployment preview at https://<branch-name>.claimant-intake-dev1.dol.nj.gov/
+This feature is still under development and is not available yet.
+
+- [ ] Deploy Preview Environment
+
 ## Code Review Verification Steps
 
 [How we work](https://github.com/newjersey/dol-ui-claimant-intake/blob/main/docs/CONTRIBUTING.md)
