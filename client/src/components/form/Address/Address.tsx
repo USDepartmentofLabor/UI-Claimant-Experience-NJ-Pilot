@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import TextField from '../fields/TextField/TextField'
 import { FormGroup } from '@trussworks/react-uswds'
 import { StateAbbrev, StatesDropdown } from '../StatesDropdown/StatesDropdown'
-import styles from 'styles/pages/claim/personal.module.scss'
+import styles from './Address.module.scss'
 import { ChangeEventHandler } from 'react'
 
 interface IAddressLabels {
