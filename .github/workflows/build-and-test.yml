@@ -45,7 +45,7 @@ jobs:
         run: make e2e-deps
 
       - name: Set up Java
-        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: "temurin"
