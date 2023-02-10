@@ -65,7 +65,7 @@ export const ClaimFormSideNav = ({ index }: ClaimFormSideNavProps) => {
 
   return (
     <nav
-      aria-labelledby="Side Navigation"
+      aria-label="Form pages"
       className="desktop:grid-col-3 desktop:margin-top-4"
     >
       <SideNav items={appItems} />
