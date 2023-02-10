@@ -1,4 +1,4 @@
-import { Link } from '@trussworks/react-uswds'
+import { Alert, Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import {
@@ -83,6 +83,15 @@ export const ChangeInEmployment = () => {
     }
   }
 
+  function isTooOld(dateString: string | undefined) {
+    if (undefined === dateString) return false
+    const givenDate = new Date(dateString)
+    const dateOfClaim = new Date()
+    dateOfClaim.setDate(dateOfClaim.getDate() - dateOfClaim.getDay())
+    const cutoff = dateOfClaim.setMonth(dateOfClaim.getMonth() - 18)
+    return +givenDate < +cutoff
+  }
+
   return (
     <>
       <div>
@@ -148,6 +157,11 @@ export const ChangeInEmployment = () => {
           //     remove if decide not to have a hint
           // hint={showStillEmployed ? t('employment_last_date.hint') : undefined}
         />
+        {isTooOld(values.employment_last_date) && (
+          <Alert headingLevel="h3" slim={true} type="warning">
+            {t('employment_last_date.warning')}
+          </Alert>
+        )}
         {showHoursReducedPercentage && (
           <YesNoQuestion
             question={t('hours_reduced_twenty_percent.label')}

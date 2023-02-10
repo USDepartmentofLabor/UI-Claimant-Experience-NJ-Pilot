@@ -425,6 +425,8 @@ const claimForm = {
         maxDate: "Last day of work can't be in the future",
         minDate: "Last day can't be before employment start date",
       },
+      warning:
+        'If this job ended more than 18 months ago, it will not be used for your unemployment application.',
     },
     discharge_date: {
       label: 'What was your discharge date?',
