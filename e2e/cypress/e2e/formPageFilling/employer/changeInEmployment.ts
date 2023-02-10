@@ -26,9 +26,9 @@ export const fillChangeInEmployment = (options: ChangeInEmploymentOptions) => {
       .click()
   }
   if (options.reason_still_employed) {
-    cy.get(
-      `input[id=reason_still_employed\\.${options.reason_still_employed}]`
-    ).click({ force: true })
+    cy.get(`select[id=reason_still_employed]`).select(
+      options.reason_still_employed
+    )
   }
 
   if (options.separation_circumstance_details) {
