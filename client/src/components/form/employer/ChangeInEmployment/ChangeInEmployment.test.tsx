@@ -351,9 +351,15 @@ describe('Change in Employment component', () => {
     expect(queryForFinishDate()).toBeInTheDocument()
 
     // Warning should appear if date is >18 months ago
-    await user.type(lastDateDayField, '01')
-    await user.type(lastDateMonthField, '01')
-    await user.type(lastDateYearField, '2020')
+    const oldDate = new Date()
+    oldDate.setDate(oldDate.getDate() - oldDate.getDay()) // set to DOC
+    oldDate.setMonth(oldDate.getMonth() - 18) // set to 18 months before that
+    const oldDay = '' + (oldDate.getDay() + 1) // change from zero-indexed
+    const oldMonth = '' + (oldDate.getMonth() + 1) // change from zero-indexed
+    const oldYear = '' + oldDate.getFullYear()
+    await user.type(lastDateDayField, oldDay)
+    await user.type(lastDateMonthField, oldMonth)
+    await user.type(lastDateYearField, oldYear)
     expect(
       screen.queryByText('employment_last_date.warning')
     ).toBeInTheDocument()
