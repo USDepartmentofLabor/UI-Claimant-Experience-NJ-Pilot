@@ -1,9 +1,8 @@
 import { useContext } from 'react'
 import { ReviewSection } from 'components/review/ReviewSection/ReviewSection'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
-// import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { useTranslation } from 'next-i18next'
-// import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
+import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
 import {
   ImportedEmployerAddress,
   AddressWithoutStreetInput,
@@ -13,16 +12,16 @@ import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
 import { formatStoredToDisplayPhone } from 'utils/phone/format'
 import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
+import { Trans } from 'react-i18next'
 export const buildAlternateEmployerAddress = (
   alternateEmployerAddress: AddressWithoutStreetInput | undefined
 ) => {
   const { city, state, zipcode } = alternateEmployerAddress || {}
-
   if (state === undefined && city === undefined && zipcode === undefined) {
     return undefined
   }
 
-  return `{city}${city && ', '}${state}${state && ' '}${zipcode}`
+  return `${city}${city && ', '}${state}${state && ' '}${zipcode}`
 }
 const addAddress = (
   currentAddr: string,
@@ -92,6 +91,14 @@ export const EmployerReview = ({
     'related to owner value is ',
     employer?.related_to_owner_or_child_of_owner_under_18
   )
+  const employerCityAndState =
+    employer.is_imported && employer.imported_address
+      ? parseCityAndStateFromImportedAddress(employer.imported_address)
+      : {
+          city: employer?.employer_address?.city,
+          state: employer?.employer_address?.state,
+        }
+
   return (
     <ReviewSection heading={employer.employer_name} editUrl={path}>
       <ReviewElement
@@ -108,9 +115,15 @@ export const EmployerReview = ({
         value={employer?.is_full_time}
       />
       <ReviewYesNo
-        label={t('work_location.worked_at_employer_address.label')}
+        label={
+          <Trans t={t} i18nKey="work_location.worked_at_employer_address.label">
+            {employerCityAndState.city}
+            {employerCityAndState.state}
+          </Trans>
+        }
         value={employer?.worked_at_employer_address}
       />
+      {/* is check here neded */}
       {employer?.worked_at_employer_address === false && (
         <ReviewElement
           label={t('work_location.section_title')}
@@ -120,9 +133,14 @@ export const EmployerReview = ({
         />
       )}
       <ReviewYesNo
-        label={t('work_location.is_employer_phone_accurate.label')}
+        label={
+          <Trans t={t} i18nKey="work_location.is_employer_phone_accurate.label">
+            {formatStoredToDisplayPhone(employer.employer_phone?.number)}
+          </Trans>
+        }
         value={employer?.is_employer_phone_accurate}
       />
+      {/* is check here needed? */}
       {employer?.is_employer_phone_accurate === false && (
         <ReviewElement
           label={t('alt_employer_phone')}
@@ -145,29 +163,24 @@ export const EmployerReview = ({
         )}
         value={employer?.corporate_officer_or_stock_ownership}
       />
-      {employer?.corporate_officer_or_stock_ownership === false && (
-        <ReviewYesNo
-          label={t('business_interests.employer_is_sole_proprietorship.label')}
-          value={employer?.employer_is_sole_proprietorship}
-        />
-      )}
-      {/* {employer?.employer_is_sole_proprietorship===false && (
-              <ReviewElement
-              label={t('business_interests.related_to_owner_or_child_of_owner_under_18.label')}
-              value={t(
-                `business_interests.related_to_owner_or_child_of_owner_under_18.options.${employer?.related_to_owner_or_child_of_owner_under_18}.label`)
-                }
-            />
-        ) } sole proprietorship question  */}
+      <ReviewYesNo
+        label={t('business_interests.employer_is_sole_proprietorship.label')}
+        value={employer?.employer_is_sole_proprietorship}
+      />
+
+      <ReviewElement
+        label={t(
+          'business_interests.related_to_owner_or_child_of_owner_under_18.label'
+        )}
+        value={t(
+          `business_interests.related_to_owner_or_child_of_owner_under_18.options.${employer?.related_to_owner_or_child_of_owner_under_18}.label`
+        )}
+      />
     </ReviewSection>
   )
 }
 export const EmployersReview = () => {
-  //   const { t } = useTranslation('claimForm')
-
   const { claimFormValues } = useContext(ClaimFormContext)
-
-  //   const { heading, path } = PersonalPageDefinition
 
   return (
     <>
