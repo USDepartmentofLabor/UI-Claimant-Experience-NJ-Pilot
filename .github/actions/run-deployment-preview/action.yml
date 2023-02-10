@@ -11,10 +11,9 @@ runs:
       with:
         fetch-depth: 2
 
-    - name: Set run-deployment-preview bool to true as env variable
+    - name: Set RUN_DEPLOYMENT_PREVIEW bool to true as env variable
       run: |
-        run-deployment-preview=true
-        echo "RUN_DEPLOYMENT_PREVIEW=$run-deployment-preview" >> $GITHUB_ENV
+        echo "RUN_DEPLOYMENT_PREVIEW=true" >> $GITHUB_ENV
       shell: bash
 
     - name: Check PR type is one of edited, opened, synchronize, or reopened
