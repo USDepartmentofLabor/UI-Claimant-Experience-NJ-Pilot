@@ -62,7 +62,9 @@ runs:
 
     - name: Get Codeowners file
       id: codeowners
-      run: echo "codeowners=$(cat .github/CODEOWNERS)" >> $GITHUB_OUTPUT
+      run: |
+        CODEOWNERS=$(cat .github/CODEOWNERS | grep -o '@\w*')
+        echo "codeowners=$CODEOWNERS" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Check PR owner has deployment preview permission
