@@ -315,9 +315,11 @@ describe('PaymentsReceived', () => {
     expect(severanceTotal).toHaveValue(severanceValues.total)
     expect(continuationTotal).toHaveValue(continuationValues.total)
     expect(continuationStartMonthField).toHaveValue(
-      continuationValues.startMonth
+      continuationValues.startMonth.replace(/^0+(?=\d)/, '')
     )
-    expect(continuationStartDayField).toHaveValue(continuationValues.startDay)
+    expect(continuationStartDayField).toHaveValue(
+      continuationValues.startDay.replace(/^0+(?=\d)/, '')
+    )
     expect(continuationStartYearField).toHaveValue(continuationValues.startYear)
   })
 })
