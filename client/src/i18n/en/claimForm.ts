@@ -665,7 +665,7 @@ const claimForm = {
         },
         total: {
           label: 'Total of this pay',
-          reviewLable: '{{payType}} total',
+          reviewLabel: 'Total of {{payType}}',
           description: {
             vacation_sick_pto:
               'Pay you received for approved time off or a pay out of unused time off',
@@ -694,7 +694,7 @@ const claimForm = {
         },
         date_pay_began: {
           label: 'Start date of this pay',
-          // reviewLable:'{{payType}} total',
+          reviewLabel: 'Start date of {{payType}}',
           errors: {
             required: 'Start date is required',
             max: 'Date must be today or in the past',
@@ -702,6 +702,7 @@ const claimForm = {
         },
         date_pay_ended: {
           label: 'End date of this pay',
+          reviewLabel: 'End date of {{payType}}',
           errors: {
             required: 'End date is required',
             max: 'Date must be today or in the past',
@@ -710,6 +711,7 @@ const claimForm = {
         },
         other_note: {
           label: 'Please explain what type of pay you received',
+          reviewLabel: 'Please explain what type of other pay you received',
           errors: {
             required: 'Please give further details',
             maxLength:

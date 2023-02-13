@@ -14,7 +14,7 @@ import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmpl
 import { formatStoredToDisplayPhone } from 'utils/phone/format'
 import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
-
+import { convertCentsToDollars } from 'utils/currency/conversion'
 import { Trans } from 'react-i18next'
 import { payTypeOptions, PayTypeOption } from 'constants/formOptions'
 export const buildAlternateEmployerAddress = (
@@ -89,19 +89,31 @@ export const PaymentReview = ({
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'employers.payments_received.payments_received_detail',
   })
+
+  const payTypeString = t(
+    `pay_type.options.${payTypeOption}.label`
+  ).toLowerCase()
+  const paymentTotal = paymentDetail.total
+    ? `${t('total.currencyPrefix')}${convertCentsToDollars(
+        paymentDetail.total
+      )}`
+    : undefined
   return (
     <>
-      <legend style={{ marginTop: 24, fontWeight: 'bold', paddingTop: 3 }}>
-        {t(`pay_type.options.${payTypeOption}.label`)}
-      </legend>
-      <ReviewElement label={t('other_note.label')} value={paymentDetail.note} />
-      <ReviewElement label={t('total.label')} value={paymentDetail.total} />
       <ReviewElement
-        label={t('date_pay_began.label')}
+        label={t('other_note.reviewLabel', { payType: payTypeString })}
+        value={paymentDetail.note}
+      />
+      <ReviewElement
+        label={t('total.reviewLabel', { payType: payTypeString })}
+        value={paymentTotal}
+      />
+      <ReviewElement
+        label={t('date_pay_began.reviewLabel', { payType: payTypeString })}
         value={paymentDetail.date_pay_began}
       />
       <ReviewElement
-        label={t('date_pay_ended.label')}
+        label={t('date_pay_ended.reviewLabel', { payType: payTypeString })}
         value={paymentDetail.date_pay_ended}
       />
     </>
@@ -112,7 +124,6 @@ export const PaymentsReview = ({
 }: {
   paymentsReceivedArray: PaymentsReceivedDetailInput[]
 }) => {
-  // const { t } = useTranslation('claimForm', { keyPrefix: 'employers.payments_received' })
   if (
     paymentsReceivedArray === undefined ||
     paymentsReceivedArray.length === 0 ||
@@ -122,11 +133,10 @@ export const PaymentsReview = ({
     return null
   }
   const findIndexOfPaymentReceived = (payType: PayTypeOption) => {
-    console.log('in find index')
     const x = paymentsReceivedArray?.findIndex((p) => p.pay_type === payType)
-    console.log('x is ', x)
     return x
   }
+
   return (
     <>
       {payTypeOptions.map(
