@@ -56,6 +56,12 @@ const claimForm = {
   personal: {
     heading: 'Personal information',
     verified_legal_name: { label: 'Legal name' },
+    residence_address: {
+      label: 'Residence address',
+    },
+    mailing_address: {
+      label: 'Mailing address',
+    },
   },
   demographics: {
     heading: 'Demographics',
@@ -1107,6 +1113,13 @@ const claimForm = {
         'Remember, the law provides penalties for false statements to obtain benefits.',
       line3:
         'After you click submit, wait for the confirmation information to show to be sure we have received your application.',
+    },
+    section: {
+      accessible_name: 'Review {{ name }}',
+    },
+    edit: {
+      accessible_name: 'Edit {{ name }}',
+      label: 'Edit',
     },
     certify: {
       label:

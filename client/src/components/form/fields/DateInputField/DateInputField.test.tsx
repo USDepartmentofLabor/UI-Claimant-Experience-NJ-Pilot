@@ -105,10 +105,49 @@ describe('DateInputField Component', () => {
     const dayField = getByLabelText('date.day.label')
     const yearField = getByLabelText('date.year.label')
 
-    expect(monthField).toHaveValue('01')
+    expect(monthField).toHaveValue('1')
     expect(dayField).toHaveValue('13')
     expect(yearField).toHaveValue('1885')
   })
+
+  it('accepts and parses an undefined initial value properly', () => {
+    const { getByLabelText } = render(
+      <Formik initialValues={{ dateInputField: undefined }} onSubmit={noop}>
+        <DateInputField name={'dateInputField'} />
+      </Formik>
+    )
+
+    const monthField = getByLabelText('date.month.label')
+    const dayField = getByLabelText('date.day.label')
+    const yearField = getByLabelText('date.year.label')
+
+    expect(monthField).toHaveValue('')
+    expect(dayField).toHaveValue('')
+    expect(yearField).toHaveValue('')
+  })
+
+  it.each([
+    ['-01-02', { month: '1', day: '2', year: '' }],
+    ['2000--02', { month: '', day: '2', year: '2000' }],
+    ['2000-01-', { month: '1', day: '', year: '2000' }],
+  ])(
+    'parses partially complete initial values properly',
+    (value, expectedParts) => {
+      const { getByLabelText } = render(
+        <Formik initialValues={{ dateInputField: value }} onSubmit={noop}>
+          <DateInputField name={'dateInputField'} />
+        </Formik>
+      )
+
+      const monthField = getByLabelText('date.month.label')
+      const dayField = getByLabelText('date.day.label')
+      const yearField = getByLabelText('date.year.label')
+
+      expect(monthField).toHaveValue(expectedParts.month)
+      expect(dayField).toHaveValue(expectedParts.day)
+      expect(yearField).toHaveValue(expectedParts.year)
+    }
+  )
 
   it('Displays an error', async () => {
     const user = userEvent.setup()
@@ -364,5 +403,40 @@ describe('DateInputField Component', () => {
       fireEvent(testField, invalidEvent)
       expect(invalidEvent.defaultPrevented).toBeTruthy()
     }
+  })
+  it('Prefers to display dates without leading zeroes in month and day fields', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <Formik initialValues={{ someDate: '2003-02-01' }} onSubmit={noop}>
+        {({ setFieldValue }) => (
+          <>
+            <DateInputField name="someDate" />
+            <button
+              onClick={async () => {
+                await setFieldValue('someDate', '2004-03-02')
+              }}
+            >
+              Update Value
+            </button>
+          </>
+        )}
+      </Formik>
+    )
+
+    const monthField = screen.getByLabelText('date.month.label')
+    const dayField = screen.getByLabelText('date.day.label')
+    const yearField = screen.getByLabelText('date.year.label')
+    const updateButton = screen.getByRole('button')
+
+    expect(monthField).toHaveValue('2')
+    expect(dayField).toHaveValue('1')
+    expect(yearField).toHaveValue('2003')
+
+    await user.click(updateButton)
+
+    expect(monthField).toHaveValue('3')
+    expect(dayField).toHaveValue('2')
+    expect(yearField).toHaveValue('2004')
   })
 })
