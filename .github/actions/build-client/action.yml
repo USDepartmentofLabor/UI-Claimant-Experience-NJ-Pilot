@@ -44,13 +44,21 @@ runs:
         DEPLOY_ENV: ${{ inputs.deploy-env }}
       shell: bash
       run: |
+        BRANCH_PREFIX="$GIT_BRANCH"
+        # use a generic prefix for all non-main branches
+        if [[ "$BRANCH_PREFIX" != "main" ]]; then
+          BRANCH_PREFIX="branch"
+        fi
         BUILD_TIME=$(date '+%Y%m%d%H%M%S')
-        IMAGE_TAG="${GIT_BRANCH}-${GIT_COMMIT}-${BUILD_TIME}"
+        IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
         IMAGE_URI="${ECR_REGISTRY}/dol-ui-claimant-intake-client-${DEPLOY_ENV}:${IMAGE_TAG}"
         echo "image-uri=$IMAGE_URI" >> $GITHUB_OUTPUT
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325
+      with:
+        version: v0.10.2
+        driver-opts: image=moby/buildkit:v0.11.2
 
     - name: Build & Push image
       id: build-image

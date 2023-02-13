@@ -12,7 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: 16.18.1
+  JAVA_VERSION: 17.0.6+10
+  NODE_VERSION: 16.19.0
 
 jobs:
   lint-build-and-test:
@@ -22,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
 
-      - uses: actions/cache@627f0f41f6904a5b1efbaed9f96d9eb58e92e920
+      - uses: actions/cache@6998d139ddd3e68c71e9e398d8e40b71a2f39812
         with:
           key: v1-pre-commit-dot-cache-${{ hashFiles('.pre-commit-config.yaml') }}
           path: ~/.cache/pre-commit
@@ -44,9 +45,9 @@ jobs:
         run: make e2e-deps
 
       - name: Set up Java
-        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98
         with:
-          java-version: "17.0.4+8"
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: "temurin"
 
       - name: Validate Gradle wrapper

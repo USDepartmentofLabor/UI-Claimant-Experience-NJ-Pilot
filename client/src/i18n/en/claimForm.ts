@@ -5,6 +5,8 @@ const claimForm = {
     next: 'Next',
     next_step: 'Next: {{stepName}}',
     save_and_exit: 'Save and exit',
+    save_notice:
+      'Answers are automatically saved when you complete a page and click "Next".',
     submit: 'Submit',
   },
   prequal: {
@@ -56,6 +58,12 @@ const claimForm = {
   personal: {
     heading: 'Personal information',
     verified_legal_name: { label: 'Legal name' },
+    residence_address: {
+      label: 'Residence address',
+    },
+    mailing_address: {
+      label: 'Mailing address',
+    },
   },
   demographics: {
     heading: 'Demographics',
@@ -69,7 +77,7 @@ const claimForm = {
     preamble:
       'We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount. Please confirm our records of your employers below.',
     no_employers_on_record:
-      'We do not have recent employers on file for you. You will be able to manually add employment history to your application on the next page.',
+      'We do not have recent employers on file for you. We need the last 18 months of your employment history, including where you are still working, to calculate your unemployment benefit amount. Please manually add employment history to your application on the next page.',
     question:
       'In the last 18 months (since {{date}}), did you work at the following employers?',
     work_at: 'Did you work at {{employer}}',
@@ -340,7 +348,7 @@ const claimForm = {
             leave_of_absence: 'On a leave of absence',
             paid_vacation_holiday_or_pto: 'On a paid vacation, holiday or PTO',
             temp_lay_off_or_furlough: 'On a temporary lay off or furloughed',
-
+            seasonal_work: 'Seasonal work, but currently not working',
             school_employee_on_break: 'School employee on a break or holiday',
             self_employed: 'Self-employed with this employer',
             shared_work_program: 'Shared Work Program',
@@ -1102,6 +1110,13 @@ const claimForm = {
         'Remember, the law provides penalties for false statements to obtain benefits.',
       line3:
         'After you click submit, wait for the confirmation information to show to be sure we have received your application.',
+    },
+    section: {
+      accessible_name: 'Review {{ name }}',
+    },
+    edit: {
+      accessible_name: 'Edit {{ name }}',
+      label: 'Edit',
     },
     certify: {
       label:

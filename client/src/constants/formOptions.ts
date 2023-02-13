@@ -108,6 +108,7 @@ export const reasonStillEmployedOptions = [
   'leave_of_absence',
   'paid_vacation_holiday_or_pto',
   'temp_lay_off_or_furlough',
+  'seasonal_work',
   'school_employee_on_break',
   'self_employed',
   'shared_work_program',

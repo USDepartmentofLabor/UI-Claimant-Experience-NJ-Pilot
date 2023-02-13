@@ -153,6 +153,7 @@ export const RecentEmployers: NextPageWithLayout = () => {
             const showErrorSummary =
               submitCount > 0 && Object.keys(errors).length > 0
 
+            const hasRecentEmployers = values.recent_employers.length !== 0
             return (
               <Form className={styles.claimForm}>
                 {showErrorSummary && (
@@ -160,16 +161,12 @@ export const RecentEmployers: NextPageWithLayout = () => {
                 )}
                 <SummaryBox>
                   <SummaryBoxContent>
-                    {t('recent_employers.preamble')}
+                    {hasRecentEmployers
+                      ? t('recent_employers.preamble')
+                      : t('recent_employers.no_employers_on_record')}
                   </SummaryBoxContent>
                 </SummaryBox>
-                {values.recent_employers.length === 0 ? (
-                  <SummaryBox>
-                    <SummaryBoxContent>
-                      {t('recent_employers.no_employers_on_record')}
-                    </SummaryBoxContent>
-                  </SummaryBox>
-                ) : (
+                {hasRecentEmployers && (
                   <Fieldset
                     legend={<b>{t('recent_employers.question', { date })}</b>}
                   >
