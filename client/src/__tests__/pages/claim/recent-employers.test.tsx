@@ -13,6 +13,15 @@ jest.mock('hooks/useSaveClaimFormValues')
 jest.mock('queries/useGetPartialClaim')
 jest.mock('next/router')
 jest.mock('queries/useGetRecentEmployers')
+
+type statusType = number
+
+type ResponseType = {
+  status?: statusType
+}
+type ErrorResponseType = {
+  response?: ResponseType
+}
 const mockUseGetRecentEmployers = useGetRecentEmployers as jest.Mock
 
 const mockPush = jest.fn(async () => true)
@@ -40,6 +49,7 @@ describe('Recent employers page', () => {
   const renderRecentEmployers = (hookReturn?: {
     isLoading: boolean
     isError: boolean
+    error?: ErrorResponseType
     data: WgpmEmployer[]
   }) => {
     if (hookReturn) {
@@ -154,6 +164,7 @@ describe('Recent employers page', () => {
     renderRecentEmployers({
       isLoading: true,
       isError: false,
+      error: undefined,
       data: [],
     })
     expect(screen.getByTestId('page-loading')).toBeInTheDocument()
@@ -163,9 +174,22 @@ describe('Recent employers page', () => {
     renderRecentEmployers({
       isLoading: false,
       isError: true,
+      error: { response: { status: 500 } },
       data: [],
     })
     expect(screen.getByText('errorStatus.500.')).toBeInTheDocument()
+  })
+
+  it('shows wgpm warning box when WGPM call fails', async () => {
+    renderRecentEmployers({
+      isLoading: false,
+      isError: true,
+      error: { response: { status: 503 } },
+      data: [],
+    })
+    expect(
+      screen.queryByText('recent_employers.employer_retrieval_warning.heading')
+    ).toBeInTheDocument()
   })
 
   describe('page layout', () => {
