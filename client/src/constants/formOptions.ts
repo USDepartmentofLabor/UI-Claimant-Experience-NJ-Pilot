@@ -1,3 +1,6 @@
+export const workOptions = ['nj', 'other', 'both'] as const
+export type WorkOption = typeof workOptions[number]
+
 export const interpreterTTYOptions = [
   'interpreter',
   'tty',

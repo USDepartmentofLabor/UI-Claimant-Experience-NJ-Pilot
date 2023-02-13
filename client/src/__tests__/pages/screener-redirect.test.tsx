@@ -102,7 +102,7 @@ describe('Screener-redirect page', () => {
     it('when needing to file in another state', async () => {
       const user = userEvent.setup()
       const screenerInput = {
-        screener_any_work_nj: false,
+        screener_work_nj: 'other',
       }
 
       render(

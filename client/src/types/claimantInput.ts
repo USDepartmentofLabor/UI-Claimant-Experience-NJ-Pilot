@@ -103,8 +103,7 @@ export type ScreenerInput = {
   screener_current_country_us?: boolean
   screener_live_in_canada?: boolean
   screener_job_last_eighteen_months?: boolean
-  screener_all_work_nj?: boolean
-  screener_any_work_nj?: boolean
+  screener_work_nj?: string
   screener_military_service_eighteen_months?: boolean
   screener_currently_disabled?: boolean
   screener_federal_work_in_last_eighteen_months?: boolean
