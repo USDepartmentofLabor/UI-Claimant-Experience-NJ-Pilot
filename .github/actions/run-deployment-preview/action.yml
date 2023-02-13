@@ -3,7 +3,7 @@ description: This action returns a boolean on whether the deployment preview mee
 outputs:
   run-deployment-preview:
     description: A boolean value whether to build and deploy a preview environment
-    value: ${{ steps.construct-image-uri.outputs.image-uri }}
+    value: ${{ steps.set-output.outputs.run-deployment-preview }}
 runs:
   using: "composite"
   steps:

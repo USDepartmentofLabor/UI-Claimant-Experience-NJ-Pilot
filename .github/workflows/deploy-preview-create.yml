@@ -5,6 +5,8 @@ on:
     workflows: [Test and Lint]
     types:
       - completed
+    branches-ignore:
+      - "main"
   workflow_dispatch:
 
 jobs:
@@ -27,7 +29,9 @@ jobs:
 
   deploy-preview-create:
     needs: [run-deploy-preview]
-    if: github.event.workflow_run.conclusion == 'success' && needs.run-deploy-preview.outputs.run-deployment-preview == 'true'
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      needs.run-deploy-preview.outputs.run-deployment-preview == 'true'
     runs-on: ubuntu-latest
     environment: dev
 
@@ -68,7 +72,9 @@ jobs:
 
   deploy-preview-will-not-create:
     needs: [run-deploy-preview]
-    if: github.event.workflow_run.conclusion == 'failure' || needs.run-deploy-preview.outputs.run-deployment-preview == 'false'
+    if: |
+      github.event.workflow_run.conclusion == 'failure' ||
+      needs.run-deploy-preview.outputs.run-deployment-preview == 'false'
     runs-on: ubuntu-latest
     environment: dev
 
