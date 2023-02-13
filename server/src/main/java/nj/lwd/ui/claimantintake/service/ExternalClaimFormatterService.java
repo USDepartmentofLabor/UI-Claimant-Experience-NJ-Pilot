@@ -28,7 +28,7 @@ public class ExternalClaimFormatterService {
         try {
             ObjectMapper oMapper = new ObjectMapper();
             Map<String, Object> map = oMapper.convertValue(possibleMapObject, Map.class);
-            map = _formatClaimHelper(map);
+            map = removeLocalUseOnlyFields(map);
             returnVObject = oMapper.convertValue(map, Object.class);
         } catch (IllegalArgumentException e) {
             // if not a map there is nothing to change
@@ -48,7 +48,7 @@ public class ExternalClaimFormatterService {
         return list;
     }
 
-    public Map<String, Object> _formatClaimHelper(Map<String, Object> claimPayload) {
+    public Map<String, Object> removeLocalUseOnlyFields(Map<String, Object> claimPayload) {
 
         claimPayload.keySet().removeIf(key -> key.contains("LOCAL"));
         for (Map.Entry<String, Object> entry : claimPayload.entrySet()) {
@@ -69,24 +69,31 @@ public class ExternalClaimFormatterService {
         return claimPayload;
     }
 
-    public Map<String, Object> formatClaim(Map<String, Object> claimPayload, String claimantIdpId) {
-
-        Map<String, Object> formattedClaim = _formatClaimHelper(claimPayload);
+    public Map<String, Object> addCachedRecentEmployerResponse(
+            Map<String, Object> claimPayload, String claimantIdpId) {
         Optional<Map<String, Object>> recentEmployers = Optional.empty();
         try {
             recentEmployers = claimStorageService.getRecentEmployers(claimantIdpId);
 
         } catch (RecentEmployerDataRetrievalException e) {
-            formattedClaim.put("wgpm", null);
+            claimPayload.put("wgpm", null);
             logger.error(
                     "WGPM will return as an empty object from formatter as exception was thrown."
                             + " Schema validation is expected to fail");
         }
         if (recentEmployers.isEmpty()) {
-            formattedClaim.put("wgpm", null);
+            claimPayload.put("wgpm", null);
         } else {
-            formattedClaim.put("wgpm", recentEmployers.get());
+            claimPayload.put("wgpm", recentEmployers.get());
         }
+        return claimPayload;
+    }
+
+    public Map<String, Object> formatClaim(Map<String, Object> claimPayload, String claimantIdpId) {
+
+        Map<String, Object> formattedClaim = removeLocalUseOnlyFields(claimPayload);
+        formattedClaim = addCachedRecentEmployerResponse(formattedClaim, claimantIdpId);
+
         return formattedClaim;
     }
 }
