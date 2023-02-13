@@ -74,20 +74,36 @@ export const DateInputField = ({
     string | undefined
   >(name)
 
-  const parsedValue = useMemo(() => {
-    if (metaProps.value && INPUT_VALUE_REGEXP.test(metaProps.value)) {
-      const parts = metaProps.value.split('-')
-      return { month: parts[1], day: parts[2], year: parts[0] }
+  /**
+   * It is desired to default display without leading zeroes, while maintaining the formik date behind the scenes with
+   * leading zeroes, always
+   * @param formikDate
+   */
+  const getDisplayDatePartsFromFormikDate = (
+    formikDate: string | undefined
+  ) => {
+    if (formikDate && INPUT_VALUE_REGEXP.test(formikDate)) {
+      const [year, month, day] = formikDate.split('-')
+      return {
+        month: month ? month.replace(/^0+(?=\d)/, '') : '',
+        day: day ? day.replace(/^0+(?=\d)/, '') : '',
+        year: year || '',
+      }
     } else {
       return { month: '', day: '', year: '' }
     }
+  }
+
+  const parsedInitialDisplayValue = useMemo(() => {
+    return getDisplayDatePartsFromFormikDate(metaProps.value)
   }, [])
 
-  const [month, setMonth] = useState<string>(() => parsedValue.month)
-  const [day, setDay] = useState<string>(() => parsedValue.day)
-  const [year, setYear] = useState<string>(() => parsedValue.year)
+  const [month, setMonth] = useState<string>(
+    () => parsedInitialDisplayValue.month
+  )
+  const [day, setDay] = useState<string>(() => parsedInitialDisplayValue.day)
+  const [year, setYear] = useState<string>(() => parsedInitialDisplayValue.year)
 
-  const isMounted = useRef(false)
   const dateDivRef = useRef<HTMLDivElement>(null)
 
   const monthInputRef = useRef<HTMLInputElement>(null)
@@ -99,8 +115,8 @@ export const DateInputField = ({
 
   const id = idProp || name
 
-  const createFormikDateString = () => {
-    if (day || month || year) {
+  const createFormikDateString = (month: string, day: string, year: string) => {
+    if (month || day || year) {
       const paddedMonth =
         month && month.length < MONTH_MAX_LENGTH
           ? month.padStart(MONTH_MAX_LENGTH, '0')
@@ -114,19 +130,18 @@ export const DateInputField = ({
       return ''
     }
   }
-  const updateFormik = () => {
-    const value = createFormikDateString()
-    fieldHelperProps.setValue(value) // Should await?
+  const updateFormik = async (month: string, day: string, year: string) => {
+    const value = createFormikDateString(month, day, year)
+    await fieldHelperProps.setValue(value)
   }
 
   const updateLocalDateInputState = () => {
     const formikDate = fieldProps.value
     if (formikDate) {
-      const [yearField, monthField, dayField] = formikDate.split('-')
-      // don't include leading zeros
-      setYear(yearField ? yearField.replace(/^0+(?=\d4)/, '') : '')
-      setMonth(monthField ? monthField.replace(/^0+(?=\d)/, '') : '')
-      setDay(dayField ? dayField.replace(/^0+(?=\d)/, '') : '')
+      const { month, day, year } = getDisplayDatePartsFromFormikDate(formikDate)
+      setMonth(month)
+      setDay(day)
+      setYear(year)
     } else {
       setYear('')
       setMonth('')
@@ -136,20 +151,12 @@ export const DateInputField = ({
 
   const getIsEquivalentDate = () => {
     const formikDate = fieldProps.value
-    const localStateAsFormikDate = createFormikDateString()
+    const localStateAsFormikDate = createFormikDateString(month, day, year)
     if (formikDate !== undefined) {
       return localStateAsFormikDate === formikDate
     }
     return false
   }
-  // Update formik value when state values change.
-  useEffect(() => {
-    if (isMounted.current) {
-      updateFormik()
-    } else {
-      isMounted.current = true
-    }
-  }, [month, day, year])
 
   useEffect(() => {
     // Reassign display (state) value if the formik and display dates are not equivalent (ex. this can occur when an item of an array that includes this field is removed)
@@ -167,22 +174,25 @@ export const DateInputField = ({
     }
   }
 
-  const handleMonthChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleMonthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
     setMonth(e.target.value)
+    await updateFormik(e.target.value, day, year)
     if (monthProps?.onChange) {
       monthProps.onChange(e)
     }
   }
 
-  const handleDayChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleDayChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
     setDay(e.currentTarget.value)
+    await updateFormik(month, e.target.value, year)
     if (dayProps?.onChange) {
       dayProps.onChange(e)
     }
   }
 
-  const handleYearChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
     setYear(e.currentTarget.value)
+    await updateFormik(month, day, e.target.value)
     if (yearProps?.onChange) {
       yearProps.onChange(e)
     }
