@@ -6,7 +6,7 @@ on:
     types:
       - completed
     branches-ignore:
-      - "main"
+      - main
   workflow_dispatch:
 
 jobs:
