@@ -10,6 +10,7 @@ import {
   PaymentsReceivedDetailInput,
   EmployerAddressInput,
 } from 'types/claimantInput'
+import { formatStoredDateToDisplayDate } from 'utils/date/format'
 import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
 import { formatStoredToDisplayPhone } from 'utils/phone/format'
@@ -18,6 +19,7 @@ import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
 import { convertCentsToDollars } from 'utils/currency/conversion'
 import { Trans } from 'react-i18next'
 import { payTypeOptions, PayTypeOption } from 'constants/formOptions'
+
 export const buildAlternateEmployerAddress = (
   alternateEmployerAddress: AddressWithoutStreetInput | undefined
 ) => {
@@ -26,17 +28,42 @@ export const buildAlternateEmployerAddress = (
     return undefined
   }
 
-  return `${city}${city && ', '}${state}${state && ' '}${zipcode}`
+  return combineAddresses([city], state, zipcode, ', ')
+}
+const combineAddresses = (
+  addresses: (string | undefined | null)[] | undefined,
+  state: string | undefined | null,
+  zipcode: string | undefined | null,
+  delimiter: string
+) => {
+  let addr = ''
+  let zipcodeDelimiter = delimiter
+  if (addresses) {
+    for (const addressField of addresses) {
+      addr = addAddress(addr, addressField, delimiter)
+    }
+    addr = addAddress(addr, state, delimiter)
+
+    //if we have a state value only add a space between zip state
+    if (state && zipcode) {
+      zipcodeDelimiter = ' '
+    }
+
+    addr = addAddress(addr, zipcode, zipcodeDelimiter)
+  }
+
+  return addr
 }
 const addAddress = (
   currentAddr: string,
-  newAddition: string | undefined | null
+  newAddition: string | undefined | null,
+  delimiter: string
 ) => {
   if (newAddition === undefined || newAddition === null) {
     return currentAddr
   }
   if (currentAddr !== '') {
-    currentAddr = currentAddr.concat('\n')
+    currentAddr = currentAddr.concat(delimiter)
   }
   currentAddr = currentAddr.concat(newAddition)
 
@@ -57,11 +84,17 @@ export const buildEmployerInputAddress = (
   ) {
     return undefined
   }
-  return `${address}${address && ', '}${address2}${
-    address2 && ', '
-  }${address3}${address3 && ', '}${city}${city && ', '}${state}${
-    state && ' '
-  }${zipcode}`
+  // return `${address!==undefined && address}${address && ', '}${address2}${
+  //   address2 && ', '
+  // }${address3 && `address3`}${address3 && ', '}${city}${city && ', '}${state}${
+  //   state && ' '
+  // }${zipcode}`
+  return combineAddresses(
+    [address, address2, address3, city],
+    state,
+    zipcode,
+    ', '
+  )
 }
 export const buildImportedEmployerAddress = (
   importedAddress: ImportedEmployerAddress | undefined
@@ -94,11 +127,7 @@ export const buildImportedEmployerAddress = (
     employerAddressZip,
   ]
 
-  let addr = ''
-  for (const addressField of addresses) {
-    addr = addAddress(addr, addressField)
-  }
-  return addr
+  return combineAddresses(addresses, undefined, employerAddressZip, '\n')
 }
 export const PaymentReview = ({
   paymentDetail,
@@ -107,7 +136,6 @@ export const PaymentReview = ({
   paymentDetail: PaymentsReceivedDetailInput
   payTypeOption: PayTypeOption
 }) => {
-  console.log('In payment review')
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'employers.payments_received.payments_received_detail',
   })
@@ -132,11 +160,11 @@ export const PaymentReview = ({
       />
       <ReviewElement
         label={t('date_pay_began.reviewLabel', { payType: payTypeString })}
-        value={paymentDetail.date_pay_began}
+        value={formatStoredDateToDisplayDate(paymentDetail.date_pay_began)}
       />
       <ReviewElement
         label={t('date_pay_ended.reviewLabel', { payType: payTypeString })}
-        value={paymentDetail.date_pay_ended}
+        value={formatStoredDateToDisplayDate(paymentDetail.date_pay_ended)}
       />
     </>
   )
@@ -183,21 +211,17 @@ export const EmployerReview = ({
   employer: Employer
   index: number
 }) => {
-  console.log('in employerReview sub element name is ', employer?.employer_name)
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   let { path } = EditEmployerPageDefinition
   path = path + '/' + String(index)
-  console.log('before check')
+
   if (
     !employer.worked_for_imported_employer_in_last_18mo &&
     employer.is_imported
   ) {
     return null
   }
-  console.log(
-    'related to owner value is ',
-    employer?.related_to_owner_or_child_of_owner_under_18
-  )
+
   const employerCityAndState =
     employer.is_imported && employer.imported_address
       ? parseCityAndStateFromImportedAddress(employer.imported_address)
@@ -208,6 +232,10 @@ export const EmployerReview = ({
   const formatPaymentsReceivedList = (
     paymentsReceived: PaymentsReceivedDetailInput[]
   ) => {
+    if (paymentsReceived === undefined) {
+      return undefined
+    }
+
     let paymentListString = ''
     for (const payment of paymentsReceived) {
       //TODO- does order matter here, its in an array so values could move around, but do we care?
@@ -343,11 +371,11 @@ export const EmployerReview = ({
         />
         <ReviewElement
           label={t('employment_start_date.label')}
-          value={employer.employment_start_date}
+          value={formatStoredDateToDisplayDate(employer.employment_start_date)}
         />
         <ReviewElement
           label={t('employment_last_date.label')}
-          value={employer.employment_last_date}
+          value={formatStoredDateToDisplayDate(employer.employment_last_date)}
         />
         <ReviewYesNo
           label={t('hours_reduced_twenty_percent.label')}
@@ -355,7 +383,7 @@ export const EmployerReview = ({
         />
         <ReviewElement
           label={t('discharge_date.label')}
-          value={employer.discharge_date}
+          value={formatStoredDateToDisplayDate(employer.discharge_date)}
         />
         <ReviewYesNo
           label={t('separation.expect_to_be_recalled.label')}
@@ -367,7 +395,7 @@ export const EmployerReview = ({
         />
         <ReviewElement
           label={t('separation.definite_recall_date.label')}
-          value={employer.definite_recall_date}
+          value={formatStoredDateToDisplayDate(employer.definite_recall_date)}
         />
         <ReviewYesNo
           label={t('separation.is_seasonal_work.label')}
@@ -384,9 +412,6 @@ export const EmployerReview = ({
 }
 export const EmployersReview = () => {
   const { claimFormValues } = useContext(ClaimFormContext)
-  console.debug('in employers debug employers is ', claimFormValues?.employers)
-
-  console.log('in employers length', claimFormValues?.employers?.length)
   return (
     <>
       {claimFormValues?.employers &&
