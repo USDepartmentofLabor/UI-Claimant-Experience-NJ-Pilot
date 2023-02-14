@@ -29,6 +29,7 @@ import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+import { DemographicsReview } from 'components/review/sections/DemographicsReview/DemographicsReview'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
@@ -119,6 +120,9 @@ export const Review: NextPageWithLayout = () => {
             <HorizontalRule />
 
             <IdentityReview />
+            <HorizontalRule />
+
+            <DemographicsReview />
             <HorizontalRule />
 
             <CheckboxField
