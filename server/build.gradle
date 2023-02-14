@@ -39,7 +39,7 @@ dependencies {
     liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.19.0'
     liquibaseRuntime 'org.postgresql:postgresql:42.5.1'
     liquibaseRuntime 'org.springframework.boot:spring-boot-starter-data-jpa'
-    liquibaseRuntime 'info.picocli:picocli:4.7.0'
+    liquibaseRuntime 'info.picocli:picocli:4.7.1'
     liquibaseRuntime sourceSets.main.output
 
     // AWS
