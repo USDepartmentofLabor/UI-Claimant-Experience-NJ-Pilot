@@ -8,6 +8,7 @@ import {
   AddressWithoutStreetInput,
   Employer,
   PaymentsReceivedDetailInput,
+  EmployerAddressInput,
 } from 'types/claimantInput'
 import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
@@ -40,6 +41,27 @@ const addAddress = (
   currentAddr = currentAddr.concat(newAddition)
 
   return currentAddr
+}
+export const buildEmployerInputAddress = (
+  addressInput: EmployerAddressInput | undefined
+) => {
+  const { address, address2, address3, city, state, zipcode } =
+    addressInput || {}
+  if (
+    address === undefined &&
+    address2 === undefined &&
+    address3 === undefined &&
+    city === undefined &&
+    state === undefined &&
+    zipcode === undefined
+  ) {
+    return undefined
+  }
+  return `${address}${address && ', '}${address2}${
+    address2 && ', '
+  }${address3}${address3 && ', '}${city}${city && ', '}${state}${
+    state && ' '
+  }${zipcode}`
 }
 export const buildImportedEmployerAddress = (
   importedAddress: ImportedEmployerAddress | undefined
@@ -210,13 +232,21 @@ export const EmployerReview = ({
           value={buildImportedEmployerAddress(employer?.imported_address)}
         />
         <ReviewElement
+          label={t('verified_fields.employer_address')}
+          value={buildEmployerInputAddress(employer?.employer_address)}
+        />
+        <ReviewElement
           label={t('verified_fields.employer_phone')}
           value={formatStoredToDisplayPhone(employer?.employer_phone?.number)}
         />
-        <ReviewElement
-          label={t('verified_fields.fein')}
-          value={employer?.fein}
-        />
+        {/* fein has a bug where if you click inside the text it will make fein=='
+        this can be deleted when that bug is fixed */}
+        {employer?.fein !== '' && (
+          <ReviewElement
+            label={t('verified_fields.fein')}
+            value={employer?.fein}
+          />
+        )}
         <ReviewYesNo
           label={t('your_employer.is_full_time.label')}
           value={employer?.is_full_time}
