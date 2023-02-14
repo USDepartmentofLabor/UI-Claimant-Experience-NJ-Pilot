@@ -161,12 +161,15 @@ export const EmployerReview = ({
   employer: Employer
   index: number
 }) => {
-  console.log('in employerReview sub element')
+  console.log('in employerReview sub element name is ', employer?.employer_name)
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   let { path } = EditEmployerPageDefinition
   path = path + '/' + String(index)
   console.log('before check')
-  if (!employer.worked_for_imported_employer_in_last_18mo) {
+  if (
+    !employer.worked_for_imported_employer_in_last_18mo &&
+    employer.is_imported
+  ) {
     return null
   }
   console.log(
