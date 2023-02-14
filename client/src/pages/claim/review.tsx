@@ -27,6 +27,7 @@ import { Routes } from 'constants/routes'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
+import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
 import { EmployersReview } from 'components/review/sections/EmployerReview/EmployerReview'
 
@@ -116,6 +117,9 @@ export const Review: NextPageWithLayout = () => {
             </SummaryBox>
 
             <PersonalReview />
+            <HorizontalRule />
+
+            <IdentityReview />
             <HorizontalRule />
             <EmployersReview />
             <CheckboxField

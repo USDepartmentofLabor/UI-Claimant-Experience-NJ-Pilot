@@ -5,6 +5,8 @@ const claimForm = {
     next: 'Next',
     next_step: 'Next: {{stepName}}',
     save_and_exit: 'Save and exit',
+    save_notice:
+      'Answers are automatically saved when you complete a page and click "Next".',
     submit: 'Submit',
   },
   prequal: {
@@ -81,6 +83,11 @@ const claimForm = {
     work_at: 'Did you work at {{employer}}',
     confirm_employer:
       'Are you sure? Check your pay stubs or W2 to confirm your employer name.',
+    employer_retrieval_warning: {
+      heading: 'Unable to look up employers',
+      header_description:
+        'We are unable to look up your employment records at this time. Please check here later, or manually add your employers now.',
+    },
     worked_for_imported_employer_in_last_18mo: {
       errors: {
         required:

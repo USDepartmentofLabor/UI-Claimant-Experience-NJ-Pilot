@@ -1,0 +1,110 @@
+name: Run Deployment Preview
+description: This action returns a boolean on whether the deployment preview meets the necessary requirements, aside from it's ability to pass Test and Lint.
+outputs:
+  run-deployment-preview:
+    description: A boolean value whether to build and deploy a preview environment
+    value: ${{ steps.set-output.outputs.run-deployment-preview }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set RUN_DEPLOYMENT_PREVIEW bool to true as env variable
+      run: |
+        echo "RUN_DEPLOYMENT_PREVIEW=true" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Echo PR type
+      run: echo "${{ github.event.action }}"
+      shell: bash
+
+    - name: Check PR type is one of edited, opened, synchronize, or reopened
+      id: pr-type
+      if: contains( 'edited, opened, synchronize, or reopened', github.event.action ) == 'false'
+      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Get changed client and server files
+      id: changed-client-server-files
+      uses: tj-actions/changed-files@v35
+      with:
+        files: |
+          client/**
+          server/**
+
+    - name: Echo changed client or server files
+      run: echo "${{ steps.changed-client-server-files.outputs }}"
+      shell: bash
+
+    - name: Check PR changes include client or server files
+      id: client-or-server
+      if: steps.changed-client-server-files.outputs.any_changed == 'false'
+      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Get s3 schema file change
+      id: s3-schema-file
+      uses: tj-actions/changed-files@v35
+      with:
+        files: server/src/main/resources/schemas/**
+
+    - name: Echo changed s3 schema files
+      run: echo "${{ steps.s3-schema-file.outputs }}"
+      shell: bash
+
+    - name: Check PR changes does not include s3 claim schema files
+      id: s3-claim-schema
+      if: steps.s3-schema-file.outputs.any_changed == 'true'
+      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Get DB schema file change
+      id: db-schema-file
+      uses: tj-actions/changed-files@v35
+      with:
+        files: server/src/main/resources/db/**
+
+    - name: Echo changed db schema files
+      run: echo "${{ steps.db-schema-file.outputs }}"
+      shell: bash
+
+    - name: Check PR changes does not include rds db schema files
+      id: db-schema
+      if: steps.db-schema-file.outputs.any_changed == 'true'
+      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Get Codeowners file
+      id: codeowners
+      run: |
+        echo 'CODEOWNERS<<EOF' >> $GITHUB_ENV
+        cat .github/CODEOWNERS | grep -o '@\w*' >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+      shell: bash
+
+    - name: Echo changed CODEOWNERS file
+      run: echo "${{ env.CODEOWNERS }}"
+      shell: bash
+
+    - name: Echo actor
+      run: echo "${{ github.actor }}"
+      shell: bash
+
+    - name: Check PR owner has deployment preview permission
+      id: privileges
+      if: contains( env.CODEOWNERS, github.actor ) == 'false'
+      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Check PR description includes deployment preview flag
+      id: dp-flag
+      if: contains( github.event.pull_request.body, '[x] Deploy Preview Environment') == 'false'
+      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Set env value to output
+      id: set-output
+      run: echo "run-deployment-preview=$RUN_DEPLOYMENT_PREVIEW" >> $GITHUB_OUTPUT
+      shell: bash
