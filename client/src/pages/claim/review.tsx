@@ -121,7 +121,10 @@ export const Review: NextPageWithLayout = () => {
 
             <IdentityReview />
             <HorizontalRule />
+
             <EmployersReview />
+            <HorizontalRule />
+
             <CheckboxField
               name="certify"
               formGroupClassName="padding-top-05"

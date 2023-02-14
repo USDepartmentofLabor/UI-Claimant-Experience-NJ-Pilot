@@ -81,7 +81,7 @@ export type Employer = ImportedEmployerFields & {
   is_owner?: boolean
   corporate_officer_or_stock_ownership?: boolean
   employer_is_sole_proprietorship?: boolean
-  related_to_owner_or_child_of_owner_under_18?: boolean
+  related_to_owner_or_child_of_owner_under_18?: boolean //this seems wrong, how does this work???....
 
   LOCAL_pay_types: PayTypeOption[]
   payments_received: PaymentsReceivedDetailInput[]

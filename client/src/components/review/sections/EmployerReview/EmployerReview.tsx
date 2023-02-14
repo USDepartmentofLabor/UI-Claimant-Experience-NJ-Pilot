@@ -161,9 +161,11 @@ export const EmployerReview = ({
   employer: Employer
   index: number
 }) => {
+  console.log('in employerReview sub element')
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   let { path } = EditEmployerPageDefinition
   path = path + '/' + String(index)
+  console.log('before check')
   if (!employer.worked_for_imported_employer_in_last_18mo) {
     return null
   }
@@ -220,7 +222,7 @@ export const EmployerReview = ({
         }
         value={employer?.worked_at_employer_address}
       />
-      {/* is check here neded */}
+      {/* TODO-is check here neded */}
       {employer?.worked_at_employer_address === false && (
         <ReviewElement
           label={t('work_location.section_title')}
@@ -332,26 +334,22 @@ export const EmployerReview = ({
         value={formatPaymentsReceivedList(employer.payments_received)}
       />
       <PaymentsReview paymentsReceivedArray={employer.payments_received} />
+
+      {index !== 0 && <HorizontalRule />}
     </ReviewSection>
   )
 }
 export const EmployersReview = () => {
   const { claimFormValues } = useContext(ClaimFormContext)
+  console.debug('in employers debug employers is ', claimFormValues?.employers)
 
+  console.log('in employers length', claimFormValues?.employers?.length)
   return (
     <>
       {claimFormValues?.employers &&
         claimFormValues?.employers.length > 0 &&
         claimFormValues?.employers.map((employer, idx) => (
-          <>
-            <EmployerReview
-              employer={employer}
-              index={idx}
-              key={idx}
-            ></EmployerReview>
-            {claimFormValues?.employers &&
-              idx !== claimFormValues?.employers.length && <HorizontalRule />}
-          </>
+          <EmployerReview employer={employer} index={idx} key={idx} />
         ))}
     </>
   )
