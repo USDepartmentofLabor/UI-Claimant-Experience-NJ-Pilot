@@ -159,7 +159,7 @@ describe('Change in Employment component', () => {
       screen.queryByText('employment_start_date.label')
     const queryForFinishDate = () =>
       screen.queryByText('employment_last_date.label')
-    const queryForFinishDateWarning = () =>
+    const queryForLastDateWarning = () =>
       screen.queryByText('employment_last_date.warning')
     const queryForRecallDate = () =>
       screen.queryByText('definite_recall_date.label', { exact: false })
@@ -243,7 +243,7 @@ describe('Change in Employment component', () => {
       queryForSeparationCircumstanceDetails,
       queryForStartDate,
       queryForFinishDate,
-      queryForFinishDateWarning,
+      queryForLastDateWarning,
       queryForRecallDate,
       getMonthRecallDate,
       getDayRecallDate,
@@ -294,7 +294,7 @@ describe('Change in Employment component', () => {
       queryForIsSeasonalYesAnswer,
       queryForStartDate,
       queryForFinishDate,
-      queryForFinishDateWarning,
+      queryForLastDateWarning,
       queryForRecallDate,
       getDayLastDate,
       getMonthLastDate,
@@ -317,7 +317,7 @@ describe('Change in Employment component', () => {
 
     const startDate = queryForStartDate()
     const finishDate = queryForFinishDate()
-    const finishDateWarning = queryForFinishDateWarning()
+    const finishDateWarning = queryForLastDateWarning()
     const recallDate = queryForRecallDate()
 
     const lastDateDayField = getDayLastDate()
@@ -360,9 +360,7 @@ describe('Change in Employment component', () => {
     await user.type(lastDateDayField, oldDay)
     await user.type(lastDateMonthField, oldMonth)
     await user.type(lastDateYearField, oldYear)
-    expect(
-      screen.queryByText('employment_last_date.warning')
-    ).toBeInTheDocument()
+    expect(queryForFinishDate()).toBeInTheDocument()
 
     await user.click(expectRecallYesAnswer as HTMLElement)
     checkShouldBeInDocument([

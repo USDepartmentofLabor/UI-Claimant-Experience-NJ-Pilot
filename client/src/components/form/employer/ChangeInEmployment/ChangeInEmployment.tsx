@@ -85,6 +85,7 @@ export const ChangeInEmployment = () => {
 
   function isTooOld(dateString: string | undefined) {
     if (undefined === dateString) return false
+    if (!dateString.match(/\d{4}-\d+-\d+/)) return false
     const givenDate = new Date(dateString)
     const dateOfClaim = new Date()
     dateOfClaim.setDate(dateOfClaim.getDate() - dateOfClaim.getDay())
