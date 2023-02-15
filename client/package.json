@@ -20,7 +20,7 @@
     "react-aria-live": "2.0.5",
     "react-dom": "18.2.0",
     "react-query": "^3.39.2",
-    "sass": "^1.55.0",
+    "sass": "^1.58.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "@storybook/addon-essentials": "^6.5.14",
     "@storybook/addon-interactions": "^6.5.14",
     "@storybook/addon-links": "^6.5.13",
-    "@storybook/builder-webpack5": "^6.5.14",
+    "@storybook/builder-webpack5": "^6.5.16",
     "@storybook/manager-webpack5": "^6.5.16",
     "@storybook/react": "^6.5.11",
     "@storybook/testing-library": "^0.0.13",
@@ -42,7 +42,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^28.1.4",
     "@types/node": "18.13.0",
-    "@types/react": "18.0.21",
+    "@types/react": "18.0.28",
     "@types/react-aria-live": "^2.0.2",
     "@types/react-dom": "18.0.10",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
