@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { DemographicsReview } from './DemographicsReview'
-import { ClaimantInput } from 'types/claimantInput'
+import { ClaimantInput, DemographicsInput } from 'types/claimantInput'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import {
   EducationLevelOption,
@@ -36,10 +36,10 @@ describe('DemographicsReview component', () => {
   it('renders with the correct values', () => {
     const values = {
       sex: 'male' as SexOption,
-      race: 'opt_out' as RaceOption,
       ethnicity: 'opt_out' as EthnicityOption,
+      race: ['opt_out' as RaceOption],
       education_level: 'none' as EducationLevelOption,
-    }
+    } as DemographicsInput
     const { sex, ethnicity, race, educationLevel } =
       renderDemographicsReview(values)
 

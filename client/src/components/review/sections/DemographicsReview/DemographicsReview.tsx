@@ -28,7 +28,7 @@ export const DemographicsReview = () => {
       {claimFormValues?.race && (
         <ReviewElement
           label={t('race.label')}
-          value={t(`race.options.${claimFormValues?.race}`)}
+          value={t(`race.options.${claimFormValues?.race[0]}`)}
         />
       )}
       {claimFormValues?.education_level && (
