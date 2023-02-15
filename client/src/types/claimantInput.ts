@@ -13,6 +13,9 @@ import {
   EducationLevelOption,
   SuffixOption,
   CountryOfOriginOption,
+  EmployerRelationOption,
+  ChangeInEmploymentOption,
+  ReasonStillEmployedOptions,
 } from 'constants/formOptions'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,12 +63,12 @@ export type Employer = ImportedEmployerFields & {
   employer_name?: string
   is_full_time?: boolean
 
-  separation_circumstance?: string
+  separation_circumstance?: ChangeInEmploymentOption
   expect_to_be_recalled?: boolean
   separation_circumstance_details?: string
   employment_start_date?: string
   employment_last_date?: string
-  reason_still_employed?: string
+  reason_still_employed?: ReasonStillEmployedOptions
   hours_reduced_twenty_percent?: boolean
   discharge_date?: string
   definite_recall?: boolean
@@ -81,7 +84,7 @@ export type Employer = ImportedEmployerFields & {
   is_owner?: boolean
   corporate_officer_or_stock_ownership?: boolean
   employer_is_sole_proprietorship?: boolean
-  related_to_owner_or_child_of_owner_under_18?: boolean //this seems wrong, how does this work???....
+  related_to_owner_or_child_of_owner_under_18?: EmployerRelationOption
 
   LOCAL_pay_types: PayTypeOption[]
   payments_received: PaymentsReceivedDetailInput[]

@@ -3,13 +3,19 @@ import { EmployersReview } from './EmployerReview'
 import {
   AddressWithoutStreetInput,
   ClaimantInput,
+  Employer,
   ImportedEmployerAddress,
   PaymentsReceivedDetailInput,
   PhoneInput,
 } from 'types/claimantInput'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { formatStoredDateToDisplayDate } from 'utils/date/format'
-import { PayTypeOption } from 'constants/formOptions'
+import {
+  ChangeInEmploymentOption,
+  EmployerRelationOption,
+  PayTypeOption,
+  ReasonStillEmployedOptions,
+} from 'constants/formOptions'
 describe('EmployerReview component', () => {
   const renderEmployerReview = (claimFormValues: ClaimantInput = {}) => {
     render(
@@ -172,7 +178,7 @@ describe('EmployerReview component', () => {
             employerAddressZip: '12345',
           } as ImportedEmployerAddress,
           worked_for_imported_employer_in_last_18mo: true,
-          separation_circumstance: 'laid_off',
+          separation_circumstance: 'laid_off' as ChangeInEmploymentOption,
           expect_to_be_recalled: false,
           employment_start_date: '2021-12-12',
           employment_last_date: '2022-12-13',
@@ -224,9 +230,8 @@ describe('EmployerReview component', () => {
     expect(employerAddress[0]).toHaveTextContent(
       `Building 1 Really long name 123 main street Smallville, KS 12345`
     )
-    expect(phoneNumber[0]).toHaveTextContent(
-      values.employers[0].employer_phone.number
-    )
+
+    expect(phoneNumber[0]).toHaveTextContent('555-555-5555')
     expect(fein[0]).toHaveTextContent(values.employers[0].fein)
     //your employer
     expect(isFullTimePartTime).toHaveTextContent('yes')
@@ -248,10 +253,10 @@ describe('EmployerReview component', () => {
     expect(reasonStillEmployed.length).toBe(0)
     expect(separationDetails.length).toBe(0)
     expect(employmentStartDate[0]).toHaveTextContent(
-      formatStoredDateToDisplayDate(values.employers[0].employment_start_date)
+      formatStoredDateToDisplayDate('2021-12-12') as string
     )
     expect(employmentEndDate[0]).toHaveTextContent(
-      formatStoredDateToDisplayDate(values.employers[0].employment_last_date)
+      formatStoredDateToDisplayDate('2022-12-13') as string
     )
     expect(hoursReducedBy20Percent.length).toBe(0)
     expect(dishchargeDate.length).toBe(0)
@@ -277,10 +282,10 @@ describe('EmployerReview component', () => {
             employerAddressLine1: 'Building 1',
             employerAddressLine2: ' Really long name',
             employerAddressLine3: '123 main street',
-            employerAddressLine4: undefined,
+            employerAddressLine4: null,
             employerAddressLine5: 'Smallville, KS',
             employerAddressZip: '12345',
-          },
+          } as ImportedEmployerAddress,
           worked_for_imported_employer_in_last_18mo: true,
 
           worked_at_employer_address: false,
@@ -321,8 +326,9 @@ describe('EmployerReview component', () => {
           is_owner: true,
           corporate_officer_or_stock_ownership: false,
           employer_is_sole_proprietorship: false,
-          related_to_owner_or_child_of_owner_under_18: 'parent',
-        },
+          related_to_owner_or_child_of_owner_under_18:
+            'parent' as EmployerRelationOption,
+        } as Employer,
       ],
     }
 
@@ -347,11 +353,12 @@ describe('EmployerReview component', () => {
           employer_name: 'Jamba Juice',
           is_imported: true,
           worked_for_imported_employer_in_last_18mo: true,
-          separation_circumstance: 'still_employed',
-          reason_still_employed: 'reduction_in_hours_by_employer',
+          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+          reason_still_employed:
+            'reduction_in_hours_by_employer' as ReasonStillEmployedOptions,
           hours_reduced_twenty_percent: true,
           is_seasonal_work: true,
-        },
+        } as Employer,
       ],
     }
 
@@ -371,20 +378,19 @@ describe('EmployerReview component', () => {
           employer_name: 'Jamba Juice',
           is_imported: true,
           worked_for_imported_employer_in_last_18mo: true,
-          separation_circumstance: 'fired_discharged_suspended',
+          separation_circumstance:
+            'fired_discharged_suspended' as ChangeInEmploymentOption,
           separation_circumstance_details: 'im a blob of text',
           discharge_date: '2021-12-12',
-        },
+        } as Employer,
       ],
     }
 
     const { separationDetails, dishchargeDate } = renderEmployerReview(values)
 
-    expect(separationDetails[0]).toHaveTextContent(
-      values.employers[0].separation_circumstance_details
-    )
+    expect(separationDetails[0]).toHaveTextContent('im a blob of text')
     expect(dishchargeDate[0]).toHaveTextContent(
-      formatStoredDateToDisplayDate(values.employers[0].discharge_date)
+      formatStoredDateToDisplayDate('2021-12-12') as string
     )
   })
 
@@ -396,12 +402,12 @@ describe('EmployerReview component', () => {
           is_full_time: true,
           is_imported: true,
           worked_for_imported_employer_in_last_18mo: true,
-          separation_circumstance: 'laid_off',
+          separation_circumstance: 'laid_off' as ChangeInEmploymentOption,
           expect_to_be_recalled: true,
           definite_recall: true,
           definite_recall_date: '2022-12-13',
           is_seasonal_work: true,
-        },
+        } as Employer,
       ],
     }
 
@@ -410,7 +416,7 @@ describe('EmployerReview component', () => {
     expect(expectToBeRecalled[0]).toHaveTextContent('yes')
     expect(definiteRecall[0]).toHaveTextContent('yes')
     expect(definiteRecallDate[0]).toHaveTextContent(
-      formatStoredDateToDisplayDate(values.employers[0].definite_recall_date)
+      formatStoredDateToDisplayDate('2022-12-13') as string
     )
   })
   it('shows manually added employer address', () => {
@@ -431,49 +437,16 @@ describe('EmployerReview component', () => {
           is_full_time: true,
           is_imported: false,
           imported_address: undefined,
-        },
+        } as Employer,
       ],
     }
 
     const { employerAddress } = renderEmployerReview(values)
     expect(employerAddress.length).toBe(1)
     expect(employerAddress[0]).toHaveTextContent(
-      `${values.employers[0].employer_address.address}, ${values.employers[0].employer_address.address2}, ${values.employers[0].employer_address.city}, ${values.employers[0].employer_address.state} ${values.employers[0].employer_address.zipcode}`
+      `building 1, 123 main street, smallville, KS 12345`
     )
   })
-
-  // it('alt address displays without undefined', () => {
-  //   const values = {
-  //     employers: [
-  //       {
-  //         employer_address: {
-  //           address: 'building 1',
-  //           address2: '123 main street',
-  //           address3: undefined,
-  //           city: 'smallville',
-  //           state: undefined,
-  //           zipcode: '12345',
-  //         },
-  //         alternate_physical_work_address: {
-  //           city: 'I am a city',
-  //           state: undefined,
-  //           zipcode: '12345',
-  //         } as AddressWithoutStreetInput,
-  //         employer_name: 'Jamba Juice',
-  //         worked_at_employer_address: false,
-  //         is_full_time: true,
-  //         is_imported: false,
-  //         imported_address: undefined,
-  //       },
-  //     ],
-  //   }
-
-  //   const { altAddress } = renderEmployerReview(values)
-  //   expect(altAddress.length).toBe(1)
-  //   expect(altAddress[0]).toHaveTextContent(
-  //     `${values.employers[0].alternate_physical_work_address.city}, ${values.employers[0].alternate_physical_work_address.zipcode}`
-  //   )
-  // })
 
   it('shows all payments', () => {
     const values = {
@@ -491,10 +464,10 @@ describe('EmployerReview component', () => {
               pay_type: 'holiday',
               total: '20000',
               date_pay_began: '2021-12-12',
-              date_pay_ended: '2022-12-12',
+              date_pay_ended: '2022-12-13',
             } as PaymentsReceivedDetailInput,
           ],
-        },
+        } as Employer,
       ],
     }
 
@@ -502,16 +475,12 @@ describe('EmployerReview component', () => {
       renderEmployerReview(values)
     expect(datePayBegan.length).toBe(1)
     expect(datePayBegan[0]).toHaveTextContent(
-      formatStoredDateToDisplayDate(
-        values.employers[0].payments_received[1].date_pay_began
-      )
+      formatStoredDateToDisplayDate('2021-12-12') as string
     )
 
     expect(datePayEnded.length).toBe(1)
     expect(datePayEnded[0]).toHaveTextContent(
-      formatStoredDateToDisplayDate(
-        values.employers[0].payments_received[1].date_pay_ended
-      )
+      formatStoredDateToDisplayDate('2022-12-13') as string
     )
 
     expect(totalOfPay.length).toBe(2)
@@ -519,8 +488,6 @@ describe('EmployerReview component', () => {
     expect(totalOfPay[1]).toHaveTextContent(`total.currencyPrefix100.00`)
 
     expect(otherNote.length).toBe(1)
-    expect(otherNote[0]).toHaveTextContent(
-      values.employers[0].payments_received[0].note
-    )
+    expect(otherNote[0]).toHaveTextContent('i am some other note')
   })
 })
