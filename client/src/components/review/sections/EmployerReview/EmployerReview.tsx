@@ -267,14 +267,12 @@ export const EmployerReview = ({
           label={t('verified_fields.employer_phone')}
           value={formatStoredToDisplayPhone(employer?.employer_phone?.number)}
         />
-        {/* fein has a bug where if you click inside the text it will make fein=='
-        this can be deleted when that bug is fixed */}
-        {employer?.fein !== '' && (
-          <ReviewElement
-            label={t('verified_fields.fein')}
-            value={employer?.fein}
-          />
-        )}
+        (
+        <ReviewElement
+          label={t('verified_fields.fein')}
+          value={employer?.fein}
+        />
+        )
         <ReviewYesNo
           label={t('your_employer.is_full_time.label')}
           value={employer?.is_full_time}
@@ -291,15 +289,12 @@ export const EmployerReview = ({
           }
           value={employer?.worked_at_employer_address}
         />
-        {/* TODO-is check here neded */}
-        {employer?.worked_at_employer_address === false && (
-          <ReviewElement
-            label={t('work_location.section_title')}
-            value={buildAlternateEmployerAddress(
-              employer.alternate_physical_work_address
-            )}
-          />
-        )}
+        <ReviewElement
+          label={t('work_location.section_title')}
+          value={buildAlternateEmployerAddress(
+            employer.alternate_physical_work_address
+          )}
+        />
         <ReviewYesNo
           label={
             <Trans
@@ -338,7 +333,6 @@ export const EmployerReview = ({
           label={t('business_interests.employer_is_sole_proprietorship.label')}
           value={employer?.employer_is_sole_proprietorship}
         />
-
         {employer?.related_to_owner_or_child_of_owner_under_18 && (
           <ReviewElement
             label={t(
