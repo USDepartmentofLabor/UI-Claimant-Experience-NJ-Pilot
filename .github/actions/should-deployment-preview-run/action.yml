@@ -79,20 +79,6 @@ runs:
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
 
-    - name: Comment DP will be created
-      uses: peter-evans/create-or-update-comment@v2
-      if: env.RUN_DEPLOYMENT_PREVIEW == 'true'
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: Deployment Preview will be created for this PR at ${{ github.sha }}
-
-    - name: Comment DP will not be created
-      uses: peter-evans/create-or-update-comment@v2
-      if: env.RUN_DEPLOYMENT_PREVIEW == 'false'
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: Deployment Preview will not be created for this PR at ${{ github.sha }}
-
     - name: Set env value to output
       id: set-output
       run: echo "run-deployment-preview=$RUN_DEPLOYMENT_PREVIEW" >> $GITHUB_OUTPUT
