@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class SubmissionServiceTest {
     @Mock private ClaimantRepository claimantRepository;
+    @Mock private ExternalClaimFormatterService externalClaimFormatterService;
     // TODO - both testcases should be changed when the NAVA api is connected
 
     private SubmissionService submissionService;
@@ -61,7 +62,8 @@ class SubmissionServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        submissionService = new SubmissionService(claimantRepository);
+        submissionService =
+                new SubmissionService(claimantRepository, externalClaimFormatterService);
     }
 
     @Test
@@ -70,6 +72,7 @@ class SubmissionServiceTest {
         var claim = mock(Claim.class);
 
         // set claimant to not have a claim yet
+        when(externalClaimFormatterService.formatClaim(any(), anyString())).thenReturn(validClaim);
         when(claimant.getActiveCompletedClaim()).thenReturn(Optional.empty());
         when(claimantRepository.findClaimantByIdpId(anyString())).thenReturn(Optional.of(claimant));
 
@@ -103,6 +106,7 @@ class SubmissionServiceTest {
         var claimant = mock(Claimant.class);
         var claim = mock(Claim.class);
 
+        when(externalClaimFormatterService.formatClaim(any(), anyString())).thenReturn(validClaim);
         when(claimant.getId()).thenReturn(claimantId);
         when(claim.getId()).thenReturn(claimId);
         when(claimant.getActiveCompletedClaim()).thenReturn(Optional.of(claim));
@@ -140,6 +144,8 @@ class SubmissionServiceTest {
         var claimant = mock(Claimant.class);
         var claim = mock(Claim.class);
 
+        when(externalClaimFormatterService.formatClaim(any(), anyString()))
+                .thenReturn(invalidClaim);
         when(claimant.getId()).thenReturn(claimantId);
         when(claim.getId()).thenReturn(claimId);
         when(claimant.getActiveCompletedClaim()).thenReturn(Optional.of(claim));
