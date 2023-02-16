@@ -9,6 +9,11 @@ runs:
   steps:
     - uses: actions/checkout@v3
 
+    - name: Set RUN_DEPLOYMENT_PREVIEW bool to true as env variable
+      run: |
+        echo "RUN_DEPLOYMENT_PREVIEW=true" >> $GITHUB_ENV
+      shell: bash
+
     - name: Get s3 schema file change
       id: s3-schema-file
       uses: tj-actions/changed-files@v35
