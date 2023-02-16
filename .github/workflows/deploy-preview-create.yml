@@ -1,14 +1,25 @@
 name: Deploy Preview Create
 
 on:
-  workflow_run:
-    workflows: [Test and Lint]
-    types:
-      - completed
+  pull_request:
+    # Include `edited` event type to trigger on PR description changes
+    types: [edited, opened, synchronize, reopened]
+    paths:
+      - "client/**"
+      - "server/**"
   workflow_dispatch:
 
+# Cancel redundant deployments on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: 17.0.6+10
+  NODE_VERSION: 16.19.0
+
 jobs:
-  run-deploy-preview:
+  should-deploy-preview-run:
     runs-on: ubuntu-latest
     environment: dev
     outputs:
@@ -18,16 +29,51 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v3
       - name: Check whether deployment preview should be built
         id: dp-check
-        uses: ./.github/actions/run-deployment-preview
+        uses: ./.github/actions/should-deployment-preview-run
+
+      - name: Comment DP will be created
+        uses: peter-evans/create-or-update-comment@v2
+        if: steps.dp-check.outputs.run-deployment-preview == 'true'
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: Deployment Preview will be created for this PR at ${{ github.sha }}
+
+      - name: Comment DP will not be created
+        uses: peter-evans/create-or-update-comment@v2
+        if: steps.dp-check.outputs.run-deployment-preview == 'false'
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: Deployment Preview will not be created for this PR at ${{ github.sha }}
+
+  build-lint-and-test:
+    needs: [should-deploy-preview-run]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run lint, build, and test action
+        id: lint-build-test
+        uses: ./.github/actions/lint-build-and-test
+        with:
+          JAVA_VERSION: ${{ env.JAVA_VERSION }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
 
   deploy-preview-create:
-    needs: [run-deploy-preview]
-    if: github.event.workflow_run.conclusion == 'success' && needs.run-deploy-preview.outputs.run-deployment-preview == 'true'
+    needs: [should-deploy-preview-run, build-lint-and-test]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
     runs-on: ubuntu-latest
     environment: dev
 
@@ -67,8 +113,8 @@ jobs:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
 
   deploy-preview-will-not-create:
-    needs: [run-deploy-preview]
-    if: github.event.workflow_run.conclusion == 'failure' || needs.run-deploy-preview.outputs.run-deployment-preview == 'false'
+    needs: [should-deploy-preview-run]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'false'
     runs-on: ubuntu-latest
     environment: dev
 

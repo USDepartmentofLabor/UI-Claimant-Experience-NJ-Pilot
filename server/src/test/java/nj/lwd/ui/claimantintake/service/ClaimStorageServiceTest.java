@@ -19,6 +19,7 @@ import java.util.UUID;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.exception.ClaimDataRetrievalException;
+import nj.lwd.ui.claimantintake.exception.RecentEmployerDataRetrievalException;
 import nj.lwd.ui.claimantintake.model.Claim;
 import nj.lwd.ui.claimantintake.model.Claimant;
 import nj.lwd.ui.claimantintake.repository.ClaimRepository;
@@ -424,7 +425,7 @@ class ClaimStorageServiceTest {
 
     @Test
     void getPartialClaimReturnsNoDataWhenObjectDoesNotExistInS3()
-            throws ClaimDataRetrievalException {
+            throws RecentEmployerDataRetrievalException {
         Claim claim = mock(Claim.class);
         UUID claimId = UUID.randomUUID();
         when(claim.getId()).thenReturn(claimId);
@@ -688,5 +689,78 @@ class ClaimStorageServiceTest {
                                         event.getCategory()
                                                 .equals(ClaimEventCategory.WGPM_CACHE_FAILED)));
         verify(claimantRepository, times(1)).save(claimant);
+    }
+
+    @Test
+    void getRecentEmployersReturnsData() throws RecentEmployerDataRetrievalException {
+        Claim claim = mock(Claim.class);
+        UUID claimId = UUID.randomUUID();
+        when(claim.getId()).thenReturn(claimId);
+
+        Claimant claimant = mock(Claimant.class);
+        UUID claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
+
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
+
+        InputStream inputStream =
+                new ByteArrayInputStream(
+                        "{\"statusCode\": \"3\"}".getBytes(StandardCharsets.UTF_8));
+        when(s3Service.get(CLAIMS_BUCKET, "%s/%s/wgpm.json".formatted(claimantId, claimId)))
+                .thenReturn(inputStream);
+
+        Optional<Map<String, Object>> retrievedData =
+                claimStorageService.getRecentEmployers("fakeId");
+
+        assertTrue(retrievedData.isPresent());
+        Map<String, Object> claimData = retrievedData.get();
+
+        assertTrue(claimData.containsKey("statusCode"));
+        assertEquals("3", claimData.get("statusCode"));
+
+        verify(s3Service, times(1))
+                .get(CLAIMS_BUCKET, "%s/%s/wgpm.json".formatted(claimantId, claimId));
+    }
+
+    @Test
+    void getRecentEmployersReturnsNoDataWhenObjectDoesNotExistInS3()
+            throws RecentEmployerDataRetrievalException {
+        Claim claim = mock(Claim.class);
+        UUID claimId = UUID.randomUUID();
+        when(claim.getId()).thenReturn(claimId);
+
+        Claimant claimant = mock(Claimant.class);
+        UUID claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.of(claim));
+
+        when(claimantStorageService.getOrCreateClaimant(anyString())).thenReturn(claimant);
+        when(s3Service.get(CLAIMS_BUCKET, "%s/%s/wgpm.json".formatted(claimantId, claimId)))
+                .thenThrow(AwsServiceException.class);
+
+        assertThrows(
+                RecentEmployerDataRetrievalException.class,
+                () -> {
+                    claimStorageService.getRecentEmployers("fakeId");
+                });
+
+        verify(s3Service, times(1))
+                .get(CLAIMS_BUCKET, "%s/%s/wgpm.json".formatted(claimantId, claimId));
+    }
+
+    @Test
+    void getRecentEmployersReturnsNoDataWhenNoExistingPartialClaimRecord()
+            throws RecentEmployerDataRetrievalException {
+        Claimant claimant = mock(Claimant.class);
+        when(claimant.getActivePartialClaim()).thenReturn(Optional.empty());
+        when(claimantStorageService.getOrCreateClaimant("fakeId")).thenReturn(claimant);
+
+        Optional<Map<String, Object>> retrievedData =
+                claimStorageService.getRecentEmployers("fakeId");
+
+        assertTrue(retrievedData.isEmpty());
+
+        verify(s3Service, times(0)).get(anyString(), anyString());
     }
 }

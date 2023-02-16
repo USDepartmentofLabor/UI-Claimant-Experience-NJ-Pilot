@@ -23,56 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
 
-      - uses: actions/cache@627f0f41f6904a5b1efbaed9f96d9eb58e92e920
+      - name: Run lint, build, and test action
+        id: lint-build-test
+        uses: ./.github/actions/lint-build-and-test
         with:
-          key: v1-pre-commit-dot-cache-${{ hashFiles('.pre-commit-config.yaml') }}
-          path: ~/.cache/pre-commit
-
-      - name: Install pre-commit
-        run: pip install pre-commit
-
-      - name: Set up Node.js
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "yarn"
-          cache-dependency-path: "**/yarn.lock"
-
-      - name: Install client dependencies
-        run: make client-deps
-
-      - name: Install e2e dependencies
-        run: make e2e-deps
-
-      - name: Set up Java
-        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: "temurin"
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@55e685c48d84285a5b0418cd094606e199cca3b6
-
-      - name: Install server dependencies
-        run: make server-deps
-
-      - name: Lint
-        run: make lint
-
-      - name: Run JUnit tests
-        run: make server-test
-
-      - name: Verify server test coverage
-        run: make server-test-coverage-check
-
-      - name: Run server checks
-        run: make server-check
-
-      - name: Check client Typescript compilation
-        run: make client-compile-check
-
-      - name: Run Jest tests
-        run: make client-test-coverage
+          JAVA_VERSION: ${{ env.JAVA_VERSION }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
 
   e2e-tests:
     name: End-to-end tests

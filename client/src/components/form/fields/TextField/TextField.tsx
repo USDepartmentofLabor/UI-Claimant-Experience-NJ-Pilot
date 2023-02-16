@@ -24,6 +24,7 @@ type TextInputProps = Optional<React.ComponentProps<typeof TextInput>, 'id'>
 interface ITextFieldProps extends TextInputProps {
   label: ReactNode
   labelClassName?: string
+  errorClassName?: string
   labelHint?: string
   hint?: ReactNode
   inputPrefix?: ReactNode
@@ -47,6 +48,7 @@ interface ITextFieldProps extends TextInputProps {
 export const TextField = ({
   label,
   labelClassName,
+  errorClassName,
   labelHint,
   hint,
   inputPrefix,
@@ -106,7 +108,11 @@ export const TextField = ({
       <div className="usa-hint" id={`${textInputProps.name}-hint`}>
         {hint}
       </div>
-      {showError && <ErrorMessage>{metaProps.error}</ErrorMessage>}
+      {showError && (
+        <ErrorMessage className={errorClassName}>
+          {metaProps.error}
+        </ErrorMessage>
+      )}
       {inputSuffix || inputPrefix ? (
         <div
           className={classnames('usa-input-group', {
