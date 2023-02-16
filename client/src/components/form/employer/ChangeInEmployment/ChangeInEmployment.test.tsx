@@ -159,6 +159,8 @@ describe('Change in Employment component', () => {
       screen.queryByText('employment_start_date.label')
     const queryForFinishDate = () =>
       screen.queryByText('employment_last_date.label')
+    const queryForLastDateWarning = () =>
+      screen.queryByText('employment_last_date.warning')
     const queryForRecallDate = () =>
       screen.queryByText('definite_recall_date.label', { exact: false })
 
@@ -241,6 +243,7 @@ describe('Change in Employment component', () => {
       queryForSeparationCircumstanceDetails,
       queryForStartDate,
       queryForFinishDate,
+      queryForLastDateWarning,
       queryForRecallDate,
       getMonthRecallDate,
       getDayRecallDate,
@@ -291,7 +294,11 @@ describe('Change in Employment component', () => {
       queryForIsSeasonalYesAnswer,
       queryForStartDate,
       queryForFinishDate,
+      queryForLastDateWarning,
       queryForRecallDate,
+      getDayLastDate,
+      getMonthLastDate,
+      getYearLastDate,
     } = renderChangeInEmployment()
     const changeReasonRadioField = queryForChangeReasonRadioField()
     const changeReasonLaidOffAnswer = queryForChangeReasonLaidOffAnswer()
@@ -310,7 +317,12 @@ describe('Change in Employment component', () => {
 
     const startDate = queryForStartDate()
     const finishDate = queryForFinishDate()
+    const finishDateWarning = queryForLastDateWarning()
     const recallDate = queryForRecallDate()
+
+    const lastDateDayField = getDayLastDate()
+    const lastDateMonthField = getMonthLastDate()
+    const lastDateYearField = getYearLastDate()
 
     checkShouldBeInDocument([
       sectionTitle,
@@ -329,12 +341,25 @@ describe('Change in Employment component', () => {
       isSeasonalNoAnswer,
       isSeasonalYesAnswer,
       recallDate,
+      finishDateWarning,
     ])
 
     await user.click(changeReasonStillEmployedAnswer as HTMLElement)
     expect(changeReasonStillEmployedAnswer).toBeChecked()
     await user.click(changeReasonLaidOffAnswer as HTMLElement)
     expect(changeReasonLaidOffAnswer).toBeChecked()
+    expect(queryForFinishDate()).toBeInTheDocument()
+
+    // Warning should appear if date is >18 months ago
+    const oldDate = new Date()
+    oldDate.setDate(oldDate.getDate() - oldDate.getDay()) // set to DOC
+    oldDate.setMonth(oldDate.getMonth() - 18) // set to 18 months before that
+    const oldDay = '' + (oldDate.getDay() + 1) // change from zero-indexed
+    const oldMonth = '' + (oldDate.getMonth() + 1) // change from zero-indexed
+    const oldYear = '' + oldDate.getFullYear()
+    await user.type(lastDateDayField, oldDay)
+    await user.type(lastDateMonthField, oldMonth)
+    await user.type(lastDateYearField, oldYear)
     expect(queryForFinishDate()).toBeInTheDocument()
 
     await user.click(expectRecallYesAnswer as HTMLElement)
