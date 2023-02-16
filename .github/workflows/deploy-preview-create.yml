@@ -1,13 +1,22 @@
 name: Deploy Preview Create
 
 on:
-  workflow_run:
-    workflows: [Test and Lint]
-    types:
-      - completed
-    branches-ignore:
-      - main
+  pull_request:
+    # Include `edited` event type to trigger on PR description changes
+    types: [edited, opened, synchronize, reopened]
+    paths:
+      - "client/**"
+      - "server/**"
   workflow_dispatch:
+
+# Cancel redundant deployments on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: 17.0.6+10
+  NODE_VERSION: 16.19.0
 
 jobs:
   run-deploy-preview:
@@ -27,11 +36,29 @@ jobs:
         id: dp-check
         uses: ./.github/actions/run-deployment-preview
 
-  deploy-preview-create:
+  build-lint-and-test:
     needs: [run-deploy-preview]
-    if: |
-      github.event.workflow_run.conclusion == 'success' &&
-      needs.run-deploy-preview.outputs.run-deployment-preview == 'true'
+    if: needs.run-deploy-preview.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run lint, build, and test action
+        id: lint-build-test
+        uses: ./.github/actions/lint-build-and-test
+        with:
+          JAVA_VERSION: ${{ env.JAVA_VERSION }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
+
+  deploy-preview-create:
+    needs: [run-deploy-preview, build-lint-and-test]
+    if: needs.run-deploy-preview.outputs.run-deployment-preview == 'true'
     runs-on: ubuntu-latest
     environment: dev
 
