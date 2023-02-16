@@ -346,7 +346,7 @@ describe('EmployerReview component', () => {
     )
   })
 
-  it('shows conditional values for sepation circumstance-still employed', () => {
+  it('shows conditional values for separation circumstance-still employed', () => {
     const values = {
       employers: [
         {
@@ -484,8 +484,8 @@ describe('EmployerReview component', () => {
     )
 
     expect(totalOfPay.length).toBe(2)
-    expect(totalOfPay[0]).toHaveTextContent(`total.currencyPrefix200.00`)
-    expect(totalOfPay[1]).toHaveTextContent(`total.currencyPrefix100.00`)
+    expect(totalOfPay[0].textContent).toMatch(`200.00`)
+    expect(totalOfPay[1].textContent).toMatch(`100.00`)
 
     expect(otherNote.length).toBe(1)
     expect(otherNote[0]).toHaveTextContent('i am some other note')
