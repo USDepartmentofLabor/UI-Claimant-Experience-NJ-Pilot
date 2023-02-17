@@ -84,11 +84,7 @@ export const buildEmployerInputAddress = (
   ) {
     return undefined
   }
-  // return `${address!==undefined && address}${address && ', '}${address2}${
-  //   address2 && ', '
-  // }${address3 && `address3`}${address3 && ', '}${city}${city && ', '}${state}${
-  //   state && ' '
-  // }${zipcode}`
+
   return combineAddresses(
     [address, address2, address3, city],
     state,
@@ -124,7 +120,6 @@ export const buildImportedEmployerAddress = (
     employerAddressLine3,
     employerAddressLine4,
     employerAddressLine5,
-    employerAddressZip,
   ]
 
   return combineAddresses(addresses, undefined, employerAddressZip, '\n')
@@ -267,12 +262,10 @@ export const EmployerReview = ({
           label={t('verified_fields.employer_phone')}
           value={formatStoredToDisplayPhone(employer?.employer_phone?.number)}
         />
-        (
         <ReviewElement
           label={t('verified_fields.fein')}
           value={employer?.fein}
         />
-        )
         <ReviewYesNo
           label={t('your_employer.is_full_time.label')}
           value={employer?.is_full_time}
@@ -306,15 +299,12 @@ export const EmployerReview = ({
           }
           value={employer?.is_employer_phone_accurate}
         />
-        {/* is check here needed? */}
-        {employer?.is_employer_phone_accurate === false && (
-          <ReviewElement
-            label={t('alt_employer_phone')}
-            value={formatStoredToDisplayPhone(
-              employer?.work_location_phone?.number
-            )}
-          />
-        )}
+        <ReviewElement
+          label={t('alt_employer_phone')}
+          value={formatStoredToDisplayPhone(
+            employer?.work_location_phone?.number
+          )}
+        />
         <ReviewYesNo
           label={t('business_interests.self_employed.label')}
           value={employer?.self_employed}
