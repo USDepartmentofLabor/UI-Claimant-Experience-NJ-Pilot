@@ -8,6 +8,7 @@ import { ContactInput } from 'types/claimantInput'
 import {
   interpreterTTYOptions,
   preferredLanguageOptions,
+  UNTOUCHED_RADIO_VALUE,
 } from 'constants/formOptions'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import formStyles from 'components/form/form.module.scss'
@@ -27,10 +28,20 @@ import {
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
+import { PHONE_SKELETON } from 'constants/initialValues'
 
 const pageDefinition = ContactPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
+
+const pageInitialValues = {
+  email: '',
+  claimant_phone: { ...PHONE_SKELETON },
+  alternate_phone: { number: '', sms: UNTOUCHED_RADIO_VALUE },
+  interpreter_required: UNTOUCHED_RADIO_VALUE,
+  preferred_language: UNTOUCHED_RADIO_VALUE,
+  preferred_language_other: '',
+}
 
 const Contact: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', {
@@ -39,25 +50,21 @@ const Contact: NextPageWithLayout = () => {
 
   return (
     <ClaimFormik<ContactInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
     >
-      {({ values, setValues, clearField, initialValues }) => {
-        const handleAlternatePhoneChange: ChangeEventHandler<
-          HTMLInputElement
-        > = (e) => {
-          if (e.currentTarget.value === '') {
-            setValues({ ...values, alternate_phone: undefined })
-          }
-        }
+      {({ values, clearField, clearFields, initialValues }) => {
         const handleInterpreterRequiredChange: ChangeEventHandler<
           HTMLInputElement
         > = async (e) => {
           if (e.target.value !== 'no_interpreter_tty') {
-            await clearField('preferred_language')
-            await clearField('preferred_language_other')
+            await clearFields({
+              preferred_language: pageInitialValues.preferred_language,
+              preferred_language_other:
+                pageInitialValues.preferred_language_other,
+            })
           }
         }
 
@@ -65,13 +72,16 @@ const Contact: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'other') {
-            await clearField('preferred_language_other')
+            await clearField(
+              'preferred_language_other',
+              pageInitialValues.preferred_language_other
+            )
           }
         }
 
         return (
           <>
-            {(initialValues.claimant_phone?.number || values.email) && (
+            {(initialValues.claimant_phone.number || values.email) && (
               <VerifiedFields>
                 {values.email && (
                   <VerifiedField
@@ -79,11 +89,11 @@ const Contact: NextPageWithLayout = () => {
                     value={values.email}
                   />
                 )}
-                {initialValues.claimant_phone?.number && (
+                {initialValues.claimant_phone.number && (
                   <VerifiedField
                     label={t('claimant_phone.label')}
                     value={formatStoredToDisplayPhone(
-                      initialValues.claimant_phone?.number
+                      initialValues.claimant_phone.number
                     )}
                   />
                 )}
@@ -98,7 +108,6 @@ const Contact: NextPageWithLayout = () => {
               name="alternate_phone"
               label={t('alternate_phone.label')}
               showSMS={false}
-              onChange={handleAlternatePhoneChange}
             />
             <RadioField
               name="interpreter_required"

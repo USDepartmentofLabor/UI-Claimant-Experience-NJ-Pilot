@@ -4,6 +4,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 jest.mock('next-auth/react')
 import React from 'react'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 const mockUseContext = jest.fn()
 
@@ -100,14 +101,12 @@ describe('it saves the claim form values', () => {
         ssn: '000000000',
         employers: [
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Apple',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Honda',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
         ],
       }
@@ -116,9 +115,8 @@ describe('it saves the claim form values', () => {
         ssn: '000000000',
         employers: [
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Honda',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
         ],
       }
@@ -140,14 +138,12 @@ describe('it saves the claim form values', () => {
         ssn: '000000000',
         employers: [
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Apple',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Honda',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
         ],
       }
@@ -155,22 +151,19 @@ describe('it saves the claim form values', () => {
         ssn: '000000000',
         employers: [
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Apple',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Microsoft',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
         ],
       }
       const { mockMutateAsync, result } = await setUpHook(200)
       const employer: Employer = {
+        ...EMPLOYER_SKELETON,
         employer_name: 'Microsoft',
-        LOCAL_pay_types: [],
-        payments_received: [],
       }
 
       const index = '1'
@@ -189,22 +182,19 @@ describe('it saves the claim form values', () => {
         ssn: '000000000',
         employers: [
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Apple',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Honda',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
         ],
       }
       const { mockMutateAsync, result } = await setUpHook(404)
       const employer: Employer = {
+        ...EMPLOYER_SKELETON,
         employer_name: 'Microsoft',
-        LOCAL_pay_types: [],
-        payments_received: [],
       }
 
       const index = '1'
@@ -224,17 +214,15 @@ describe('it saves the claim form values', () => {
         ssn: '000000000',
         employers: [
           {
+            ...EMPLOYER_SKELETON,
             employer_name: 'Microsoft',
-            LOCAL_pay_types: [],
-            payments_received: [],
           },
         ],
       }
       const { mockMutateAsync, result } = await setUpHook(200)
       const employer: Employer = {
+        ...EMPLOYER_SKELETON,
         employer_name: 'Microsoft',
-        LOCAL_pay_types: [],
-        payments_received: [],
       }
 
       const index = '0'
@@ -252,9 +240,8 @@ describe('it saves the claim form values', () => {
         mockClaimFormValues = { ssn: '000000000' }
         const { mockMutateAsync, result } = await setUpHook(200)
         const employer: Employer = {
+          ...EMPLOYER_SKELETON,
           employer_name: 'Microsoft',
-          LOCAL_pay_types: [],
-          payments_received: [],
         }
 
         const index = '1'
@@ -274,22 +261,19 @@ describe('it saves the claim form values', () => {
           ssn: '000000000',
           employers: [
             {
+              ...EMPLOYER_SKELETON,
               employer_name: 'Apple',
-              LOCAL_pay_types: [],
-              payments_received: [],
             },
             {
+              ...EMPLOYER_SKELETON,
               employer_name: 'Honda',
-              LOCAL_pay_types: [],
-              payments_received: [],
             },
           ],
         }
         const { mockMutateAsync, result } = await setUpHook(404)
         const employer: Employer = {
+          ...EMPLOYER_SKELETON,
           employer_name: 'Microsoft',
-          LOCAL_pay_types: [],
-          payments_received: [],
         }
 
         const index = '3'

@@ -6,9 +6,6 @@ import { boolean, object } from 'yup'
 export const ReviewPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('review.heading'),
   path: Routes.CLAIM.REVIEW,
-  initialValues: {
-    certify: undefined,
-  },
   validationSchema: object().shape({
     certify: boolean()
       .isTrue(i18n_claimForm.t('review.certify.errors.mustBeTrue'))

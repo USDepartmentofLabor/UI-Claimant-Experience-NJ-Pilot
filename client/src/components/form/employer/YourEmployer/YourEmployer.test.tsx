@@ -5,8 +5,10 @@ import { render, screen, within } from '@testing-library/react'
 import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
 import { Employer } from 'types/claimantInput'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 export const validImportedEditEmployer: Employer = {
+  ...EMPLOYER_SKELETON,
   employer_name: 'Lyft Inc.',
   is_imported: true,
   is_full_time: true,
@@ -14,14 +16,18 @@ export const validImportedEditEmployer: Employer = {
   payments_received: [
     {
       pay_type: 'none',
+      note: '',
+      total: '',
+      date_pay_began: '',
+      date_pay_ended: '',
     },
   ],
   LOCAL_pay_types: ['none'],
   employment_start_date: '2021-12-12',
   employer_address: {
     address: '1 John Fitch Plaza',
-    address2: undefined,
-    address3: undefined,
+    address2: '',
+    address3: '',
     city: 'Trenton',
     state: 'NJ',
     zipcode: '11111',
@@ -41,15 +47,15 @@ const validManuallyAddedEmployer: Employer = {
   ...validImportedEditEmployer,
   employer_address: {
     address: '',
-    address2: undefined,
-    address3: undefined,
+    address2: '',
+    address3: '',
     city: '',
     state: '',
     zipcode: '',
   },
-  employer_phone: { number: '', sms: undefined },
-  employer_name: undefined,
-  fein: undefined,
+  employer_phone: { number: '', sms: null },
+  employer_name: '',
+  fein: '',
   is_imported: false,
 }
 

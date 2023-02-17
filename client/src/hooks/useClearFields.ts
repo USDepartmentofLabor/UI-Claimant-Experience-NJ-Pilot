@@ -6,9 +6,6 @@ import {
   ClearFieldFunction,
   ClearFieldsFunction,
   DEFAULT_TOUCHED,
-  DEFAULT_VALUE,
-  Field,
-  isFieldWithConfiguredClear,
 } from 'types/ClearFieldTypes'
 
 /**
@@ -40,18 +37,24 @@ export const getClearFieldsFunctions = (
     [getFieldMeta, setFieldValue, setFieldTouched]
   )
 
-  const clearField = async (field: Field) => {
-    if (isFieldWithConfiguredClear(field)) {
-      const value = field.value || DEFAULT_VALUE
-      const touched = field.touched || DEFAULT_TOUCHED
-      await clear(field.fieldName, value, touched)
-    } else {
-      await clear(field, DEFAULT_VALUE, DEFAULT_TOUCHED)
-    }
+  const clearField = async (
+    field: string,
+    value: unknown,
+    touched: boolean = DEFAULT_TOUCHED
+  ) => {
+    await clear(field, value, touched)
   }
 
-  const clearFields = async (fields: Field[]) => {
-    await Promise.all(fields.map(async (field) => clearField(field)))
+  /**
+   * Convenience for clearing multiple fields. While clear operations are async,
+   * they each must be awaited in series for proper Formik state update and
+   * validation behavior
+   * @param fields
+   */
+  const clearFields = async (fields: { [field: string]: unknown }) => {
+    for (const [field, value] of Object.entries(fields)) {
+      await clearField(field, value)
+    }
   }
 
   return {

@@ -71,9 +71,13 @@ export const ClaimFormik = <Values extends FormikValues = ClaimantInput>({
     )
   }
 
-  const handleSubmit = (values: Values, helpers: FormikHelpers<Values>) => {
+  const handleSubmit = async (
+    values: Values,
+    helpers: FormikHelpers<Values>
+  ) => {
     const { setSubmitting } = helpers
-    appendAndSaveClaimFormValues(values).then(() => setSubmitting(false))
+    await appendAndSaveClaimFormValues(values)
+    setSubmitting(false)
   }
   const step = index + 1
   const totalStep = pageDefinitions.length

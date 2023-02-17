@@ -7,29 +7,19 @@ import { accountTypeOptions, paymentMethodOptions } from 'constants/formOptions'
 export const PaymentPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('payment.heading'),
   path: Routes.CLAIM.PAYMENT,
-  initialValues: {
-    federal_income_tax_withheld: undefined,
-    payment_method: undefined,
-    account_type: undefined,
-    routing_number: undefined,
-    LOCAL_re_enter_routing_number: undefined,
-    account_number: undefined,
-    LOCAL_re_enter_account_number: undefined,
-    acknowledge_direct_deposit_option: undefined,
-    apply_for_increased_payment_for_dependents: undefined,
-  },
   validationSchema: object().shape({
     payment_method: string()
       .oneOf([...paymentMethodOptions])
+      .nullable()
       .required(i18n_claimForm.t('payment.payment_method.errors.required')),
     account_type: string()
-      .oneOf([...accountTypeOptions])
+      .nullable()
       .when('payment_method', {
         is: 'direct_deposit',
         then: (schema) =>
-          schema.required(
-            i18n_claimForm.t('payment.account_type.errors.required')
-          ),
+          schema
+            .oneOf([...accountTypeOptions])
+            .required(i18n_claimForm.t('payment.account_type.errors.required')),
       }),
     routing_number: string()
       .matches(
@@ -99,13 +89,17 @@ export const PaymentPageDefinition: PageDefinition = {
             )
           ),
     }),
-    federal_income_tax_withheld: boolean().required(
-      i18n_claimForm.t('payment.federal_income_tax_withheld.errors.required')
-    ),
-    apply_for_increased_payment_for_dependents: boolean().required(
-      i18n_claimForm.t(
-        'payment.apply_for_increased_payment_for_dependents.errors.required'
-      )
-    ),
+    federal_income_tax_withheld: boolean()
+      .nullable()
+      .required(
+        i18n_claimForm.t('payment.federal_income_tax_withheld.errors.required')
+      ),
+    apply_for_increased_payment_for_dependents: boolean()
+      .nullable()
+      .required(
+        i18n_claimForm.t(
+          'payment.apply_for_increased_payment_for_dependents.errors.required'
+        )
+      ),
   }),
 }

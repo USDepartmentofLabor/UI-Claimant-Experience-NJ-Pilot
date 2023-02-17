@@ -38,8 +38,11 @@ export const EditEmployers: NextPageWithLayout = () => {
         .worked_for_imported_employer_in_last_18mo
 
     const initialValues = claimFormValues?.employers
-      ? claimFormValues.employers[parseInt(editEmployerIndex)]
-      : EMPLOYER_SKELETON
+      ? {
+          ...EMPLOYER_SKELETON,
+          ...claimFormValues.employers[parseInt(editEmployerIndex)],
+        }
+      : { ...EMPLOYER_SKELETON }
     return { initialValues, isValidIndex }
   }, [editEmployerIndex, claimFormValues])
 

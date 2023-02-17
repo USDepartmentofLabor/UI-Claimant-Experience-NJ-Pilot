@@ -1,7 +1,6 @@
-import { Identity } from 'pages/claim/identity'
+import { Identity, pageInitialValues } from 'pages/claim/identity'
 import { screen, render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { IdentityPageDefinition } from 'constants/pages/definitions/identityPageDefinition'
 import { useInitialValues } from 'hooks/useInitialValues'
 import { ClaimantInput } from 'types/claimantInput'
 import { WrappingProviders } from 'utils/testUtils'
@@ -18,7 +17,7 @@ describe('Identity Information Page', () => {
     ssn: string | undefined
   ) => {
     return {
-      ...IdentityPageDefinition.initialValues,
+      ...pageInitialValues,
       birthdate: birthDate,
       ssn: ssn,
     }

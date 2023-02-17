@@ -1,19 +1,10 @@
-export const DEFAULT_VALUE = undefined
 export const DEFAULT_TOUCHED = false
 
-export type FieldWithConfiguredClear = {
-  fieldName: string
-  value?: unknown
-  touched?: boolean
-}
+export type ClearFieldFunction = (
+  field: string,
+  value: unknown
+) => Promise<void>
 
-export type Field = string | FieldWithConfiguredClear
-
-export const isFieldWithConfiguredClear = (
-  field: Field
-): field is FieldWithConfiguredClear =>
-  (field as FieldWithConfiguredClear).fieldName !== undefined
-
-export type ClearFieldFunction = (field: Field) => Promise<void>
-
-export type ClearFieldsFunction = (fields: Field[]) => Promise<void>
+export type ClearFieldsFunction = (fields: {
+  [field: string]: unknown
+}) => Promise<void>

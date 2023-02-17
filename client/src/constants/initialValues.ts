@@ -5,38 +5,42 @@ import {
   AddressWithoutStreetInput,
   PersonNameInput,
 } from 'types/claimantInput'
+import {
+  EMPTY_DROPDOWN_OPTION,
+  UNTOUCHED_RADIO_VALUE,
+} from 'constants/formOptions'
 
 export const PHONE_SKELETON: PhoneInput = {
   number: '',
-  sms: undefined,
+  sms: UNTOUCHED_RADIO_VALUE,
 }
 
 export const ADDRESS_SKELETON: AddressInput = {
   address: '',
   city: '',
-  state: '',
+  state: EMPTY_DROPDOWN_OPTION,
   zipcode: '',
 }
 
 export const EMPLOYER_ADDRESS_SKELETON: EmployerAddressInput = {
   address: '',
-  address2: undefined,
-  address3: undefined,
+  address2: '',
+  address3: '',
   city: '',
-  state: '',
+  state: EMPTY_DROPDOWN_OPTION,
   zipcode: '',
 }
 
 export const ADDRESS_WITHOUT_STREET_SKELETON: AddressWithoutStreetInput = {
   city: '',
-  state: '',
+  state: EMPTY_DROPDOWN_OPTION,
   zipcode: '',
 }
 
 // skeleton shapes with which to initialize form fields
 export const PERSON_NAME_SKELETON: PersonNameInput = {
   first_name: '',
-  middle_initial: undefined,
+  middle_initial: '',
   last_name: '',
-  suffix: undefined,
+  suffix: EMPTY_DROPDOWN_OPTION,
 }

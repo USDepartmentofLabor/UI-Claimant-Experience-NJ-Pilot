@@ -24,6 +24,19 @@ import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 
 import styles from 'styles/pages/screener.module.scss'
 import { useGetPartialClaim } from '../queries/useGetPartialClaim'
+import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
+
+export const pageInitialValues = {
+  screener_current_country_us: UNTOUCHED_RADIO_VALUE,
+  screener_live_in_canada: UNTOUCHED_RADIO_VALUE,
+  screener_job_last_eighteen_months: UNTOUCHED_RADIO_VALUE,
+  screener_military_service_eighteen_months: UNTOUCHED_RADIO_VALUE,
+  screener_all_work_nj: UNTOUCHED_RADIO_VALUE,
+  screener_any_work_nj: UNTOUCHED_RADIO_VALUE,
+  screener_currently_disabled: UNTOUCHED_RADIO_VALUE,
+  screener_federal_work_in_last_eighteen_months: UNTOUCHED_RADIO_VALUE,
+  screener_maritime_employer_eighteen_months: UNTOUCHED_RADIO_VALUE,
+}
 
 const Screener: NextPageWithLayout = () => {
   const { t } = useTranslation('screener')
@@ -32,32 +45,26 @@ const Screener: NextPageWithLayout = () => {
   const { data: partialClaim } = useGetPartialClaim()
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
 
-  const initialValues = {
-    screener_current_country_us: undefined,
-    screener_live_in_canada: undefined,
-    screener_job_last_eighteen_months: undefined,
-    screener_military_service_eighteen_months: undefined,
-    screener_all_work_nj: undefined,
-    screener_any_work_nj: undefined,
-    screener_currently_disabled: undefined,
-    screener_federal_work_in_last_eighteen_months: undefined,
-    screener_maritime_employer_eighteen_months: undefined,
-  }
-
   const validationSchema = object().shape({
-    screener_current_country_us: boolean().required(
-      i18n_screener.t('screener_current_country_us.errors.required')
-    ),
-    screener_live_in_canada: boolean().when('screener_current_country_us', {
-      is: false,
-      then: boolean().required(
-        i18n_screener.t('screener_live_in_canada.errors.required')
+    screener_current_country_us: boolean()
+      .nullable()
+      .required(i18n_screener.t('screener_current_country_us.errors.required')),
+    screener_live_in_canada: boolean()
+      .nullable()
+      .when('screener_current_country_us', {
+        is: false,
+        then: (schema) =>
+          schema.required(
+            i18n_screener.t('screener_live_in_canada.errors.required')
+          ),
+      }),
+    screener_job_last_eighteen_months: boolean()
+      .nullable()
+      .required(
+        i18n_screener.t('screener_job_last_eighteen_months.errors.required')
       ),
-    }),
-    screener_job_last_eighteen_months: boolean().required(
-      i18n_screener.t('screener_job_last_eighteen_months.errors.required')
-    ),
     screener_military_service_eighteen_months: boolean()
+      .nullable()
       .required(
         i18n_screener.t(
           'screener_military_service_eighteen_months.errors.required'
@@ -65,38 +72,49 @@ const Screener: NextPageWithLayout = () => {
       )
       .when('screener_job_last_eighteen_months', {
         is: false,
-        then: boolean().oneOf(
-          [false],
-          i18n_screener.t(
-            'screener_military_service_eighteen_months.errors.job_conflict'
-          )
-        ),
+        then: (schema) =>
+          schema.oneOf(
+            [false],
+            i18n_screener.t(
+              'screener_military_service_eighteen_months.errors.job_conflict'
+            )
+          ),
       }),
-    screener_all_work_nj: boolean().when('screener_job_last_eighteen_months', {
-      is: true,
-      then: boolean().required(
-        i18n_screener.t('screener_all_work_nj.errors.required')
+    screener_all_work_nj: boolean()
+      .nullable()
+      .when('screener_job_last_eighteen_months', {
+        is: true,
+        then: (schema) =>
+          schema.required(
+            i18n_screener.t('screener_all_work_nj.errors.required')
+          ),
+      }),
+    screener_any_work_nj: boolean()
+      .nullable()
+      .when('screener_all_work_nj', {
+        is: false,
+        then: (schema) =>
+          schema.required(
+            i18n_screener.t('screener_any_work_nj.errors.required')
+          ),
+      }),
+    screener_currently_disabled: boolean()
+      .nullable()
+      .required(i18n_screener.t('screener_currently_disabled.errors.required')),
+    screener_federal_work_in_last_eighteen_months: boolean()
+      .nullable()
+      .required(
+        i18n_screener.t(
+          'screener_federal_work_in_last_eighteen_months.errors.required'
+        )
       ),
-    }),
-    screener_any_work_nj: boolean().when('screener_all_work_nj', {
-      is: false,
-      then: boolean().required(
-        i18n_screener.t('screener_any_work_nj.errors.required')
+    screener_maritime_employer_eighteen_months: boolean()
+      .nullable()
+      .required(
+        i18n_screener.t(
+          'screener_maritime_employer_eighteen_months.errors.required'
+        )
       ),
-    }),
-    screener_currently_disabled: boolean().required(
-      i18n_screener.t('screener_currently_disabled.errors.required')
-    ),
-    screener_federal_work_in_last_eighteen_months: boolean().required(
-      i18n_screener.t(
-        'screener_federal_work_in_last_eighteen_months.errors.required'
-      )
-    ),
-    screener_maritime_employer_eighteen_months: boolean().required(
-      i18n_screener.t(
-        'screener_maritime_employer_eighteen_months.errors.required'
-      )
-    ),
   })
 
   const handleSubmit = (
@@ -110,7 +128,7 @@ const Screener: NextPageWithLayout = () => {
 
   return (
     <Formik<ScreenerInput>
-      initialValues={initialValues}
+      initialValues={pageInitialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
@@ -141,7 +159,10 @@ const Screener: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'yes') {
-            await clearField('screener_live_in_canada')
+            await clearField(
+              'screener_live_in_canada',
+              pageInitialValues.screener_live_in_canada
+            )
           }
         }
 
@@ -149,7 +170,10 @@ const Screener: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'no') {
-            await clearFields(['screener_all_work_nj', 'screener_any_work_nj'])
+            await clearFields({
+              screener_all_work_nj: pageInitialValues.screener_all_work_nj,
+              screener_any_work_nj: pageInitialValues.screener_any_work_nj,
+            })
           }
         }
 
@@ -157,7 +181,10 @@ const Screener: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'yes') {
-            await clearField('screener_any_work_nj')
+            await clearField(
+              'screener_any_work_nj',
+              pageInitialValues.screener_any_work_nj
+            )
           }
         }
 
@@ -177,7 +204,7 @@ const Screener: NextPageWithLayout = () => {
             screener_maritime_employer_eighteen_months,
           } = values
           return (
-            screener_live_in_canada !== undefined ||
+            screener_live_in_canada !== null ||
             screener_any_work_nj === false ||
             screener_currently_disabled === true ||
             screener_military_service_eighteen_months === true ||

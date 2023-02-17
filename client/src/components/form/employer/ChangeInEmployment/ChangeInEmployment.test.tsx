@@ -3,13 +3,13 @@ import { Formik } from 'formik'
 import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
 import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
-import { useGetRecentEmployers } from 'queries/__mocks__/useGetRecentEmployers'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 describe('Change in Employment component', () => {
-  const { data } = useGetRecentEmployers()
+  const initialValues = { ...EMPLOYER_SKELETON }
   const renderChangeInEmployment = () => {
     render(
-      <Formik initialValues={data[0]} onSubmit={noop}>
+      <Formik initialValues={initialValues} onSubmit={noop}>
         <ChangeInEmployment />
       </Formik>
     )

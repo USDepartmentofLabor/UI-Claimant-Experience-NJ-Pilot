@@ -1,11 +1,7 @@
 package nj.lwd.ui.claimantintake.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Optional;
 import nj.lwd.ui.claimantintake.exception.RecentEmployerDataRetrievalException;
 import org.slf4j.Logger;
@@ -90,10 +86,48 @@ public class ExternalClaimFormatterService {
     }
 
     public Map<String, Object> formatClaim(Map<String, Object> claimPayload, String claimantIdpId) {
-
         Map<String, Object> formattedClaim = removeLocalUseOnlyFields(claimPayload);
+        removeEmptyValues(formattedClaim);
         formattedClaim = addCachedRecentEmployerResponse(formattedClaim, claimantIdpId);
 
         return formattedClaim;
+    }
+
+    private void removeEmptyValues(Map<?, ?> map) {
+        map.values()
+                .forEach(
+                        value -> {
+                            if (value instanceof Map<?, ?> mapValue) {
+                                removeEmptyValues(mapValue);
+                            } else if (value instanceof List<?> listValue) {
+                                removeEmptyValues(listValue);
+                            }
+                        });
+        map.values()
+                .removeIf(
+                        value ->
+                                value == null
+                                        || "".equals(value)
+                                        || value instanceof Map<?, ?> mapValue && mapValue.isEmpty()
+                                        || value instanceof List<?> listValue
+                                                && listValue.isEmpty());
+    }
+
+    private void removeEmptyValues(List<?> list) {
+        list.forEach(
+                value -> {
+                    if (value instanceof Map<?, ?> mapValue) {
+                        removeEmptyValues(mapValue);
+                    } else if (value instanceof List<?> listValue) {
+                        removeEmptyValues(listValue);
+                    }
+                });
+
+        list.removeIf(
+                value ->
+                        value == null
+                                || "".equals(value)
+                                || value instanceof Map<?, ?> mapValue && mapValue.isEmpty()
+                                || value instanceof List<?> listValue && listValue.isEmpty());
     }
 }

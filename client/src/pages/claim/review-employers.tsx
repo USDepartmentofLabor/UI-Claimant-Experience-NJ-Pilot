@@ -32,10 +32,13 @@ import { findLastIndex } from 'lodash'
 import { i18n_claimForm } from 'i18n/i18n'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
+import { ClaimantInput } from 'types/claimantInput'
 
 const pageDefinition = ReviewEmployersPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
+
+const pageInitialValues = { LOCAL_reviewed_employers: false }
 
 const REVIEW = 'review'
 const ADD = 'add'
@@ -70,7 +73,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
       ? employers.length > employerIndex
         ? employers[employerIndex | 0]
         : { ...EMPLOYER_SKELETON, ...{ is_imported: false, is_employer: true } }
-      : EMPLOYER_SKELETON
+      : { ...EMPLOYER_SKELETON }
 
     return { initialValues }
   }, [employerIndex, claimFormValues])
@@ -93,8 +96,8 @@ export const ReviewEmployers: NextPageWithLayout = () => {
   return (
     <>
       {state === REVIEW && (
-        <ClaimFormik
-          initialValues={pageDefinition.initialValues}
+        <ClaimFormik<ClaimantInput>
+          initialValues={pageInitialValues}
           validationSchema={pageDefinition.validationSchema}
           heading={pageDefinition.heading}
           index={pageDefinitions.indexOf(pageDefinition)}

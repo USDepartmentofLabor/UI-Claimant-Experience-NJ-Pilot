@@ -85,12 +85,13 @@ export const RecentEmployers: NextPageWithLayout = () => {
     handleSaveRecentEmployers(values).then(async () => await cognitoSignOut())
   }
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: RecentEmployerValues,
     helpers: FormikHelpers<RecentEmployerValues>
   ) => {
     const { setSubmitting } = helpers
-    handleSaveRecentEmployers(values).then(() => setSubmitting(false))
+    await handleSaveRecentEmployers(values)
+    setSubmitting(false)
   }
 
   if (isLoadingRecentEmployers) {

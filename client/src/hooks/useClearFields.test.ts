@@ -34,13 +34,13 @@ describe('useClearFields hook', () => {
         touched: true,
       })
 
-      await clearField(fieldName)
+      await clearField(fieldName, null)
 
       expect(mockGetFieldMeta).toHaveBeenCalledTimes(1)
       expect(mockGetFieldMeta).toHaveBeenCalledWith(fieldName)
 
       expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
-      expect(mockSetFieldValue).toHaveBeenCalledWith(fieldName, undefined)
+      expect(mockSetFieldValue).toHaveBeenCalledWith(fieldName, null)
 
       expect(mockSetFieldTouched).toHaveBeenCalledTimes(1)
       expect(mockSetFieldTouched).toHaveBeenCalledWith(fieldName, false)
@@ -51,11 +51,11 @@ describe('useClearFields hook', () => {
       const { clearField } = result.current
 
       mockGetFieldMeta.mockReturnValueOnce({
-        value: undefined,
+        value: null,
         touched: false,
       })
 
-      await clearField(fieldName)
+      await clearField(fieldName, null)
 
       expect(mockGetFieldMeta).toHaveBeenCalledTimes(1)
       expect(mockGetFieldMeta).toHaveBeenCalledWith(fieldName)
@@ -64,88 +64,41 @@ describe('useClearFields hook', () => {
 
       expect(mockSetFieldTouched).toHaveBeenCalledTimes(0)
     })
+  })
 
-    it('can clear a single configured field', async () => {
+  describe('clearFields', () => {
+    const field1 = { some_field_name: 'some value' }
+    const field2 = { some_other_field_name: 'some other value' }
+    const fields = { ...field1, ...field2 }
+
+    it('clears multiple fields', async () => {
       const { result } = renderHook(() => useClearFields())
-      const { clearField } = result.current
+      const { clearFields } = result.current
 
-      mockGetFieldMeta.mockReturnValueOnce({
-        value: 'some non default value',
-        touched: false,
-      })
-
-      const desiredClearedValue = 'desired value'
-      const desiredClearedTouched = true
-
-      await clearField({
-        fieldName,
-        value: desiredClearedValue,
-        touched: desiredClearedTouched,
-      })
-
-      expect(mockGetFieldMeta).toHaveBeenCalledTimes(1)
-      expect(mockGetFieldMeta).toHaveBeenCalledWith(fieldName)
-
-      expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
-      expect(mockSetFieldValue).toHaveBeenCalledWith(
-        fieldName,
-        desiredClearedValue
-      )
-
-      expect(mockSetFieldTouched).toHaveBeenCalledTimes(1)
-      expect(mockSetFieldTouched).toHaveBeenCalledWith(
-        fieldName,
-        desiredClearedTouched
-      )
-    })
-
-    it('does not try to clear a single configured field if the state is already as desired', async () => {
-      const { result } = renderHook(() => useClearFields())
-      const { clearField } = result.current
-
-      const desiredClearedValue = 'desired value'
-      const desiredClearedTouched = true
-
-      mockGetFieldMeta.mockReturnValueOnce({
-        value: desiredClearedValue,
-        touched: desiredClearedTouched,
-      })
-
-      await clearField({
-        fieldName,
-        value: desiredClearedValue,
-        touched: desiredClearedTouched,
-      })
-
-      expect(mockGetFieldMeta).toHaveBeenCalledTimes(1)
-      expect(mockGetFieldMeta).toHaveBeenCalledWith(fieldName)
-
-      expect(mockSetFieldValue).toHaveBeenCalledTimes(0)
-
-      expect(mockSetFieldTouched).toHaveBeenCalledTimes(0)
-    })
-
-    it('can clear a single configured field omitting value and touched in order to use the defaults', async () => {
-      const { result } = renderHook(() => useClearFields())
-      const { clearField } = result.current
-
-      mockGetFieldMeta.mockReturnValueOnce({
-        value: 'some non default value',
+      mockGetFieldMeta.mockImplementation((fieldName: keyof typeof fields) => ({
+        value: fields[`${fieldName}`],
         touched: true,
-      })
+      }))
 
-      await clearField({
-        fieldName,
-      })
+      await clearFields({ some_field_name: '', some_other_field_name: null })
 
-      expect(mockGetFieldMeta).toHaveBeenCalledTimes(1)
-      expect(mockGetFieldMeta).toHaveBeenCalledWith(fieldName)
+      expect(mockGetFieldMeta).toHaveBeenCalledTimes(2)
+      expect(mockGetFieldMeta).toHaveBeenCalledWith('some_field_name')
+      expect(mockGetFieldMeta).toHaveBeenCalledWith('some_other_field_name')
 
-      expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
-      expect(mockSetFieldValue).toHaveBeenCalledWith(fieldName, undefined)
+      expect(mockSetFieldValue).toHaveBeenCalledTimes(2)
+      expect(mockSetFieldValue).toHaveBeenCalledWith('some_field_name', '')
+      expect(mockSetFieldValue).toHaveBeenCalledWith(
+        'some_other_field_name',
+        null
+      )
 
-      expect(mockSetFieldTouched).toHaveBeenCalledTimes(1)
-      expect(mockSetFieldTouched).toHaveBeenCalledWith(fieldName, false)
+      expect(mockSetFieldTouched).toHaveBeenCalledTimes(2)
+      expect(mockSetFieldTouched).toHaveBeenCalledWith('some_field_name', false)
+      expect(mockSetFieldTouched).toHaveBeenCalledWith(
+        'some_other_field_name',
+        false
+      )
     })
   })
 })

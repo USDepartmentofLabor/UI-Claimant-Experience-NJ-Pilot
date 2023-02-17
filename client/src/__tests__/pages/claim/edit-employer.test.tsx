@@ -312,7 +312,7 @@ describe('the Edit Employer page', () => {
           employers: [
             {
               ...fullTimeEmployer,
-              ...{ employer_name: undefined, is_imported: false },
+              ...{ employer_name: '', is_imported: false },
             },
             fullTimeEmployer,
             notAnEmployer,

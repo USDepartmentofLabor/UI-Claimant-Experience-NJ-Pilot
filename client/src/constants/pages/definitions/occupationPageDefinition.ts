@@ -6,7 +6,6 @@ import { object, string } from 'yup'
 export const OccupationPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('occupation.heading'),
   path: Routes.CLAIM.OCCUPATION,
-  initialValues: {},
   validationSchema: object().shape({
     job_title: string().required(
       i18n_claimForm.t('occupation.job_title.errors.required')

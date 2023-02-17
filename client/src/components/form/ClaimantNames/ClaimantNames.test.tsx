@@ -5,12 +5,12 @@ import { ClaimantNames } from './ClaimantNames'
 import userEvent from '@testing-library/user-event'
 import { noop } from 'helpers/noop/noop'
 import { LiveAnnouncer } from 'react-aria-live'
-import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
+import { pageInitialValues } from 'pages/claim/personal'
 
 const ALTERNATE_NAMES = 'alternate_names'
 
 describe('ClaimantNames component', () => {
-  const initialValues = PersonalPageDefinition.initialValues
+  const initialValues = pageInitialValues
 
   // re-useable queries
   const queryForAlternateNameFieldset = () =>
