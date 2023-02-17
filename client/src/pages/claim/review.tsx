@@ -29,6 +29,7 @@ import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+import { ContactReview } from 'components/review/sections/ContactReview/ContactReview'
 import { UNTOUCHED_CHECKBOX_VALUE } from 'constants/formOptions'
 
 const pageDefinition = ReviewPageDefinition
@@ -121,6 +122,8 @@ export const Review: NextPageWithLayout = () => {
             </SummaryBox>
 
             <PersonalReview />
+            <HorizontalRule />
+            <ContactReview />
             <HorizontalRule />
 
             <IdentityReview />

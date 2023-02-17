@@ -20,7 +20,7 @@ export const ReviewElement = ({
   defaultMasked = true,
   ...fieldSetProps
 }: ReviewElementProps) =>
-  value === undefined || value === null || value === '' ? null : (
+  value ? (
     <fieldset className={styles.fieldset} {...fieldSetProps}>
       <legend className={styles.elementLabel} {...legendProps}>
         {label}
@@ -37,7 +37,7 @@ export const ReviewElement = ({
         )}
       </p>
     </fieldset>
-  )
+  ) : null
 
 type MaskedValueProps = {
   label: ReactNode

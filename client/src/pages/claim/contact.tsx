@@ -59,7 +59,7 @@ const Contact: NextPageWithLayout = () => {
         const handleInterpreterRequiredChange: ChangeEventHandler<
           HTMLInputElement
         > = async (e) => {
-          if (e.target.value !== 'no_interpreter_tty') {
+          if (e.target.value !== 'interpreter') {
             await clearFields({
               preferred_language: pageInitialValues.preferred_language,
               preferred_language_other:
