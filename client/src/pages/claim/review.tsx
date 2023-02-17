@@ -29,6 +29,7 @@ import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+import { UnionReview } from 'components/review/sections/UnionReview/UnionReview'
 import { EducationAndTrainingReview } from 'components/review/sections/EducationAndTrainingReview/EducationAndTrainingReview'
 import { ContactReview } from 'components/review/sections/ContactReview/ContactReview'
 import { UNTOUCHED_CHECKBOX_VALUE } from 'constants/formOptions'
@@ -126,11 +127,11 @@ export const Review: NextPageWithLayout = () => {
             <HorizontalRule />
             <ContactReview />
             <HorizontalRule />
-
             <IdentityReview />
             <HorizontalRule />
-
             <EducationAndTrainingReview />
+            <HorizontalRule />
+            <UnionReview />
             <HorizontalRule />
 
             <CheckboxField
