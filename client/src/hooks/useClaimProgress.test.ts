@@ -9,12 +9,14 @@ import {
 } from 'hooks/useClaimProgress'
 import { Routes } from 'constants/routes'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 const mockUseContext = jest.fn()
 
 React.useContext = mockUseContext
 
 const importedEmployer: Employer = {
+  ...EMPLOYER_SKELETON,
   employer_name: 'Lyft Inc.',
   is_imported: true,
   is_full_time: true,
@@ -22,6 +24,10 @@ const importedEmployer: Employer = {
   payments_received: [
     {
       pay_type: 'none',
+      note: '',
+      total: '',
+      date_pay_began: '',
+      date_pay_ended: '',
     },
   ],
   LOCAL_pay_types: ['none'],
@@ -34,7 +40,7 @@ const importedEmployer: Employer = {
     employerAddressLine5: null,
     employerAddressZip: '11111',
   },
-  employer_phone: { number: '555-555-5555' },
+  employer_phone: { number: '555-555-5555', sms: null },
   worked_at_employer_address: true,
   is_employer_phone_accurate: true,
   self_employed: false,
@@ -102,7 +108,8 @@ describe('Claim progress hook', () => {
           {
             ...importedEmployer,
             ...{
-              worked_for_imported_employer_in_last_18mo: undefined,
+              worked_for_imported_employer_in_last_18mo:
+                EMPLOYER_SKELETON.worked_for_imported_employer_in_last_18mo,
               is_imported: true,
             },
           },
@@ -118,9 +125,10 @@ describe('Claim progress hook', () => {
           {
             ...importedEmployer,
             ...{
-              worked_for_imported_employer_in_last_18mo: undefined,
+              worked_for_imported_employer_in_last_18mo:
+                EMPLOYER_SKELETON.worked_for_imported_employer_in_last_18mo,
               is_imported: true,
-              employer_name: undefined,
+              employer_name: EMPLOYER_SKELETON.employer_name,
             },
           },
         ],
@@ -137,7 +145,7 @@ describe('Claim progress hook', () => {
             ...{
               worked_for_imported_employer_in_last_18mo: false,
               is_imported: true,
-              employer_name: undefined,
+              employer_name: EMPLOYER_SKELETON.employer_name,
             },
           },
         ],

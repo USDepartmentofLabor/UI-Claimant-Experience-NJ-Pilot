@@ -9,6 +9,5 @@ const pageSchema = yup.object().shape({})
 export const EditEmployerPageDefinition: PageDefinition = {
   path: Routes.CLAIM.EDIT_EMPLOYER,
   heading: t('edit_employer.heading'),
-  initialValues: {},
   validationSchema: pageSchema,
 }

@@ -35,17 +35,22 @@ export const ClaimFormLayout = ({
     data: partialClaim,
     isLoading: isLoadingGetPartialClaim,
     isError: partialClaimIsError,
+    isSuccess: partialClaimIsSuccess,
+    isIdle: partialClaimIsIdle,
   } = useGetPartialClaim()
   const { continuePath } = useClaimProgress()
 
   const { t: tCommon } = useTranslation('common')
   const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'development'
+
   // Initialize any previous partialClaim into ClaimFormContext
   useEffect(() => {
-    if (!isLoadingGetPartialClaim) {
-      if (partialClaim !== undefined) {
-        setClaimFormValues(partialClaim)
-      }
+    // The query starts off idle before it starts loading.
+    // Wait for success or error, specifically
+    if (partialClaimIsSuccess && partialClaim !== undefined) {
+      setClaimFormValues(partialClaim)
+    }
+    if (!partialClaimIsIdle && !isLoadingGetPartialClaim) {
       setIsLoading(false)
     }
   }, [partialClaim, isLoadingGetPartialClaim])
@@ -55,8 +60,8 @@ export const ClaimFormLayout = ({
       if (partialClaim !== undefined) {
         const screenerPageNotSaved =
           partialClaim.screener_current_country_us === undefined
-        if (partialClaim.ssn === undefined || screenerPageNotSaved) {
-          router.push(Routes.SSN)
+        if (!partialClaim.ssn || screenerPageNotSaved) {
+          void router.push(Routes.SSN)
         } else if (!isLoading && continuePath !== Routes.HOME) {
           const continuePageIndex = pageDefinitions.findIndex(
             (page) => page.path === continuePath
@@ -65,7 +70,7 @@ export const ClaimFormLayout = ({
             (page) => pageDefinition.path === page.path
           )
           if (continuePageIndex < currentPageIndex) {
-            router.push(pageDefinitions[`${continuePageIndex}`].path)
+            void router.push(pageDefinitions[`${continuePageIndex}`].path)
           }
         }
       }

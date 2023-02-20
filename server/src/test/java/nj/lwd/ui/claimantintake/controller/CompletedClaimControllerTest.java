@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
+import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,6 +35,7 @@ class CompletedClaimControllerTest {
     @Autowired private MockMvc mockMvc;
     @MockBean private ClaimStorageService claimStorageService;
     @MockBean private ClaimValidatorService claimValidatorService;
+    @MockBean private ExternalClaimFormatterService externalClaimFormatterService;
 
     @Test
     @WithMockUser
@@ -104,7 +106,6 @@ class CompletedClaimControllerTest {
         validationMessageSet.add(validationMessage);
         when(claimValidatorService.validateAgainstSchema(anyString()))
                 .thenReturn(validationMessageSet);
-
         this.mockMvc
                 .perform(
                         post("/complete-claim")

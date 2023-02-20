@@ -1,10 +1,10 @@
 import { act, render, screen } from '@testing-library/react'
 import { Formik } from 'formik'
-import { EditEmployer } from './EditEmployer'
+import { EditEmployer, EMPLOYER_SKELETON } from './EditEmployer'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
 import { Employer, ImportedEmployerFields } from 'types/claimantInput'
 
-const valueImportedEmployerFields: ImportedEmployerFields = {
+const validImportedEmployerFields: ImportedEmployerFields = {
   is_imported: true,
   imported_address: {
     employerAddressLine1: '1 John Fitch Plaza',
@@ -18,12 +18,17 @@ const valueImportedEmployerFields: ImportedEmployerFields = {
 }
 
 export const validBaseEmployerFields: Employer = {
+  ...EMPLOYER_SKELETON,
   employer_name: 'Lyft Inc.',
   is_full_time: true,
 
   payments_received: [
     {
       pay_type: 'none',
+      note: '',
+      total: '',
+      date_pay_began: '',
+      date_pay_ended: '',
     },
   ],
   LOCAL_pay_types: ['none'],
@@ -41,7 +46,7 @@ export const validBaseEmployerFields: Employer = {
 
 export const validImportedEditEmployer: Employer = {
   ...validBaseEmployerFields,
-  ...valueImportedEmployerFields,
+  ...validImportedEmployerFields,
 }
 
 const validManuallyAddedEmployer: Employer = {
@@ -49,8 +54,8 @@ const validManuallyAddedEmployer: Employer = {
   is_imported: false,
   employer_address: {
     address: '1 John Fitch Plaza',
-    address2: undefined,
-    address3: undefined,
+    address2: '',
+    address3: '',
     city: 'Trenton',
     state: 'NJ',
     zipcode: '11111',

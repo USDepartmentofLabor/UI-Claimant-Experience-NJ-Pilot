@@ -8,40 +8,10 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
 
     - name: Set RUN_DEPLOYMENT_PREVIEW bool to true as env variable
       run: |
         echo "RUN_DEPLOYMENT_PREVIEW=true" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Echo PR type
-      run: echo "${{ github.event.action }}"
-      shell: bash
-
-    - name: Check PR type is one of edited, opened, synchronize, or reopened
-      id: pr-type
-      if: contains( 'edited, opened, synchronize, or reopened', github.event.action ) == 'false'
-      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Get changed client and server files
-      id: changed-client-server-files
-      uses: tj-actions/changed-files@v35
-      with:
-        files: |
-          client/**
-          server/**
-
-    - name: Echo changed client or server files
-      run: echo "${{ steps.changed-client-server-files.outputs }}"
-      shell: bash
-
-    - name: Check PR changes include client or server files
-      id: client-or-server
-      if: steps.changed-client-server-files.outputs.any_changed == 'false'
-      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
 
     - name: Get s3 schema file change
@@ -51,7 +21,10 @@ runs:
         files: server/src/main/resources/schemas/**
 
     - name: Echo changed s3 schema files
-      run: echo "${{ steps.s3-schema-file.outputs }}"
+      run: |
+        for file in ${{ steps.s3-schema-file.outputs.all_changed_and_modified_files }}; do
+          echo "$file was added or modified"
+        done
       shell: bash
 
     - name: Check PR changes does not include s3 claim schema files
@@ -67,7 +40,10 @@ runs:
         files: server/src/main/resources/db/**
 
     - name: Echo changed db schema files
-      run: echo "${{ steps.db-schema-file.outputs }}"
+      run: |
+        for file in ${{ steps.db-schema-file.outputs.all_changed_and_modified_files }}; do
+          echo "$file was added or modified"
+        done
       shell: bash
 
     - name: Check PR changes does not include rds db schema files
@@ -85,22 +61,26 @@ runs:
       shell: bash
 
     - name: Echo changed CODEOWNERS file
-      run: echo "${{ env.CODEOWNERS }}"
+      run: echo "CODEOWNERS list ${{ env.CODEOWNERS }}"
       shell: bash
 
     - name: Echo actor
-      run: echo "${{ github.actor }}"
+      run: echo "github actor ${{ github.actor }}"
       shell: bash
 
     - name: Check PR owner has deployment preview permission
       id: privileges
-      if: contains( env.CODEOWNERS, github.actor ) == 'false'
+      if: "!contains( env.CODEOWNERS, github.actor )"
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Echo PR description does not include deployment preview flag
+      run: echo "Does not include dp flag ${{ !contains( github.event.pull_request.body, '[x] Deploy Preview Environment') }}"
       shell: bash
 
     - name: Check PR description includes deployment preview flag
       id: dp-flag
-      if: contains( github.event.pull_request.body, '[x] Deploy Preview Environment') == 'false'
+      if: "!contains( github.event.pull_request.body, '[x] Deploy Preview Environment')"
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
 

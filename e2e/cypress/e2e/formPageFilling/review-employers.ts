@@ -15,8 +15,8 @@ const fillReviewEmployersFields = (employer_name: string) => {
   fillChangeInEmployment({
     separation_circumstance: 'quit_or_retired',
     separation_circumstance_details: separationMessage,
-    employment_start_date: { mo: '01', day: '13', yr: '2012' },
-    employment_last_date: { mo: '02', day: '21', yr: '2022' },
+    employment_start_date: { mo: '1', day: '13', yr: '2012' },
+    employment_last_date: { mo: '2', day: '21', yr: '2022' },
     expect_to_be_recalled: false,
   })
 

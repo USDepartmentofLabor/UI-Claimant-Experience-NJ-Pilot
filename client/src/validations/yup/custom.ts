@@ -160,7 +160,7 @@ export const yupPhone = object().shape({
     .min(10)
     .max(13)
     .required(i18n_claimForm.t('contact.claimant_phone.errors.required')),
-  sms: boolean(),
+  sms: boolean().nullable(),
 })
 
 export const yupPhoneWithSMS = object().shape({
@@ -172,7 +172,9 @@ export const yupPhoneWithSMS = object().shape({
     .min(10)
     .max(13)
     .required(i18n_claimForm.t('contact.claimant_phone.errors.required')),
-  sms: boolean().required(i18n_claimForm.t('contact.sms.errors.required')),
+  sms: boolean()
+    .nullable()
+    .required(i18n_claimForm.t('contact.sms.errors.required')),
 })
 
 export const yupPhoneOptional = object().shape({
@@ -186,5 +188,5 @@ export const yupPhoneOptional = object().shape({
     )
     .min(10)
     .max(13),
-  sms: boolean(),
+  sms: boolean().nullable(),
 })

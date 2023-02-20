@@ -64,6 +64,7 @@ describe('ClaimFormLayout', () => {
       const partialClaim = { ssn: '123', screener_current_country_us: true }
       mockUseGetPartialClaim.mockImplementation(() => ({
         isLoading: false,
+        isSuccess: true,
         data: partialClaim,
       }))
 

@@ -11,11 +11,12 @@ import { CheckboxGroupField } from 'components/form/fields/CheckboxGroupField/Ch
 import {
   disabilityTypeOptions,
   disabilityPaymentTypeOptions,
+  UNTOUCHED_RADIO_VALUE,
 } from 'constants/formOptions'
 import { DisabilityStatusInput } from 'types/claimantInput'
 import { DateInputField } from 'components/form/fields/DateInputField/DateInputField'
 import formStyles from 'components/form/form.module.scss'
-import { ReactNode } from 'react'
+import { ChangeEventHandler, ReactNode } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { NextPageWithLayout } from 'pages/_app'
 import { DisabilityPageDefinition } from 'constants/pages/definitions/disabilityPageDefinition'
@@ -33,31 +34,69 @@ const pageDefinition = DisabilityPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
 
+const pageInitialValues = {
+  disability_applied_to_or_received: [],
+  disabled_immediately_before: UNTOUCHED_RADIO_VALUE,
+  type_of_disability: UNTOUCHED_RADIO_VALUE,
+  date_disability_began: '',
+  recovery_date: '',
+  contacted_last_employer_after_recovery: UNTOUCHED_RADIO_VALUE,
+}
+
 export const Disability: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
 
   return (
     <ClaimFormik<DisabilityStatusInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values, clearFields, setFieldValue }) => {
-        const hasCollectedDisability =
-          values.disability_applied_to_or_received?.includes('disability') ||
-          values.disability_applied_to_or_received?.includes('family_leave')
-        const handleHasCollectedDisabilityChange = async () => {
-          if (!hasCollectedDisability) {
-            await clearFields([
-              'disabled_immediately_before',
-              'type_of_disability',
-              'date_disability_began',
-              'recovery_date',
-              'contacted_last_employer_after_recovery',
-            ])
+        const handleHasCollectedDisabilityChange: ChangeEventHandler<
+          HTMLInputElement
+        > = async (e) => {
+          const userCheckedNone = e.target.value === 'none' && e.target.checked
+          const userUncheckedDisabilityAndFamilyLeaveIsNotChecked =
+            e.target.value === 'disability' &&
+            !e.target.checked &&
+            !values.disability_applied_to_or_received.includes('family_leave')
+          const userUncheckedFamilyLeaveAndDisabilityIsNotChecked =
+            e.target.value === 'family_leave' &&
+            !e.target.checked &&
+            !values.disability_applied_to_or_received.includes('disability')
+
+          if (userCheckedNone) {
+            // User checked 'none'
+            await setFieldValue(
+              'disability_applied_to_or_received',
+              ['none'],
+              true
+            )
+          }
+
+          const conditionalFieldsWillBeHidden =
+            userCheckedNone ||
+            userUncheckedDisabilityAndFamilyLeaveIsNotChecked ||
+            userUncheckedFamilyLeaveAndDisabilityIsNotChecked
+
+          if (conditionalFieldsWillBeHidden) {
+            await clearFields({
+              disabled_immediately_before:
+                pageInitialValues.disabled_immediately_before,
+              type_of_disability: pageInitialValues.type_of_disability,
+              date_disability_began: pageInitialValues.date_disability_began,
+              recovery_date: pageInitialValues.recovery_date,
+              contacted_last_employer_after_recovery:
+                pageInitialValues.contacted_last_employer_after_recovery,
+            })
           }
         }
+
+        const hasCollectedDisability =
+          values.disability_applied_to_or_received.includes('disability') ||
+          values.disability_applied_to_or_received.includes('family_leave')
 
         return (
           <>
@@ -82,20 +121,10 @@ export const Disability: NextPageWithLayout = () => {
                 ),
                 value: paymentOption,
                 checkboxProps: {
-                  onChange: (e) => {
-                    if (e.target.value === 'none' && e.target.checked) {
-                      setFieldValue(
-                        'disability_applied_to_or_received',
-                        ['none'],
-                        true
-                      )
-                    }
-                    handleHasCollectedDisabilityChange()
-                  },
+                  onChange: handleHasCollectedDisabilityChange,
                   disabled:
-                    values.disability_applied_to_or_received?.includes(
-                      'none'
-                    ) && paymentOption !== 'none',
+                    values.disability_applied_to_or_received.includes('none') &&
+                    paymentOption !== 'none',
                 },
               }))}
             />

@@ -23,6 +23,8 @@ const pageDefinition = OccupationPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
 
+const pageInitialValues = { job_title: '', job_description: '' }
+
 const Occupation: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'occupation',
@@ -30,7 +32,7 @@ const Occupation: NextPageWithLayout = () => {
 
   return (
     <ClaimFormik<OccupationInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}

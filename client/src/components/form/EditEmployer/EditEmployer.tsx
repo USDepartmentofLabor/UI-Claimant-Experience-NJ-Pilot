@@ -18,12 +18,14 @@ import {
   reasonStillEmployedOptions,
   PayTypeOption,
   payTypeOptions,
+  UNTOUCHED_RADIO_VALUE,
 } from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
 import { WorkLocation } from '../employer/WorkLocation/WorkLocation'
 import PaymentsReceived from '../employer/PaymentsReceived/PaymentsReceived'
 import {
+  ADDRESS_WITHOUT_STREET_SKELETON,
   EMPLOYER_ADDRESS_SKELETON,
   PHONE_SKELETON,
 } from 'constants/initialValues'
@@ -109,43 +111,44 @@ export const EditEmployer = () => {
 }
 
 export const EMPLOYER_SKELETON: Employer = {
-  isInitiated: true,
-  is_imported: undefined,
+  is_imported: false, // Default to false. Imported employers override to true
+  worked_for_imported_employer_in_last_18mo: UNTOUCHED_RADIO_VALUE,
+  imported_address: null,
   // Your Employer
   employer_name: '',
-  fein: undefined,
+  fein: '',
   employer_address: { ...EMPLOYER_ADDRESS_SKELETON },
   employer_phone: { ...PHONE_SKELETON },
-  is_full_time: undefined,
+  is_full_time: UNTOUCHED_RADIO_VALUE,
   // Work Location
-  worked_at_employer_address: undefined,
-  alternate_physical_work_address: undefined,
-  is_employer_phone_accurate: undefined,
+  worked_at_employer_address: UNTOUCHED_RADIO_VALUE,
+  alternate_physical_work_address: { ...ADDRESS_WITHOUT_STREET_SKELETON },
+  is_employer_phone_accurate: UNTOUCHED_RADIO_VALUE,
   work_location_phone: { ...PHONE_SKELETON },
   // Business Interests
-  self_employed: undefined,
-  is_owner: undefined,
-  corporate_officer_or_stock_ownership: undefined,
-  employer_is_sole_proprietorship: undefined,
-  related_to_owner_or_child_of_owner_under_18: undefined,
+  self_employed: UNTOUCHED_RADIO_VALUE,
+  is_owner: UNTOUCHED_RADIO_VALUE,
+  corporate_officer_or_stock_ownership: UNTOUCHED_RADIO_VALUE,
+  employer_is_sole_proprietorship: UNTOUCHED_RADIO_VALUE,
+  related_to_owner_or_child_of_owner_under_18: UNTOUCHED_RADIO_VALUE,
   // Change in Employment
-  separation_circumstance: undefined,
-  separation_circumstance_details: undefined,
-  employment_start_date: undefined,
-  employment_last_date: undefined,
-  reason_still_employed: undefined,
-  hours_reduced_twenty_percent: undefined,
-  expect_to_be_recalled: undefined,
-  definite_recall: undefined,
-  definite_recall_date: undefined,
-  is_seasonal_work: undefined,
-  discharge_date: undefined,
+  separation_circumstance: UNTOUCHED_RADIO_VALUE,
+  separation_circumstance_details: '',
+  employment_start_date: '',
+  employment_last_date: '',
+  reason_still_employed: '',
+  hours_reduced_twenty_percent: UNTOUCHED_RADIO_VALUE,
+  expect_to_be_recalled: UNTOUCHED_RADIO_VALUE,
+  definite_recall: UNTOUCHED_RADIO_VALUE,
+  definite_recall_date: '',
+  is_seasonal_work: UNTOUCHED_RADIO_VALUE,
+  discharge_date: '',
+  // Other pay
   payments_received: [] as PaymentsReceivedDetailInput[],
   LOCAL_pay_types: [] as PayTypeOption[],
 }
 
 export const yupEditEmployer = object().shape({
-  is_imported: boolean(),
   // Your Employer
   employer_name: string()
     .trim()
@@ -166,16 +169,17 @@ export const yupEditEmployer = object().shape({
     }),
   fein: string().when('is_imported', {
     is: false,
-    then: string()
-      .nullable()
-      .max(
-        15,
-        i18n_claimForm.t('employers.your_employer.fein.errors.maxLength')
-      )
-      .matches(
-        /^[\d]{0,15}$/,
-        i18n_claimForm.t('employers.your_employer.fein.errors.digitsOnly')
-      ),
+    then: (schema) =>
+      schema
+        .nullable()
+        .max(
+          15,
+          i18n_claimForm.t('employers.your_employer.fein.errors.maxLength')
+        )
+        .matches(
+          /^[\d]{0,15}$/,
+          i18n_claimForm.t('employers.your_employer.fein.errors.digitsOnly')
+        ),
   }),
   employer_address: mixed().when('is_imported', {
     is: false,
@@ -185,54 +189,66 @@ export const yupEditEmployer = object().shape({
     is: false,
     then: yupPhone,
   }),
-  is_full_time: boolean().required(
-    i18n_claimForm.t('employers.your_employer.is_full_time.errors.required')
-  ),
+  is_full_time: boolean()
+    .nullable()
+    .required(
+      i18n_claimForm.t('employers.your_employer.is_full_time.errors.required')
+    ),
   // Work Location
-  worked_at_employer_address: boolean().required(
-    i18n_claimForm.t(
-      'employers.work_location.worked_at_employer_address.required'
-    )
-  ),
+  worked_at_employer_address: boolean()
+    .nullable()
+    .required(
+      i18n_claimForm.t(
+        'employers.work_location.worked_at_employer_address.required'
+      )
+    ),
   alternate_physical_work_address: mixed().when('worked_at_employer_address', {
     is: false,
     then: yupAddressWithoutStreet(),
   }),
-  is_employer_phone_accurate: boolean().required(
-    i18n_claimForm.t(
-      'employers.work_location.is_employer_phone_accurate.required'
-    )
-  ),
+  is_employer_phone_accurate: boolean()
+    .nullable()
+    .required(
+      i18n_claimForm.t(
+        'employers.work_location.is_employer_phone_accurate.required'
+      )
+    ),
   work_location_phone: mixed().when('is_employer_phone_accurate', {
     is: false,
     then: yupPhone,
   }),
   // Business Interests
-  self_employed: boolean().required(
-    i18n_claimForm.t(
-      'employers.business_interests.self_employed.errors.required'
-    )
-  ),
-  is_owner: boolean().required(
-    i18n_claimForm.t('employers.business_interests.is_owner.errors.required')
-  ),
-  corporate_officer_or_stock_ownership: boolean().required(
-    i18n_claimForm.t('employers.business_interests.is_owner.errors.required')
-  ),
-  employer_is_sole_proprietorship: boolean().when(
-    'corporate_officer_or_stock_ownership',
-    {
+  self_employed: boolean()
+    .nullable()
+    .required(
+      i18n_claimForm.t(
+        'employers.business_interests.self_employed.errors.required'
+      )
+    ),
+  is_owner: boolean()
+    .nullable()
+    .required(
+      i18n_claimForm.t('employers.business_interests.is_owner.errors.required')
+    ),
+  corporate_officer_or_stock_ownership: boolean()
+    .nullable()
+    .required(
+      i18n_claimForm.t('employers.business_interests.is_owner.errors.required')
+    ),
+  employer_is_sole_proprietorship: boolean()
+    .nullable()
+    .when('corporate_officer_or_stock_ownership', {
       is: false,
-      then: boolean().required(
-        i18n_claimForm.t(
-          'employers.business_interests.employer_is_sole_proprietorship.errors.required'
-        )
-      ),
-    }
-  ),
-  related_to_owner_or_child_of_owner_under_18: string().when(
-    'employer_is_sole_proprietorship',
-    {
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.business_interests.employer_is_sole_proprietorship.errors.required'
+          )
+        ),
+    }),
+  related_to_owner_or_child_of_owner_under_18: string()
+    .nullable()
+    .when('employer_is_sole_proprietorship', {
       is: false,
       then: (schema) =>
         schema
@@ -242,17 +258,19 @@ export const yupEditEmployer = object().shape({
               'employers.business_interests.related_to_owner_or_child_of_owner_under_18.errors.required'
             )
           ),
-    }
-  ),
+    }),
   // Change in Employment
   separation_circumstance: string()
     .oneOf([...changeInEmploymentOptions])
+    .nullable()
     .required(i18n_claimForm.t('employers.separation.reason.required')),
-  expect_to_be_recalled: boolean().required(
-    i18n_claimForm.t(
-      'employers.separation.expect_to_be_recalled.errors.required'
-    )
-  ),
+  expect_to_be_recalled: boolean()
+    .nullable()
+    .required(
+      i18n_claimForm.t(
+        'employers.separation.expect_to_be_recalled.errors.required'
+      )
+    ),
   separation_circumstance_details: string()
     .trim()
     .max(
@@ -318,19 +336,21 @@ export const yupEditEmployer = object().shape({
           )
         ),
     }),
-  hours_reduced_twenty_percent: boolean().when('separation_circumstance', {
-    is: 'still_employed',
-    then: (schema) =>
-      schema.when('reason_still_employed', {
-        is: 'reduction_in_hours_by_employer',
-        then: (schema) =>
-          schema.required(
-            i18n_claimForm.t(
-              'employers.hours_reduced_twenty_percent.errors.required'
-            )
-          ),
-      }),
-  }),
+  hours_reduced_twenty_percent: boolean()
+    .nullable()
+    .when('separation_circumstance', {
+      is: 'still_employed',
+      then: (schema) =>
+        schema.when('reason_still_employed', {
+          is: 'reduction_in_hours_by_employer',
+          then: (schema) =>
+            schema.required(
+              i18n_claimForm.t(
+                'employers.hours_reduced_twenty_percent.errors.required'
+              )
+            ),
+        }),
+    }),
   discharge_date: yupDate(
     i18n_claimForm.t('employers.discharge_date.errors.date_format')
   )
@@ -356,18 +376,28 @@ export const yupEditEmployer = object().shape({
           i18n_claimForm.t('employers.discharge_date.errors.required')
         ),
     }),
-  is_seasonal_work: boolean().when('expect_to_be_recalled', {
-    is: true,
-    then: boolean().required(
-      i18n_claimForm.t('employers.separation.is_seasonal_work.errors.required')
-    ),
-  }),
-  definite_recall: boolean().when('expect_to_be_recalled', {
-    is: true,
-    then: boolean().required(
-      i18n_claimForm.t('employers.separation.definite_recall.errors.required')
-    ),
-  }),
+  is_seasonal_work: boolean()
+    .nullable()
+    .when('expect_to_be_recalled', {
+      is: true,
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.separation.is_seasonal_work.errors.required'
+          )
+        ),
+    }),
+  definite_recall: boolean()
+    .nullable()
+    .when('expect_to_be_recalled', {
+      is: true,
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.separation.definite_recall.errors.required'
+          )
+        ),
+    }),
   definite_recall_date: yupDate(
     i18n_claimForm.t('employers.separation.definite_recall_date.label')
   ).when('definite_recall', {

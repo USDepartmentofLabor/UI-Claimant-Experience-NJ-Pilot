@@ -1,4 +1,5 @@
 import { Employer, ImportedEmployerAddress } from 'types/claimantInput'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 // Loops WGPM returns FEINs with 15 characters, left aligned and right-padded to 15 characters
 const FORMATTED_FEIN_LENGTH = 15
@@ -44,9 +45,10 @@ export type WgpmEmployer = {
 export const transformWgpmEmployer = (
   wgpmEmployer: WgpmEmployer
 ): Employer => ({
+  ...EMPLOYER_SKELETON, // Start with the skeleton and overwrite relevant values
   is_imported: true,
-  employer_name: wgpmEmployer.employerName || undefined,
-  fein: wgpmEmployer.employerFein || undefined,
+  employer_name: wgpmEmployer.employerName || '',
+  fein: wgpmEmployer.employerFein || '',
   imported_address: {
     employerAddressLine1: wgpmEmployer.employerAddressLine1,
     employerAddressLine2: wgpmEmployer.employerAddressLine2,
@@ -56,7 +58,8 @@ export const transformWgpmEmployer = (
     employerAddressZip: wgpmEmployer.employerAddressZip,
   },
   employer_phone: {
-    number: wgpmEmployer.employerTelephoneNumber || undefined,
+    number: wgpmEmployer.employerTelephoneNumber || '',
+    sms: null,
   },
   payments_received: [],
   LOCAL_pay_types: [],

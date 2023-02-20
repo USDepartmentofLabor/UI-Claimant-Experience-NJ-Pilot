@@ -4,7 +4,12 @@ import { Accordion, Fieldset, Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 import { TextField } from 'components/form/fields/TextField/TextField'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
-import { accountTypeOptions, paymentMethodOptions } from 'constants/formOptions'
+import {
+  accountTypeOptions,
+  paymentMethodOptions,
+  UNTOUCHED_CHECKBOX_VALUE,
+  UNTOUCHED_RADIO_VALUE,
+} from 'constants/formOptions'
 import { PaymentInput } from 'types/claimantInput'
 import { Trans } from 'next-i18next'
 import { AccordionItemProps } from '@trussworks/react-uswds/lib/components/Accordion/Accordion'
@@ -28,6 +33,18 @@ const pageDefinition = PaymentPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
 
+const pageInitialValues = {
+  payment_method: UNTOUCHED_RADIO_VALUE,
+  account_type: UNTOUCHED_RADIO_VALUE,
+  routing_number: '',
+  LOCAL_re_enter_routing_number: '',
+  account_number: '',
+  LOCAL_re_enter_account_number: '',
+  acknowledge_direct_deposit_option: UNTOUCHED_CHECKBOX_VALUE,
+  federal_income_tax_withheld: UNTOUCHED_RADIO_VALUE,
+  apply_for_increased_payment_for_dependents: UNTOUCHED_RADIO_VALUE,
+}
+
 const PaymentInformation: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'payment',
@@ -35,7 +52,7 @@ const PaymentInformation: NextPageWithLayout = () => {
 
   return (
     <ClaimFormik<PaymentInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
@@ -95,14 +112,17 @@ const PaymentInformation: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'debit') {
-            await clearFields([
-              'account_type',
-              'routing_number',
-              'LOCAL_re_enter_routing_number',
-              'account_number',
-              'LOCAL_re_enter_account_number',
-              'acknowledge_direct_deposit_option',
-            ])
+            await clearFields({
+              account_type: pageInitialValues.account_type,
+              routing_number: pageInitialValues.routing_number,
+              LOCAL_re_enter_routing_number:
+                pageInitialValues.LOCAL_re_enter_routing_number,
+              account_number: pageInitialValues.account_number,
+              LOCAL_re_enter_account_number:
+                pageInitialValues.LOCAL_re_enter_account_number,
+              acknowledge_direct_deposit_option:
+                pageInitialValues.acknowledge_direct_deposit_option,
+            })
           }
         }
 

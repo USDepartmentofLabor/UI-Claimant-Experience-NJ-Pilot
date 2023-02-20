@@ -57,6 +57,7 @@ export const TextAreaField = ({
       {characterLimit ? (
         <CharacterCount
           {...fieldProps}
+          value={fieldProps.value || ''} // https://github.com/trussworks/react-uswds/issues/2241
           defaultValue={fieldProps.value || ''}
           id={textareaProps.id || textareaProps.name}
           inputRef={textareaRef}

@@ -52,8 +52,8 @@ export const YourEmployer = () => {
             <Address
               basename={'employer_address'}
               labels={myLabels}
-              optAddress2={true}
-              optAddress3={true}
+              optAddress2
+              optAddress3
             />
             <PhoneNumberField
               name="employer_phone"

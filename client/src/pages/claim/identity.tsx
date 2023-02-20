@@ -5,6 +5,8 @@ import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import {
   authorizationTypeOptions,
   countryOfOriginOptions,
+  EMPTY_DROPDOWN_OPTION,
+  UNTOUCHED_RADIO_VALUE,
 } from 'constants/formOptions'
 import { VerifiedFields } from 'components/form/VerifiedFields/VerifiedFields'
 import { VerifiedField } from 'components/form/VerifiedFields/VerifiedField/VerifiedField'
@@ -38,10 +40,25 @@ import {
 } from '@trussworks/react-uswds'
 import { Modal, ModalRef } from '@trussworks/react-uswds'
 import { AlienRegistrationNumberField } from 'components/form/fields/AlienRegistrationNumberField/AlienRegistrationNumberField'
+import { PERSON_NAME_SKELETON } from 'constants/initialValues'
 
 const pageDefinition = IdentityPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
+
+export const pageInitialValues = {
+  ssn: '',
+  birthdate: '',
+  has_nj_issued_id: UNTOUCHED_RADIO_VALUE,
+  drivers_license_or_state_id_number: '',
+  authorization_type: UNTOUCHED_RADIO_VALUE,
+  employment_authorization_document_name: { ...PERSON_NAME_SKELETON },
+  alien_registration_number: '',
+  LOCAL_re_enter_alien_registration_number: '',
+  country_of_origin: EMPTY_DROPDOWN_OPTION,
+  employment_authorization_start_date: '',
+  employment_authorization_end_date: '',
+}
 
 export const countryOfOriginDropdownOptions = countryOfOriginOptions.map(
   (option) => ({
@@ -57,7 +74,7 @@ export const Identity: NextPageWithLayout = () => {
 
   return (
     <ClaimFormik<IdentityInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
@@ -85,7 +102,10 @@ export const Identity: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'no') {
-            await clearField('drivers_license_or_state_id_number')
+            await clearField(
+              'drivers_license_or_state_id_number',
+              pageInitialValues.drivers_license_or_state_id_number
+            )
           }
         }
 
@@ -93,20 +113,27 @@ export const Identity: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'US_citizen_or_national') {
-            await clearFields([
-              'employment_authorization_document_name',
-              'alien_registration_number',
-              'LOCAL_re_enter_alien_registration_number',
-              'country_of_origin',
-              'employment_authorization_start_date',
-              'employment_authorization_end_date',
-            ])
+            await clearFields({
+              employment_authorization_document_name:
+                pageInitialValues.employment_authorization_document_name,
+              alien_registration_number:
+                pageInitialValues.alien_registration_number,
+              LOCAL_re_enter_alien_registration_number:
+                pageInitialValues.LOCAL_re_enter_alien_registration_number,
+              country_of_origin: pageInitialValues.country_of_origin,
+              employment_authorization_start_date:
+                pageInitialValues.employment_authorization_start_date,
+              employment_authorization_end_date:
+                pageInitialValues.employment_authorization_end_date,
+            })
           }
           if (e.target.value !== 'employment_authorization_or_card_or_doc') {
-            await clearFields([
-              'employment_authorization_start_date',
-              'employment_authorization_end_date',
-            ])
+            await clearFields({
+              employment_authorization_start_date:
+                pageInitialValues.employment_authorization_start_date,
+              employment_authorization_end_date:
+                pageInitialValues.employment_authorization_end_date,
+            })
           }
         }
 

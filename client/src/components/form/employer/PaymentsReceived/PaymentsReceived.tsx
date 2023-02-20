@@ -31,6 +31,16 @@ const PaymentsReceived = () => {
     return paymentsReceived
   }
 
+  const createEmptyPayType = (
+    option: PayTypeOption
+  ): PaymentsReceivedDetailInput => ({
+    pay_type: option,
+    note: '',
+    total: '',
+    date_pay_began: '',
+    date_pay_ended: '',
+  })
+
   const findIndexOfPaymentReceived = (payType: PayTypeOption) => {
     const paymentsReceived = values.payments_received
     return paymentsReceived?.findIndex((p) => p.pay_type === payType)
@@ -80,11 +90,11 @@ const PaymentsReceived = () => {
                         setFieldValue(`LOCAL_pay_types`, ['none'], true)
                         setFieldValue(
                           `payments_received`,
-                          [{ pay_type: option }],
+                          [createEmptyPayType('none')],
                           true
                         )
                       } else {
-                        arrayHelpers.push({ pay_type: option })
+                        arrayHelpers.push(createEmptyPayType(option))
                       }
                     } else {
                       const indexOfPaymentReceivedToRemove =
