@@ -26,9 +26,21 @@ import { useSubmitClaim } from 'queries/useSubmitClaim'
 import { Routes } from 'constants/routes'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useRouter } from 'next/router'
+import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
+import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
+import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+import { PrequalReview } from 'components/review/sections/PrequalReview/PrequalReview'
+import { UnionReview } from 'components/review/sections/UnionReview/UnionReview'
+import { EducationAndTrainingReview } from 'components/review/sections/EducationAndTrainingReview/EducationAndTrainingReview'
+import { ContactReview } from 'components/review/sections/ContactReview/ContactReview'
+import { UNTOUCHED_CHECKBOX_VALUE } from 'constants/formOptions'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
+
+const pageInitialValues = {
+  certify: UNTOUCHED_CHECKBOX_VALUE,
+}
 
 export const Review: NextPageWithLayout = () => {
   const router = useRouter()
@@ -61,7 +73,7 @@ export const Review: NextPageWithLayout = () => {
 
   return (
     <ClaimFormik<ReviewInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
@@ -111,6 +123,19 @@ export const Review: NextPageWithLayout = () => {
                 </ul>
               </SummaryBoxContent>
             </SummaryBox>
+
+            <PrequalReview />
+            <HorizontalRule />
+            <PersonalReview />
+            <HorizontalRule />
+            <ContactReview />
+            <HorizontalRule />
+            <IdentityReview />
+            <HorizontalRule />
+            <EducationAndTrainingReview />
+            <HorizontalRule />
+            <UnionReview />
+            <HorizontalRule />
 
             <CheckboxField
               name="certify"

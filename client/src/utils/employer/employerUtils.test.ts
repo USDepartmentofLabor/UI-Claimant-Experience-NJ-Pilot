@@ -1,4 +1,4 @@
-import { Employer } from 'types/claimantInput'
+import { Employer, YesNoInput } from 'types/claimantInput'
 import {
   findEmployerByFein,
   findFirstImportedEmployerIndex,
@@ -7,15 +7,17 @@ import {
   parseCityAndStateFromImportedAddress,
   transformWgpmEmployer,
 } from 'utils/employer/employerUtils'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 const buildImportedEmployer = (
   name: string,
-  workedForEmployer?: boolean,
-  fein?: string
+  workedForEmployer: YesNoInput = null,
+  fein = ''
 ): Employer => {
   const baseFields = buildBaseEmployerFields(name, fein)
 
   return {
+    ...baseFields,
     is_imported: true,
     worked_for_imported_employer_in_last_18mo: workedForEmployer,
     imported_address: {
@@ -26,12 +28,11 @@ const buildImportedEmployer = (
       employerAddressLine5: 'line 5',
       employerAddressZip: '123435',
     },
-    employer_phone: { number: '1234567890' },
-    ...baseFields,
+    employer_phone: { number: '1234567890', sms: null },
   }
 }
 
-const buildManuallyAddedEmployer = (name: string, fein?: string): Employer => {
+const buildManuallyAddedEmployer = (name: string, fein = ''): Employer => {
   const baseFields = buildBaseEmployerFields(name, fein)
 
   return {
@@ -39,7 +40,8 @@ const buildManuallyAddedEmployer = (name: string, fein?: string): Employer => {
   }
 }
 
-const buildBaseEmployerFields = (name: string, fein?: string) => ({
+const buildBaseEmployerFields = (name: string, fein: string) => ({
+  ...EMPLOYER_SKELETON,
   employer_name: name,
   fein: fein,
   LOCAL_pay_types: [],
@@ -133,6 +135,7 @@ describe('employerUtils', () => {
         employerTelephoneNumber: '5554151012',
       }
       const expectedResult = {
+        ...EMPLOYER_SKELETON,
         is_imported: true,
         employer_name: 'Hall of Justice',
         fein: '031143718000011',
@@ -146,16 +149,15 @@ describe('employerUtils', () => {
         },
         employer_phone: {
           number: '5554151012',
+          sms: null,
         },
-        payments_received: [],
-        LOCAL_pay_types: [],
       }
 
       const result = transformWgpmEmployer(wgpmEmployer)
       expect(result).toEqual(expectedResult)
     })
 
-    it('sets missing name, fein, and phone number to undefined', () => {
+    it('sets missing name, fein, and phone number to the correct initial values', () => {
       const wgpmEmployer = {
         employerAddressLine1: 'The Hall of Justice',
         employerAddressLine2: '2212 superhero street',
@@ -170,9 +172,10 @@ describe('employerUtils', () => {
         employerTelephoneNumber: null,
       }
       const expectedResult = {
+        ...EMPLOYER_SKELETON,
         is_imported: true,
-        employer_name: undefined,
-        fein: undefined,
+        employer_name: EMPLOYER_SKELETON.employer_name,
+        fein: EMPLOYER_SKELETON.fein,
         imported_address: {
           employerAddressLine1: 'The Hall of Justice',
           employerAddressLine2: '2212 superhero street',
@@ -182,10 +185,9 @@ describe('employerUtils', () => {
           employerAddressZip: '91121',
         },
         employer_phone: {
-          number: undefined,
+          number: EMPLOYER_SKELETON.employer_phone.number,
+          sms: null,
         },
-        payments_received: [],
-        LOCAL_pay_types: [],
       }
 
       const result = transformWgpmEmployer(wgpmEmployer)
@@ -494,6 +496,7 @@ describe('employerUtils', () => {
       }
       newlyImportedEmployer.employer_phone = {
         number: '1238675309',
+        sms: null,
       }
       const newlyImportedEmployers = [newlyImportedEmployer]
 
@@ -542,6 +545,7 @@ describe('employerUtils', () => {
       }
       previouslySavedImportedEmployer.work_location_phone = {
         number: '1112223333',
+        sms: null,
       }
       const previouslySavedEmployers = [previouslySavedImportedEmployer]
 
@@ -560,6 +564,7 @@ describe('employerUtils', () => {
       }
       newlyImportedEmployer.employer_phone = {
         number: '1238675309',
+        sms: null,
       }
       const newlyImportedEmployers = [newlyImportedEmployer]
 
@@ -590,6 +595,7 @@ describe('employerUtils', () => {
       })
       expect(reconciledEmployer.work_location_phone).toEqual({
         number: '1112223333',
+        sms: null,
       })
     })
 
@@ -653,7 +659,7 @@ describe('employerUtils', () => {
         .at(0) as Employer
 
       expect(mergedImportedEmployer).toEqual(newlyImportedEmployer)
-      expect(mergedImportedEmployer.fein).toBeUndefined()
+      expect(mergedImportedEmployer.fein).toEqual('')
     })
   })
 })

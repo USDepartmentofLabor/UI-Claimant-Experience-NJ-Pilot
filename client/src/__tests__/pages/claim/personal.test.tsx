@@ -1,6 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import Personal from 'pages/claim/personal'
-import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
+import Personal, { pageInitialValues } from 'pages/claim/personal'
 import { ClaimantInput } from 'types/claimantInput'
 import { useInitialValues } from 'hooks/useInitialValues'
 import { WrappingProviders } from 'utils/testUtils'
@@ -18,7 +17,7 @@ describe('Personal information component', () => {
     last_name: string | undefined
   ) => {
     return {
-      ...PersonalPageDefinition.initialValues,
+      ...pageInitialValues,
       claimant_name: {
         first_name: first_name,
         middle_initial: middle_initial,

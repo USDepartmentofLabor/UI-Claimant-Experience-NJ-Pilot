@@ -1,5 +1,6 @@
-import { Link } from '@trussworks/react-uswds'
+import { Alert, Link } from '@trussworks/react-uswds'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
+import DropdownField from 'components/form/fields/DropdownField/DropdownField'
 import {
   changeInEmploymentOptions,
   reasonStillEmployedOptions,
@@ -15,6 +16,7 @@ import { Trans } from 'react-i18next'
 
 import { ChangeEventHandler } from 'react'
 import { useClearFields } from 'hooks/useClearFields'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 export const ChangeInEmployment = () => {
   const { values } = useFormikContext<Employer>()
@@ -47,39 +49,67 @@ export const ChangeInEmployment = () => {
         'strike_or_lock_out_by_employer',
       ].includes(values.separation_circumstance ?? '')
     ) {
-      await clearField('separation_circumstance_details')
-      await clearField('discharge_date')
+      await clearField(
+        'separation_circumstance_details',
+        EMPLOYER_SKELETON.separation_circumstance_details
+      )
+      await clearField('discharge_date', EMPLOYER_SKELETON.discharge_date)
     }
     if (e.target.value !== 'fired_discharged_suspended') {
-      await clearField(`discharge_date`)
+      await clearField(`discharge_date`, EMPLOYER_SKELETON.discharge_date)
     }
     if (e.target.value !== 'still_employed') {
-      await clearField(`reason_still_employed`)
-      await clearField(`hours_reduced_twenty_percent`)
+      await clearField(
+        `reason_still_employed`,
+        EMPLOYER_SKELETON.reason_still_employed
+      )
+      await clearField(
+        `hours_reduced_twenty_percent`,
+        EMPLOYER_SKELETON.hours_reduced_twenty_percent
+      )
     }
   }
   const handleExpectRecallChange: ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
     if (e.target.value === 'no') {
-      await clearField('definite_recall')
-      await clearField('is_seasonal_work')
-      await clearField('definite_recall_date')
+      await clearField('definite_recall', EMPLOYER_SKELETON.definite_recall)
+      await clearField('is_seasonal_work', EMPLOYER_SKELETON.is_seasonal_work)
+      await clearField(
+        'definite_recall_date',
+        EMPLOYER_SKELETON.definite_recall_date
+      )
     }
   }
   const handleHasDefiniteRecallChange: ChangeEventHandler<
     HTMLInputElement
   > = async (e) => {
     if (e.target.value === 'no') {
-      await clearField('definite_recall_date')
+      await clearField(
+        'definite_recall_date',
+        EMPLOYER_SKELETON.definite_recall_date
+      )
     }
   }
   const handleStillEmployedReasonChange: ChangeEventHandler<
-    HTMLInputElement
+    HTMLSelectElement
   > = async (e) => {
     if (e.target.value !== 'reduction_in_hours_by_employer') {
-      await clearField(`hours_reduced_twenty_percent`)
+      await clearField(
+        `hours_reduced_twenty_percent`,
+        EMPLOYER_SKELETON.hours_reduced_twenty_percent
+      )
     }
+  }
+
+  function isTooOld(dateString: string | undefined) {
+    if (undefined === dateString) return false
+    if (!dateString.match(/\d{4}-\d+-\d+/)) return false
+    const givenDate = new Date(dateString)
+    const dateOfClaim = new Date()
+    dateOfClaim.setDate(dateOfClaim.getDate() - dateOfClaim.getDay())
+    const cutoff = dateOfClaim.setMonth(dateOfClaim.getMonth() - 18)
+    return +givenDate < +cutoff
   }
 
   return (
@@ -114,9 +144,10 @@ export const ChangeInEmployment = () => {
           </div>
         </div>
         {showStillEmployed && (
-          <RadioField
+          <DropdownField
+            startEmpty
             name={`reason_still_employed`}
-            legend={t('separation.reasons.still_employed.option_heading')}
+            label={t('separation.reasons.still_employed.option_heading')}
             options={reasonStillEmployedOptions.map((option) => {
               return {
                 label: t(`separation.reasons.still_employed.options.${option}`),
@@ -146,6 +177,11 @@ export const ChangeInEmployment = () => {
           //     remove if decide not to have a hint
           // hint={showStillEmployed ? t('employment_last_date.hint') : undefined}
         />
+        {isTooOld(values.employment_last_date) && (
+          <Alert headingLevel="h3" slim={true} type="warning">
+            {t('employment_last_date.warning')}
+          </Alert>
+        )}
         {showHoursReducedPercentage && (
           <YesNoQuestion
             question={t('hours_reduced_twenty_percent.label')}

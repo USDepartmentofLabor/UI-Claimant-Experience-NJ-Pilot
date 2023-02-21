@@ -3,10 +3,10 @@ import { Formik } from 'formik'
 import { ClaimantAddress } from 'components/form/ClaimantAddress/ClaimantAddress'
 import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
-import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
+import { pageInitialValues } from 'pages/claim/personal'
 
 describe('ClaimantAddress component', () => {
-  const initialValues = PersonalPageDefinition.initialValues
+  const initialValues = pageInitialValues
 
   it('renders properly', () => {
     render(

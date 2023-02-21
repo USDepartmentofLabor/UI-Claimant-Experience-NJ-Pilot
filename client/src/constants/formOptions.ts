@@ -1,3 +1,12 @@
+export const UNTOUCHED_RADIO_VALUE = null
+export type UntouchedRadioValue = typeof UNTOUCHED_RADIO_VALUE
+
+export const UNTOUCHED_CHECKBOX_VALUE = '' as const
+export type UntouchedCheckboxValue = typeof UNTOUCHED_CHECKBOX_VALUE
+
+export const EMPTY_DROPDOWN_OPTION = '' as const
+export type EmptyOption = typeof EMPTY_DROPDOWN_OPTION
+
 export const interpreterTTYOptions = [
   'interpreter',
   'tty',
@@ -108,11 +117,12 @@ export const reasonStillEmployedOptions = [
   'leave_of_absence',
   'paid_vacation_holiday_or_pto',
   'temp_lay_off_or_furlough',
+  'seasonal_work',
   'school_employee_on_break',
   'self_employed',
   'shared_work_program',
 ] as const
-export type ReasonStillEmployedOptions =
+export type ReasonStillEmployedOption =
   typeof reasonStillEmployedOptions[number]
 
 export const employerRelationOptions = [

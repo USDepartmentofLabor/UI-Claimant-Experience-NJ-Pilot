@@ -1,5 +1,4 @@
 import { AnySchema } from 'yup'
-import { ClaimantInput } from 'types/claimantInput'
 
 import { PrequalPageDefinition } from 'constants/pages/definitions/prequalPageDefinition'
 import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
@@ -18,7 +17,6 @@ import { OccupationPageDefinition } from './definitions/occupationPageDefinition
 export type PageDefinition = {
   heading: string
   path: string
-  initialValues: ClaimantInput
   validationSchema: AnySchema
 }
 

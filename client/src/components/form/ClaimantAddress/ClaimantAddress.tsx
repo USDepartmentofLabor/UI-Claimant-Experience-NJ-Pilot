@@ -30,6 +30,24 @@ export const ClaimantAddress = () => {
     }
   }
 
+  const handleMailingAddressSameChange: ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    if (e.target.checked) {
+      // Sync address if being checked and the values are not already equal
+      const addressesAreEqual = isEqual(
+        values.mailing_address,
+        values.residence_address
+      )
+      if (!addressesAreEqual) {
+        setFieldValue('mailing_address', { ...values.residence_address })
+      }
+    } else {
+      // Reset mailing_address if being unchecked
+      setFieldValue('mailing_address', { ...ADDRESS_SKELETON })
+    }
+  }
+
   return (
     <>
       <Fieldset legend={<Trans t={t} i18nKey="label.primary_address" />}>
@@ -42,23 +60,7 @@ export const ClaimantAddress = () => {
         name="LOCAL_mailing_address_same"
         data-testid="LOCAL_mailing_address_same"
         label={t('label.mailing_address_same')}
-        onChange={(e) => {
-          const isBeingChecked = e.target.checked
-          const addressesAreEqual = isEqual(
-            values.mailing_address,
-            values.residence_address
-          )
-
-          if (isBeingChecked) {
-            // Sync address if being checked and
-            if (!addressesAreEqual) {
-              setFieldValue('mailing_address', { ...values.residence_address })
-            }
-          } else {
-            // Reset mailing_address if being unchecked
-            setFieldValue('mailing_address', { ...ADDRESS_SKELETON })
-          }
-        }}
+        onChange={handleMailingAddressSameChange}
       />
       {!values.LOCAL_mailing_address_same && (
         <Fieldset legend={<Trans t={t} i18nKey="label.mailing_address" />}>

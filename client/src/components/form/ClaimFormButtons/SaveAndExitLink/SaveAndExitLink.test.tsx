@@ -8,8 +8,10 @@ describe('BackButton', () => {
     render(<SaveAndExitLink onClick={noop} />)
 
     const saveAndExitLink = screen.queryByText('pagination.save_and_exit')
+    const saveNotice = screen.queryByText('pagination.save_notice')
 
     expect(saveAndExitLink).toBeInTheDocument()
+    expect(saveNotice).toBeInTheDocument()
   })
 
   it('Accepts an onClick param', async () => {

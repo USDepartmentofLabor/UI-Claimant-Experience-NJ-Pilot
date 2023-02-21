@@ -314,17 +314,6 @@ describe('DisabilityStatus component', () => {
           ).resolves.toEqual([value])
         }
       )
-
-      it('fails validation with an invalid value', async () => {
-        const schemaSlice = { type_of_disability: 'invalid value' }
-
-        await expect(
-          DisabilityPageDefinition.validationSchema.validateAt(
-            `type_of_disability`,
-            schemaSlice
-          )
-        ).rejects.toBeTruthy()
-      })
     })
 
     describe('type_of_disability', () => {
@@ -346,7 +335,10 @@ describe('DisabilityStatus component', () => {
       )
 
       it('fails validation with an invalid value', async () => {
-        const schemaSlice = { type_of_disability: 'invalid value' }
+        const schemaSlice = {
+          disability_applied_to_or_received: ['disability'],
+          type_of_disability: 'invalid value',
+        }
 
         await expect(
           DisabilityPageDefinition.validationSchema.validateAt(

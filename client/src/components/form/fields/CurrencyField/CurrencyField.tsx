@@ -57,7 +57,6 @@ export const CurrencyField = ({
     string | undefined
   >(name)
 
-  const isMounted = useRef(false)
   const [dollarValue, setDollarValue] = useState<string>(() =>
     metaProps.initialValue ? convertCentsToDollars(metaProps.initialValue) : ''
   )
@@ -69,24 +68,25 @@ export const CurrencyField = ({
 
   useFocusFirstError(metaProps.error, textFieldRef)
 
-  useEffect(() => {
-    // prevent unnecessary calculation on initial mount
-    if (isMounted.current) {
-      const getFormikValue = () => {
-        if (!dollarValue) {
-          return ''
-        }
-        if (dollarValue.match(CURRENCY_REGEX)) {
-          return convertDollarsToCents(dollarValue)
-        }
-        // don't set to fixed value so that validation can apply
-        return String(Number(dollarValue) * 100)
-      }
-      fieldHelperProps.setValue(getFormikValue()) // Should await?
-    } else {
-      isMounted.current = true
+  const getFormikValue = (value: string) => {
+    if (!value) return ''
+
+    if (value.match(CURRENCY_REGEX)) {
+      return convertDollarsToCents(value)
     }
-  }, [dollarValue])
+    // don't set to fixed value so that validation can apply
+    return String(Number(value) * 100)
+  }
+
+  const updateFormik = async (value: string) => {
+    const valueInCents = getFormikValue(value)
+    await fieldHelperProps.setValue(valueInCents)
+  }
+
+  const getIsEquivalentValue = (formikValue: string) => {
+    const localStateAsFormikValue = convertDollarsToCents(dollarValue)
+    return localStateAsFormikValue === formikValue
+  }
 
   useEffect(() => {
     // Reassign display (local state) value if the formik and display currency are not equivalent (ex. this can occur when an item of an array that includes this field is removed)
@@ -96,8 +96,8 @@ export const CurrencyField = ({
       return
     }
     if (fieldProps.value !== undefined && !isNaN(Number(fieldProps.value))) {
-      const formikDollars = convertCentsToDollars(fieldProps.value)
-      if (dollarValue !== formikDollars) {
+      const isEquivalentValue = getIsEquivalentValue(fieldProps.value)
+      if (!isEquivalentValue) {
         setDollarValue(
           convertCentsToDollarsAsTyped(
             fieldProps.value,
@@ -108,8 +108,9 @@ export const CurrencyField = ({
     }
   }, [fieldProps.value])
 
-  const handleFieldChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
     setDollarValue(e.target.value)
+    await updateFormik(e.target.value)
     if (inputProps?.onChange) {
       inputProps.onChange(e)
     }

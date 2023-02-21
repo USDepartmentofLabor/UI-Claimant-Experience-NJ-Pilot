@@ -10,9 +10,11 @@ import { useClearFields } from 'hooks/useClearFields'
 import { ChangeEventHandler } from 'react'
 import { Trans } from 'react-i18next'
 import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
+import { formatStoredToDisplayPhone } from 'utils/phone/format'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 export const WorkLocation = () => {
-  const { values, setFieldValue } = useFormikContext<Employer>()
+  const { values } = useFormikContext<Employer>()
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'employers.work_location',
   })
@@ -21,17 +23,28 @@ export const WorkLocation = () => {
     HTMLInputElement
   > = async (e) => {
     if (e.target.value === 'yes') {
-      await clearField(`alternate_physical_work_address.city`)
-      await clearField(`alternate_physical_work_address.state`)
-      await clearField(`alternate_physical_work_address.zipcode`)
-      await setFieldValue(`alternate_physical_work_address`, undefined)
+      await clearField(
+        `alternate_physical_work_address.city`,
+        EMPLOYER_SKELETON.alternate_physical_work_address.city
+      )
+      await clearField(
+        `alternate_physical_work_address.state`,
+        EMPLOYER_SKELETON.alternate_physical_work_address.state
+      )
+      await clearField(
+        `alternate_physical_work_address.zipcode`,
+        EMPLOYER_SKELETON.alternate_physical_work_address.zipcode
+      )
     }
   }
   const handleEmployerLocationPhoneChange: ChangeEventHandler<
     HTMLInputElement
   > = async (e) => {
     if (e.target.value === 'yes') {
-      await clearField(`work_location_phone`)
+      await clearField(
+        `work_location_phone`,
+        EMPLOYER_SKELETON.work_location_phone
+      )
     }
   }
 
@@ -83,7 +96,7 @@ export const WorkLocation = () => {
         <YesNoQuestion
           question={
             <Trans t={t} i18nKey="is_employer_phone_accurate.label">
-              {values.employer_phone?.number}
+              {formatStoredToDisplayPhone(values.employer_phone?.number)}
             </Trans>
           }
           name={`is_employer_phone_accurate`}

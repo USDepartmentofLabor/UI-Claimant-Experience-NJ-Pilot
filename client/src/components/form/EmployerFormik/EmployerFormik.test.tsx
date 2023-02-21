@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
-import { Employer, PaymentsReceivedDetailInput } from 'types/claimantInput'
+import { Employer } from 'types/claimantInput'
 import userEvent from '@testing-library/user-event'
 import { object, string } from 'yup'
 import { EmployerFormik } from 'components/form/EmployerFormik/EmployerFormik'
-import { PayTypeOption } from 'constants/formOptions'
 import TextField from 'components/form/fields/TextField/TextField'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 const mockModifyEmployerAndSaveClaimFormValues = jest.fn(() =>
   Promise.resolve()
@@ -24,8 +24,7 @@ jest.mock('utils/signout/cognitoSignOut', () => ({
 
 describe('EmployerFormik component', () => {
   const values = {
-    payments_received: [] as PaymentsReceivedDetailInput[],
-    LOCAL_pay_types: [] as PayTypeOption[],
+    ...EMPLOYER_SKELETON,
   }
 
   const renderEmployerFormik = (

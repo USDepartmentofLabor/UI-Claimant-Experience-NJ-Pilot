@@ -36,7 +36,7 @@ const Ssn: NextPageWithLayout = () => {
     setShowSsn(!showSsn)
   }
 
-  const initialValues = { ssn: ssnInput ? String(ssnInput.ssn) : '' }
+  const initialValues = { ssn: ssnInput?.ssn || '' }
   const validationSchema = object().shape({
     ssn: string()
       .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, t('errors.badFormat'))
@@ -69,15 +69,17 @@ const Ssn: NextPageWithLayout = () => {
         const validRef = useRef(isValid)
         validRef.current = isValid
         const isLoadingSSN = isSubmitting || disableButtons
+
         const handleClickCancel: MouseEventHandler<
           HTMLButtonElement
         > = async () => {
           await router.push(Routes.HOME) // TODO: change to Nava file a claim page when url is available
         }
+
         const lockButtonsAndVerifySSN = async () => {
-          if (values?.ssn) {
+          if (values.ssn) {
             setDisableButtons(true)
-            const validateSSNResult = await validateSSN.mutateAsync(values?.ssn)
+            const validateSSNResult = await validateSSN.mutateAsync(values.ssn)
             setDisableButtons(false)
             return validateSSNResult.status === 200
             //TODO - change this to handle error states
@@ -108,16 +110,16 @@ const Ssn: NextPageWithLayout = () => {
             {showErrorSummary && (
               <FormErrorSummary key={submitCount} errors={errors} />
             )}
-            <div className="margin-bottom-8 maxw-desktop maxw-mobile maxw-tablet">
+            <div className="margin-bottom-1">
               <TextField
                 label={t('label')}
                 name="ssn"
                 type={showSsn ? 'text' : 'password'}
                 maxLength={11}
                 minLength={9}
-                className="maxw-desktop  maxw-mobile maxw-tablet"
+                className=""
               />
-              <div className="text-right">
+              <div className="text-right maxw-mobile-lg">
                 <button
                   className="usa-button usa-button--unstyled text-right"
                   type="button"

@@ -1,0 +1,131 @@
+name: Deploy Preview Create
+
+on:
+  pull_request:
+    # Include `edited` event type to trigger on PR description changes
+    types: [edited, opened, synchronize, reopened]
+    paths:
+      - "client/**"
+      - "server/**"
+  workflow_dispatch:
+
+# Cancel redundant deployments on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: 17.0.6+10
+  NODE_VERSION: 16.19.0
+
+jobs:
+  should-deploy-preview-run:
+    runs-on: ubuntu-latest
+    environment: dev
+    outputs:
+      run-deployment-preview: ${{ steps.dp-check.outputs.run-deployment-preview }}
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check whether deployment preview should be built
+        id: dp-check
+        uses: ./.github/actions/should-deployment-preview-run
+
+      - name: Comment DP will be created
+        uses: peter-evans/create-or-update-comment@v2
+        if: steps.dp-check.outputs.run-deployment-preview == 'true'
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: Deployment Preview will be created for this PR at ${{ github.sha }}
+
+      - name: Comment DP will not be created
+        uses: peter-evans/create-or-update-comment@v2
+        if: steps.dp-check.outputs.run-deployment-preview == 'false'
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: Deployment Preview will not be created for this PR at ${{ github.sha }}
+
+  build-lint-and-test:
+    needs: [should-deploy-preview-run]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run lint, build, and test action
+        id: lint-build-test
+        uses: ./.github/actions/lint-build-and-test
+        with:
+          JAVA_VERSION: ${{ env.JAVA_VERSION }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
+
+  deploy-preview-create:
+    needs: [should-deploy-preview-run, build-lint-and-test]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compose server base url
+        id: server-base-url
+        env:
+          GIT_BRANCH: ${{ github.ref_name }}
+          DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+        shell: bash
+        run: |
+          SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
+          SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
+
+      - name: Build client image
+        id: build-client
+        uses: ./.github/actions/build-client
+        with:
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          app-env: development
+
+      - name: Build server image
+        id: build-server
+        uses: ./.github/actions/build-server
+        with:
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+
+  deploy-preview-will-not-create:
+    needs: [should-deploy-preview-run]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'false'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deployment preview will not run
+        shell: bash
+        run: echo "Deployment preview will not run"

@@ -60,6 +60,7 @@ export const RecentEmployers: NextPageWithLayout = () => {
     data: wgpmEmployers,
     isLoading: isLoadingRecentEmployers,
     isError: isRecentEmployersError,
+    error: recentEmployerError,
   } = useGetRecentEmployers()
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
   const date = formatLast18monthsEmployersDate(String(new Date()))
@@ -84,17 +85,21 @@ export const RecentEmployers: NextPageWithLayout = () => {
     handleSaveRecentEmployers(values).then(async () => await cognitoSignOut())
   }
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: RecentEmployerValues,
     helpers: FormikHelpers<RecentEmployerValues>
   ) => {
     const { setSubmitting } = helpers
-    handleSaveRecentEmployers(values).then(() => setSubmitting(false))
+    await handleSaveRecentEmployers(values)
+    setSubmitting(false)
   }
 
   if (isLoadingRecentEmployers) {
     return <PageLoader />
-  } else if (isRecentEmployersError) {
+  } else if (
+    isRecentEmployersError &&
+    recentEmployerError?.response?.status !== 503
+  ) {
     return <Error title={tCommon('errorStatus.500')} statusCode={500} />
   } else {
     const calculateInitialValues = (): RecentEmployerValues => {
@@ -153,23 +158,37 @@ export const RecentEmployers: NextPageWithLayout = () => {
             const showErrorSummary =
               submitCount > 0 && Object.keys(errors).length > 0
 
+            const hasRecentEmployers = values.recent_employers.length !== 0
+            const showWarning = isRecentEmployersError
+              ? recentEmployerError?.response?.status === 503
+              : false
+
             return (
               <Form className={styles.claimForm}>
                 {showErrorSummary && (
                   <FormErrorSummary key={submitCount} errors={errors} />
                 )}
+                {showWarning && (
+                  <Alert
+                    type="warning"
+                    heading={t(
+                      'recent_employers.employer_retrieval_warning.heading'
+                    )}
+                    headingLevel={'h1'}
+                  >
+                    {t(
+                      'recent_employers.employer_retrieval_warning.header_description'
+                    )}
+                  </Alert>
+                )}
                 <SummaryBox>
                   <SummaryBoxContent>
-                    {t('recent_employers.preamble')}
+                    {hasRecentEmployers
+                      ? t('recent_employers.preamble')
+                      : t('recent_employers.no_employers_on_record')}
                   </SummaryBoxContent>
                 </SummaryBox>
-                {values.recent_employers.length === 0 ? (
-                  <SummaryBox>
-                    <SummaryBoxContent>
-                      {t('recent_employers.no_employers_on_record')}
-                    </SummaryBoxContent>
-                  </SummaryBox>
-                ) : (
+                {hasRecentEmployers && (
                   <Fieldset
                     legend={<b>{t('recent_employers.question', { date })}</b>}
                   >
