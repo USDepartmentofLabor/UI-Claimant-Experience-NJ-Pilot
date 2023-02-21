@@ -30,6 +30,7 @@ import { PersonalReview } from 'components/review/sections/PersonalReview/Person
 import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
 import { EmployersReview } from 'components/review/sections/EmployerReview/EmployerReview'
+import { PrequalReview } from 'components/review/sections/PrequalReview/PrequalReview'
 import { UnionReview } from 'components/review/sections/UnionReview/UnionReview'
 import { EducationAndTrainingReview } from 'components/review/sections/EducationAndTrainingReview/EducationAndTrainingReview'
 import { ContactReview } from 'components/review/sections/ContactReview/ContactReview'
@@ -124,6 +125,8 @@ export const Review: NextPageWithLayout = () => {
               </SummaryBoxContent>
             </SummaryBox>
 
+            <PrequalReview />
+            <HorizontalRule />
             <PersonalReview />
             <HorizontalRule />
             <ContactReview />
