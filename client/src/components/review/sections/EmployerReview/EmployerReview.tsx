@@ -211,32 +211,34 @@ export const EmployerReview = ({
           label={t('business_interests.employer_is_sole_proprietorship.label')}
           value={employer?.employer_is_sole_proprietorship}
         />
-        {employer?.related_to_owner_or_child_of_owner_under_18 && (
-          <ReviewElement
-            label={t(
-              'business_interests.related_to_owner_or_child_of_owner_under_18.label'
-            )}
-            value={t(
+
+        <ReviewElement
+          label={t(
+            'business_interests.related_to_owner_or_child_of_owner_under_18.label'
+          )}
+          value={
+            employer.related_to_owner_or_child_of_owner_under_18 &&
+            t(
               `business_interests.related_to_owner_or_child_of_owner_under_18.options.${employer.related_to_owner_or_child_of_owner_under_18}.label`
-            )}
-          />
-        )}
-        {employer?.separation_circumstance && (
-          <ReviewElement
-            label={t('separation.reason.label')}
-            value={t(
-              `separation.reasons.${employer.separation_circumstance}.label`
-            )}
-          />
-        )}
-        {employer?.reason_still_employed && (
-          <ReviewElement
-            label={t('separation.reasons.still_employed.option_heading')}
-            value={t(
+            )
+          }
+        />
+        <ReviewElement
+          label={t('separation.reason.label')}
+          value={
+            employer.separation_circumstance &&
+            t(`separation.reasons.${employer.separation_circumstance}.label`)
+          }
+        />
+        <ReviewElement
+          label={t('separation.reasons.still_employed.option_heading')}
+          value={
+            employer?.reason_still_employed &&
+            t(
               `separation.reasons.still_employed.options.${employer.reason_still_employed}`
-            )}
-          />
-        )}
+            )
+          }
+        />
         <ReviewElement
           label={t('separation.separation_circumstance_details.required_label')}
           value={employer.separation_circumstance_details}
