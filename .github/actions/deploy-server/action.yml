@@ -15,6 +15,8 @@ inputs:
     required: true
   image-uri:
     description: Image uri if provided by workflow
+  otel-collector-image-uri:
+    description: Image uri for otel collector
 outputs:
   image-uri-without-aws-id:
     description: The uri for the server image pushed to AWS ECR without the AWS ID
@@ -106,7 +108,7 @@ runs:
       with:
         task-definition: ops/ecs/server-task-definition.json
         container-name: aws-otel-collector
-        image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
+        image: ${{ inputs.otel-collector-image-uri }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition (server)
       id: task-def-server
