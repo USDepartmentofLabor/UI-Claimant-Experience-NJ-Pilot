@@ -5,6 +5,7 @@ import {
   IntakeAppContextType,
 } from 'contexts/IntakeAppContext'
 import userEvent from '@testing-library/user-event'
+import { pageInitialValues } from 'pages/screener'
 
 describe('Screener-redirect page', () => {
   const mockAppContext: IntakeAppContextType = {
@@ -44,6 +45,7 @@ describe('Screener-redirect page', () => {
   describe('shows the correct content based on querystring values', () => {
     it('when resident of Canada', () => {
       const screenerInput = {
+        ...pageInitialValues,
         screener_current_country_us: false,
         screener_live_in_canada: true,
       }
@@ -72,6 +74,7 @@ describe('Screener-redirect page', () => {
 
     it('when not a resident of US or Canada', () => {
       const screenerInput = {
+        ...pageInitialValues,
         screener_current_country_us: false,
         screener_live_in_canada: false,
       }
@@ -102,6 +105,7 @@ describe('Screener-redirect page', () => {
     it('when needing to file in another state', async () => {
       const user = userEvent.setup()
       const screenerInput = {
+        ...pageInitialValues,
         screener_work_nj: 'other',
       }
 
@@ -140,6 +144,7 @@ describe('Screener-redirect page', () => {
     it('when worked in the military', async () => {
       const user = userEvent.setup()
       const screenerInput = {
+        ...pageInitialValues,
         screener_military_service_eighteen_months: true,
       }
 
@@ -178,6 +183,7 @@ describe('Screener-redirect page', () => {
     it('when on disability', async () => {
       const user = userEvent.setup()
       const screenerInput = {
+        ...pageInitialValues,
         screener_currently_disabled: true,
       }
 
@@ -215,6 +221,7 @@ describe('Screener-redirect page', () => {
     it('when had federal employment', async () => {
       const user = userEvent.setup()
       const screenerInput = {
+        ...pageInitialValues,
         screener_federal_work_in_last_eighteen_months: true,
       }
 
@@ -252,6 +259,7 @@ describe('Screener-redirect page', () => {
 
     it('when had maritime employment', () => {
       const screenerInput = {
+        ...pageInitialValues,
         screener_maritime_employer_eighteen_months: true,
       }
 

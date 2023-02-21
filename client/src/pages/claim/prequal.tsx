@@ -15,6 +15,10 @@ import DropdownField, {
   DropdownOption,
 } from 'components/form/fields/DropdownField/DropdownField'
 import { statesTerritoriesAndProvinces } from 'fixtures/states_territories_provinces'
+import {
+  EMPTY_DROPDOWN_OPTION,
+  UNTOUCHED_RADIO_VALUE,
+} from 'constants/formOptions'
 
 const stateProvincesTerritoriesDropdownOptions: Record<
   string,
@@ -35,12 +39,20 @@ Object.entries(statesTerritoriesAndProvinces).forEach(
 const pageDefinition = PrequalPageDefinition
 const nextPage = getNextPage(pageDefinition)
 
+const pageInitialValues = {
+  filed_in_last_12mo: UNTOUCHED_RADIO_VALUE,
+  state_province_territory_where_filed: EMPTY_DROPDOWN_OPTION,
+  lived_outside_nj_when_working_nj: UNTOUCHED_RADIO_VALUE,
+  will_look_for_work_in_nj: UNTOUCHED_RADIO_VALUE,
+  can_begin_work_immediately: UNTOUCHED_RADIO_VALUE,
+}
+
 export const Prequal: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'prequal' })
 
   return (
     <ClaimFormik<PrequalInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
@@ -50,7 +62,10 @@ export const Prequal: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'no') {
-            await clearField('state_province_territory_where_filed')
+            await clearField(
+              'state_province_territory_where_filed',
+              pageInitialValues.state_province_territory_where_filed
+            )
           }
         }
 
@@ -58,7 +73,10 @@ export const Prequal: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'no') {
-            await clearField('will_look_for_work_in_nj')
+            await clearField(
+              'will_look_for_work_in_nj',
+              pageInitialValues.will_look_for_work_in_nj
+            )
           }
         }
 

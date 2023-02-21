@@ -4,18 +4,12 @@ import { Icon } from '@trussworks/react-uswds/'
 
 export type ReviewElementProps = {
   label: ReactNode
-  value: string | undefined
+  value: string | null | undefined
   legendProps?: Omit<JSX.IntrinsicElements['legend'], 'className'>
   pProps?: Omit<JSX.IntrinsicElements['p'], 'className'>
   maskable?: boolean
   defaultMasked?: boolean
 } & JSX.IntrinsicElements['fieldset']
-
-type MaskedValueProps = {
-  label: ReactNode
-  value: string
-  defaultMasked?: boolean
-}
 
 export const ReviewElement = ({
   label,
@@ -26,7 +20,7 @@ export const ReviewElement = ({
   defaultMasked = true,
   ...fieldSetProps
 }: ReviewElementProps) =>
-  value === undefined ? null : (
+  value ? (
     <fieldset className={styles.fieldset} {...fieldSetProps}>
       <legend className={styles.elementLabel} {...legendProps}>
         {label}
@@ -43,7 +37,13 @@ export const ReviewElement = ({
         )}
       </p>
     </fieldset>
-  )
+  ) : null
+
+type MaskedValueProps = {
+  label: ReactNode
+  value: string
+  defaultMasked?: boolean
+}
 
 const MaskedValue = ({
   label,

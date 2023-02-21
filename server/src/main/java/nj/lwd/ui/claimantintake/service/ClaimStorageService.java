@@ -11,6 +11,7 @@ import java.util.Optional;
 import nj.lwd.ui.claimantintake.constants.ClaimEventCategory;
 import nj.lwd.ui.claimantintake.dto.RecentEmployersResponse;
 import nj.lwd.ui.claimantintake.exception.ClaimDataRetrievalException;
+import nj.lwd.ui.claimantintake.exception.RecentEmployerDataRetrievalException;
 import nj.lwd.ui.claimantintake.model.Claim;
 import nj.lwd.ui.claimantintake.model.ClaimEvent;
 import nj.lwd.ui.claimantintake.model.Claimant;
@@ -280,6 +281,56 @@ public class ClaimStorageService {
                             claimant.getId());
                     return savedClaim;
                 });
+    }
+
+    public Optional<Map<String, Object>> getRecentEmployers(String claimantIdpId)
+            throws RecentEmployerDataRetrievalException {
+        logger.info("Checking for partial claim data associated with user {}", claimantIdpId);
+        Claimant claimant = claimantStorageService.getOrCreateClaimant(claimantIdpId);
+        Optional<Claim> existingClaim = claimant.getActivePartialClaim();
+
+        if (existingClaim.isPresent()) {
+            Claim claim = existingClaim.get();
+            logger.info(
+                    "Getting recent employer data for claimant {} and claim {}",
+                    claimant.getId(),
+                    claim.getId());
+            try {
+                String s3Key = getS3EmployersLocation(claimant, claim);
+                InputStream stream = s3Service.get(claimsBucket, s3Key);
+                var recentEmployerData = deserializeToClaimData(stream);
+                logger.info(
+                        "Successfully retrieved recent employer data for claim {} and claimant {}"
+                                + " from {} in S3",
+                        claim.getId(),
+                        claimant.getId(),
+                        s3Key);
+                return Optional.of(recentEmployerData);
+            } catch (AwsServiceException e) {
+                var errorMessage =
+                        String.format(
+                                "Amazon S3 unable to process request to get recent employer data"
+                                        + " for claim %s",
+                                claim.getId());
+                throw new RecentEmployerDataRetrievalException(errorMessage, e);
+            } catch (SdkClientException e) {
+                var errorMessage =
+                        String.format(
+                                "Unable to contact Amazon S3 or unable to parse the response while"
+                                        + " trying to get recent employer data %s from S3",
+                                claim.getId());
+                throw new RecentEmployerDataRetrievalException(errorMessage, e);
+            } catch (IOException e) {
+                var errorMessage =
+                        String.format(
+                                "Unable to process S3 object data for claim %s", claim.getId());
+                throw new RecentEmployerDataRetrievalException(errorMessage, e);
+            }
+        } else {
+            logger.info(
+                    "Claimant {} does not yet have an active claim to retrieve", claimant.getId());
+            return Optional.empty();
+        }
     }
 
     public String getSSN(String claimantIdpId) {

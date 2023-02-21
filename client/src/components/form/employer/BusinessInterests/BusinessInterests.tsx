@@ -6,6 +6,7 @@ import { useClearFields } from 'hooks/useClearFields'
 import { Employer } from 'types/claimantInput'
 import { ChangeEventHandler } from 'react'
 import { employerRelationOptions } from 'constants/formOptions'
+import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 export const BusinessInterests = () => {
   const { t } = useTranslation('claimForm', {
@@ -18,15 +19,24 @@ export const BusinessInterests = () => {
     HTMLInputElement
   > = async (e) => {
     if (e.target.value === 'yes') {
-      await clearField(`employer_is_sole_proprietorship`)
-      await clearField(`related_to_owner_or_child_of_owner_under_18`)
+      await clearField(
+        `employer_is_sole_proprietorship`,
+        EMPLOYER_SKELETON.employer_is_sole_proprietorship
+      )
+      await clearField(
+        `related_to_owner_or_child_of_owner_under_18`,
+        EMPLOYER_SKELETON.employer_is_sole_proprietorship
+      )
     }
   }
   const handleSoleProprietorshipChange: ChangeEventHandler<
     HTMLInputElement
   > = async (e) => {
     if (e.target.value === 'yes') {
-      await clearField(`related_to_owner_or_child_of_owner_under_18`)
+      await clearField(
+        `related_to_owner_or_child_of_owner_under_18`,
+        EMPLOYER_SKELETON.related_to_owner_or_child_of_owner_under_18
+      )
     }
   }
 

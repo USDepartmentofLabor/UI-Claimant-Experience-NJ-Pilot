@@ -8,14 +8,15 @@ import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { Routes } from 'constants/routes'
 import { yupDate, yupName } from 'validations/yup/custom'
 import dayjs from 'dayjs'
-import { PERSON_NAME_SKELETON } from 'constants/initialValues'
 
 const { t } = i18n_claimForm
 const pageSchema = object().shape({
   birthdate: yupDate(t('birthdate.label'))
     .max(dayjs(new Date()).format('YYYY-MM-DD'), t('birthdate.errors.maxDate'))
     .required(t('birthdate.errors.required')),
-  has_nj_issued_id: boolean().required(t('has_nj_issued_id.errors.required')),
+  has_nj_issued_id: boolean()
+    .nullable()
+    .required(t('has_nj_issued_id.errors.required')),
   drivers_license_or_state_id_number: string().when('has_nj_issued_id', {
     is: true,
     then: (schema) =>
@@ -28,6 +29,7 @@ const pageSchema = object().shape({
   }),
   authorization_type: string()
     .oneOf([...authorizationTypeOptions])
+    .nullable()
     .required(t('work_authorization.authorization_type.errors.required')),
   employment_authorization_document_name: mixed().when('authorization_type', {
     is: (alienRegistrationType: string) =>
@@ -137,17 +139,5 @@ const pageSchema = object().shape({
 export const IdentityPageDefinition: PageDefinition = {
   heading: t('identity.heading'),
   path: Routes.CLAIM.IDENTITY,
-  initialValues: {
-    birthdate: '',
-    has_nj_issued_id: undefined,
-    drivers_license_or_state_id_number: '',
-    authorization_type: undefined,
-    employment_authorization_document_name: { ...PERSON_NAME_SKELETON },
-    alien_registration_number: undefined,
-    LOCAL_re_enter_alien_registration_number: undefined,
-    country_of_origin: undefined,
-    employment_authorization_start_date: '',
-    employment_authorization_end_date: '',
-  },
   validationSchema: pageSchema,
 }

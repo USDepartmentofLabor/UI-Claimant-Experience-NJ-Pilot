@@ -33,11 +33,13 @@ export const EmployerFormik = ({
 
   const { modifyEmployerAndSaveClaimFormValues } = useSaveClaimFormValues()
 
-  const handleSubmit = (values: Employer, helpers: FormikHelpers<Employer>) => {
+  const handleSubmit = async (
+    values: Employer,
+    helpers: FormikHelpers<Employer>
+  ) => {
     const { setSubmitting } = helpers
-    modifyEmployerAndSaveClaimFormValues(values, index).then(() =>
-      setSubmitting(false)
-    )
+    await modifyEmployerAndSaveClaimFormValues(values, index)
+    setSubmitting(false)
   }
 
   const handleSaveAndExit = (values: Employer) => {

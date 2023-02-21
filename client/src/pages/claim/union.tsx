@@ -15,17 +15,24 @@ import {
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
+import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
 
 const pageDefinition = UnionPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
+
+const pageInitialValues = {
+  required_to_seek_work_through_hiring_hall: UNTOUCHED_RADIO_VALUE,
+  union_name: '',
+  union_local_number: '',
+}
 
 export const Union: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'union' })
 
   return (
     <ClaimFormik<UnionInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
@@ -36,7 +43,10 @@ export const Union: NextPageWithLayout = () => {
         > = async (e) => {
           // Remove conditional data if previous answer is changed
           if (e.target.value === 'no') {
-            await clearFields(['union_name', 'union_local_number'])
+            await clearFields({
+              union_name: pageInitialValues.union_name,
+              union_local_number: pageInitialValues.union_local_number,
+            })
           }
         }
 

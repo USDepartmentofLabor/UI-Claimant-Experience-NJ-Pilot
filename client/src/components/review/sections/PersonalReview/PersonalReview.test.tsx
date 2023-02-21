@@ -5,10 +5,10 @@ import {
 } from 'components/review/sections/PersonalReview/PersonalReview'
 import { ClaimantInput } from 'types/claimantInput'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
-import { SuffixOption } from 'constants/formOptions'
+import { EMPTY_DROPDOWN_OPTION, SuffixOption } from 'constants/formOptions'
 
 describe('PersonalReview component', () => {
-  const renderPersonalReview = (claimFormValues: ClaimantInput = {}) => {
+  const renderPersonalReview = (claimFormValues: ClaimantInput) => {
     render(
       <ClaimFormContext.Provider
         value={{ claimFormValues, setClaimFormValues: jest.fn }}
@@ -60,6 +60,7 @@ describe('PersonalReview component', () => {
         first_name: 'first0',
         middle_initial: 'm',
         last_name: 'last0',
+        suffix: EMPTY_DROPDOWN_OPTION,
       },
       LOCAL_claimant_has_alternate_names: true,
       alternate_names: [

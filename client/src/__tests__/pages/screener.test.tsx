@@ -9,6 +9,7 @@ import {
   IntakeAppContext,
   IntakeAppContextType,
 } from 'contexts/IntakeAppContext'
+import { ScreenerInput } from 'types/claimantInput'
 
 const mockPush = jest.fn(async () => true)
 jest.mock('next/router', () => ({
@@ -47,9 +48,9 @@ describe('Screener page', () => {
     )
   }
 
-  const canUseFormValues = {
+  const canUseFormValues: ScreenerInput = {
     screener_current_country_us: true,
-    screener_live_in_canada: undefined,
+    screener_live_in_canada: null,
     screener_job_last_eighteen_months: true,
     screener_work_nj: 'nj',
     screener_currently_disabled: false,
@@ -60,10 +61,10 @@ describe('Screener page', () => {
 
   const fillScreenerFields = async (
     user: UserEvent,
-    formValues: { [key: string]: boolean | string | undefined }
+    formValues: { [key: string]: boolean | string | null }
   ) => {
     for (const k of Object.keys(formValues)) {
-      if (formValues[`${k}`] !== undefined) {
+      if (formValues[`${k}`] !== null) {
         let labelText: string
         if (formValues[`${k}`] === true) {
           labelText = 'yes'
@@ -320,7 +321,7 @@ describe('Screener page', () => {
         </IntakeAppContext.Provider>
       )
 
-      const formValues: { [key: string]: boolean | string | undefined } = {
+      const formValues: { [key: string]: boolean | string | null } = {
         ...canUseFormValues,
         ...disqualifyingValues,
       }
@@ -397,10 +398,10 @@ describe('Screener page', () => {
       setScreenerInput: jest.fn(),
       setSsn: jest.fn(),
       ssnInput: { ssn: '123' },
-      screenerInput: { screener_job_last_eighteen_months: true },
+      screenerInput: undefined,
     }
 
-    const formValues: { [key: string]: boolean | string | undefined } = {
+    const formValues: { [key: string]: boolean | string | null } = {
       ...canUseFormValues,
     }
 
