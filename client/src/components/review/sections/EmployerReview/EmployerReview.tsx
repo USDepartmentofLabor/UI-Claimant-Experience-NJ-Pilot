@@ -299,8 +299,11 @@ export const EmployersReview = () => {
   }
 
   const { claimFormValues } = useContext(ClaimFormContext)
+
+  console.log(claimFormValues?.employers)
   const filteredEmployers = filterEmployers(claimFormValues?.employers)
 
+  console.log(filteredEmployers)
   return (
     <>
       {filteredEmployers.length > 0 &&
