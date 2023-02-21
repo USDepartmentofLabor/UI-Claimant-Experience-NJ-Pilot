@@ -77,13 +77,14 @@ const addAddress = (
   newAddition: string | undefined | null,
   delimiter: string
 ) => {
-  //undefined may be overkill, check for null and "" only?
   if (newAddition === undefined || newAddition === null || newAddition === '') {
     return currentAddr
   }
+
   if (currentAddr !== '') {
     currentAddr = currentAddr.concat(delimiter)
   }
+
   currentAddr = currentAddr.concat(newAddition)
 
   return currentAddr

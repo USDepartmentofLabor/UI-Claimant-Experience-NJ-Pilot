@@ -501,37 +501,7 @@ describe('EmployerReview component', () => {
         {
           employer_name: 'Jamba Juice',
           is_imported: true,
-          worked_for_imported_employer_in_last_18mo: true,
-          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
-          reason_still_employed:
-            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
-          hours_reduced_twenty_percent: true,
-          is_seasonal_work: true,
-        } as Employer,
-        {
-          employer_name: 'microsoft',
-          is_imported: true,
-          worked_for_imported_employer_in_last_18mo: true,
-          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
-          reason_still_employed:
-            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
-          hours_reduced_twenty_percent: true,
-          is_seasonal_work: true,
-        } as Employer,
-        {
-          employer_name: 'apple',
-          is_imported: true,
           worked_for_imported_employer_in_last_18mo: false,
-          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
-          reason_still_employed:
-            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
-          hours_reduced_twenty_percent: true,
-          is_seasonal_work: true,
-        } as Employer,
-        {
-          employer_name: 'i should show up',
-          is_imported: false,
-          worked_for_imported_employer_in_last_18mo: null,
           separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
           reason_still_employed:
             'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
@@ -541,10 +511,10 @@ describe('EmployerReview component', () => {
       ],
     }
 
-    const { reasonStillEmployed } = renderEmployerReview(values)
-    expect(reasonStillEmployed[0]).toHaveTextContent(
-      'separation.reasons.still_employed.options.reduction_in_hours_by_employer'
-    )
-    console.log('done')
+    const { reasonStillEmployed, hoursReducedBy20Percent, isSeasonalWork } =
+      renderEmployerReview(values)
+    expect(reasonStillEmployed.length).toBe(0)
+    expect(hoursReducedBy20Percent.length).toBe(0)
+    expect(isSeasonalWork.length).toBe(0)
   })
 })

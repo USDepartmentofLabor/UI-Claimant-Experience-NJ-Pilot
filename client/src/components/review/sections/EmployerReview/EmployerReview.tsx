@@ -18,8 +18,6 @@ import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
 import { convertCentsToDollars } from 'utils/currency/conversion'
 import { Trans } from 'react-i18next'
 import { payTypeOptions, PayTypeOption } from 'constants/formOptions'
-//delete below
-// import { payTypeOptions, PayTypeOption, ReasonStillEmployedOption, ChangeInEmploymentOption } from 'constants/formOptions'
 
 export const PaymentReview = ({
   paymentDetail,
@@ -106,13 +104,6 @@ export const EmployerReview = ({
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   let { path } = EditEmployerPageDefinition
   path = path + '/' + String(index)
-
-  if (
-    !employer.worked_for_imported_employer_in_last_18mo &&
-    employer.is_imported
-  ) {
-    return null
-  }
 
   const employerCityAndState =
     employer.is_imported && employer.imported_address
@@ -306,54 +297,10 @@ export const EmployersReview = () => {
     }
     return newList
   }
-  console.log('inside employers review')
+
   const { claimFormValues } = useContext(ClaimFormContext)
   const filteredEmployers = filterEmployers(claimFormValues?.employers)
-  //DELETE BELOW
-  // const testEmployers= [
-  //   {
-  //     employer_name: 'Jamba Juice',
-  //     is_imported: true,
-  //     worked_for_imported_employer_in_last_18mo: true,
-  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
-  //     reason_still_employed:
-  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
-  //     hours_reduced_twenty_percent: true,
-  //     is_seasonal_work: true,
-  //   } as Employer,
-  //   {
-  //     employer_name: 'microsoft',
-  //     is_imported: true,
-  //     worked_for_imported_employer_in_last_18mo: true,
-  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
-  //     reason_still_employed:
-  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
-  //     hours_reduced_twenty_percent: true,
-  //     is_seasonal_work: true,
-  //   } as Employer,
-  //   {
-  //     employer_name: 'apple',
-  //     is_imported: true,
-  //     worked_for_imported_employer_in_last_18mo: false,
-  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
-  //     reason_still_employed:
-  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
-  //     hours_reduced_twenty_percent: true,
-  //     is_seasonal_work: true,
-  //   } as Employer,
-  //   {
-  //     employer_name: 'i should show up',
-  //     is_imported: false,
-  //     worked_for_imported_employer_in_last_18mo: null,
-  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
-  //     reason_still_employed:
-  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
-  //     hours_reduced_twenty_percent: true,
-  //     is_seasonal_work: true,
-  //   } as Employer,
-  // ]
-  // const filteredEmployers=filterEmployers(testEmployers )
-  console.log(filteredEmployers)
+
   return (
     <>
       {filteredEmployers.length > 0 &&
