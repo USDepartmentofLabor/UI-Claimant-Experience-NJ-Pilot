@@ -3,14 +3,13 @@ import { ReviewSection } from 'components/review/ReviewSection/ReviewSection'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useTranslation } from 'next-i18next'
 import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
+import { Employer, PaymentsReceivedDetailInput } from 'types/claimantInput'
 import {
-  ImportedEmployerAddress,
-  AddressWithoutStreetInput,
-  Employer,
-  PaymentsReceivedDetailInput,
-  EmployerAddressInput,
-} from 'types/claimantInput'
-import { formatStoredDateToDisplayDate } from 'utils/date/format'
+  buildAlternateEmployerAddress,
+  buildEmployerInputAddress,
+  buildImportedEmployerAddress,
+  formatStoredDateToDisplayDate,
+} from 'utils/date/format'
 import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
 import { formatStoredToDisplayPhone } from 'utils/phone/format'
@@ -19,111 +18,9 @@ import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
 import { convertCentsToDollars } from 'utils/currency/conversion'
 import { Trans } from 'react-i18next'
 import { payTypeOptions, PayTypeOption } from 'constants/formOptions'
+//delete below
+// import { payTypeOptions, PayTypeOption, ReasonStillEmployedOption, ChangeInEmploymentOption } from 'constants/formOptions'
 
-export const buildAlternateEmployerAddress = (
-  alternateEmployerAddress: AddressWithoutStreetInput | undefined
-) => {
-  const { city, state, zipcode } = alternateEmployerAddress || {}
-  if (state === undefined && city === undefined && zipcode === undefined) {
-    return undefined
-  }
-
-  return combineAddresses([city], state, zipcode, ', ')
-}
-const combineAddresses = (
-  addresses: (string | undefined | null)[] | undefined,
-  state: string | undefined | null,
-  zipcode: string | undefined | null,
-  delimiter: string
-) => {
-  let addr = ''
-  let zipcodeDelimiter = delimiter
-  if (addresses) {
-    for (const addressField of addresses) {
-      addr = addAddress(addr, addressField, delimiter)
-    }
-    addr = addAddress(addr, state, delimiter)
-
-    //if we have a state value only add a space between zip state
-    if (state && zipcode) {
-      zipcodeDelimiter = ' '
-    }
-
-    addr = addAddress(addr, zipcode, zipcodeDelimiter)
-  }
-
-  return addr
-}
-const addAddress = (
-  currentAddr: string,
-  newAddition: string | undefined | null,
-  delimiter: string
-) => {
-  if (newAddition === undefined || newAddition === null) {
-    return currentAddr
-  }
-  if (currentAddr !== '') {
-    currentAddr = currentAddr.concat(delimiter)
-  }
-  currentAddr = currentAddr.concat(newAddition)
-
-  return currentAddr
-}
-export const buildEmployerInputAddress = (
-  addressInput: EmployerAddressInput | undefined
-) => {
-  const { address, address2, address3, city, state, zipcode } =
-    addressInput || {}
-  if (
-    address === undefined &&
-    address2 === undefined &&
-    address3 === undefined &&
-    city === undefined &&
-    state === undefined &&
-    zipcode === undefined
-  ) {
-    return undefined
-  }
-
-  return combineAddresses(
-    [address, address2, address3, city],
-    state,
-    zipcode,
-    ', '
-  )
-}
-export const buildImportedEmployerAddress = (
-  importedAddress: ImportedEmployerAddress | undefined
-) => {
-  const {
-    employerAddressLine1,
-    employerAddressLine2,
-    employerAddressLine3,
-    employerAddressLine4,
-    employerAddressLine5,
-    employerAddressZip,
-  } = importedAddress || {}
-
-  if (
-    employerAddressLine1 === undefined &&
-    employerAddressLine2 === undefined &&
-    employerAddressLine3 === undefined &&
-    employerAddressLine4 === undefined &&
-    employerAddressLine5 === undefined &&
-    employerAddressZip === undefined
-  ) {
-    return undefined
-  }
-  const addresses = [
-    employerAddressLine1,
-    employerAddressLine2,
-    employerAddressLine3,
-    employerAddressLine4,
-    employerAddressLine5,
-  ]
-
-  return combineAddresses(addresses, undefined, employerAddressZip, '\n')
-}
 export const PaymentReview = ({
   paymentDetail,
   payTypeOption,
@@ -395,12 +292,72 @@ export const EmployerReview = ({
   )
 }
 export const EmployersReview = () => {
+  const filterEmployers = (employers: Employer[] | undefined) => {
+    const newList = [] as Employer[]
+    if (employers && employers?.length !== 0) {
+      for (const employer of employers) {
+        if (
+          employer?.worked_for_imported_employer_in_last_18mo ||
+          !employer?.is_imported
+        ) {
+          newList.push(employer)
+        }
+      }
+    }
+    return newList
+  }
+  console.log('inside employers review')
   const { claimFormValues } = useContext(ClaimFormContext)
+  const filteredEmployers = filterEmployers(claimFormValues?.employers)
+  //DELETE BELOW
+  // const testEmployers= [
+  //   {
+  //     employer_name: 'Jamba Juice',
+  //     is_imported: true,
+  //     worked_for_imported_employer_in_last_18mo: true,
+  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+  //     reason_still_employed:
+  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+  //     hours_reduced_twenty_percent: true,
+  //     is_seasonal_work: true,
+  //   } as Employer,
+  //   {
+  //     employer_name: 'microsoft',
+  //     is_imported: true,
+  //     worked_for_imported_employer_in_last_18mo: true,
+  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+  //     reason_still_employed:
+  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+  //     hours_reduced_twenty_percent: true,
+  //     is_seasonal_work: true,
+  //   } as Employer,
+  //   {
+  //     employer_name: 'apple',
+  //     is_imported: true,
+  //     worked_for_imported_employer_in_last_18mo: false,
+  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+  //     reason_still_employed:
+  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+  //     hours_reduced_twenty_percent: true,
+  //     is_seasonal_work: true,
+  //   } as Employer,
+  //   {
+  //     employer_name: 'i should show up',
+  //     is_imported: false,
+  //     worked_for_imported_employer_in_last_18mo: null,
+  //     separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+  //     reason_still_employed:
+  //       'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+  //     hours_reduced_twenty_percent: true,
+  //     is_seasonal_work: true,
+  //   } as Employer,
+  // ]
+  // const filteredEmployers=filterEmployers(testEmployers )
+  console.log(filteredEmployers)
   return (
     <>
-      {claimFormValues?.employers &&
-        claimFormValues?.employers.length > 0 &&
-        claimFormValues?.employers.map((employer, idx) => (
+      {filteredEmployers.length > 0 &&
+        filteredEmployers.map((employer, idx) => (
           <EmployerReview employer={employer} index={idx} key={idx} />
         ))}
     </>

@@ -14,7 +14,7 @@ import {
   ChangeInEmploymentOption,
   EmployerRelationOption,
   PayTypeOption,
-  ReasonStillEmployedOptions,
+  ReasonStillEmployedOption,
 } from 'constants/formOptions'
 describe('EmployerReview component', () => {
   const renderEmployerReview = (claimFormValues: ClaimantInput = {}) => {
@@ -195,7 +195,7 @@ describe('EmployerReview component', () => {
               pay_type: 'none',
             } as PaymentsReceivedDetailInput,
           ],
-        },
+        } as Employer,
       ],
     }
 
@@ -298,11 +298,15 @@ describe('EmployerReview component', () => {
           LOCAL_pay_types: ['none' as PayTypeOption],
           payments_received: [
             {
-              pay_type: 'none',
+              pay_type: 'none' as PayTypeOption,
+              note: '',
+              total: '',
+              date_pay_began: '',
+              date_pay_ended: '',
             } as PaymentsReceivedDetailInput,
           ],
           work_location_phone: { number: '1234567890' } as PhoneInput,
-        },
+        } as Employer,
       ],
     }
 
@@ -355,7 +359,7 @@ describe('EmployerReview component', () => {
           worked_for_imported_employer_in_last_18mo: true,
           separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
           reason_still_employed:
-            'reduction_in_hours_by_employer' as ReasonStillEmployedOptions,
+            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
           hours_reduced_twenty_percent: true,
           is_seasonal_work: true,
         } as Employer,
@@ -426,7 +430,7 @@ describe('EmployerReview component', () => {
           employer_address: {
             address: 'building 1',
             address2: '123 main street',
-            address3: undefined,
+            address3: '',
             city: 'smallville',
             state: 'KS',
             zipcode: '12345',
@@ -436,7 +440,7 @@ describe('EmployerReview component', () => {
           worked_at_employer_address: true,
           is_full_time: true,
           is_imported: false,
-          imported_address: undefined,
+          imported_address: null,
         } as Employer,
       ],
     }
@@ -489,5 +493,58 @@ describe('EmployerReview component', () => {
 
     expect(otherNote.length).toBe(1)
     expect(otherNote[0]).toHaveTextContent('i am some other note')
+  })
+
+  it('shows conditional values for separation circumstance-still employed', () => {
+    const values = {
+      employers: [
+        {
+          employer_name: 'Jamba Juice',
+          is_imported: true,
+          worked_for_imported_employer_in_last_18mo: true,
+          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+          reason_still_employed:
+            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+          hours_reduced_twenty_percent: true,
+          is_seasonal_work: true,
+        } as Employer,
+        {
+          employer_name: 'microsoft',
+          is_imported: true,
+          worked_for_imported_employer_in_last_18mo: true,
+          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+          reason_still_employed:
+            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+          hours_reduced_twenty_percent: true,
+          is_seasonal_work: true,
+        } as Employer,
+        {
+          employer_name: 'apple',
+          is_imported: true,
+          worked_for_imported_employer_in_last_18mo: false,
+          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+          reason_still_employed:
+            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+          hours_reduced_twenty_percent: true,
+          is_seasonal_work: true,
+        } as Employer,
+        {
+          employer_name: 'i should show up',
+          is_imported: false,
+          worked_for_imported_employer_in_last_18mo: null,
+          separation_circumstance: 'still_employed' as ChangeInEmploymentOption,
+          reason_still_employed:
+            'reduction_in_hours_by_employer' as ReasonStillEmployedOption,
+          hours_reduced_twenty_percent: true,
+          is_seasonal_work: true,
+        } as Employer,
+      ],
+    }
+
+    const { reasonStillEmployed } = renderEmployerReview(values)
+    expect(reasonStillEmployed[0]).toHaveTextContent(
+      'separation.reasons.still_employed.options.reduction_in_hours_by_employer'
+    )
+    console.log('done')
   })
 })
