@@ -95,11 +95,24 @@ runs:
       run: |
         make server-task-definition environment=${{ inputs.deploy-env }}
 
+    # The otel collector image is built as needed by the
+    # build-otel-collector.yml workflow. Upgrading to a new otel collector
+    # image is a two-part process:
+    #  1. (automated) Run the build-otel-collector.yml workflow to create a new image
+    #  2. (manual)    Update this step to use the new image tag
+    - name: Fill in the image ID in the Amazon ECS task definition (otel collector)
+      id: task-def-collector
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
+      with:
+        task-definition: ops/ecs/server-task-definition.json
+        container-name: aws-otel-collector
+        image: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
+
     - name: Fill in the new image ID in the Amazon ECS task definition (server)
       id: task-def-server
       uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
       with:
-        task-definition: ops/ecs/server-task-definition.json
+        task-definition: ${{ steps.task-def-collector.outputs.task-definition }}
         container-name: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}
         image:
           ${{ inputs.image-uri == '' && steps.build-server.outputs.image-uri || inputs.image-uri }}
