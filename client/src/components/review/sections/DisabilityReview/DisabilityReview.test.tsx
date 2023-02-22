@@ -70,26 +70,28 @@ describe('DisabilityReview component', () => {
     expect(contactedLastEmployer[0]).toHaveTextContent('yes')
   })
 
-  // it('shows all disability types',()=>{
-  //     const values: ClaimantInput = {
-  //         disabled_immediately_before: true,
-  //         type_of_disability:"private_plan",
-  //         date_disability_began:'2022-04-01',
-  //         recovery_date:'2022-04-01',
-  //         contacted_last_employer_after_recovery: true,
-  //         disability_applied_to_or_received:['disability',
-  //         'family_leave',
-  //         'social_security']
-  //       }
+  it('shows all disability types', () => {
+    const values: ClaimantInput = {
+      disabled_immediately_before: true,
+      type_of_disability: 'private_plan',
+      date_disability_began: '2022-04-01',
+      recovery_date: '2022-04-01',
+      contacted_last_employer_after_recovery: true,
+      disability_applied_to_or_received: [
+        'disability',
+        'family_leave',
+        'social_security',
+      ],
+    }
 
-  //     const {disabilityAppliedOrReceived,
-  //     }=renderDisabilityReview(values)
-  //     screen.debug()
-  //     expect(disabilityAppliedOrReceived[0]).toContain("disability.disability_applied_to_or_received.options.disability")
+    const { disabilityAppliedOrReceived } = renderDisabilityReview(values)
+    screen.debug()
+    expect(disabilityAppliedOrReceived[0].innerHTML).toMatch(
+      'disability.disability'
+    )
 
-  //     expect(disabilityAppliedOrReceived[0]).toMatch("Family leave")
+    expect(disabilityAppliedOrReceived[0].innerHTML).toMatch('family_leave')
 
-  //     expect(disabilityAppliedOrReceived[0]).toMatch("Social Security (SSI/SSDI)")
-
-  // })
+    expect(disabilityAppliedOrReceived[0].innerHTML).toMatch('social_security')
+  })
 })

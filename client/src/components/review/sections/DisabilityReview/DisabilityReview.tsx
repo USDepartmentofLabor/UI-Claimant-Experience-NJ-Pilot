@@ -49,7 +49,12 @@ export const DisabilityReview = () => {
       />
       <ReviewElement
         label={t('disability.type_of_disability.label')}
-        value={claimFormValues?.type_of_disability}
+        value={
+          claimFormValues?.type_of_disability &&
+          t(
+            `disability.type_of_disability.options.${claimFormValues.type_of_disability}`
+          )
+        }
       />
       <ReviewElement
         label={t('disability.date_disability_began.label')}
