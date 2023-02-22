@@ -29,7 +29,7 @@ import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
-import { EmployersReview } from 'components/review/sections/EmployerReview/EmployerReview'
+import { EmployersReview } from 'components/review/sections/EmployersReview/EmployersReview'
 import { PrequalReview } from 'components/review/sections/PrequalReview/PrequalReview'
 import { UnionReview } from 'components/review/sections/UnionReview/UnionReview'
 import { EducationAndTrainingReview } from 'components/review/sections/EducationAndTrainingReview/EducationAndTrainingReview'
@@ -137,7 +137,6 @@ export const Review: NextPageWithLayout = () => {
             <HorizontalRule />
             <UnionReview />
             <HorizontalRule />
-
             <EmployersReview />
             <HorizontalRule />
 

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import { EmployersReview } from './EmployerReview'
+import { EmployersReview } from './EmployersReview'
 import {
   AddressWithoutStreetInput,
   ClaimantInput,
@@ -495,7 +495,7 @@ describe('EmployerReview component', () => {
     expect(otherNote[0]).toHaveTextContent('i am some other note')
   })
 
-  it('shows conditional values for separation circumstance-still employed', () => {
+  it('Employers are not displayed if user selects no for all available employers', () => {
     const values = {
       employers: [
         {

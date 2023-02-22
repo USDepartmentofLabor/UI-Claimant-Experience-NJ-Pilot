@@ -104,7 +104,12 @@ export const EmployerReview = ({
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   let { path } = EditEmployerPageDefinition
   path = path + '/' + String(index)
-
+  if (
+    !employer.worked_for_imported_employer_in_last_18mo &&
+    employer.is_imported
+  ) {
+    return null
+  }
   const employerCityAndState =
     employer.is_imported && employer.imported_address
       ? parseCityAndStateFromImportedAddress(employer.imported_address)
@@ -285,31 +290,13 @@ export const EmployerReview = ({
   )
 }
 export const EmployersReview = () => {
-  const filterEmployers = (employers: Employer[] | undefined) => {
-    const newList = [] as Employer[]
-    if (employers && employers?.length !== 0) {
-      for (const employer of employers) {
-        if (
-          employer?.worked_for_imported_employer_in_last_18mo ||
-          !employer?.is_imported
-        ) {
-          newList.push(employer)
-        }
-      }
-    }
-    return newList
-  }
-
   const { claimFormValues } = useContext(ClaimFormContext)
 
-  console.log(claimFormValues?.employers)
-  const filteredEmployers = filterEmployers(claimFormValues?.employers)
-
-  console.log(filteredEmployers)
   return (
     <>
-      {filteredEmployers.length > 0 &&
-        filteredEmployers.map((employer, idx) => (
+      {claimFormValues?.employers &&
+        claimFormValues?.employers.length > 0 &&
+        claimFormValues?.employers.map((employer, idx) => (
           <EmployerReview employer={employer} index={idx} key={idx} />
         ))}
     </>
