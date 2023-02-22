@@ -85,13 +85,12 @@ describe('DisabilityReview component', () => {
     }
 
     const { disabilityAppliedOrReceived } = renderDisabilityReview(values)
-    screen.debug()
-    expect(disabilityAppliedOrReceived[0].innerHTML).toMatch(
+    expect(disabilityAppliedOrReceived[0].textContent).toMatch(
       'disability.disability'
     )
-
-    expect(disabilityAppliedOrReceived[0].innerHTML).toMatch('family_leave')
-
-    expect(disabilityAppliedOrReceived[0].innerHTML).toMatch('social_security')
+    expect(disabilityAppliedOrReceived[0].textContent).toMatch('family_leave')
+    expect(disabilityAppliedOrReceived[0].textContent).toMatch(
+      'social_security'
+    )
   })
 })
