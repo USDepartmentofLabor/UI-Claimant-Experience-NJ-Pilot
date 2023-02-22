@@ -136,11 +136,11 @@ export const Review: NextPageWithLayout = () => {
             <HorizontalRule />
             <DemographicsReview />
             <HorizontalRule />
+            <OccupationReview />
+            <HorizontalRule />
             <EducationAndTrainingReview />
             <HorizontalRule />
             <UnionReview />
-            <HorizontalRule />
-            <OccupationReview />
             <HorizontalRule />
 
             <CheckboxField
