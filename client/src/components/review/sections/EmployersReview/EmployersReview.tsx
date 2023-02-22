@@ -126,16 +126,17 @@ export const EmployerReview = ({
 
     let paymentListString = ''
     for (const payment of paymentsReceived) {
-      //TODO- does order matter here, its in an array so values could move around, but do we care?
       if (paymentListString !== '') {
         paymentListString = paymentListString.concat('\n')
       }
+
       paymentListString = paymentListString.concat(
         t(
           `payments_received.payments_received_detail.pay_type.options.${payment.pay_type}.label`
         )
       )
     }
+
     return paymentListString
   }
 

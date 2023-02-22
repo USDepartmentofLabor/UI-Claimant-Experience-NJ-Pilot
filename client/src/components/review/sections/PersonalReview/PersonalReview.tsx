@@ -7,8 +7,6 @@ import { useTranslation } from 'next-i18next'
 import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
 import { buildPersonalAddress } from 'utils/date/format'
 
-// TODO: Fix to handle empty strings
-
 export const PersonalReview = () => {
   const { t } = useTranslation('claimForm')
   const { t: tContact } = useTranslation('contact')
