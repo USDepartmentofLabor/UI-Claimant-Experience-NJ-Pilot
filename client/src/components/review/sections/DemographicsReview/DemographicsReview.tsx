@@ -13,32 +13,30 @@ export const DemographicsReview = () => {
 
   return (
     <ReviewSection heading={heading} editUrl={path}>
-      {claimFormValues?.sex && (
-        <ReviewElement
-          label={t(`sex.label`)}
-          value={t(`sex.options.${claimFormValues?.sex}`)}
-        />
-      )}
-      {claimFormValues?.ethnicity && (
-        <ReviewElement
-          label={t('ethnicity.label')}
-          value={t(`ethnicity.options.${claimFormValues?.ethnicity}`)}
-        />
-      )}
-      {claimFormValues?.race && (
-        <ReviewElement
-          label={t('race.label')}
-          value={t(`race.options.${claimFormValues?.race[0]}`)}
-        />
-      )}
-      {claimFormValues?.education_level && (
-        <ReviewElement
-          label={t('education_level.label')}
-          value={t(
-            `education_level.options.${claimFormValues?.education_level}`
-          )}
-        />
-      )}
+      <ReviewElement
+        label={t(`sex.label`)}
+        value={claimFormValues?.sex && t(`sex.options.${claimFormValues?.sex}`)}
+      />
+      <ReviewElement
+        label={t('ethnicity.label')}
+        value={
+          claimFormValues?.ethnicity &&
+          t(`ethnicity.options.${claimFormValues?.ethnicity}`)
+        }
+      />
+      <ReviewElement
+        label={t('race.label')}
+        value={
+          claimFormValues?.race && t(`race.options.${claimFormValues?.race[0]}`)
+        }
+      />
+      <ReviewElement
+        label={t('education_level.label')}
+        value={
+          claimFormValues?.education_level &&
+          t(`education_level.options.${claimFormValues?.education_level}`)
+        }
+      />
     </ReviewSection>
   )
 }
