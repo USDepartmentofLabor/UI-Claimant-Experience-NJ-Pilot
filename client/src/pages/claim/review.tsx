@@ -127,13 +127,12 @@ export const Review: NextPageWithLayout = () => {
 
             <PrequalReview />
             <HorizontalRule />
+            <IdentityReview />
+            <HorizontalRule />
             <PersonalReview />
             <HorizontalRule />
             <ContactReview />
             <HorizontalRule />
-            <IdentityReview />
-            <HorizontalRule />
-
             <DemographicsReview />
             <HorizontalRule />
             <EducationAndTrainingReview />
