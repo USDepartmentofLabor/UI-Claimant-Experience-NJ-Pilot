@@ -3,7 +3,7 @@ import { PersonalReview } from 'components/review/sections/PersonalReview/Person
 import { ClaimantInput } from 'types/claimantInput'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { EMPTY_DROPDOWN_OPTION, SuffixOption } from 'constants/formOptions'
-import { buildPersonalAddress } from 'utils/date/format'
+import { buildPersonalAddress } from 'utils/address/format'
 
 describe('PersonalReview component', () => {
   const renderPersonalReview = (claimFormValues: ClaimantInput) => {

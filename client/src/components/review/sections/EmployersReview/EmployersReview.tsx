@@ -4,12 +4,12 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useTranslation } from 'next-i18next'
 import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
 import { Employer, PaymentsReceivedDetailInput } from 'types/claimantInput'
+import { formatStoredDateToDisplayDate } from 'utils/date/format'
 import {
   buildAlternateEmployerAddress,
   buildEmployerInputAddress,
   buildImportedEmployerAddress,
-  formatStoredDateToDisplayDate,
-} from 'utils/date/format'
+} from 'utils/address/format'
 import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { EditEmployerPageDefinition } from 'constants/pages/definitions/editEmployerPageDefinition'
 import { formatStoredToDisplayPhone } from 'utils/phone/format'

@@ -5,7 +5,7 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { useTranslation } from 'next-i18next'
 import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
-import { buildPersonalAddress } from 'utils/date/format'
+import { buildPersonalAddress } from 'utils/address/format'
 
 export const PersonalReview = () => {
   const { t } = useTranslation('claimForm')
