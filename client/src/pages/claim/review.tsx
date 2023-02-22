@@ -35,6 +35,7 @@ import { UnionReview } from 'components/review/sections/UnionReview/UnionReview'
 import { EducationAndTrainingReview } from 'components/review/sections/EducationAndTrainingReview/EducationAndTrainingReview'
 import { ContactReview } from 'components/review/sections/ContactReview/ContactReview'
 import { UNTOUCHED_CHECKBOX_VALUE } from 'constants/formOptions'
+import Disability from './disability'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
@@ -138,6 +139,8 @@ export const Review: NextPageWithLayout = () => {
             <UnionReview />
             <HorizontalRule />
             <OccupationReview />
+            <HorizontalRule />
+            <Disability />
             <HorizontalRule />
 
             <CheckboxField
