@@ -45,6 +45,7 @@ describe('Review page', () => {
         first_name: 'someone with',
         middle_initial: 'a',
         last_name: 'name',
+        suffix: '',
       },
     },
     setClaimFormValues: jest.fn(),

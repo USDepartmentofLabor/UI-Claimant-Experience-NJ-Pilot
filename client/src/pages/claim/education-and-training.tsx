@@ -18,17 +18,23 @@ import {
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
 import { NextButton } from 'components/form/ClaimFormButtons/NextButton/NextButton'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
+import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
 
 const pageDefinition = EducationAndTrainingPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
+
+const pageInitialValues = {
+  attending_college_or_job_training: UNTOUCHED_RADIO_VALUE,
+  training_through_hiring_hall_or_career_center: UNTOUCHED_RADIO_VALUE,
+}
 
 const EducationAndTraining: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
 
   return (
     <ClaimFormik<EducationAndTrainingInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
@@ -38,7 +44,10 @@ const EducationAndTraining: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'no') {
-            await clearField('training_through_hiring_hall_or_career_center')
+            await clearField(
+              'training_through_hiring_hall_or_career_center',
+              pageInitialValues.training_through_hiring_hall_or_career_center
+            )
           }
         }
 

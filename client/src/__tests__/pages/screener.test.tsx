@@ -9,6 +9,7 @@ import {
   IntakeAppContext,
   IntakeAppContextType,
 } from 'contexts/IntakeAppContext'
+import { ScreenerInput } from 'types/claimantInput'
 
 const mockPush = jest.fn(async () => true)
 jest.mock('next/router', () => ({
@@ -47,12 +48,12 @@ describe('Screener page', () => {
     )
   }
 
-  const canUseFormValues = {
+  const canUseFormValues: ScreenerInput = {
     screener_current_country_us: true,
-    screener_live_in_canada: undefined,
+    screener_live_in_canada: null,
     screener_job_last_eighteen_months: true,
     screener_all_work_nj: true,
-    screener_any_work_nj: undefined,
+    screener_any_work_nj: null,
     screener_currently_disabled: false,
     screener_military_service_eighteen_months: false,
     screener_federal_work_in_last_eighteen_months: false,
@@ -61,10 +62,10 @@ describe('Screener page', () => {
 
   const fillScreenerFields = async (
     user: UserEvent,
-    formValues: { [key: string]: boolean | undefined }
+    formValues: { [key: string]: boolean | null }
   ) => {
     for (const k of Object.keys(formValues)) {
-      if (formValues[`${k}`] !== undefined) {
+      if (formValues[`${k}`] !== null) {
         await user.click(
           within(
             screen.getByRole('group', { name: `${k}.label` })
@@ -338,7 +339,7 @@ describe('Screener page', () => {
         </IntakeAppContext.Provider>
       )
 
-      const formValues: { [key: string]: boolean | undefined } = {
+      const formValues: { [key: string]: boolean | null } = {
         ...canUseFormValues,
         ...disqualifyingValues,
       }
@@ -416,10 +417,10 @@ describe('Screener page', () => {
       setScreenerInput: jest.fn(),
       setSsn: jest.fn(),
       ssnInput: { ssn: '123' },
-      screenerInput: { screener_job_last_eighteen_months: true },
+      screenerInput: undefined,
     }
 
-    const formValues: { [key: string]: boolean | undefined } = {
+    const formValues: { [key: string]: boolean | null } = {
       ...canUseFormValues,
     }
 

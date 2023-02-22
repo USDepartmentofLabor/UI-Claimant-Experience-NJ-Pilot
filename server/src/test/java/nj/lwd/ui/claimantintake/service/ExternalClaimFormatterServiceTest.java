@@ -258,4 +258,83 @@ public class ExternalClaimFormatterServiceTest {
         assertEquals(resultClaimExpected, alteredClaim);
         verify(mockClaimStorage, times(1)).getRecentEmployers(claimantIdpId);
     }
+
+    @Test
+    void formatClaimWithEmptyAndNullValues() throws Exception {
+        Map<String, Object> originalClaim =
+                (new ObjectMapper())
+                        .readValue(
+                                """
+                                        {
+                                          "field": "a value!",
+                                          "empty_field": "",
+                                          "null_field": null,
+                                          "empty_object": {
+                                            "field1": "",
+                                            "field2": ""
+                                          },
+                                          "null_object": {
+                                            "field1": null,
+                                            "field2": null
+                                          },
+                                          "partially_filled_object": {
+                                            "field1": "a value",
+                                            "field2": "",
+                                            "field3": null
+                                          },
+                                          "array_field":[
+                                            {
+                                              "name": "name",
+                                              "nullable_field": "not null"
+                                            },
+                                            {
+                                              "name": "",
+                                              "nullable_field": null
+                                            },
+                                            {
+                                              "name": "other name",
+                                              "nullable_field": null
+                                            }
+                                          ],
+                                          "a_list_of_things": [
+                                            "one",
+                                            "two",
+                                            "three",
+                                            ""
+                                          ]
+                                        }
+                                        """,
+                                new TypeReference<>() {});
+
+        Map<String, Object> resultClaimExpected =
+                (new ObjectMapper())
+                        .readValue(
+                                """
+                                        {
+                                          "field": "a value!",
+                                          "partially_filled_object": {
+                                            "field1": "a value"
+                                          },
+                                          "array_field":[
+                                            {
+                                              "name": "name",
+                                              "nullable_field": "not null"
+                                            },
+                                            {
+                                              "name": "other name"
+                                            }
+                                          ],
+                                          "a_list_of_things":[
+                                            "one",
+                                            "two",
+                                            "three"
+                                          ],
+                                          "wgpm": null
+                                        }
+                                        """,
+                                new TypeReference<>() {});
+        Map<String, Object> alteredClaim =
+                externalClaimFormatterService.formatClaim(originalClaim, claimantIdpId);
+        assertEquals(resultClaimExpected, alteredClaim);
+    }
 }

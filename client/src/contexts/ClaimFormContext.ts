@@ -3,7 +3,7 @@ import { createContext } from 'react'
 
 export type ClaimFormContextType = {
   claimFormValues?: ClaimantInput
-  setClaimFormValues: (formData: ClaimantInput) => void
+  setClaimFormValues: (formData: Partial<ClaimantInput>) => void
 }
 
 export const ClaimFormContext = createContext<ClaimFormContextType>(

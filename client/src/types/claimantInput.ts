@@ -13,27 +13,47 @@ import {
   EducationLevelOption,
   SuffixOption,
   CountryOfOriginOption,
+  EmptyOption,
+  UntouchedCheckboxValue,
+  ChangeInEmploymentOption,
+  ReasonStillEmployedOption,
+  UntouchedRadioValue,
 } from 'constants/formOptions'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type ClaimantInput = ScreenerInput &
-  SsnInput &
-  PrequalInput &
-  PersonalInput &
-  ContactInput &
-  DemographicsInput &
-  IdentityInput &
-  EmployerInput &
-  ReviewEmployersInput &
-  OccupationInput &
-  EducationAndTrainingInput &
-  UnionInput &
-  DisabilityStatusInput &
-  PaymentInput &
-  ReviewInput
+// Types here represent the possible values of the intake form fields.
+// These are primarily informed by the type of the field (i.e YesNo, Text, Dropdown, Checkbox, Radio, etc) and the
+// "initial value" state of the field.
+// Formik (and React) is opinionated about preferring defined values be set for each field regardless of initial state.
+// As a result, all fields (even if initially empty and/or hidden) are given initial values, typically corresponding to
+// empty input, as follows:
+// - Text inputs: empty strings represent empty input
+// - Dropdowns: empty strings represent empty input
+// - Checkboxes: empty strings represent empty input
+// - Radio fields and "Yes/No" questions: null represents empty input
+
+export type ClaimantInput = Partial<
+  ScreenerInput &
+    SsnInput &
+    PrequalInput &
+    IdentityInput &
+    PersonalInput &
+    ContactInput &
+    DemographicsInput &
+    EmployerInput &
+    ReviewEmployersInput &
+    OccupationInput &
+    EducationAndTrainingInput &
+    UnionInput &
+    DisabilityStatusInput &
+    PaymentInput &
+    ReviewInput
+>
+
+export type YesNoInput = boolean | UntouchedRadioValue
+export type CheckboxInput = boolean | UntouchedCheckboxValue
 
 export type EmployerInput = {
-  employers?: Employer[]
+  employers: Employer[]
 }
 
 export type ImportedEmployerAddress = {
@@ -46,138 +66,137 @@ export type ImportedEmployerAddress = {
 }
 
 export type ImportedEmployerFields = {
-  is_imported?: boolean
-  imported_address?: ImportedEmployerAddress
-  worked_for_imported_employer_in_last_18mo?: boolean
+  is_imported: boolean
+  imported_address: ImportedEmployerAddress | null
+  worked_for_imported_employer_in_last_18mo: YesNoInput
 }
 
 export type Employer = ImportedEmployerFields & {
-  employer_address?: EmployerAddressInput
-  employer_phone?: PhoneInput
+  employer_address: EmployerAddressInput
+  employer_phone: PhoneInput
 
-  isInitiated?: boolean
-  fein?: string
-  employer_name?: string
-  is_full_time?: boolean
+  fein: string
+  employer_name: string
+  is_full_time: YesNoInput
 
-  separation_circumstance?: string
-  expect_to_be_recalled?: boolean
-  separation_circumstance_details?: string
-  employment_start_date?: string
-  employment_last_date?: string
-  reason_still_employed?: string
-  hours_reduced_twenty_percent?: boolean
-  discharge_date?: string
-  definite_recall?: boolean
-  definite_recall_date?: string
-  is_seasonal_work?: boolean
+  separation_circumstance: ChangeInEmploymentOption | UntouchedRadioValue
+  expect_to_be_recalled: YesNoInput
+  separation_circumstance_details: string
+  employment_start_date: string
+  employment_last_date: string
+  reason_still_employed: ReasonStillEmployedOption | EmptyOption
+  hours_reduced_twenty_percent: YesNoInput
+  discharge_date: string
+  definite_recall: YesNoInput
+  definite_recall_date: string
+  is_seasonal_work: YesNoInput
 
-  worked_at_employer_address?: boolean
-  alternate_physical_work_address?: AddressWithoutStreetInput
-  is_employer_phone_accurate?: boolean
-  work_location_phone?: PhoneInput
+  worked_at_employer_address: YesNoInput
+  alternate_physical_work_address: AddressWithoutStreetInput
+  is_employer_phone_accurate: YesNoInput
+  work_location_phone: PhoneInput
 
-  self_employed?: boolean
-  is_owner?: boolean
-  corporate_officer_or_stock_ownership?: boolean
-  employer_is_sole_proprietorship?: boolean
-  related_to_owner_or_child_of_owner_under_18?: boolean
+  self_employed: YesNoInput
+  is_owner: YesNoInput
+  corporate_officer_or_stock_ownership: YesNoInput
+  employer_is_sole_proprietorship: YesNoInput
+  related_to_owner_or_child_of_owner_under_18: YesNoInput
 
   LOCAL_pay_types: PayTypeOption[]
   payments_received: PaymentsReceivedDetailInput[]
 }
 
 export type ReviewEmployersInput = {
-  LOCAL_reviewed_employers?: boolean
+  LOCAL_reviewed_employers: boolean
 }
 
 export type PaymentsReceivedDetailInput = {
   pay_type: PayTypeOption
-  note?: string
-  total?: string
-  date_pay_began?: string
-  date_pay_ended?: string
+  note: string
+  total: string
+  date_pay_began: string
+  date_pay_ended: string
 }
 
 export type ScreenerInput = {
-  screener_current_country_us?: boolean
-  screener_live_in_canada?: boolean
-  screener_job_last_eighteen_months?: boolean
-  screener_all_work_nj?: boolean
-  screener_any_work_nj?: boolean
-  screener_military_service_eighteen_months?: boolean
-  screener_currently_disabled?: boolean
-  screener_federal_work_in_last_eighteen_months?: boolean
-  screener_maritime_employer_eighteen_months?: boolean
+  screener_current_country_us: YesNoInput
+  screener_live_in_canada: YesNoInput
+  screener_job_last_eighteen_months: YesNoInput
+  screener_all_work_nj: YesNoInput
+  screener_any_work_nj: YesNoInput
+  screener_military_service_eighteen_months: YesNoInput
+  screener_currently_disabled: YesNoInput
+  screener_federal_work_in_last_eighteen_months: YesNoInput
+  screener_maritime_employer_eighteen_months: YesNoInput
 }
 
 export type SsnInput = {
-  ssn?: string
+  ssn: string
 }
 
 export type PrequalInput = {
-  filed_in_last_12mo?: boolean
-  state_province_territory_where_filed?: string
-  lived_outside_nj_when_working_nj?: boolean
-  will_look_for_work_in_nj?: boolean
-  can_begin_work_immediately?: boolean
+  filed_in_last_12mo: YesNoInput
+  state_province_territory_where_filed: string // TODO: Not a string, but an enumerated list
+  lived_outside_nj_when_working_nj: YesNoInput
+  will_look_for_work_in_nj: YesNoInput
+  can_begin_work_immediately: YesNoInput
 }
 
 export type DemographicsInput = {
-  sex?: SexOption
-  ethnicity?: EthnicityOption
-  race?: RaceOption[]
-  education_level?: EducationLevelOption
+  sex: SexOption | UntouchedRadioValue
+  ethnicity: EthnicityOption | UntouchedRadioValue
+  race: RaceOption[]
+  education_level: EducationLevelOption | EmptyOption
 }
 
 export type ContactInput = {
-  email?: string
-  claimant_phone?: PhoneInput
-  alternate_phone?: PhoneInput
-  interpreter_required?: InterpreterTTYOption
-  preferred_language?: PreferredLanguageOption
-  preferred_language_other?: string
+  email: string
+  claimant_phone: PhoneInput
+  alternate_phone: PhoneInput
+  interpreter_required: InterpreterTTYOption | UntouchedRadioValue
+  preferred_language: PreferredLanguageOption | UntouchedRadioValue
+  preferred_language_other: string
 }
 
 export type PhoneInput = {
-  number?: string
-  sms?: boolean
+  number: string
+  sms: YesNoInput
 }
 
 export type UnionInput = {
-  union_name?: string
-  union_local_number?: string
-  required_to_seek_work_through_hiring_hall?: boolean
+  required_to_seek_work_through_hiring_hall: YesNoInput
+  union_name: string
+  union_local_number: string
 }
 
 export type DisabilityStatusInput = {
-  disability_applied_to_or_received?: DisabilityPaymentTypeOption[]
-  disabled_immediately_before?: boolean
-  type_of_disability?: DisabilityTypeOption
-  date_disability_began?: string
-  recovery_date?: string
-  contacted_last_employer_after_recovery?: boolean
+  disability_applied_to_or_received: DisabilityPaymentTypeOption[]
+  disabled_immediately_before: YesNoInput
+  type_of_disability: DisabilityTypeOption | UntouchedRadioValue
+  date_disability_began: string
+  recovery_date: string
+  contacted_last_employer_after_recovery: YesNoInput
 }
 
 export type PaymentInput = {
-  federal_income_tax_withheld?: boolean
-  payment_method?: PaymentMethodOption
-  account_type?: AccountTypeOption
-  routing_number?: string
-  LOCAL_re_enter_routing_number?: string
-  account_number?: string
-  LOCAL_re_enter_account_number?: string
-  acknowledge_direct_deposit_option?: boolean
-  apply_for_increased_payment_for_dependents?: boolean
+  payment_method: PaymentMethodOption | UntouchedRadioValue
+  account_type: AccountTypeOption | UntouchedRadioValue
+  routing_number: string
+  LOCAL_re_enter_routing_number: string
+  account_number: string
+  LOCAL_re_enter_account_number: string
+  acknowledge_direct_deposit_option: CheckboxInput
+  federal_income_tax_withheld: YesNoInput
+  apply_for_increased_payment_for_dependents: YesNoInput
 }
 
 export type PersonalInput = ClaimantNameInput & ClaimantAddressInput
 
 export type PersonNameInput = {
-  first_name?: string
-  middle_initial?: string
-  last_name?: string
-  suffix?: SuffixOption
+  first_name: string
+  middle_initial: string
+  last_name: string
+  suffix: SuffixOption | EmptyOption
 }
 
 export type AddressInput = {
@@ -189,8 +208,8 @@ export type AddressInput = {
 
 export type EmployerAddressInput = {
   address: string
-  address2?: string
-  address3?: string
+  address2: string
+  address3: string
   city: string
   state: string
   zipcode: string
@@ -203,43 +222,43 @@ export type AddressWithoutStreetInput = {
 }
 
 type ClaimantAddressInput = {
-  residence_address?: AddressInput
-  mailing_address?: AddressInput
-  LOCAL_mailing_address_same?: boolean
+  residence_address: AddressInput
+  mailing_address: AddressInput
+  LOCAL_mailing_address_same: boolean // NOT CheckboxInput, because it starts false (is never null)
 }
 
 export type ClaimantNameInput = {
-  claimant_name?: PersonNameInput
-  LOCAL_claimant_has_alternate_names?: boolean
-  alternate_names?: PersonNameInput[]
+  claimant_name: PersonNameInput
+  LOCAL_claimant_has_alternate_names: YesNoInput
+  alternate_names: PersonNameInput[]
 }
 
 export type IdentityInput = {
-  ssn?: string
-  birthdate?: string
-  has_nj_issued_id?: boolean
-  drivers_license_or_state_id_number?: string
-  authorization_type?: AuthorizationTypeOption
-  employment_authorization_document_name?: PersonNameInput
-  alien_registration_number?: string
-  LOCAL_re_enter_alien_registration_number?: string
-  country_of_origin?: CountryOfOriginOption
-  employment_authorization_start_date?: string
-  employment_authorization_end_date?: string
+  ssn: string
+  birthdate: string
+  has_nj_issued_id: YesNoInput
+  drivers_license_or_state_id_number: string
+  authorization_type: AuthorizationTypeOption | UntouchedRadioValue
+  employment_authorization_document_name: PersonNameInput
+  alien_registration_number: string
+  LOCAL_re_enter_alien_registration_number: string
+  country_of_origin: CountryOfOriginOption | EmptyOption
+  employment_authorization_start_date: string
+  employment_authorization_end_date: string
 }
 
 export type OccupationInput = {
-  job_title?: string
-  job_discription?: string
+  job_title: string
+  job_description: string
 }
 
-export type EducationAndTrainingInput = Partial<{
-  attending_college_or_job_training: boolean
-  training_through_hiring_hall_or_career_center: boolean
-}>
+export type EducationAndTrainingInput = {
+  attending_college_or_job_training: YesNoInput
+  training_through_hiring_hall_or_career_center: YesNoInput
+}
 
 export type ReviewInput = {
-  certify?: boolean
+  certify: CheckboxInput
 }
 
 export type WhoAmI = {

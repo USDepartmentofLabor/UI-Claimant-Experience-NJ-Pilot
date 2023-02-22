@@ -87,8 +87,17 @@ the table below. Their values are also stored in AWS as SSM parameters. If the
 GitHub secrets need to be updated or recreated, a team member with the
 appropriate AWS access can retrieve the values from SSM.
 
-| GitHub environment | Environment secret name             | AWS environment | SSM parameter name                                                    |
+| GitHub environment | Secret name                         | AWS environment | SSM parameter name                                                    |
 | ------------------ | ----------------------------------- | --------------- | --------------------------------------------------------------------- |
+| repository         | COGNITO_CLIENT_ID                   | dev             | `/dol-ui-claimant-intake-dev/cognito-client-id`                       |
+|                    | COGNITO_CLIENT_SECRET               |                 | `/dol-ui-claimant-intake-dev/cognito-client-secret`                   |
+|                    | COGNITO_DOMAIN                      |                 | `/dol-ui-claimant-intake-dev/cognito-domain`                          |
+|                    | COGNITO_ISSUER                      |                 | `/dol-ui-claimant-intake-dev/cognito-issuer`                          |
+|                    | NEXTAUTH_SECRET                     |                 | `/dol-ui-claimant-intake-dev/nextauth-secret`                         |
+|                    | CYPRESS_PASSWORD                    |                 | `/dol-ui-claimant-intake-github-actions/cypress-password`             |
+|                    | CYPRESS_USERNAME                    |                 | `/dol-ui-claimant-intake-github-actions/cypress-username`             |
+|                    | ECR_REGISTRY_DEV                    |                 | `/dol-ui-claimant-intake-github-actions/ecr-registry`                 |
+|                    | SLACK_WEBHOOK_URL                   |                 |                                                                       |
 | dev                | `AWS_ROLE_TO_ASSUME_DEV`            | dev             | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume`           |
 |                    | `DB_MIGRATIONS_SECURITY_GROUP_DEV`  |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |
 |                    | `DB_MIGRATIONS_SUBNET_DEV`          |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-subnet`         |

@@ -10,13 +10,12 @@ import { useTranslation } from 'react-i18next'
 
 import { useShowErrors } from 'hooks/useShowErrors'
 import { useFocusFirstError } from 'hooks/useFocusFirstError'
+import { EMPTY_DROPDOWN_OPTION } from 'constants/formOptions'
 
 export type DropdownOption = {
   label: string
   value: string
 }
-
-const EMPTY_OPTION_VALUE = ''
 
 interface IDropdownFieldProps {
   id?: string
@@ -97,7 +96,7 @@ const DropdownField = ({
         onInvalid={(e) => e.preventDefault()}
       >
         {startEmpty && (
-          <option key="empty" value={EMPTY_OPTION_VALUE}>
+          <option key="empty" value={EMPTY_DROPDOWN_OPTION}>
             {t('select')}
           </option>
         )}

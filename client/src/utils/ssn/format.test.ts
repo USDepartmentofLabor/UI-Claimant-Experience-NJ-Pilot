@@ -12,9 +12,4 @@ describe('getFormattedSsn', () => {
     const actualValue = getFormattedSsn(inputSsn)
     expect(actualValue).toEqual(inputSsn)
   })
-  it('returns undefined if the input is undefined', () => {
-    const inputSsn = undefined
-    const actualValue = getFormattedSsn(inputSsn)
-    expect(actualValue).toEqual(inputSsn)
-  })
 })

@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
 import { AddressInput } from 'types/claimantInput'
 
+// TODO: Fix to handle empty strings
 export const buildReviewAddress = (
   personalAddress: AddressInput | undefined
 ) => {

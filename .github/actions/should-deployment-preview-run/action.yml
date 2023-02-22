@@ -8,43 +8,10 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
 
     - name: Set RUN_DEPLOYMENT_PREVIEW bool to true as env variable
       run: |
         echo "RUN_DEPLOYMENT_PREVIEW=true" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Echo PR type
-      run: echo "Github Action is ${{ github.event.action }}"
-      shell: bash
-
-    - name: Check PR type is one of edited, opened, synchronize, or reopened
-      id: pr-type
-      if: "!contains( 'edited, opened, synchronize, or reopened', github.event.action )"
-      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Get changed client and server files
-      id: changed-client-server-files
-      uses: tj-actions/changed-files@v35
-      with:
-        files: |
-          client/**
-          server/**
-
-    - name: Echo changed client or server files
-      run: |
-        for file in ${{ steps.changed-client-server-files.outputs.all_changed_and_modified_files }}; do
-          echo "$file was added or modified"
-        done
-      shell: bash
-
-    - name: Check PR changes include client or server files
-      id: client-or-server
-      if: steps.changed-client-server-files.outputs.any_changed == ''
-      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
 
     - name: Get s3 schema file change
@@ -107,25 +74,15 @@ runs:
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
 
+    - name: Echo PR description does not include deployment preview flag
+      run: echo "Does not include dp flag ${{ !contains( github.event.pull_request.body, '[x] Deploy Preview Environment') }}"
+      shell: bash
+
     - name: Check PR description includes deployment preview flag
       id: dp-flag
       if: "!contains( github.event.pull_request.body, '[x] Deploy Preview Environment')"
       run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
       shell: bash
-
-    - name: Comment DP will be created
-      uses: peter-evans/create-or-update-comment@v2
-      if: env.RUN_DEPLOYMENT_PREVIEW == 'true'
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: Deployment Preview will be created for this PR at ${{ github.sha }}
-
-    - name: Comment DP will not be created
-      uses: peter-evans/create-or-update-comment@v2
-      if: env.RUN_DEPLOYMENT_PREVIEW == 'false'
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: Deployment Preview will not be created for this PR at ${{ github.sha }}
 
     - name: Set env value to output
       id: set-output

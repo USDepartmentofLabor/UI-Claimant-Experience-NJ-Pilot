@@ -6,6 +6,8 @@ import {
   sexOptions,
   raceOptions,
   educationLevelOptions,
+  EMPTY_DROPDOWN_OPTION,
+  UNTOUCHED_RADIO_VALUE,
 } from 'constants/formOptions'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
 
@@ -30,12 +32,19 @@ const pageDefinition = DemographicsPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
 
+const pageInitialValues = {
+  sex: UNTOUCHED_RADIO_VALUE,
+  ethnicity: UNTOUCHED_RADIO_VALUE,
+  race: [],
+  education_level: EMPTY_DROPDOWN_OPTION,
+}
+
 const Demographics: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
 
   return (
     <ClaimFormik<DemographicsInput>
-      initialValues={pageDefinition.initialValues}
+      initialValues={pageInitialValues}
       validationSchema={pageDefinition.validationSchema}
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
@@ -80,7 +89,11 @@ const Demographics: NextPageWithLayout = () => {
                   value: option,
                 }
               })}
-              errorMessage={errors.race}
+              errorMessage={
+                errors.race && !Array.isArray(errors.race)
+                  ? errors.race
+                  : undefined
+              }
             />
             <DropdownField
               name="education_level"

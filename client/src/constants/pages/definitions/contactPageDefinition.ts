@@ -1,7 +1,6 @@
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { i18n_claimForm } from 'i18n/i18n'
 import { Routes } from 'constants/routes'
-import { PHONE_SKELETON } from 'constants/initialValues'
 import { mixed, object, string } from 'yup'
 import { yupPhoneOptional, yupPhoneWithSMS } from 'validations/yup/custom'
 import {
@@ -12,13 +11,6 @@ import {
 export const ContactPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('contact.heading'),
   path: Routes.CLAIM.CONTACT,
-  initialValues: {
-    claimant_phone: { ...PHONE_SKELETON },
-    alternate_phone: undefined,
-    interpreter_required: undefined,
-    preferred_language: undefined,
-    preferred_language_other: undefined,
-  },
   validationSchema: object().shape({
     claimant_phone: yupPhoneWithSMS,
     alternate_phone: yupPhoneOptional,
@@ -27,15 +19,18 @@ export const ContactPageDefinition: PageDefinition = {
       .required(
         i18n_claimForm.t('contact.interpreter_required.errors.required')
       ),
-    preferred_language: mixed().when('interpreter_required', {
-      is: 'interpreter',
-      then: string()
-        .oneOf([...preferredLanguageOptions])
-        .required(
-          i18n_claimForm.t('contact.preferred_language.errors.required')
-        ),
-    }),
-    preferred_language_other: mixed().when('preferred_language', {
+    preferred_language: string()
+      .nullable()
+      .when('interpreter_required', {
+        is: 'interpreter',
+        then: (schema) =>
+          schema
+            .oneOf([...preferredLanguageOptions])
+            .required(
+              i18n_claimForm.t('contact.preferred_language.errors.required')
+            ),
+      }),
+    preferred_language_other: string().when('preferred_language', {
       is: 'other',
       then: string()
         .max(

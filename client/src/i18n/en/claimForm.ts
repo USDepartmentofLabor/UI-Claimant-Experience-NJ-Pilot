@@ -432,6 +432,8 @@ const claimForm = {
         maxDate: "Last day of work can't be in the future",
         minDate: "Last day can't be before employment start date",
       },
+      warning:
+        'If this job ended more than 18 months ago, it will not be used for your unemployment application.',
     },
     discharge_date: {
       label: 'What was your discharge date?',
@@ -637,7 +639,7 @@ const claimForm = {
             pension_annuity_retirement: {
               label: 'Pension, annuity, or retirement pay',
               description:
-                "Pay you received from this employer's retirement plan (not a loan)",
+                "Payment you received from this employer's retirement plan or the union affiliated with this employer. This does not include any loans you took from them.",
             },
             severance: {
               label: 'Severance pay',
@@ -678,7 +680,7 @@ const claimForm = {
             final_paycheck:
               'Pay you received for hours you worked before your last day of work',
             pension_annuity_retirement:
-              "Pay you received from this employer's retirement plan (not a loan)",
+              "Payment you received from this employer's retirement plan or the union affiliated with this employer. This does not include any loans you took from them.",
             severance_or_continuation:
               'Payment due to separation based on your contract, by law, or as a gift',
           },

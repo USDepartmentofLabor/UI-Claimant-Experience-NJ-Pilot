@@ -16,27 +16,29 @@ const validationSchema = object().shape({
     .when({
       is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
         disabilityPaymentType?.includes('none'),
-      then: array().max(
-        1,
-        i18n_claimForm.t(
-          'disability.disability_applied_to_or_received.errors.none_only'
-        )
-      ),
-      otherwise: array().min(
-        1,
-        i18n_claimForm.t(
-          'disability.disability_applied_to_or_received.errors.required'
-        )
-      ),
+      then: (schema) =>
+        schema.max(
+          1,
+          i18n_claimForm.t(
+            'disability.disability_applied_to_or_received.errors.none_only'
+          )
+        ),
+      otherwise: (schema) =>
+        schema.min(
+          1,
+          i18n_claimForm.t(
+            'disability.disability_applied_to_or_received.errors.required'
+          )
+        ),
     })
     .required(
       i18n_claimForm.t(
         'disability.disability_applied_to_or_received.errors.required'
       )
     ),
-  disabled_immediately_before: boolean().when(
-    'disability_applied_to_or_received',
-    {
+  disabled_immediately_before: boolean()
+    .nullable()
+    .when('disability_applied_to_or_received', {
       is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
         disabilityPaymentType?.includes('disability') ||
         disabilityPaymentType?.includes('family_leave'),
@@ -46,18 +48,19 @@ const validationSchema = object().shape({
             'disability.disabled_immediately_before.errors.required'
           )
         ),
-    }
-  ),
+    }),
   type_of_disability: string()
-    .oneOf([...disabilityTypeOptions])
+    .nullable()
     .when('disability_applied_to_or_received', {
       is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
         disabilityPaymentType?.includes('disability') ||
         disabilityPaymentType?.includes('family_leave'),
       then: (schema) =>
-        schema.required(
-          i18n_claimForm.t('disability.type_of_disability.errors.required')
-        ),
+        schema
+          .oneOf([...disabilityTypeOptions])
+          .required(
+            i18n_claimForm.t('disability.type_of_disability.errors.required')
+          ),
     }),
   date_disability_began: yupDate(
     i18n_claimForm.t('disability.date_disability_began.label')
@@ -100,9 +103,9 @@ const validationSchema = object().shape({
           i18n_claimForm.t('disability.recovery_date.errors.required')
         ),
     }),
-  contacted_last_employer_after_recovery: boolean().when(
-    'disability_applied_to_or_received',
-    {
+  contacted_last_employer_after_recovery: boolean()
+    .nullable()
+    .when('disability_applied_to_or_received', {
       is: (disabilityPaymentType: DisabilityPaymentTypeOption) =>
         disabilityPaymentType?.includes('disability') ||
         disabilityPaymentType?.includes('family_leave'),
@@ -112,13 +115,11 @@ const validationSchema = object().shape({
             'disability.contacted_last_employer_after_recovery.errors.required'
           )
         ),
-    }
-  ),
+    }),
 })
 
 export const DisabilityPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('disability.heading'),
   path: Routes.CLAIM.DISABILITY,
-  initialValues: {},
   validationSchema,
 }

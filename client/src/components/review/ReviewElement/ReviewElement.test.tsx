@@ -5,7 +5,10 @@ const LABEL = 'label'
 const VALUE = 'value'
 
 describe('ReviewElement component', () => {
-  const renderReviewElement = (label: string, value: string | undefined) => {
+  const renderReviewElement = (
+    label: string,
+    value: string | null | undefined
+  ) => {
     render(<ReviewElement label={label} value={value} />)
 
     const queryForFieldset = () => screen.queryByRole('group', { name: label })
@@ -47,6 +50,32 @@ describe('ReviewElement component', () => {
   it('Renders nothing if the value is undefined', () => {
     const { queryForFieldset, queryForLabel, queryForValue } =
       renderReviewElement(LABEL, undefined)
+
+    const fieldset = queryForFieldset()
+    const label = queryForLabel()
+    const value = queryForValue()
+
+    expect(fieldset).not.toBeInTheDocument()
+    expect(label).not.toBeInTheDocument()
+    expect(value).not.toBeInTheDocument()
+  })
+
+  it('Renders nothing if the value is null', () => {
+    const { queryForFieldset, queryForLabel, queryForValue } =
+      renderReviewElement(LABEL, null)
+
+    const fieldset = queryForFieldset()
+    const label = queryForLabel()
+    const value = queryForValue()
+
+    expect(fieldset).not.toBeInTheDocument()
+    expect(label).not.toBeInTheDocument()
+    expect(value).not.toBeInTheDocument()
+  })
+
+  it('Renders nothing if the value is empty', () => {
+    const { queryForFieldset, queryForLabel, queryForValue } =
+      renderReviewElement(LABEL, '')
 
     const fieldset = queryForFieldset()
     const label = queryForLabel()
