@@ -5,27 +5,7 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { ReviewElement } from 'components/review/ReviewElement/ReviewElement'
 import { useTranslation } from 'next-i18next'
 import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
-import { AddressInput } from 'types/claimantInput'
-
-// TODO: Fix to handle empty strings
-export const buildReviewAddress = (
-  personalAddress: AddressInput | undefined
-) => {
-  const { address, state, city, zipcode } = personalAddress || {}
-
-  if (
-    address === undefined &&
-    state === undefined &&
-    city === undefined &&
-    zipcode === undefined
-  ) {
-    return undefined
-  }
-
-  return `${address}${address && ', '}${city}${city && ', '}${state}${
-    state && ' '
-  }${zipcode}`
-}
+import { buildPersonalAddress } from 'utils/address/format'
 
 export const PersonalReview = () => {
   const { t } = useTranslation('claimForm')
@@ -82,7 +62,7 @@ export const PersonalReview = () => {
 
       <ReviewElement
         label={t('personal.residence_address.label')}
-        value={buildReviewAddress(claimFormValues?.residence_address)}
+        value={buildPersonalAddress(claimFormValues?.residence_address)}
       />
 
       <ReviewYesNo
@@ -93,7 +73,7 @@ export const PersonalReview = () => {
       {claimFormValues?.LOCAL_mailing_address_same || (
         <ReviewElement
           label={t('personal.mailing_address.label')}
-          value={buildReviewAddress(claimFormValues?.mailing_address)}
+          value={buildPersonalAddress(claimFormValues?.mailing_address)}
         />
       )}
     </ReviewSection>

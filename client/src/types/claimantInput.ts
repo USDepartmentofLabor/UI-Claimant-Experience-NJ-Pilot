@@ -18,6 +18,7 @@ import {
   ChangeInEmploymentOption,
   ReasonStillEmployedOption,
   UntouchedRadioValue,
+  EmployerRelationOption,
 } from 'constants/formOptions'
 
 // Types here represent the possible values of the intake form fields.
@@ -100,7 +101,9 @@ export type Employer = ImportedEmployerFields & {
   is_owner: YesNoInput
   corporate_officer_or_stock_ownership: YesNoInput
   employer_is_sole_proprietorship: YesNoInput
-  related_to_owner_or_child_of_owner_under_18: YesNoInput
+  related_to_owner_or_child_of_owner_under_18:
+    | EmployerRelationOption
+    | UntouchedRadioValue
 
   LOCAL_pay_types: PayTypeOption[]
   payments_received: PaymentsReceivedDetailInput[]
