@@ -9,9 +9,9 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-client",
+          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-APP_PLACEHOLDER",
           "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "dol-ui-claimant-intake-client"
+          "awslogs-stream-prefix": "dol-ui-claimant-intake-APP_PLACEHOLDER"
         }
       },
       "entryPoint": null,
@@ -61,7 +61,7 @@
           "name": "NEXTAUTH_SECRET"
         },
         {
-          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/nextauth-url",
+          "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/PR_PLACEHOLDER/nextauth-url",
           "name": "NEXTAUTH_URL"
         }
       ],
@@ -87,14 +87,14 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER"
+      "name": "dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER-PR_PLACEHOLDER"
     }
   ],
   "placementConstraints": [],
   "memory": "512",
   "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER",
   "taskDefinitionArn": null,
-  "family": "dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER",
+  "family": "dol-ui-claimant-intake-client-ENVIRONMENT_PLACEHOLDER-PR_PLACEHOLDER",
   "pidMode": null,
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
