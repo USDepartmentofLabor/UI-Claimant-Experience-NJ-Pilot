@@ -29,6 +29,14 @@
         {
           "name": "SPRING_PROFILES_ACTIVE",
           "value": "aws,aws-ENVIRONMENT_PLACEHOLDER"
+        },
+        {
+          "name": "JAVA_TOOL_OPTIONS",
+          "value": "-javaagent:/app/aws-opentelemetry-agent.jar"
+        },
+        {
+          "name": "OTEL_RESOURCE_ATTRIBUTES",
+          "value": "service.name=dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER"
         }
       ],
       "resourceRequirements": null,
@@ -83,7 +91,12 @@
       "image": null,
       "startTimeout": null,
       "firelensConfiguration": null,
-      "dependsOn": null,
+      "dependsOn": [
+        {
+          "containerName": "aws-otel-collector",
+          "condition": "START"
+        }
+      ],
       "disableNetworking": null,
       "interactive": null,
       "healthCheck": null,
@@ -98,6 +111,28 @@
       "systemControls": null,
       "privileged": null,
       "name": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER"
+    },
+    {
+      "name": "aws-otel-collector",
+      "image": null,
+      "command": ["--config=/etc/ecs/ecs-default-config.yaml"],
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/aws-otel-collector",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [ "/healthcheck" ],
+        "interval": 5,
+        "timeout": 6,
+        "retries": 5,
+        "startPeriod": 1
+      },
+      "readonlyRootFilesystem": true
     }
   ],
   "placementConstraints": [],

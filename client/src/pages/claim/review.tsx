@@ -29,11 +29,14 @@ import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+import { OccupationReview } from 'components/review/sections/OccupationReview/OccupationReview'
 import { PrequalReview } from 'components/review/sections/PrequalReview/PrequalReview'
 import { UnionReview } from 'components/review/sections/UnionReview/UnionReview'
 import { EducationAndTrainingReview } from 'components/review/sections/EducationAndTrainingReview/EducationAndTrainingReview'
 import { ContactReview } from 'components/review/sections/ContactReview/ContactReview'
 import { UNTOUCHED_CHECKBOX_VALUE } from 'constants/formOptions'
+import { DisabilityReview } from 'components/review/sections/DisabilityReview/DisabilityReview'
+import { DemographicsReview } from 'components/review/sections/DemographicsReview/DemographicsReview'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
@@ -126,15 +129,29 @@ export const Review: NextPageWithLayout = () => {
 
             <PrequalReview />
             <HorizontalRule />
-            <PersonalReview />
-            <HorizontalRule />
-            <ContactReview />
-            <HorizontalRule />
+
             <IdentityReview />
             <HorizontalRule />
+
+            <PersonalReview />
+            <HorizontalRule />
+
+            <ContactReview />
+            <HorizontalRule />
+
+            <DemographicsReview />
+            <HorizontalRule />
+
+            <OccupationReview />
+            <HorizontalRule />
+
             <EducationAndTrainingReview />
             <HorizontalRule />
+
             <UnionReview />
+            <HorizontalRule />
+
+            <DisabilityReview />
             <HorizontalRule />
 
             <CheckboxField
