@@ -52,8 +52,7 @@ describe('Screener page', () => {
     screener_current_country_us: true,
     screener_live_in_canada: null,
     screener_job_last_eighteen_months: true,
-    screener_all_work_nj: true,
-    screener_any_work_nj: null,
+    screener_work_nj: 'nj',
     screener_currently_disabled: false,
     screener_military_service_eighteen_months: false,
     screener_federal_work_in_last_eighteen_months: false,
@@ -62,14 +61,22 @@ describe('Screener page', () => {
 
   const fillScreenerFields = async (
     user: UserEvent,
-    formValues: { [key: string]: boolean | null }
+    formValues: { [key: string]: boolean | string | null }
   ) => {
     for (const k of Object.keys(formValues)) {
       if (formValues[`${k}`] !== null) {
+        let labelText: string
+        if (formValues[`${k}`] === true) {
+          labelText = 'yes'
+        } else if (formValues[`${k}`] === false) {
+          labelText = 'no'
+        } else {
+          labelText = k + '.options.' + formValues[`${k}`]
+        }
         await user.click(
           within(
             screen.getByRole('group', { name: `${k}.label` })
-          ).getByLabelText(formValues[`${k}`] === true ? 'yes' : 'no')
+          ).getByLabelText(labelText)
         )
       }
     }
@@ -167,20 +174,11 @@ describe('Screener page', () => {
       ).getByLabelText('yes')
     )
 
-    expect(screen.getByText('screener_all_work_nj.label')).toBeInTheDocument()
+    expect(screen.getByText('screener_work_nj.label')).toBeInTheDocument()
     await user.click(
       within(
-        screen.getByRole('group', { name: 'screener_all_work_nj.label' })
-      ).getByLabelText('no')
-    )
-
-    expect(screen.getByText('screener_any_work_nj.label')).toBeInTheDocument()
-    await user.click(
-      within(
-        screen.getByRole('group', {
-          name: 'screener_any_work_nj.label',
-        })
-      ).getByLabelText('no')
+        screen.getByRole('group', { name: 'screener_work_nj.label' })
+      ).getByLabelText('screener_work_nj.options.other')
     )
 
     expect(
@@ -254,7 +252,7 @@ describe('Screener page', () => {
     expect(screen.getByText('screener_live_in_canada.label')).not.toBeChecked()
   })
 
-  it('Tests if Any and All Work in NJ questions clear', async () => {
+  it('Tests if work in NJ question clears', async () => {
     const user = userEvent.setup()
     render(<Screener />)
 
@@ -282,16 +280,8 @@ describe('Screener page', () => {
 
     await user.click(
       within(
-        screen.getByRole('group', { name: 'screener_all_work_nj.label' })
-      ).getByLabelText('no')
-    )
-
-    await user.click(
-      within(
-        screen.getByRole('group', {
-          name: 'screener_any_work_nj.label',
-        })
-      ).getByLabelText('no')
+        screen.getByRole('group', { name: 'screener_work_nj.label' })
+      ).getByLabelText('screener_work_nj.options.other')
     )
 
     await user.click(
@@ -310,15 +300,7 @@ describe('Screener page', () => {
       ).getByLabelText('yes')
     )
 
-    expect(screen.getByText('screener_all_work_nj.label')).not.toBeChecked()
-
-    await user.click(
-      within(
-        screen.getByRole('group', { name: 'screener_all_work_nj.label' })
-      ).getByLabelText('no')
-    )
-
-    expect(screen.getByText('screener_any_work_nj.label')).not.toBeChecked()
+    expect(screen.getByText('screener_work_nj.label')).not.toBeChecked()
   })
 
   describe('sets the correct context values', () => {
@@ -329,7 +311,7 @@ describe('Screener page', () => {
     }
 
     const testSubmitWithValues = async (disqualifyingValues: {
-      [key: string]: boolean
+      [key: string]: boolean | string
     }) => {
       const user = userEvent.setup()
 
@@ -339,7 +321,7 @@ describe('Screener page', () => {
         </IntakeAppContext.Provider>
       )
 
-      const formValues: { [key: string]: boolean | null } = {
+      const formValues: { [key: string]: boolean | string | null } = {
         ...canUseFormValues,
         ...disqualifyingValues,
       }
@@ -362,8 +344,7 @@ describe('Screener page', () => {
     it('screener-redirect:when no work was done in NJ', async () => {
       const disqualifyingValues = {
         screener_job_last_eighteen_months: true,
-        screener_all_work_nj: false,
-        screener_any_work_nj: false,
+        screener_work_nj: 'other',
       }
       await testSubmitWithValues(disqualifyingValues)
     })
@@ -420,7 +401,7 @@ describe('Screener page', () => {
       screenerInput: undefined,
     }
 
-    const formValues: { [key: string]: boolean | null } = {
+    const formValues: { [key: string]: boolean | string | null } = {
       ...canUseFormValues,
     }
 

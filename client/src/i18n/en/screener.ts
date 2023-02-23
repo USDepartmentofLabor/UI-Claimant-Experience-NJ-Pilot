@@ -41,20 +41,16 @@ const screener = {
         'Please say whether you served in the United States military in the last 18 months',
     },
   },
-  screener_all_work_nj: {
+  screener_work_nj: {
     label:
-      'Was <strong>all</strong> your work (not including military service) performed in New Jersey?',
-    errors: {
-      required:
-        'Please say whether all of your work (not including military service) was performed in New Jersey',
+      'Where did you perform your work (not including federal or military service)?',
+    options: {
+      nj: 'Only in New Jersey',
+      other: 'Only in other states',
+      both: 'In both New Jersey and other states',
     },
-  },
-  screener_any_work_nj: {
-    label:
-      'Was <strong>any</strong> of your work (not including military service) performed in New Jersey?',
     errors: {
-      required:
-        'Please say whether any of your work (not including military service) was performed outside New Jersey',
+      required: 'Please say where you performed your work',
     },
   },
   screener_currently_disabled: {

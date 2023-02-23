@@ -1216,13 +1216,10 @@
       "type": "boolean",
       "description": "Screener question: In the last 18 months, have you had a job (including military service)?"
     },
-    "screener_all_work_nj": {
-      "type": "boolean",
-      "description": "Screener question: Was all of your work (not including military service) performed in New Jersey?"
-    },
-    "screener_any_work_nj": {
-      "type": "boolean",
-      "description": "Screener question: Was any of your work (not including military service) performed in New Jersey?"
+    "screener_work_nj": {
+      "type": "string",
+      "enum": ["nj", "other", "both"],
+      "description": "Screener question: Where did you perform your work (not including federal or military service)?"
     },
     "screener_currently_disabled": {
       "type": "boolean",
