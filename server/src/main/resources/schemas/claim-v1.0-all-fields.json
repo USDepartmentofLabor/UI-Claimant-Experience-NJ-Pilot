@@ -431,7 +431,7 @@
             "properties": {
               "employer_is_sole_proprietorship": {
                 "type": "boolean",
-                "const": false
+                "const": true
               }
             }
           },
@@ -1229,13 +1229,10 @@
       "type": "boolean",
       "description": "Screener question: In the last 18 months, have you had a job (including military service)?"
     },
-    "screener_all_work_nj": {
-      "type": "boolean",
-      "description": "Screener question: Was all of your work (not including military service) performed in New Jersey?"
-    },
-    "screener_any_work_nj": {
-      "type": "boolean",
-      "description": "Screener question: Was any of your work (not including military service) performed in New Jersey?"
+    "screener_work_nj": {
+      "type": "string",
+      "enum": ["nj", "other", "both"],
+      "description": "Screener question: Where did you perform your work (not including federal or military service)?"
     },
     "screener_currently_disabled": {
       "type": "boolean",
@@ -1304,8 +1301,7 @@
     "screener_current_country_us",
     "screener_live_in_canada",
     "screener_job_last_eighteen_months",
-    "screener_all_work_nj",
-    "screener_any_work_nj",
+    "screener_work_nj",
     "screener_currently_disabled",
     "screener_military_service_eighteen_months",
     "screener_maritime_employer_eighteen_months",

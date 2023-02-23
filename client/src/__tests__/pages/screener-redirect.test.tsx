@@ -106,7 +106,7 @@ describe('Screener-redirect page', () => {
       const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
-        screener_any_work_nj: false,
+        screener_work_nj: 'other',
       }
 
       render(

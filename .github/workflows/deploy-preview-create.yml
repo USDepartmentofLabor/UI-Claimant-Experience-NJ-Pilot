@@ -96,14 +96,18 @@ jobs:
           SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
-      - name: Build client image
-        id: build-client
-        uses: ./.github/actions/build-client
+      - name: Build and deploy client image
+        id: build-deploy-client
+        uses: ./.github/actions/deploy-client
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
           app-env: development
+          app: dp
+          pr: ${{ github.event.pull_request.number }}
+          ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}
+          ecs-client-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
 
       - name: Build server image
         id: build-server

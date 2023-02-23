@@ -90,7 +90,7 @@ client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
 
 client-task-definition: ## Update the environment placeholders in the client ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/client-task-definition.json.tmpl --environment $(environment) > ops/ecs/client-task-definition.json
+	./scripts/render-task-definition --taskdef ops/ecs/client-task-definition.json.tmpl --environment $(environment) --app $(app) --pr $(pr) > ops/ecs/client-task-definition.json
 
 server-gradle-tasks: ## list the gradle tasks that can be run when invoking ./gradlew from the /server directory
 	cd server && ./gradlew tasks

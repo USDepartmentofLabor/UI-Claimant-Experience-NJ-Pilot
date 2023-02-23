@@ -1,3 +1,6 @@
+export const workOptions = ['nj', 'other', 'both'] as const
+export type WorkOption = typeof workOptions[number]
+
 export const UNTOUCHED_RADIO_VALUE = null
 export type UntouchedRadioValue = typeof UNTOUCHED_RADIO_VALUE
 

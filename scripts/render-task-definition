@@ -7,6 +7,8 @@ import json
 parser = argparse.ArgumentParser()
 parser.add_argument("--taskdef")
 parser.add_argument("--environment")
+parser.add_argument("--app", default="")
+parser.add_argument("--pr", default="0")
 args = parser.parse_args()
 
 with open(args.taskdef, "r") as f:
@@ -20,15 +22,26 @@ with open(args.taskdef, "r") as f:
     task_def["family"] = task_def["family"].replace(
         "ENVIRONMENT_PLACEHOLDER", args.environment
     )
+    if args.pr != "0":
+        task_def["family"] = task_def["family"].replace("PR_PLACEHOLDER", args.pr)
+    else:
+        task_def["family"] = task_def["family"].replace("-PR_PLACEHOLDER", "")
     for container in task_def["containerDefinitions"]:
-        container["logConfiguration"]["options"]["awslogs-group"] = container[
-            "logConfiguration"
-        ]["options"]["awslogs-group"].replace(
-            "ENVIRONMENT_PLACEHOLDER", args.environment
+        container["logConfiguration"]["options"]["awslogs-group"] = (
+            container["logConfiguration"]["options"]["awslogs-group"]
+            .replace("ENVIRONMENT_PLACEHOLDER", args.environment)
+            .replace("APP_PLACEHOLDER", args.app)
         )
+        container["logConfiguration"]["options"]["awslogs-stream-prefix"] = container[
+            "logConfiguration"
+        ]["options"]["awslogs-stream-prefix"].replace("APP_PLACEHOLDER", args.app)
         container["name"] = container["name"].replace(
             "ENVIRONMENT_PLACEHOLDER", args.environment
         )
+        if args.pr != "0":
+            container["name"] = container["name"].replace("PR_PLACEHOLDER", args.pr)
+        else:
+            container["name"] = container["name"].replace("-PR_PLACEHOLDER", "")
         if "environment" in container and container["environment"] is not None:
             for environment_variable in container["environment"]:
                 environment_variable["value"] = environment_variable["value"].replace(
@@ -39,5 +52,14 @@ with open(args.taskdef, "r") as f:
                 secret["valueFrom"] = secret["valueFrom"].replace(
                     "ENVIRONMENT_PLACEHOLDER", args.environment
                 )
+                if secret["name"] == "NEXTAUTH_URL":
+                    if args.pr != "0":
+                        secret["valueFrom"] = secret["valueFrom"].replace(
+                            "PR_PLACEHOLDER", args.pr
+                        )
+                    else:
+                        secret["valueFrom"] = secret["valueFrom"].replace(
+                            "PR_PLACEHOLDER/", ""
+                        )
 
     print(json.dumps(task_def))

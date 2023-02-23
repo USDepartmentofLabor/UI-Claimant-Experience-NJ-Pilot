@@ -1,6 +1,6 @@
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { useFormikContext } from 'formik'
 import { useClearFields } from 'hooks/useClearFields'
 import { Employer } from 'types/claimantInput'
@@ -43,7 +43,7 @@ export const BusinessInterests = () => {
   const showSoleProprietorship =
     values.corporate_officer_or_stock_ownership === false
   const showRelatedToOwner =
-    showSoleProprietorship && values.employer_is_sole_proprietorship === false
+    showSoleProprietorship && values.employer_is_sole_proprietorship === true
 
   return (
     <>
@@ -62,7 +62,7 @@ export const BusinessInterests = () => {
         <YesNoQuestion
           name={`employer_is_sole_proprietorship`}
           question={t('employer_is_sole_proprietorship.label')}
-          hint={t('employer_is_sole_proprietorship.hint')}
+          hint={<Trans t={t} i18nKey="employer_is_sole_proprietorship.hint" />}
           onChange={handleSoleProprietorshipChange}
         />
       )}

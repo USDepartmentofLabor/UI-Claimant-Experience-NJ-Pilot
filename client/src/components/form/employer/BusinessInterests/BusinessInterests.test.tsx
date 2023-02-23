@@ -235,9 +235,9 @@ describe('BusinessInterests component', () => {
       expect(soleProprietorshipNoAnswer).toBeInTheDocument()
 
       // Make the related to owner question appear
-      await user.click(soleProprietorshipNoAnswer as HTMLElement)
+      await user.click(soleProprietorshipYesAnswer as HTMLElement)
 
-      expect(soleProprietorshipNoAnswer).toBeChecked()
+      expect(soleProprietorshipYesAnswer).toBeChecked()
       expect(queryForRelatedToOwnerQuestion()).toBeInTheDocument()
 
       const relatedToOwnerNoAnswer = queryForRelatedToOwnerNoAnswer()
@@ -260,12 +260,12 @@ describe('BusinessInterests component', () => {
       expect(relatedToOwnerParentAnswer).toBeChecked()
 
       // Make the related to owner question disappear
-      await user.click(soleProprietorshipYesAnswer as HTMLElement)
+      await user.click(soleProprietorshipNoAnswer as HTMLElement)
 
       expect(queryForRelatedToOwnerQuestion()).not.toBeInTheDocument()
 
       // Make the related to owner question re-appear with its value cleared
-      await user.click(queryForSoleProprietorshipNoAnswer() as HTMLElement)
+      await user.click(queryForSoleProprietorshipYesAnswer() as HTMLElement)
 
       expect(queryForRelatedToOwnerParentAnswer()).not.toBeChecked()
     })
@@ -278,7 +278,6 @@ describe('BusinessInterests component', () => {
         corporateOfficerOrStockOwnershipNoAnswer,
         queryForSoleProprietorshipQuestion,
         queryForSoleProprietorshipYesAnswer,
-        queryForSoleProprietorshipNoAnswer,
         queryForRelatedToOwnerQuestion,
         queryForRelatedToOwnerNoAnswer,
         queryForRelatedToOwnerSpouseAnswer,
@@ -289,14 +288,14 @@ describe('BusinessInterests component', () => {
       // Trigger the sole proprietorship question appearing
       await user.click(corporateOfficerOrStockOwnershipNoAnswer)
 
-      const soleProprietorshipNoAnswer = queryForSoleProprietorshipNoAnswer()
+      const soleProprietorshipYesAnswer = queryForSoleProprietorshipYesAnswer()
 
-      expect(soleProprietorshipNoAnswer).toBeInTheDocument()
+      expect(soleProprietorshipYesAnswer).toBeInTheDocument()
 
       // Make the related to owner question appear
-      await user.click(soleProprietorshipNoAnswer as HTMLElement)
+      await user.click(soleProprietorshipYesAnswer as HTMLElement)
 
-      expect(soleProprietorshipNoAnswer).toBeChecked()
+      expect(soleProprietorshipYesAnswer).toBeChecked()
       expect(queryForRelatedToOwnerQuestion()).toBeInTheDocument()
 
       const relatedToOwnerNoAnswer = queryForRelatedToOwnerNoAnswer()
@@ -329,7 +328,7 @@ describe('BusinessInterests component', () => {
       expect(queryForSoleProprietorshipYesAnswer()).not.toBeChecked()
 
       // Make the related to owner question re-appear with its value cleared
-      await user.click(queryForSoleProprietorshipNoAnswer() as HTMLElement)
+      await user.click(queryForSoleProprietorshipYesAnswer() as HTMLElement)
 
       expect(queryForRelatedToOwnerParentAnswer()).not.toBeChecked()
     })
