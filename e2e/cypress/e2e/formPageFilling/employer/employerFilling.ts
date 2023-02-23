@@ -20,7 +20,7 @@ export const fillValidEditEmployer = () => {
     self_employed: false,
     is_owner: false,
     corporate_officer_or_stock_ownership: false,
-    employer_is_sole_proprietorship: false,
+    employer_is_sole_proprietorship: true,
     related_to_owner_or_child_of_owner_under_18: 'child',
   })
 
@@ -77,7 +77,7 @@ export const fillValidAddEmployer1 = () => {
     self_employed: false,
     is_owner: false,
     corporate_officer_or_stock_ownership: false,
-    employer_is_sole_proprietorship: false,
+    employer_is_sole_proprietorship: true,
     related_to_owner_or_child_of_owner_under_18: 'parent',
   })
 

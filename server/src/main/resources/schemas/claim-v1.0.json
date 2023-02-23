@@ -431,7 +431,7 @@
             "properties": {
               "employer_is_sole_proprietorship": {
                 "type": "boolean",
-                "const": false
+                "const": true
               }
             }
           },
