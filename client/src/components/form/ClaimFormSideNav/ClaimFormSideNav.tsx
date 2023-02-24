@@ -65,6 +65,7 @@ export const ClaimFormSideNav = ({ index }: ClaimFormSideNavProps) => {
 
   return (
     <nav
+      id="sidenav"
       aria-label="Form pages"
       className="desktop:grid-col-3 desktop:margin-top-4"
     >

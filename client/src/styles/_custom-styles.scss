@@ -92,8 +92,9 @@
     padding: units(1) units(2) units(1) units(4);
     line-height: inherit;
   }
-  .usa-sidenav {
-    display: none;
+  #sidenav {
+    margin-top: units(2);
+    order: 2;
   }
 }
 @media all and (min-width: units('desktop')) {
