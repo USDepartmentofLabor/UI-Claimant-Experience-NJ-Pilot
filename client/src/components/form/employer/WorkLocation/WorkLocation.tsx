@@ -58,7 +58,7 @@ export const WorkLocation = () => {
 
   return (
     <>
-      <Fieldset legend={<b>{t('section_title')} </b>}>
+      <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
         <YesNoQuestion
           question={
             <Trans t={t} i18nKey="worked_at_employer_address.label">

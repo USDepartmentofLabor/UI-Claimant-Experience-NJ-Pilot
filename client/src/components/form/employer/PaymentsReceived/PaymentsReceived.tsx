@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import { Fieldset } from '@trussworks/react-uswds'
 import { CheckboxGroupField } from '../../fields/CheckboxGroupField/CheckboxGroupField'
 import PaymentsReceivedDetail from '../PaymentsReceivedDetail/PaymentsReceivedDetail'
 import { useFormikContext, FieldArray } from 'formik'
@@ -57,8 +57,10 @@ const PaymentsReceived = () => {
   }, [values.payments_received.length])
 
   return (
-    <>
-      <h2 className="font-heading-sm">{t('payments_received.heading')}</h2>
+    <Fieldset
+      className="form-section"
+      legend={<h2>{t('payments_received.heading')}</h2>}
+    >
       <FieldArray
         name={`payments_received`}
         render={(arrayHelpers) => (
@@ -134,7 +136,7 @@ const PaymentsReceived = () => {
           </>
         )}
       />
-    </>
+    </Fieldset>
   )
 }
 
