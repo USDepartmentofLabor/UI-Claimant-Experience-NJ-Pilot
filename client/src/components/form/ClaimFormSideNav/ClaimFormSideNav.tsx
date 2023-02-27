@@ -66,10 +66,15 @@ export const ClaimFormSideNav = ({ index }: ClaimFormSideNavProps) => {
   })
 
   const sideNav = <SideNav items={appItems} />
+  const accordionSideNav = (
+    <nav>
+      <SideNav items={appItems} />
+    </nav>
+  )
   const sidenav_accordion: AccordionItemProps[] = [
     {
       title: 'Form steps',
-      content: sideNav,
+      content: accordionSideNav,
       expanded: false,
       id: 'sidenav_accordion',
       headingLevel: 'h1',
@@ -82,9 +87,10 @@ export const ClaimFormSideNav = ({ index }: ClaimFormSideNavProps) => {
         bordered={true}
         items={sidenav_accordion}
         className={styles.sidenav_accordion_outer}
+        title="Form steps"
       />
       <nav
-        aria-label="Form pages"
+        aria-label="Form steps"
         className={`desktop:grid-col-3 desktop:margin-top-4 ${styles.sidenav}`}
       >
         {sideNav}
