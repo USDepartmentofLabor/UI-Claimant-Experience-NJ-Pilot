@@ -988,10 +988,10 @@ const claimForm = {
     header_description: {
       line1:
         "Once you're approved for benefits, you can have your payments directly deposited into your bank account or loaded onto a prepaid debit card.",
-      line2: 'Questions? Please visit our <0>payments information page</0>.',
+      line2: 'Questions? Please visit our <0>payments information page</0>',
     },
     federal_income_tax_withheld: {
-      header: '<strong>Taxes and deductions</strong>',
+      header: 'Taxes and deductions',
       description:
         'Unemployment Insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts that must be deducted and withheld by law.',
       label:
@@ -1003,7 +1003,7 @@ const claimForm = {
       },
     },
     payment_method: {
-      header: '<strong>Benefits payments</strong>',
+      header: 'Benefits payments',
       label: 'How would you like to receive your benefits payments?',
       direct_deposit_description:
         "Direct deposit can take up to 7 days to take effect, but it's usually faster than the debit card option.",
@@ -1027,12 +1027,12 @@ const claimForm = {
       },
     },
     apply_for_increased_payment_for_dependents: {
-      header: '<strong>Dependency benefits</strong>',
+      header: 'Dependency benefits',
       label:
         'Are you interested in applying for an increased payment based on your dependents?',
       description: {
         line1:
-          "You may qualify for an increase to your benefit amount based on your family’s situation. If you are not receiving the max benefit amount, and you are interested in an increased rate for Dependency Benefits, you will need to give proof of the dependents you are claiming along with supporting legal documentation. To be eligible, your spouse/civil union partner can't be employed during the week you start your claim or already be collecting dependency benefits. <0>Read more about eligibility here</0>.",
+          "You may qualify for an increase to your benefit amount based on your family’s situation. If you are not receiving the max benefit amount, and you are interested in an increased rate for Dependency Benefits, you will need to give proof of the dependents you are claiming along with supporting legal documentation. To be eligible, your spouse/civil union partner can't be employed during the week you start your claim or already be collecting dependency benefits. <0>Read more about eligibility here</0>",
         line2:
           'If interested, within a few business days you will receive two emails—one explaining who could be eligible for dependency benefits, and a second with a link to an online application where you will be asked to answer a few questions and submit further information.',
       },
@@ -1081,7 +1081,7 @@ const claimForm = {
       },
     },
     routing_and_account_number: {
-      label: '<strong>How do I find these numbers?</strong>',
+      label: 'How do I find these numbers?',
       image_alt:
         'A picture of a check showing where to find the routing and account numbers',
       description: {

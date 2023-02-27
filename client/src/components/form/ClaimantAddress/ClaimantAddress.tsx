@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Fieldset } from '@trussworks/react-uswds'
 import { useFormikContext } from 'formik'
 import { isEqual } from 'lodash'
@@ -50,7 +50,10 @@ export const ClaimantAddress = () => {
 
   return (
     <>
-      <Fieldset legend={<Trans t={t} i18nKey="label.primary_address" />}>
+      <Fieldset
+        className="form-section"
+        legend={<h2>{t('label.primary_address')}</h2>}
+      >
         <Address
           basename="residence_address"
           onChange={handleResidenceAddressChange}
@@ -63,7 +66,10 @@ export const ClaimantAddress = () => {
         onChange={handleMailingAddressSameChange}
       />
       {!values.LOCAL_mailing_address_same && (
-        <Fieldset legend={<Trans t={t} i18nKey="label.mailing_address" />}>
+        <Fieldset
+          className="form-section"
+          legend={<h2>{t('label.mailing_address')}</h2>}
+        >
           <Address basename="mailing_address" />
         </Fieldset>
       )}

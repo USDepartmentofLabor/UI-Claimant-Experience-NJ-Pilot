@@ -16,14 +16,15 @@ concurrency:
 
 env:
   JAVA_VERSION: 17.0.6+10
-  NODE_VERSION: 16.19.0
+  NODE_VERSION: 16.19.1
+  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
 
 jobs:
   should-deploy-preview-run:
     runs-on: ubuntu-latest
     environment: dev
     outputs:
-      run-deployment-preview: ${{ steps.dp-check.outputs.run-deployment-preview }}
+      run-deployment-preview: ${{ steps.preview-check.outputs.run-deployment-preview }}
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -34,19 +35,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Check whether deployment preview should be built
-        id: dp-check
+        id: preview-check
         uses: ./.github/actions/should-deployment-preview-run
 
-      - name: Comment DP will be created
+      - name: Comment preview will be created
         uses: peter-evans/create-or-update-comment@v2
-        if: steps.dp-check.outputs.run-deployment-preview == 'true'
+        if: steps.preview-check.outputs.run-deployment-preview == 'true'
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: Deployment Preview will be created for this PR at ${{ github.sha }}
 
-      - name: Comment DP will not be created
+      - name: Comment preview will not be created
         uses: peter-evans/create-or-update-comment@v2
-        if: steps.dp-check.outputs.run-deployment-preview == 'false'
+        if: steps.preview-check.outputs.run-deployment-preview == 'false'
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: Deployment Preview will not be created for this PR at ${{ github.sha }}
@@ -104,17 +105,24 @@ jobs:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
           app-env: development
-          app: dp
+          app: preview
           pr: ${{ github.event.pull_request.number }}
           ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}
           ecs-client-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
 
-      - name: Build server image
-        id: build-server
-        uses: ./.github/actions/build-server
+      - name: Build and deploy server image
+        id: build-deploy-server
+        uses: ./.github/actions/deploy-server
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
+          app: preview
+          pr: ${{ github.event.pull_request.number }}
+          ecs-server-security-group: ${{ secrets.ECS_SERVER_SECURITY_GROUP_DEV }}
+          ecs-server-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
 
   deploy-preview-will-not-create:
     needs: [should-deploy-preview-run]

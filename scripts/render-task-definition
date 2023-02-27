@@ -32,9 +32,18 @@ with open(args.taskdef, "r") as f:
             .replace("ENVIRONMENT_PLACEHOLDER", args.environment)
             .replace("APP_PLACEHOLDER", args.app)
         )
-        container["logConfiguration"]["options"]["awslogs-stream-prefix"] = container[
-            "logConfiguration"
-        ]["options"]["awslogs-stream-prefix"].replace("APP_PLACEHOLDER", args.app)
+        if args.app == "preview":
+            container["logConfiguration"]["options"]["awslogs-stream-prefix"] = (
+                container["logConfiguration"]["options"]["awslogs-stream-prefix"]
+                .replace("APP_PLACEHOLDER", args.app)
+                .replace("PR_PLACEHOLDER", args.pr)
+            )
+        else:
+            container["logConfiguration"]["options"]["awslogs-stream-prefix"] = (
+                container["logConfiguration"]["options"]["awslogs-stream-prefix"]
+                .replace("APP_PLACEHOLDER", args.app)
+                .replace("-PR_PLACEHOLDER", "")
+            )
         container["name"] = container["name"].replace(
             "ENVIRONMENT_PLACEHOLDER", args.environment
         )

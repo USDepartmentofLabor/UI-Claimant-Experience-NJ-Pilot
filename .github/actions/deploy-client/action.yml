@@ -14,7 +14,7 @@ inputs:
     description: The application environment (e.g., development, test, production)
     required: true
   app:
-    description: The application (e.g. client, dp)
+    description: The application (e.g. client, preview)
     default: "client"
   pr:
     description: The PR number for the pull request
@@ -87,7 +87,7 @@ runs:
         echo "service-name=$SERVICE_NAME" >> $GITHUB_OUTPUT
 
     - name: Find existing deployment preview service
-      id: dp-service-exist
+      id: preview-service-exist
       env:
         SERVICE_NAME: ${{ steps.ecs-service.outputs.service-name }}
         CLUSTER_NAME: dol-ui-claimant-intake-${{ inputs.deploy-env }}
@@ -99,7 +99,7 @@ runs:
         echo "service-count=$SERVICE_COUNT" >> $GITHUB_OUTPUT
 
     - name: Register task definition for deployment preview
-      if: steps.dp-service-exist.outputs.service-count == '0'
+      if: steps.preview-service-exist.outputs.service-count == '0'
       env:
         TASK_DEF: ${{ steps.task-def.outputs.task-definition }}
       shell: bash
@@ -108,7 +108,7 @@ runs:
         --cli-input-json "file://${TASK_DEF}"
 
     - name: Create ECS service for deployment preview
-      if: steps.dp-service-exist.outputs.service-count == '0'
+      if: steps.preview-service-exist.outputs.service-count == '0'
       env:
         SERVICE_NAME: ${{ steps.ecs-service.outputs.service-name }}
         CLUSTER_NAME: dol-ui-claimant-intake-${{ inputs.deploy-env }}
@@ -127,7 +127,7 @@ runs:
         --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}"
 
     - name: Deploy Amazon ECS task definition
-      if: steps.dp-service-exist.outputs.service-count >= '1'
+      if: steps.preview-service-exist.outputs.service-count >= '1'
       uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}

@@ -54,7 +54,7 @@ const ScreenerRedirect: NextPage = () => {
             {t('info_alert.title')}
           </SummaryBoxHeading>
           <SummaryBoxContent>
-            <ul>
+            <ul className="usa-list">
               {!ipInUS && (
                 <li>
                   {t('info_alert.items.ip_deny')}

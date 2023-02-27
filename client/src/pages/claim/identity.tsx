@@ -33,6 +33,7 @@ import { Trans } from 'next-i18next'
 import {
   Button,
   ButtonGroup,
+  Fieldset,
   ModalFooter,
   ModalHeading,
   ModalOpenLink,
@@ -215,12 +216,16 @@ export const Identity: NextPageWithLayout = () => {
               onChange={handleAuthorizationTypeChange}
             />
             {showAlienRegistrationNumber && (
-              <>
-                <h2 className="font-heading-sm">
-                  {t(
-                    'work_authorization.employment_authorization_document_name.section_title'
-                  )}
-                </h2>
+              <Fieldset
+                className="form-section"
+                legend={
+                  <h2>
+                    {t(
+                      'work_authorization.employment_authorization_document_name.section_title'
+                    )}
+                  </h2>
+                }
+              >
                 <Name name={'employment_authorization_document_name'} />
                 <AlienRegistrationNumberField
                   label={t(
@@ -256,24 +261,24 @@ export const Identity: NextPageWithLayout = () => {
                   startEmpty
                   options={countryOfOriginDropdownOptions}
                 />
-              </>
-            )}
-            {values.authorization_type ===
-              'employment_authorization_or_card_or_doc' && (
-              <>
-                <DateInputField
-                  name={`employment_authorization_start_date`}
-                  legend={t(
-                    'work_authorization.employment_authorization_start_date.label'
-                  )}
-                />
-                <DateInputField
-                  name={`employment_authorization_end_date`}
-                  legend={t(
-                    'work_authorization.employment_authorization_end_date.label'
-                  )}
-                />
-              </>
+                {values.authorization_type ===
+                  'employment_authorization_or_card_or_doc' && (
+                  <>
+                    <DateInputField
+                      name={`employment_authorization_start_date`}
+                      legend={t(
+                        'work_authorization.employment_authorization_start_date.label'
+                      )}
+                    />
+                    <DateInputField
+                      name={`employment_authorization_end_date`}
+                      legend={t(
+                        'work_authorization.employment_authorization_end_date.label'
+                      )}
+                    />
+                  </>
+                )}
+              </Fieldset>
             )}
             <ClaimFormButtons nextStep={nextPage.heading}>
               <BackButton previousPage={previousPage.path} />

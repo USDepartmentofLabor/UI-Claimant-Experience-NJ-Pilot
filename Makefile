@@ -147,7 +147,7 @@ server-clean: ## cleans the build output and incremental build "Up-to-date" chec
 	cd server && ./gradlew clean
 
 server-task-definition: ## Update the environment placeholders in the server ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/server-task-definition.json.tmpl --environment $(environment) > ops/ecs/server-task-definition.json
+	./scripts/render-task-definition --taskdef ops/ecs/server-task-definition.json.tmpl --environment $(environment) --app $(app) --pr $(pr) > ops/ecs/server-task-definition.json
 
 db-migrations-task-definition: ## Update the environment placeholders in the db migration ECS task definition, e.g., dev/test/prod (only used in CI)
 	./scripts/render-task-definition --taskdef ops/ecs/db-migrations-task-definition.json.tmpl --environment $(environment) > ops/ecs/db-migrations-task-definition.json

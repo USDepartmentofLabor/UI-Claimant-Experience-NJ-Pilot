@@ -9,9 +9,9 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-server",
+          "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-APP_PLACEHOLDER",
           "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "dol-ui-claimant-intake-server"
+          "awslogs-stream-prefix": "dol-ui-claimant-intake-APP_PLACEHOLDER-PR_PLACEHOLDER"
         }
       },
       "entryPoint": null,
@@ -110,7 +110,7 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER"
+      "name": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER-PR_PLACEHOLDER"
     },
     {
       "name": "aws-otel-collector",
@@ -139,7 +139,7 @@
   "memory": "2048",
   "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
   "taskDefinitionArn": null,
-  "family": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
+  "family": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER-PR_PLACEHOLDER",
   "pidMode": null,
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",

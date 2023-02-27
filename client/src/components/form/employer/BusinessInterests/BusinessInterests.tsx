@@ -5,6 +5,7 @@ import { useFormikContext } from 'formik'
 import { useClearFields } from 'hooks/useClearFields'
 import { Employer } from 'types/claimantInput'
 import { ChangeEventHandler } from 'react'
+import { Fieldset } from '@trussworks/react-uswds'
 import { employerRelationOptions } from 'constants/formOptions'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
@@ -46,8 +47,7 @@ export const BusinessInterests = () => {
     showSoleProprietorship && values.employer_is_sole_proprietorship === true
 
   return (
-    <>
-      <h2 className="font-heading-sm">{t('section_title')}</h2>
+    <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
       <YesNoQuestion
         name={`self_employed`}
         question={t('self_employed.label')}
@@ -78,6 +78,6 @@ export const BusinessInterests = () => {
           }))}
         />
       )}
-    </>
+    </Fieldset>
   )
 }

@@ -13,7 +13,7 @@ concurrency:
 
 env:
   JAVA_VERSION: 17.0.6+10
-  NODE_VERSION: 16.19.0
+  NODE_VERSION: 16.19.1
 
 jobs:
   lint-build-and-test:

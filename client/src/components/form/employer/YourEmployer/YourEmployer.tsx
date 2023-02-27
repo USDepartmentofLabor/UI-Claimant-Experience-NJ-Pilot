@@ -24,7 +24,9 @@ export const YourEmployer = () => {
   return (
     <>
       <div>
-        <h2 className="font-heading-sm">{t('your_employer.heading')} </h2>
+        <h2 className="font-heading-sm margin-top-4">
+          {t('your_employer.heading')}
+        </h2>
         {!importedEmployer && (
           <>
             <TextField
