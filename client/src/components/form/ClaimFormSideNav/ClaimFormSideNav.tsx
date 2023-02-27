@@ -1,8 +1,10 @@
 import { MouseEvent } from 'react'
 import { useRouter } from 'next/router'
-import { SideNav } from '@trussworks/react-uswds'
+import { Accordion, SideNav } from '@trussworks/react-uswds'
+import { AccordionItemProps } from '@trussworks/react-uswds/lib/components/Accordion/Accordion'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { useClaimProgress } from 'hooks/useClaimProgress'
+import styles from './ClaimFormSideNav.module.scss'
 
 type ClaimFormSideNavProps = {
   index: number
@@ -44,7 +46,7 @@ export const ClaimFormSideNav = ({ index }: ClaimFormSideNavProps) => {
     const completionStatus = getCompletionStatus(i)
     return completionStatus === undefined ? (
       <>
-        <span className="nav-future">{heading}</span>
+        <span className={styles.nav_future}>{heading}</span>
         <span className="screen-reader-only">, not completed</span>
       </>
     ) : (
@@ -63,13 +65,30 @@ export const ClaimFormSideNav = ({ index }: ClaimFormSideNavProps) => {
     )
   })
 
+  const sideNav = <SideNav items={appItems} />
+  const sidenav_accordion: AccordionItemProps[] = [
+    {
+      title: 'Form steps',
+      content: sideNav,
+      expanded: false,
+      id: 'sidenav_accordion',
+      headingLevel: 'h1',
+    },
+  ]
+
   return (
-    <nav
-      id="sidenav"
-      aria-label="Form pages"
-      className="desktop:grid-col-3 desktop:margin-top-4"
-    >
-      <SideNav items={appItems} />
-    </nav>
+    <>
+      <Accordion
+        bordered={true}
+        items={sidenav_accordion}
+        className={styles.sidenav_accordion_outer}
+      />
+      <nav
+        aria-label="Form pages"
+        className={`desktop:grid-col-3 desktop:margin-top-4 ${styles.sidenav}`}
+      >
+        {sideNav}
+      </nav>
+    </>
   )
 }
