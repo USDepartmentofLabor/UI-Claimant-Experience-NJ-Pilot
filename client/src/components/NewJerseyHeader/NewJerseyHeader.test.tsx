@@ -86,15 +86,18 @@ describe('NewJerseyHeader Component', () => {
   it('lets user log out of the application', async () => {
     const user = userEvent.setup()
     mockUseSession.mockReturnValue({
-      status: 'unauthenticated',
-      data: null,
+      data: {
+        user: {
+          first_name: 'john',
+          last_name: 'doe',
+        },
+      },
     })
 
     mockRouter.mockImplementation(() => ({
       asPath: Routes.HOME,
     }))
     render(<NewJerseyHeader />)
-
     const logoutNavItem = screen.getByRole('link', { name: 'logout' })
     expect(logoutNavItem).toHaveClass('usa-link usa-nav__link')
 

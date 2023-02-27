@@ -97,6 +97,7 @@ const common = {
     appeal: 'File an appeal',
     privacy: 'Data privacy and security',
     logout: 'Log out',
+    signin: 'Sign in',
     title: 'Unemployment Insurance benefits',
     menu: 'Menu',
   },

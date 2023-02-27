@@ -44,7 +44,7 @@ describe('home page', () => {
 
     const loader = screen.queryByTestId('page-loading')
     const signInButton = screen.queryByRole('button', {
-      name: 'Sign in',
+      name: 'header.signin',
     })
     const signOutButton = screen.queryByRole('button', {
       name: 'Sign out',

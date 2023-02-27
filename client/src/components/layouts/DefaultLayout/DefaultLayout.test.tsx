@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import 'next-i18next'
-
 import { DefaultLayout } from 'components/layouts/DefaultLayout/DefaultLayout'
+
+jest.mock('next-auth/react')
 
 describe('ClaimApp', () => {
   const originalEnv = process.env
