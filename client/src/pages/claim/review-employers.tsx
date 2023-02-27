@@ -141,7 +141,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
             return (
               <>
                 <SummaryBox
-                  className="margin-bottom-6"
+                  className="margin-bottom-4"
                   data-testid="review-employers"
                 >
                   <SummaryBoxContent>
@@ -183,7 +183,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
 
                   return (
                     <div
-                      className="margin-bottom-1em"
+                      className="margin-bottom-4"
                       key={index}
                       data-testid={employer.employer_name}
                     >

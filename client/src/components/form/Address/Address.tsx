@@ -68,10 +68,7 @@ export const Address = ({
           onChange={onChange}
         />
       )}
-      <div
-        className="usa-memorable-date"
-        data-testid={`${basename}.parent-div`}
-      >
+      <div className="display-flex" data-testid={`${basename}.parent-div`}>
         <TextField
           name={`${basename}.city`}
           label={labels ? labels.city : defaultLabels.city}

@@ -3,31 +3,35 @@
 // -------------------------------------
 // global style overrides
 
-.usa-fieldset {
-  margin-top: units(3);
-  margin-bottom: units(3);
+.form-section > .usa-legend:first-child {
+  @include u-margin-bottom(0);
+  @include u-margin-top(4);
+  h2,
+  h3 {
+    font-size: inherit;
+    margin: 0;
+  }
 }
-.dol-fieldset .usa-legend {
+.yesno-fieldset .usa-legend {
   margin-top: 0;
-  margin-bottom: 8px;
 }
 
-.dol-fieldset .usa-form-group {
+.yesno-fieldset .usa-form-group {
   clear: both;
 }
 
-.dol-fieldset.usa-form-group--error .usa-legend {
+.yesno-fieldset.usa-form-group--error .usa-legend {
   font-weight: bold;
 }
 
-.dol-fieldset.usa-form-group--error .usa-form-group--error {
+.yesno-fieldset.usa-form-group--error .usa-form-group--error {
   border: none;
   margin-top: 1.5rem;
   padding-left: 0;
 }
 
 @media all and (min-width: 1024px) {
-  .dol-fieldset.usa-form-group--error .usa-form-group--error {
+  .yesno-fieldset.usa-form-group--error .usa-form-group--error {
     padding-left: 1.25rem;
   }
 }

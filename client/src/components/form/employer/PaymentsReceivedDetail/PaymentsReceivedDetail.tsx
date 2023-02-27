@@ -1,4 +1,4 @@
-import { FormGroup } from '@trussworks/react-uswds'
+import { FormGroup, Fieldset } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 
 import TextAreaField from '../../fields/TextAreaField/TextAreaField'
@@ -21,14 +21,12 @@ const PaymentsReceivedDetail = (props: {
   const showDates = payTypesWithDates.includes(payType)
   const dateHint = payType === 'holiday' ? 'holiday' : 'default'
   return (
-    <div
+    <Fieldset
+      className="form-section"
+      legend={<h3>{label}</h3>}
       data-testid={`payDetail-${name}`}
-      className="margin-top-4 margin-bottom-4"
     >
-      <h3 className="font-heading-sm margin-bottom-1">{label}</h3>
-      {description && (
-        <p className="font-body-xs margin-top-0">{description}</p>
-      )}
+      {description && <p className="margin-top-1">{description}</p>}
       <FormGroup>
         {showNote && (
           <TextAreaField
@@ -53,7 +51,7 @@ const PaymentsReceivedDetail = (props: {
         />
         {showDates && (
           <>
-            <p>
+            <p className="margin-top-3">
               {t(
                 `payments_received.payments_received_detail.dates_hint.label.${dateHint}`
               )}
@@ -79,7 +77,7 @@ const PaymentsReceivedDetail = (props: {
           </>
         )}
       </FormGroup>
-    </div>
+    </Fieldset>
   )
 }
 

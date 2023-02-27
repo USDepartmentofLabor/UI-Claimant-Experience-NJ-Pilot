@@ -130,7 +130,7 @@ const PaymentInformation: NextPageWithLayout = () => {
           <>
             <div>
               {t('header_description.line1')}
-              <p>
+              <p className="margin-top-1">
                 <Trans t={t} i18nKey="header_description.line2">
                   <Link
                     variant="external"
@@ -144,7 +144,10 @@ const PaymentInformation: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <Fieldset legend={<Trans t={t} i18nKey="payment_method.header" />}>
+            <Fieldset
+              className="form-section"
+              legend={<h2>{t('payment_method.header')}</h2>}
+            >
               <RadioField
                 name="payment_method"
                 legend={t('payment_method.label')}
@@ -163,13 +166,12 @@ const PaymentInformation: NextPageWithLayout = () => {
               {values.payment_method === 'debit' && (
                 <p>{t('payment_method.debit_card_description')}</p>
               )}
-            </Fieldset>
 
-            {showDepositFields && (
-              <>
-                <Fieldset legend={<Trans t={t} i18nKey="account_type.label" />}>
+              {showDepositFields && (
+                <>
                   <RadioField
                     name="account_type"
+                    legend={t('account_type.label')}
                     options={accountTypeOptions.map((option) => {
                       return {
                         label: t(`account_type.options.${option}`),
@@ -177,68 +179,67 @@ const PaymentInformation: NextPageWithLayout = () => {
                       }
                     })}
                   />
-                </Fieldset>
-                <TextField
-                  label={t('routing_number.label')}
-                  name="routing_number"
-                  type="text"
-                />
-                <TextField
-                  label={t('re_enter_routing_number.label')}
-                  name="LOCAL_re_enter_routing_number"
-                  type="text"
-                />
-                <TextField
-                  label={t('account_number.label')}
-                  name="account_number"
-                  type="text"
-                />
-                <TextField
-                  label={t('re_enter_account_number.label')}
-                  name="LOCAL_re_enter_account_number"
-                  type="text"
-                />
+                  <TextField
+                    label={t('routing_number.label')}
+                    name="routing_number"
+                    type="text"
+                  />
+                  <TextField
+                    label={t('re_enter_routing_number.label')}
+                    name="LOCAL_re_enter_routing_number"
+                    type="text"
+                  />
+                  <TextField
+                    label={t('account_number.label')}
+                    name="account_number"
+                    type="text"
+                  />
+                  <TextField
+                    label={t('re_enter_account_number.label')}
+                    name="LOCAL_re_enter_account_number"
+                    type="text"
+                  />
 
-                <div>
-                  {isMobile && (
-                    <p>
-                      <Accordion
-                        bordered={true}
-                        items={routing_and_account_number_accordion}
-                      />
-                    </p>
-                  )}
+                  <div>
+                    {isMobile && (
+                      <p>
+                        <Accordion
+                          bordered={true}
+                          items={routing_and_account_number_accordion}
+                        />
+                      </p>
+                    )}
 
-                  {!isMobile && (
-                    <>
-                      <p />
-                      <Fieldset
-                        legend={
-                          <Trans
-                            t={t}
-                            i18nKey="routing_and_account_number.label"
-                          />
-                        }
-                      >
-                        <aside>{routingAndAccountNumberHelp()}</aside>
-                      </Fieldset>
-                    </>
-                  )}
-                </div>
+                    {!isMobile && (
+                      <>
+                        <p />
+                        <Fieldset
+                          legend={
+                            <Trans
+                              t={t}
+                              i18nKey="routing_and_account_number.label"
+                            />
+                          }
+                        >
+                          <aside>{routingAndAccountNumberHelp()}</aside>
+                        </Fieldset>
+                      </>
+                    )}
+                  </div>
 
-                <CheckboxField
-                  name="acknowledge_direct_deposit_option"
-                  label={t(
-                    'payment_method.acknowledge_direct_deposit_option.label'
-                  )}
-                />
-              </>
-            )}
+                  <CheckboxField
+                    name="acknowledge_direct_deposit_option"
+                    label={t(
+                      'payment_method.acknowledge_direct_deposit_option.label'
+                    )}
+                  />
+                </>
+              )}
+            </Fieldset>
 
             <Fieldset
-              legend={
-                <Trans t={t} i18nKey="federal_income_tax_withheld.header" />
-              }
+              className="form-section"
+              legend={<h2>{t('federal_income_tax_withheld.header')}</h2>}
             >
               <p>{t('federal_income_tax_withheld.description')}</p>
               <YesNoQuestion
@@ -249,11 +250,11 @@ const PaymentInformation: NextPageWithLayout = () => {
             </Fieldset>
 
             <Fieldset
+              className="form-section"
               legend={
-                <Trans
-                  t={t}
-                  i18nKey="apply_for_increased_payment_for_dependents.header"
-                />
+                <h2>
+                  {t('apply_for_increased_payment_for_dependents.header')}
+                </h2>
               }
             >
               <p>

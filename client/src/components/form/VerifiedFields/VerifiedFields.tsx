@@ -15,7 +15,7 @@ export const VerifiedFields = ({
   return (
     <div
       data-testid="verified-fields"
-      className="usa-summary-box margin-bottom-6"
+      className="usa-summary-box margin-bottom-4"
     >
       <div className="usa-summary-box__body">
         <h2 className="usa-summary-box__heading">

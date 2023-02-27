@@ -191,7 +191,7 @@ const Home: NextPage = () => {
           </>
         ) : (
           <Button id="signIn" type="button" onClick={() => signIn('cognito')}>
-            Sign in
+            {tCommon('header.signin')}
           </Button>
         )}
       </main>
