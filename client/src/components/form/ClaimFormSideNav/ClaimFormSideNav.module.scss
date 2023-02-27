@@ -7,7 +7,7 @@
 .nav_future {
   cursor: not-allowed;
   display: block;
-  color: #adadad;
+  @include u-text('gray-30');
   padding: units(1) units(2);
   line-height: inherit;
 }
