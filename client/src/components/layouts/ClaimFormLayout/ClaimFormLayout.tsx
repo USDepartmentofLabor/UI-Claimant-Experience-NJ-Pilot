@@ -101,7 +101,7 @@ export const ClaimFormLayout = ({
         </Head>
         <div className="grid-row grid-gap">
           <StepIndicator
-            className="overflow-hidden width-mobile-lg margin-x-auto"
+            className="overflow-hidden width-tablet margin-x-auto"
             counters="none"
             headingLevel="h2"
             divProps={{

@@ -76,30 +76,13 @@
   font-weight: bold;
 }
 
-.nav-future {
-  cursor: not-allowed;
-  display: block;
-  color: #adadad;
-  line-height: 1.3;
-}
-
-.usa-sidenav .nav-future {
-  padding: units(1) units(2);
-}
-
 .usa-step-indicator__segment-label {
   display: none;
 }
-
-@media all and (max-width: units('desktop')) {
-  #appMenu .nav-future {
-    padding: units(1) units(2) units(1) units(4);
-    line-height: inherit;
-  }
-  .usa-sidenav {
-    display: none;
-  }
+.usa-step-indicator {
+  margin-bottom: units(1);
 }
+
 @media all and (min-width: units('desktop')) {
   .usa-step-indicator {
     display: none;
