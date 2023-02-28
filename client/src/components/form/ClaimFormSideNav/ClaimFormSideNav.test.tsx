@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { ClaimFormSideNav } from 'components/form/ClaimFormSideNav/ClaimFormSideNav'
 import userEvent from '@testing-library/user-event'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
@@ -28,7 +28,9 @@ describe('ClaimFormSideNav', () => {
       <ClaimFormSideNav index={pageDefinitions.indexOf(firstPageDefinition)} />
     )
 
-    const firstPageLink = screen.queryByText(firstPageDefinition.heading)
+    const firstPageLink = within(screen.getByTestId('accordion')).queryByText(
+      firstPageDefinition.heading
+    )
 
     expect(firstPageLink).toBeInTheDocument()
   })
@@ -43,7 +45,9 @@ describe('ClaimFormSideNav', () => {
       <ClaimFormSideNav index={pageDefinitions.indexOf(middlePageDefinition)} />
     )
 
-    const firstPageLink = screen.getByText(firstPageDefinition.heading)
+    const firstPageLink = within(screen.getByTestId('accordion')).getByText(
+      firstPageDefinition.heading
+    )
     await user.click(firstPageLink)
 
     expect(mockPush).toHaveBeenCalledTimes(1)

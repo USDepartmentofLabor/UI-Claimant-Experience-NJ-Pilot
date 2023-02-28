@@ -106,7 +106,7 @@ Cypress.Commands.add('login', (userObj: JWTPayload) => {
 Cypress.Commands.add('checkA11y', (options: Options = {}) => {
   if (!(Cypress.env('SKIP_CHECKS') === 'enabled')) {
     cy.pa11y({
-      hideElements: '.nav-future',
+      hideElements: 'span[class*=nav_future]',
       runners: ['htmlcs'],
       standard: 'WCAG2AA',
       actions: ['wait for element #page-loading to be hidden'],
