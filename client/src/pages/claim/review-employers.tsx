@@ -187,7 +187,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
                       key={index}
                       data-testid={employer.employer_name}
                     >
-                      <h2 className="font-heading-sm margin-bottom-0">
+                      <h2 className="font-heading-lg margin-bottom-0">
                         {employer.employer_name}
                       </h2>
                       <Button
