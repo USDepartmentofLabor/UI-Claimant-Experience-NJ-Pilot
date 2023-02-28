@@ -6,24 +6,26 @@ import { Button } from '@trussworks/react-uswds'
 import { useRouter } from 'next/router'
 import { useSession, signIn } from 'next-auth/react'
 import PageLoader from 'components/loaders/PageLoader'
-import { Alert, Table } from '@trussworks/react-uswds'
-import { WhoAmI } from 'types/claimantInput'
+import { Alert } from '@trussworks/react-uswds'
+/*import { WhoAmI } from 'types/claimantInput'
 import { Routes } from 'constants/routes'
 import { SignOut } from 'components/SignOut/SignOut'
 import serverHttpClient from 'utils/http/serverHttpClient'
 import { APIResponseType } from 'types/ResponseTypes'
-import { useClaimProgress } from 'hooks/useClaimProgress'
+import { useClaimProgress } from 'hooks/useClaimProgress'*/
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
-import { IntakeAppContext } from 'contexts/IntakeAppContext'
+//import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import Error from 'next/error'
+import { DevHome } from 'components/DevHome/DevHome'
+import { NoCurrentClaimHome } from 'components/NoCurrentClaimHome/NoCurrentClaimHome'
 
 const Home: NextPage = () => {
   const session = useSession()
   const router = useRouter()
   const { t } = useTranslation('home')
   const { t: tCommon } = useTranslation('common')
-  const { continuePath } = useClaimProgress()
+  //const { continuePath } = useClaimProgress()
 
   const {
     data: partialClaim,
@@ -31,30 +33,10 @@ const Home: NextPage = () => {
     isError: partialClaimIsError,
   } = useGetPartialClaim()
 
-  const goToLastUnfinishedClaimFormPage = () => {
-    // TODO: handle what to do if they have a completed claim
-    let path
-    if (partialClaim?.ssn === undefined && ssnInput?.ssn === undefined) {
-      path = Routes.SSN
-    } else if (
-      partialClaim?.screener_current_country_us === undefined &&
-      screenerInput === undefined
-    ) {
-      path = Routes.SCREENER
-    } else {
-      path = continuePath
-    }
-    router.push(path)
-  }
-  const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
-  const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
-  const goToUpdateContactInfoForm = () =>
-    router.push(Routes.UPDATE_CONTACT_INFO)
-  const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
-
   const { setClaimFormValues } = useContext(ClaimFormContext)
-  const { ssnInput, screenerInput } = useContext(IntakeAppContext)
+  //const { ssnInput, screenerInput } = useContext(IntakeAppContext)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isDevMode] = useState<boolean>(false) //, setDevMode
   const hasInProgressClaim =
     partialClaim !== undefined && Object.keys(partialClaim).length > 0
   useEffect(() => {
@@ -65,6 +47,10 @@ const Home: NextPage = () => {
       setIsLoading(false)
     }
   }, [partialClaim, isLoadingGetPartialClaim])
+
+  /*const renderHomepageContents = () => {
+
+  }*/
 
   const renderedHomePage = (
     <div>
@@ -104,91 +90,15 @@ const Home: NextPage = () => {
         )}
         {session.status === 'loading' ? (
           <PageLoader />
-        ) : session.data?.user && session.data?.whoAmI ? (
-          <>
-            <div className="margin-bottom-1">
-              <h3>Signed in as:</h3>
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Property</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(session.data.whoAmI as WhoAmI).map(
-                    ([key, value], i) => (
-                      <tr key={`${i}-${key}-${value}`}>
-                        <td>{key}</td>
-                        <td>{value}</td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </Table>
-            </div>
-            <div className="margin-bottom-1">
-              <SignOut isNavLink={false} />
-            </div>
-            <div className="margin-bottom-1">
-              <Button
-                type="button"
-                onClick={goToLastUnfinishedClaimFormPage}
-                data-testid="go-to-claim-form"
-              >
-                {hasInProgressClaim
-                  ? t('continue_claim_button')
-                  : t('file_a_claim_button')}
-              </Button>
-            </div>
-            {!isProd && (
-              <div className="margin-bottom-1">
-                <Button
-                  type="button"
-                  secondary
-                  onClick={() =>
-                    serverHttpClient
-                      .post<APIResponseType>('/partial-claim', {})
-                      .then(() => {
-                        location.reload()
-                      })
-                  }
-                >
-                  Reset claim (dev/test)
-                </Button>
-              </div>
-            )}
-            <div className="margin-bottom-1">
-              <Button
-                type="button"
-                secondary
-                onClick={goToUpdatePaymentForm}
-                data-testid="go-to-update-payment"
-              >
-                Update payment info
-              </Button>
-            </div>
-            <div className="margin-bottom-1">
-              <Button
-                type="button"
-                secondary
-                onClick={goToUpdateContactInfoForm}
-                data-testid="go-to-update-contact-info"
-              >
-                {t('update_contact_info_button')}
-              </Button>
-            </div>
-            <div>
-              <Button
-                type="button"
-                secondary
-                onClick={goToTaxDocumentsPage}
-                data-testid="go-to-tax-documents"
-              >
-                {t('tax_doc_button')}
-              </Button>
-            </div>
-          </>
+        ) : session.data?.user && session.data?.whoAmI ? (isDevMode ? (
+            <DevHome
+              session={session}
+              partialClaim={partialClaim}
+              hasInProgressClaim={hasInProgressClaim}
+            />
+          ) : (
+            <NoCurrentClaimHome />
+          )
         ) : (
           <Button id="signIn" type="button" onClick={() => signIn('cognito')}>
             {tCommon('header.signin')}
