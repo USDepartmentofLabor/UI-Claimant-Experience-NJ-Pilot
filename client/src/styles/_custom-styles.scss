@@ -4,12 +4,12 @@
 // global style overrides
 
 .form-section > .usa-legend:first-child {
-  @include u-margin-bottom(0);
-  @include u-margin-top(4);
+  margin: 0;
   h2,
   h3 {
+    @include u-margin-bottom(0);
+    @include u-margin-top(4);
     font-size: inherit;
-    margin: 0;
   }
 }
 .yesno-fieldset .usa-legend {
