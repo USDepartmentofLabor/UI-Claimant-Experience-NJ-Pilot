@@ -3,6 +3,7 @@ import { Formik } from 'formik'
 import { EditEmployer, EMPLOYER_SKELETON } from './EditEmployer'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
 import { Employer, ImportedEmployerFields } from 'types/claimantInput'
+import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
 
 const validImportedEmployerFields: ImportedEmployerFields = {
   is_imported: true,
@@ -143,6 +144,53 @@ describe('Validates the schema', () => {
       await expect(
         yupEditEmployers.validateAt(`employers[0].definite_recall`, schemaSlice)
       ).resolves.toBeTruthy()
+    })
+  })
+  describe('Business interests logic', () => {
+    describe('related_to_owner_or_child_of_owner_under_18', () => {
+      it('passes an empty value if employer_is_sole_proprietorship is false', async () => {
+        const schemaSlice = {
+          employers: [
+            {
+              self_employed: false,
+              is_owner: false,
+              corporate_officer_or_stock_ownership: false,
+              employer_is_sole_proprietorship: false,
+              related_to_owner_or_child_of_owner_under_18:
+                UNTOUCHED_RADIO_VALUE,
+            },
+          ],
+        }
+
+        await expect(
+          yupEditEmployers.validateAt(
+            `employers[0].related_to_owner_or_child_of_owner_under_18`,
+            schemaSlice
+          )
+        ).resolves.toEqual(UNTOUCHED_RADIO_VALUE)
+      })
+
+      it('rejects an empty value if employer_is_sole_proprietorship is truthy', async () => {
+        const schemaSlice = {
+          employers: [
+            {
+              self_employed: false,
+              is_owner: false,
+              corporate_officer_or_stock_ownership: false,
+              employer_is_sole_proprietorship: true,
+              related_to_owner_or_child_of_owner_under_18:
+                UNTOUCHED_RADIO_VALUE,
+            },
+          ],
+        }
+
+        await expect(
+          yupEditEmployers.validateAt(
+            `employers[0].related_to_owner_or_child_of_owner_under_18`,
+            schemaSlice
+          )
+        ).rejects.toBeTruthy()
+      })
     })
   })
 })

@@ -249,7 +249,7 @@ export const yupEditEmployer = object().shape({
   related_to_owner_or_child_of_owner_under_18: string()
     .nullable()
     .when('employer_is_sole_proprietorship', {
-      is: false,
+      is: true,
       then: (schema) =>
         schema
           .oneOf([...employerRelationOptions])
