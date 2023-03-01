@@ -3,6 +3,7 @@ import { Formik } from 'formik'
 import { EditEmployer, EMPLOYER_SKELETON } from './EditEmployer'
 import { yupEditEmployers } from 'components/form/EditEmployer/EditEmployer'
 import { Employer, ImportedEmployerFields } from 'types/claimantInput'
+import { i18n_claimForm } from 'i18n/i18n'
 import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
 
 const validImportedEmployerFields: ImportedEmployerFields = {
@@ -144,6 +145,30 @@ describe('Validates the schema', () => {
       await expect(
         yupEditEmployers.validateAt(`employers[0].definite_recall`, schemaSlice)
       ).resolves.toBeTruthy()
+    })
+    it('has error if employment last date is same as definite recall date', async () => {
+      const schemaSlice = {
+        employers: [
+          {
+            is_full_time: true,
+            definite_recall: true,
+            expect_to_be_recalled: true,
+            definite_recall_date: '2022-12-03',
+          },
+        ],
+      }
+      try {
+        await yupEditEmployers.validateAt(
+          'employers[0].definite_recall_date',
+          schemaSlice
+        )
+      } catch (error: any) {
+        expect(error.errors[0]).toBe(
+          i18n_claimForm.t(
+            'employers.separation.definite_recall_date.errors.minDate'
+          )
+        )
+      }
     })
   })
   describe('Business interests logic', () => {

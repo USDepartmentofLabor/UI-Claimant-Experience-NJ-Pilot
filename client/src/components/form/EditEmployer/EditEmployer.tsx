@@ -402,20 +402,25 @@ export const yupEditEmployer = object().shape({
     i18n_claimForm.t('employers.separation.definite_recall_date.label')
   ).when('definite_recall', {
     is: true,
-    then: (schema) =>
-      schema
-        .min(
-          ref('employment_last_date'),
-          i18n_claimForm.t(
+    then: (schema) => {
+      return schema
+        .test({
+          name: 'min',
+          exclusive: false,
+          message: i18n_claimForm.t(
             'employers.separation.definite_recall_date.errors.minDate'
-          )
-        )
+          ),
+          test: (value, context) =>
+            (value as Date) > context.parent.employment_last_date,
+        })
         .required(
           i18n_claimForm.t(
             'employers.separation.definite_recall_date.errors.required'
           )
-        ),
+        )
+    },
   }),
+
   // Payments received
   LOCAL_pay_types: array().when('payments_received', {
     is: (paymentsReceived: PaymentsReceivedDetailInput[]) =>
