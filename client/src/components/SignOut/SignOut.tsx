@@ -35,7 +35,7 @@ export const SignOut = ({ isNavLink }: SignOutProps) => {
       data-testid="sign-out-button-cmp"
       onClick={handleOnClickSignOut}
     >
-      Sign out
+      {t('signout')}
     </Button>
   )
 

@@ -67,8 +67,7 @@ export const Review: NextPageWithLayout = () => {
           await submitClaim.mutate(completeClaimValues, {
             onSuccess: async () =>
               await router.push({
-                pathname: Routes.HOME,
-                query: { completed: true },
+                pathname: Routes.SUCCESS,
               }),
           })
         },

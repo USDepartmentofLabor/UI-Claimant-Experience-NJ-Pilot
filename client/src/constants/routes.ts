@@ -41,6 +41,7 @@ export const Routes = {
   SCREENER_REDIRECT: '/screener-redirect',
   PRIVACY: '/privacy',
   SSN: '/ssn',
+  SUCCESS: '/beta-success',
   UPDATE_PAYMENT_INFO: ExternalRoutes().UPDATE_PAYMENT_INFO,
   TAX_DOCUMENTS: ExternalRoutes().TAX_DOCUMENTS,
   UPDATE_CONTACT_INFO: ExternalRoutes().UPDATE_CONTACT_INFO,

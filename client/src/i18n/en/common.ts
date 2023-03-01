@@ -88,6 +88,9 @@ const common = {
     default_heading:
       'The following information has been added to your application:',
   },
+  update_payment_button: 'Update payment info',
+  tax_doc_button: 'Get your 1099-G',
+  update_contact_info_button: 'Update Address/Telephone',
   page_loader: 'Loading...',
   header: {
     home: 'Home',
@@ -97,6 +100,7 @@ const common = {
     appeal: 'File an appeal',
     privacy: 'Data privacy and security',
     logout: 'Log out',
+    signout: 'Sign out',
     signin: 'Sign in',
     title: 'Unemployment Insurance benefits',
     menu: 'Menu',
@@ -136,6 +140,14 @@ const common = {
   errorStatus: {
     '500': 'Internal server error',
     '404': 'This page could not be found',
+  },
+  success: {
+    heading: 'Success!',
+    success_details:
+      'You have successfully submitted your claim for unemployment insurance. We will be in touch soon to confirm we have received your information.',
+    contact_details:
+      "If you don't hear from us in two weeks, please email us at ",
+    contact_email: 'userexperience@dol.nj.gov',
   },
 }
 

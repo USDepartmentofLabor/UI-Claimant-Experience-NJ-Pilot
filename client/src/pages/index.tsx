@@ -6,7 +6,7 @@ import { Button } from '@trussworks/react-uswds'
 import { useRouter } from 'next/router'
 import { useSession, signIn } from 'next-auth/react'
 import PageLoader from 'components/loaders/PageLoader'
-import { Alert, Table } from '@trussworks/react-uswds'
+import { Table } from '@trussworks/react-uswds'
 import { WhoAmI } from 'types/claimantInput'
 import { Routes } from 'constants/routes'
 import { SignOut } from 'components/SignOut/SignOut'
@@ -17,6 +17,9 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import Error from 'next/error'
+import { PaymentButton } from 'components/form/ClaimFormButtons/PaymentButton/PaymentButton'
+import { UpdateContactButton } from 'components/form/ClaimFormButtons/UpdateContactButton/UpdateContactButton'
+import { TaxDocumentsButton } from 'components/form/ClaimFormButtons/TaxDocumentsButton/TaxDocumentsButton'
 
 const Home: NextPage = () => {
   const session = useSession()
@@ -46,10 +49,7 @@ const Home: NextPage = () => {
     }
     router.push(path)
   }
-  const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
-  const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
-  const goToUpdateContactInfoForm = () =>
-    router.push(Routes.UPDATE_CONTACT_INFO)
+
   const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
 
   const { setClaimFormValues } = useContext(ClaimFormContext)
@@ -97,11 +97,6 @@ const Home: NextPage = () => {
         id="main-content"
       >
         <h1 data-testid="home-page-heading">{t('heading')}</h1>
-        {router?.query?.completed && (
-          <Alert type="success" headingLevel="h4" className="margin-bottom-3">
-            {t('complete_claim_success')}
-          </Alert>
-        )}
         {session.status === 'loading' ? (
           <PageLoader />
         ) : session.data?.user && session.data?.whoAmI ? (
@@ -159,34 +154,13 @@ const Home: NextPage = () => {
               </div>
             )}
             <div className="margin-bottom-1">
-              <Button
-                type="button"
-                secondary
-                onClick={goToUpdatePaymentForm}
-                data-testid="go-to-update-payment"
-              >
-                Update payment info
-              </Button>
+              <PaymentButton />
             </div>
             <div className="margin-bottom-1">
-              <Button
-                type="button"
-                secondary
-                onClick={goToUpdateContactInfoForm}
-                data-testid="go-to-update-contact-info"
-              >
-                {t('update_contact_info_button')}
-              </Button>
+              <UpdateContactButton />
             </div>
             <div>
-              <Button
-                type="button"
-                secondary
-                onClick={goToTaxDocumentsPage}
-                data-testid="go-to-tax-documents"
-              >
-                {t('tax_doc_button')}
-              </Button>
+              <TaxDocumentsButton />
             </div>
           </>
         ) : (
