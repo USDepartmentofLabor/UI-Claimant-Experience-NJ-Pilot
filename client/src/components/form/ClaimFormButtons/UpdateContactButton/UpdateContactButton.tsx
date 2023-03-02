@@ -10,7 +10,6 @@ export const UpdateContactButton = () => {
     router.push(Routes.UPDATE_CONTACT_INFO)
   return (
     <>
-      {' '}
       <Button
         type="button"
         secondary

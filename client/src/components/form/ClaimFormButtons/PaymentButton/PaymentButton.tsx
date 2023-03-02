@@ -10,7 +10,6 @@ export const PaymentButton = () => {
 
   return (
     <>
-      {' '}
       <Button
         type="button"
         secondary

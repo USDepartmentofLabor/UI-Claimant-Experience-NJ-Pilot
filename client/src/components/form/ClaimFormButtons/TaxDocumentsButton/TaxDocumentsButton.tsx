@@ -9,7 +9,6 @@ export const TaxDocumentsButton = () => {
   const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
   return (
     <>
-      {' '}
       <Button
         type="button"
         secondary
