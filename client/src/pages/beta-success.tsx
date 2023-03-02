@@ -21,15 +21,10 @@ const BetaSuccess: NextPage = () => {
         id="main-content"
       >
         <h1>{t('heading')}</h1>
-        <p data-testid={'success_details'}>{t('success_details')}</p>
+        <p>{t('success_details')}</p>
         <p>
-          <Trans
-            t={t}
-            i18nKey="contact_details"
-            data-testid={'contact_details'}
-          >
-            {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-            <a href={`mailto:${EXTERNAL_CONTACT_EMAIL}`}></a>
+          <Trans t={t} i18nKey="contact_details">
+            <a href={`mailto:${EXTERNAL_CONTACT_EMAIL}`}>{''}</a>
           </Trans>
         </p>
         <div className="margin-bottom-1">
