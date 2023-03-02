@@ -1,16 +1,16 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Trans, useTranslation } from 'react-i18next'
-import { Link } from '@trussworks/react-uswds'
 
 import { SignOut } from 'components/SignOut/SignOut'
 
 import { UpdateContactButton } from 'components/form/ClaimFormButtons/UpdateContactButton/UpdateContactButton'
 import { TaxDocumentsButton } from 'components/form/ClaimFormButtons/TaxDocumentsButton/TaxDocumentsButton'
 import { PaymentButton } from 'components/form/ClaimFormButtons/PaymentButton/PaymentButton'
-
+import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
 const BetaSuccess: NextPage = () => {
   const { t } = useTranslation('common', { keyPrefix: 'success' })
+
   return (
     <>
       <Head>
@@ -21,10 +21,17 @@ const BetaSuccess: NextPage = () => {
         id="main-content"
       >
         <h1>{t('heading')}</h1>
-        <p>{t('success_details')}</p>
-        <Trans t={t} i18nKey="contact_details">
-          <Link href="contact_email">{''}</Link>
-        </Trans>
+        <p data-testid={'success_details'}>{t('success_details')}</p>
+        <p>
+          <Trans
+            t={t}
+            i18nKey="contact_details"
+            data-testid={'contact_details'}
+          >
+            {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
+            <a href={`mailto:${EXTERNAL_CONTACT_EMAIL}`}></a>
+          </Trans>
+        </p>
         <div className="margin-bottom-1">
           <SignOut isNavLink={false} />
         </div>
@@ -32,11 +39,9 @@ const BetaSuccess: NextPage = () => {
           <PaymentButton />
         </div>
         <div className="margin-bottom-1">
-          {' '}
-          <UpdateContactButton />{' '}
+          <UpdateContactButton />
         </div>
         <div className="margin-bottom-1">
-          {' '}
           <TaxDocumentsButton />
         </div>
       </main>

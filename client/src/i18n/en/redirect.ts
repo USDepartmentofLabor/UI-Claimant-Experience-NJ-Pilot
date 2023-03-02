@@ -5,7 +5,6 @@ import {
   CLAIMS_AGENT_NUMBER_2,
   CLAIMS_AGENT_NUMBER_3,
 } from 'constants/phoneNumbers'
-
 const redirect = {
   page_title: 'Let’s try another way',
   info_alert: {
