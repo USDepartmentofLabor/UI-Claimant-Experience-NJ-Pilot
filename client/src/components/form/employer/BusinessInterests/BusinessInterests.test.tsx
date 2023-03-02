@@ -57,13 +57,17 @@ describe('BusinessInterests component', () => {
     const queryForSoleProprietorshipYesAnswer = () => {
       const question = queryForSoleProprietorshipQuestion()
       return question !== null
-        ? within(question).queryByRole('radio', { name: 'yes' })
+        ? within(question).queryByRole('radio', {
+            name: 'employer_is_sole_proprietorship.options.yes',
+          })
         : null
     }
     const queryForSoleProprietorshipNoAnswer = () => {
       const question = queryForSoleProprietorshipQuestion()
       return question !== null
-        ? within(question).queryByRole('radio', { name: 'no' })
+        ? within(question).queryByRole('radio', {
+            name: 'employer_is_sole_proprietorship.options.no',
+          })
         : null
     }
 

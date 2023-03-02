@@ -180,7 +180,7 @@ describe('Validates the schema', () => {
               self_employed: false,
               is_owner: false,
               corporate_officer_or_stock_ownership: false,
-              employer_is_sole_proprietorship: false,
+              employer_is_sole_proprietorship: 'no',
               related_to_owner_or_child_of_owner_under_18:
                 UNTOUCHED_RADIO_VALUE,
             },
@@ -202,7 +202,7 @@ describe('Validates the schema', () => {
               self_employed: false,
               is_owner: false,
               corporate_officer_or_stock_ownership: false,
-              employer_is_sole_proprietorship: true,
+              employer_is_sole_proprietorship: 'yes',
               related_to_owner_or_child_of_owner_under_18:
                 UNTOUCHED_RADIO_VALUE,
             },
