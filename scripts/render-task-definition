@@ -68,7 +68,7 @@ with open(args.taskdef, "r") as f:
                         )
                     else:
                         secret["valueFrom"] = secret["valueFrom"].replace(
-                            "PR_PLACEHOLDER/", ""
+                            "/PR_PLACEHOLDER", ""
                         )
 
     print(json.dumps(task_def))
