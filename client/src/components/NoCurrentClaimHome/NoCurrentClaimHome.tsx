@@ -14,7 +14,8 @@ export const NoCurrentClaimHome = () => {
   }
 
   return (
-    <div className="styleguide-content usa-prose site-prose">
+    <>
+      <div className="styleguide-content usa-prose site-prose">
       <div className={styles.preface}>{t('preface1')}</div>
       <div className={styles.preface}>
         {t('preface2')}
@@ -61,23 +62,32 @@ export const NoCurrentClaimHome = () => {
           </h4>
           <p>{t('process_list_2_content')}</p>
         </ol>
-        <ol className="usa-process-list__item orderedListOverride">
+        <ol className="usa-process-list__item">
           <h4 className="usa-process-list__heading">
             {t('process_list_3_header')}
           </h4>
           <p>{t('process_list_3_content')}</p>
         </ol>
-        <ul className={styles.screenerBox}>
-          <h2>{t('screener_title')}</h2>
-          <Button type="button" id="screenerButton" onClick={goToSsnPage}>
-            {t('screener_button')}
-          </Button>
+        <ul className="usa-summary-box margin-bottom-4">
+          <div className="usa-summary-box__body">
+            <h2 className="usa-summary-box__heading">{t('screener_title')}</h2>
+            <Button type="button" id="screenerButton" onClick={goToSsnPage}>
+              {t('screener_button')}
+            </Button>
+          </div>
         </ul>
       </ProcessList>
+    </div>
       <p>{t('data_privacy_title')}</p>
-      <small className={'line-height-body-2'}>
+      <br/>
+      <small className={'line-height-body-1 font-size-3'}>
         {t('data_privacy_content')}
       </small>
-    </div>
+      <br/>
+      <br/>
+      <small className={'line-height-body-1 font-size-3'}>
+        {t('data_privacy_continued')}
+      </small>
+    </>
   )
 }

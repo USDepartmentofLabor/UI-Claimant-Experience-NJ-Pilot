@@ -3,19 +3,10 @@
 }
 
 .intermediateHeader {
-  margin-top: 0.5em !important;
+  margin-top: 1em !important;
 }
 
 .orderedListOverride {
-  padding-bottom: 0em;
+  padding-bottom: 0 !important
 }
 
-.screenerBox {
-  background: #f0f0f0;
-  margin-left: -1em;
-  margin-right: -1em;
-  margin-top: 2em;
-  margin-bottom: 2em;
-  padding-top: 1em;
-  padding-bottom: 2em;
-}
