@@ -1,4 +1,3 @@
-import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
 const common = {
   skip_nav: 'Skip to main content',
   yes: 'Yes',
@@ -141,12 +140,6 @@ const common = {
   errorStatus: {
     '500': 'Internal server error',
     '404': 'This page could not be found',
-  },
-  success: {
-    heading: 'Success!',
-    success_details:
-      'You have successfully submitted your claim for unemployment insurance. We will be in touch soon to confirm we have received your information.',
-    contact_details: `If you don't hear from us in two weeks, please email us at <0>${EXTERNAL_CONTACT_EMAIL}<0/>`,
   },
 }
 

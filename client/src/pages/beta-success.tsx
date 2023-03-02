@@ -9,7 +9,7 @@ import { TaxDocumentsButton } from 'components/form/ClaimFormButtons/TaxDocument
 import { PaymentButton } from 'components/form/ClaimFormButtons/PaymentButton/PaymentButton'
 import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
 const BetaSuccess: NextPage = () => {
-  const { t } = useTranslation('common', { keyPrefix: 'success' })
+  const { t } = useTranslation('claimForm', { keyPrefix: 'success' })
 
   return (
     <>

@@ -20,7 +20,6 @@ const namespaces = [
   'screener',
   'privacy',
   'ssn',
-  'betaSuccess',
 ] as const
 
 i18n.use(LanguageDetector).use(initReactI18next).init({
@@ -51,7 +50,4 @@ export const i18n_privacy = i18n.cloneInstance({
 
 export const i18n_ssn = i18n.cloneInstance({
   defaultNS: 'ssn',
-})
-export const i18n_betaSuccess = i18n.cloneInstance({
-  defaultNS: 'betaSuccess',
 })
