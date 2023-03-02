@@ -79,7 +79,7 @@ const Home: NextPage = () => {
         <meta name="theme-color" content="#ffffff" />
       </Head>
       <main
-        className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
+        className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-8"
         id="main-content"
       >
         <h1 data-testid="home-page-heading">{t('heading')}</h1>
@@ -90,7 +90,8 @@ const Home: NextPage = () => {
         )}
         {session.status === 'loading' ? (
           <PageLoader />
-        ) : session.data?.user && session.data?.whoAmI ? (isDevMode ? (
+        ) : session.data?.user && session.data?.whoAmI ? (
+          isDevMode ? (
             <DevHome
               session={session}
               partialClaim={partialClaim}

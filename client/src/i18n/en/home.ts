@@ -12,14 +12,15 @@ const home = {
     'New Jersey Unemployment Insurance gives weekly payments to people who lose their jobs. This money helps people pay their bills while they are looking for new jobs.',
   preface2: 'To get these benefits, you must apply.',
   preface2_bold:
-    'Anyone who has lost their job can apply, but applying does not mean you will get benefits.',
-  preface2_continued: 'Your work situation must meet the ',
+    ' Anyone who has lost their job can apply, but applying does not mean you will get benefits.',
+  preface2_continued: ' Your work situation must meet the ',
   preface2_link: 'eligibility requirements',
+  preface2_link_url: 'https://nj.gov/labor/myunemployment/before/about/who/',
   preface3: 'The eligibility requirements can be confusing - ',
   preface3_bold:
-    'if you are not sure if you are eligible, you should still apply.',
+    ' if you are not sure if you are eligible, you should still apply.',
   preface3_continued:
-    'The sooner you apply after losing your job, the better. After you submit your application, we will review it to see if you meet the requirements.',
+    ' The sooner you apply after losing your job, the better. After you submit your application, we will review it to see if you meet the requirements.',
   how_to_apply: 'How to apply',
   process_list_1_header: 'Gather the required information',
   process_list_2_header: 'Answer a few basic questions on the next page',
@@ -52,7 +53,7 @@ const home = {
     'After you have answered our basic questions, we will tell you how to apply. Most people will be able to use our online application, but in some cases you may have to apply by phone. Once you finish and submit your application, we will let you know what to do next.',
   screener_title: 'We need to ask you a few questions before we get started.',
   screener_button: 'Continue to questions',
-  data_privacy_title: 'Data privacy and security',
+  data_privacy_title: 'Data privacy and security\n',
   data_privacy_content:
     'The information collected from your application for unemployment compensation is private data and cannot be released except when authorized by state or federal law, by a court order, or with your permission. The information you and/or your employer(s) provide may be used for New Jersey Department of Labor and Workforce Development purposes and may be used to provide income and eligibility verification between State Agencies administering programs under a plan approved under Title I, X, XIV, XVI as contained in Section 1137 (a)(6) of the Social Security Act. It may be shared with other state and/or federal agencies that determine eligibility for Medicaid, Food Stamps, Social Security, or other state and/or federal benefits and programs. Your Social Security Number will be validated with the Social Security Administration. If you are not a citizen of the United States, your work authorization in the United States will be verified with the Department of Homeland Security.\n' +
     '\n' +
