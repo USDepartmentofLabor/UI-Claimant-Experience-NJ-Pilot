@@ -1,6 +1,5 @@
 export { default } from 'next-auth/middleware'
 
 export const config = {
-  matcher: ['/!beta-success'],
+  matcher: ['/!dev/(.+)'],
 }
-// '/!dev/(.+)'
