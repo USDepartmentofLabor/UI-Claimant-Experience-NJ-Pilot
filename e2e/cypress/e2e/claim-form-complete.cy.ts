@@ -215,6 +215,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickSubmit()
 
     // User lands on home page on successful completion
-    cy.url().should('eq', `${Cypress.config().baseUrl}/beta-success`)
+    cy.url().should('eq', `${Cypress.config().baseUrl}/claim/beta-success`)
   })
 })

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import BetaSuccess from 'pages/beta-success'
+import BetaSuccess from 'pages/claim/beta-success'
 
 describe('success page', () => {
   const renderSuccessPage = () => {
