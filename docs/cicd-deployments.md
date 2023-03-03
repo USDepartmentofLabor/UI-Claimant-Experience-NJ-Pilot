@@ -90,6 +90,7 @@ appropriate AWS access can retrieve the values from SSM.
 | GitHub environment | Secret name                         | AWS environment | SSM parameter name                                                    |
 | ------------------ | ----------------------------------- | --------------- | --------------------------------------------------------------------- |
 | repository         | COGNITO_CLIENT_ID                   | dev             | `/dol-ui-claimant-intake-dev/cognito-client-id`                       |
+|                    | COGNITO_USER_POOL_ID                |                 | `/dol-ui-claimant-intake-dev/cognito-user-pool-id`                    |
 |                    | COGNITO_CLIENT_SECRET               |                 | `/dol-ui-claimant-intake-dev/cognito-client-secret`                   |
 |                    | COGNITO_DOMAIN                      |                 | `/dol-ui-claimant-intake-dev/cognito-domain`                          |
 |                    | COGNITO_ISSUER                      |                 | `/dol-ui-claimant-intake-dev/cognito-issuer`                          |

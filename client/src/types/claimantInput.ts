@@ -19,6 +19,7 @@ import {
   ReasonStillEmployedOption,
   UntouchedRadioValue,
   EmployerRelationOption,
+  WorkOption,
 } from 'constants/formOptions'
 
 // Types here represent the possible values of the intake form fields.
@@ -125,7 +126,7 @@ export type ScreenerInput = {
   screener_current_country_us: YesNoInput
   screener_live_in_canada: YesNoInput
   screener_job_last_eighteen_months: YesNoInput
-  screener_work_nj: string | UntouchedRadioValue
+  screener_work_nj: WorkOption | UntouchedRadioValue
   screener_military_service_eighteen_months: YesNoInput
   screener_currently_disabled: YesNoInput
   screener_federal_work_in_last_eighteen_months: YesNoInput
