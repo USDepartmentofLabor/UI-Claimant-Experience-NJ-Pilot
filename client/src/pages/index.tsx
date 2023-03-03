@@ -17,9 +17,7 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import Error from 'next/error'
-import { PaymentButton } from 'components/form/ClaimFormButtons/PaymentButton/PaymentButton'
-import { UpdateContactButton } from 'components/form/ClaimFormButtons/UpdateContactButton/UpdateContactButton'
-import { TaxDocumentsButton } from 'components/form/ClaimFormButtons/TaxDocumentsButton/TaxDocumentsButton'
+import { ExternalWebsiteButton } from 'components/form/ClaimFormButtons/ExternalWebsiteButton/ExternalWebsiteButton'
 
 const Home: NextPage = () => {
   const session = useSession()
@@ -154,13 +152,13 @@ const Home: NextPage = () => {
               </div>
             )}
             <div className="margin-bottom-1">
-              <PaymentButton />
+              <ExternalWebsiteButton option={'payment'} />
             </div>
             <div className="margin-bottom-1">
-              <UpdateContactButton />
+              <ExternalWebsiteButton option={'contact'} />
             </div>
             <div>
-              <TaxDocumentsButton />
+              <ExternalWebsiteButton option={'tax'} />
             </div>
           </>
         ) : (

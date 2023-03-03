@@ -1,13 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Trans, useTranslation } from 'react-i18next'
-
 import { SignOut } from 'components/SignOut/SignOut'
-
-import { UpdateContactButton } from 'components/form/ClaimFormButtons/UpdateContactButton/UpdateContactButton'
-import { TaxDocumentsButton } from 'components/form/ClaimFormButtons/TaxDocumentsButton/TaxDocumentsButton'
-import { PaymentButton } from 'components/form/ClaimFormButtons/PaymentButton/PaymentButton'
 import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
+import { ExternalWebsiteButton } from 'components/form/ClaimFormButtons/ExternalWebsiteButton/ExternalWebsiteButton'
 const BetaSuccess: NextPage = () => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'success' })
 
@@ -31,13 +27,13 @@ const BetaSuccess: NextPage = () => {
           <SignOut isNavLink={false} />
         </div>
         <div className="margin-bottom-1">
-          <PaymentButton />
+          <ExternalWebsiteButton option={'payment'} />
         </div>
         <div className="margin-bottom-1">
-          <UpdateContactButton />
+          <ExternalWebsiteButton option={'contact'} />
         </div>
         <div className="margin-bottom-1">
-          <TaxDocumentsButton />
+          <ExternalWebsiteButton option={'tax'} />
         </div>
       </main>
     </>
