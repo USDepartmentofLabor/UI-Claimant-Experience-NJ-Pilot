@@ -1,15 +1,13 @@
 package nj.lwd.ui.claimantintake.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
-import java.util.Objects;
-import java.util.Set;
+import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -30,7 +28,7 @@ public class ClaimValidatorServiceTest {
         ClaimValidatorService claimValidator =
                 new ClaimValidatorService("classpath:", testSchemaName);
 
-        Set<ValidationMessage> errorMessages = claimValidator.validateAgainstSchema(validClaim);
+        ArrayList<String> errorMessages = claimValidator.validateAgainstSchema(validClaim);
         assert (errorMessages.size() < 1);
     }
 
@@ -47,22 +45,14 @@ public class ClaimValidatorServiceTest {
         ClaimValidatorService claimValidator =
                 new ClaimValidatorService("classpath:", testSchemaName);
 
-        Set<ValidationMessage> errorMessages = claimValidator.validateAgainstSchema(invalidClaim);
+        ArrayList<String> errorMessages = claimValidator.validateAgainstSchema(invalidClaim);
         assert (errorMessages.size() == 2);
-
-        errorMessages.forEach(
-                (m) -> {
-                    if (Objects.equals(m.getType(), "required")) {
-                        assertEquals(
-                                "$.claimant_name.first_name: is missing but it is required",
-                                m.getMessage());
-
-                    } else {
-                        assertEquals(
-                                "$.claimant_name.last_name: integer found, string expected",
-                                m.getMessage());
-                    }
-                });
+        assertTrue(
+                errorMessages.contains(
+                        "$.claimant_name.first_name: is missing but it is required"));
+        assertTrue(
+                errorMessages.contains(
+                        "$.claimant_name.last_name: integer found, string expected"));
     }
 
     @Test

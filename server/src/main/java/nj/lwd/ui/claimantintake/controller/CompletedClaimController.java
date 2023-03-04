@@ -47,8 +47,10 @@ public class CompletedClaimController {
             Set<ValidationMessage> errorSet =
                     claimValidatorService.validateAgainstSchema(
                             objectMapper.writeValueAsString(externalClaim));
+
             if (errorSet.size() > 0) {
                 // TODO - change here when detailed error msgs are desired on the frontend
+
                 return new ResponseEntity<>(
                         "Save failed, the schema was the correct JSON format but had invalid data.",
                         HttpStatus.BAD_REQUEST);
