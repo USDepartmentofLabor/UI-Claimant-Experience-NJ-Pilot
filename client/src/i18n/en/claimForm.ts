@@ -105,9 +105,9 @@ const claimForm = {
       no_work:
         'You said you did not have a job in the last 18 months.  If that\'s correct, click "next" below. If you did have a job, please go back and change your answer on <0>the first page</0>.',
     },
-    add_employer: 'Add Employer',
+    add_employer: 'Add employer',
     edit_employer: {
-      edit_details: 'Edit Details',
+      edit_details: 'Edit details',
       label: 'Edit details for {{employer}}',
       delete: 'Delete',
       delete_label: 'Delete employer {{employer}}',
