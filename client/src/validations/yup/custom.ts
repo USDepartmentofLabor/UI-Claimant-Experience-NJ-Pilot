@@ -127,7 +127,7 @@ export const yupName = object().shape({
     .nullable()
     .max(36, i18n_claimForm.t('name.first_name.errors.maxLength'))
     .matches(
-      /^[A-Za-z]+$/,
+      /^[A-Za-z \-']+$/,
       i18n_claimForm.t('name.first_name.errors.alphabetical')
     )
     .required(i18n_claimForm.t('name.first_name.errors.required')),
@@ -135,14 +135,14 @@ export const yupName = object().shape({
     .nullable()
     .max(36, i18n_claimForm.t('name.last_name.errors.maxLength'))
     .matches(
-      /^[A-Za-z]+$/,
+      /^[A-Za-z \-']+$/,
       i18n_claimForm.t('name.last_name.errors.alphabetical')
     )
     .required(i18n_claimForm.t('name.last_name.errors.required')),
   middle_initial: string()
     .nullable()
     .matches(
-      /[A-Za-z]/,
+      /[A-Za-z \-']/,
       i18n_claimForm.t('name.middle_initial.errors.alphabetical')
     )
     .max(1, i18n_claimForm.t('name.middle_initial.errors.maxLength')),

@@ -947,14 +947,16 @@ const claimForm = {
       label: 'First name',
       errors: {
         required: 'First name is required',
-        alphabetical: 'First name must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your first name with only the letters A-Z.",
         maxLength: 'First name must be at most 36 characters',
       },
     },
     middle_initial: {
       label: 'Middle initial (optional)',
       errors: {
-        alphabetical: 'Middle initial must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your middle initial with only the letters A-Z.",
         maxLength: 'Middle initial must be at most 1 character',
       },
     },
@@ -962,7 +964,8 @@ const claimForm = {
       label: 'Last name',
       errors: {
         required: 'Last name is required',
-        alphabetical: 'Last name must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your last name with only the letters A-Z.",
         maxLength: 'Last name must be at most 36 characters',
       },
     },
