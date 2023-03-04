@@ -1,18 +1,16 @@
 package nj.lwd.ui.claimantintake.controller;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.networknt.schema.CustomErrorMessageType;
-import com.networknt.schema.ValidationMessage;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
@@ -24,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(controllers = CompletedClaimController.class)
 @TestPropertySource(
@@ -40,10 +39,10 @@ class CompletedClaimControllerTest {
     @Test
     @WithMockUser
     void shouldAcceptCompletedClaim() throws Exception {
-        Set<ValidationMessage> validationMessageSet = new HashSet<>();
+        ArrayList<String> validationMessageList = new ArrayList<String>();
         when(claimStorageService.completeClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateAgainstSchema(anyString()))
-                .thenReturn(validationMessageSet);
+                .thenReturn(validationMessageList);
         this.mockMvc
                 .perform(
                         post("/complete-claim")
@@ -59,10 +58,10 @@ class CompletedClaimControllerTest {
 
     @Test
     void shouldRejectUnauthorizedUser() throws Exception {
-        Set<ValidationMessage> validationMessageSet = new HashSet<>();
+        ArrayList<String> validationMessageList = new ArrayList<String>();
         when(claimStorageService.saveClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateAgainstSchema(anyString()))
-                .thenReturn(validationMessageSet);
+                .thenReturn(validationMessageList);
         this.mockMvc
                 .perform(
                         post("/completed-claim")
@@ -93,34 +92,29 @@ class CompletedClaimControllerTest {
     @WithMockUser
     void shouldRejectInvalidClaim() throws Exception {
 
-        ValidationMessage validationMessage =
-                ValidationMessage.of(
-                        "type",
-                        CustomErrorMessageType.of("ErrorType"),
-                        "name",
-                        "testschema",
-                        "1234",
-                        "Not valid type");
-
-        Set<ValidationMessage> validationMessageSet = new HashSet<>();
-        validationMessageSet.add(validationMessage);
-        when(claimValidatorService.validateAgainstSchema(anyString()))
-                .thenReturn(validationMessageSet);
-        this.mockMvc
-                .perform(
-                        post("/complete-claim")
-                                .content(
-                                        """
+        ArrayList<String> validationErrors =
+                new ArrayList(Arrays.asList("I am a fake error", "I am also a fake error"));
+        System.out.println(validationErrors.toString());
+        when(claimValidatorService.validateAgainstSchema(anyString())).thenReturn(validationErrors);
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                post("/complete-claim")
+                                        .content(
+                                                """
                         { "claimant":{"first_name":"harry", "last_name": "Potter"}}""")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(
-                        content()
-                                .string(
-                                        "Save failed, the schema was the correct JSON format but"
-                                                + " had invalid data."));
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .accept(MediaType.APPLICATION_JSON)
+                                        .with(csrf()))
+                        .andDo(print())
+                        .andExpect(status().isBadRequest())
+                        .andReturn();
+        System.out.println(result.getResponse().getContentAsString());
+        assertEquals(
+                """
+                                ["I am a fake error","I am also a fake error"]
+                                """
+                        .strip(),
+                result.getResponse().getContentAsString());
     }
 }

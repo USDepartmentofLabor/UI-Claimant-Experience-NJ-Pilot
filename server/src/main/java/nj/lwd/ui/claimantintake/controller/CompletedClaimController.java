@@ -1,10 +1,9 @@
 package nj.lwd.ui.claimantintake.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.ValidationMessage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
@@ -36,7 +35,7 @@ public class CompletedClaimController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> saveCompletedClaim(
+    public ResponseEntity<Object> saveCompletedClaim(
             @RequestBody Map<String, Object> completedClaimPayload, Authentication authentication) {
         String claimantIdpId = authentication.getName();
 
@@ -44,16 +43,14 @@ public class CompletedClaimController {
         try {
             Map<String, Object> externalClaim =
                     externalClaimFormatterService.formatClaim(completedClaimPayload, claimantIdpId);
-            Set<ValidationMessage> errorSet =
+            ArrayList<String> errorList =
                     claimValidatorService.validateAgainstSchema(
                             objectMapper.writeValueAsString(externalClaim));
 
-            if (errorSet.size() > 0) {
+            if (errorList.size() > 0) {
                 // TODO - change here when detailed error msgs are desired on the frontend
-
-                return new ResponseEntity<>(
-                        "Save failed, the schema was the correct JSON format but had invalid data.",
-                        HttpStatus.BAD_REQUEST);
+                System.out.println(errorList.toString());
+                return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
             }
 
         } catch (IOException e) {
