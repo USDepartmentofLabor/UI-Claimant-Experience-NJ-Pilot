@@ -93,7 +93,7 @@ const queryValues = () => {
 
   const editEmployer = screen.queryByRole('heading', { name: 'Edit Employer' })
 
-  const addEmployer = screen.queryByRole('heading', { name: 'Add Employer' })
+  const addEmployer = screen.queryByRole('heading', { name: 'Add employer' })
 
   //'review_employers.heading'
   const reviewEmployers = screen.queryByRole('heading', {
@@ -162,7 +162,7 @@ describe('The Review Employers page', () => {
       name: 'Edit Employer',
     })
 
-    const addEmployer = screen.queryByRole('heading', { name: 'Add Employer' })
+    const addEmployer = screen.queryByRole('heading', { name: 'Add employer' })
 
     const addEmployerButton = screen.queryByRole('button', {
       name: 'review_employers.add_employer',
@@ -421,7 +421,7 @@ describe('The Review Employers page', () => {
     })
   })
 
-  describe('Add Employer', () => {
+  describe('Add employer', () => {
     it('Displays adding an employer', async () => {
       const user = userEvent.setup()
 
@@ -443,7 +443,7 @@ describe('The Review Employers page', () => {
         reviewEmployers: reviewEmployersUpdated,
       } = queryValues()
 
-      screen.getByRole('heading', { name: 'Add Employer' })
+      screen.getByRole('heading', { name: 'Add employer' })
 
       expect(reviewEmployersUpdated).not.toBeInTheDocument()
       expect(editEmployerUpdated).not.toBeInTheDocument()

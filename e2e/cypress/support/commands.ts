@@ -144,15 +144,15 @@ Cypress.Commands.add('clickBack', () => {
 
 Cypress.Commands.add('clickAddEmployer', () => {
   cy.get(`button[data-testid=button]`)
-    .contains('Add Employer')
+    .contains('Add employer')
     .should('be.visible')
     .click()
-  cy.contains('h1', 'Add Employer')
+  cy.contains('h1', 'Add employer')
 })
 
 Cypress.Commands.add('clickEditEmployer', (employerName: string) => {
   cy.get(`div[data-testid="${employerName}"]`)
-    .contains('Edit Details')
+    .contains('Edit details')
     .should('be.visible')
     .click()
   cy.contains('h1', 'Edit Employer')
