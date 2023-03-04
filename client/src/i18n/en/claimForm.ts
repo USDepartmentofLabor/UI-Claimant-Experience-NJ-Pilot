@@ -985,7 +985,7 @@ const claimForm = {
     },
   },
   edit_employer: {
-    heading: 'Edit Employer',
+    heading: 'Edit employer',
   },
   payment: {
     heading: 'Payment information',

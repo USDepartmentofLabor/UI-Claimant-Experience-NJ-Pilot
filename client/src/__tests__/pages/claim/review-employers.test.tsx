@@ -91,7 +91,7 @@ const queryValues = () => {
   const preambleNoWork = screen.queryByText('review_employers.preamble_no_work')
   const preamble = screen.queryByText('review_employers.preamble')
 
-  const editEmployer = screen.queryByRole('heading', { name: 'Edit Employer' })
+  const editEmployer = screen.queryByRole('heading', { name: 'Edit employer' })
 
   const addEmployer = screen.queryByRole('heading', { name: 'Add employer' })
 
@@ -159,7 +159,7 @@ describe('The Review Employers page', () => {
     )
 
     const editEmployer = screen.queryByRole('heading', {
-      name: 'Edit Employer',
+      name: 'Edit employer',
     })
 
     const addEmployer = screen.queryByRole('heading', { name: 'Add employer' })
@@ -283,7 +283,7 @@ describe('The Review Employers page', () => {
     })
   })
 
-  describe('Edit Employer', () => {
+  describe('Edit employer', () => {
     it('Displays editing an employer', async () => {
       const user = userEvent.setup()
 
@@ -325,7 +325,7 @@ describe('The Review Employers page', () => {
       await waitFor(
         async () =>
           await expect(
-            screen.queryByRole('heading', { name: 'Edit Employer' })
+            screen.queryByRole('heading', { name: 'Edit employer' })
           ).toBeInTheDocument()
       )
       const nextButton = screen.getByRole('button', {
@@ -363,7 +363,7 @@ describe('The Review Employers page', () => {
       await waitFor(
         async () =>
           await expect(
-            screen.queryByRole('heading', { name: 'Edit Employer' })
+            screen.queryByRole('heading', { name: 'Edit employer' })
           ).toBeInTheDocument()
       )
 
@@ -397,7 +397,7 @@ describe('The Review Employers page', () => {
       await waitFor(
         async () =>
           await expect(
-            screen.queryByRole('heading', { name: 'Edit Employer' })
+            screen.queryByRole('heading', { name: 'Edit employer' })
           ).toBeInTheDocument()
       )
 

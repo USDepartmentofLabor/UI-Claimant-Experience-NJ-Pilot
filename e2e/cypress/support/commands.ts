@@ -155,7 +155,7 @@ Cypress.Commands.add('clickEditEmployer', (employerName: string) => {
     .contains('Edit details')
     .should('be.visible')
     .click()
-  cy.contains('h1', 'Edit Employer')
+  cy.contains('h1', 'Edit employer')
 })
 
 Cypress.Commands.add('clickDeleteEmployer', (employerName: string) => {
