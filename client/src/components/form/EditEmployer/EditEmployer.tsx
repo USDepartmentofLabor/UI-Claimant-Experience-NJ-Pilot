@@ -427,16 +427,31 @@ export const yupEditEmployer = object().shape({
   }),
 
   // Payments received
-  LOCAL_pay_types: array().when('payments_received', {
-    is: (paymentsReceived: PaymentsReceivedDetailInput[]) =>
-      !paymentsReceived || !paymentsReceived.length,
-    then: array().min(
-      1,
-      i18n_claimForm.t(
-        'employers.payments_received.payments_received_detail.pay_type.errors.required'
-      )
-    ),
-  }),
+  LOCAL_pay_types: array()
+    .when('payments_received', {
+      is: (paymentsReceived: PaymentsReceivedDetailInput[]) =>
+        !paymentsReceived || !paymentsReceived.length,
+      then: array().min(
+        1,
+        i18n_claimForm.t(
+          'employers.payments_received.payments_received_detail.pay_type.errors.required'
+        )
+      ),
+    })
+    .when('payments_received', {
+      is: (paymentsReceived: PaymentsReceivedDetailInput[]) => paymentsReceived,
+      then: (schema) => {
+        return schema.test({
+          name: 'none_and',
+          message: i18n_claimForm.t(
+            'employers.payments_received.payments_received_detail.pay_type.errors.none_and'
+          ),
+          test: function (value: PayTypeOption[] = []) {
+            return !(value && value.length > 1 && value.includes('none'))
+          },
+        })
+      },
+    }),
   payments_received: array().of(
     object({
       pay_type: mixed().oneOf(payTypeOptions.map((value) => value)),

@@ -97,6 +97,15 @@ jobs:
           SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
+      - name: Create cognito urls
+        uses: ././github/actions/create-cognito-urls
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          pr-number: ${{ github.event.pull_request.number }}
+          cognito-client-id: ${{ secrets.COGNITO_CLIENT_ID }}
+          cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
+
       - name: Build and deploy client image
         id: build-deploy-client
         uses: ./.github/actions/deploy-client

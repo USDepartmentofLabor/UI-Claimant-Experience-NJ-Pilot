@@ -629,7 +629,11 @@ const claimForm = {
         pay_type: {
           label:
             'Have you received any payments from this employer since your last day of work?',
-          errors: { required: 'At least one option must be selected' },
+          errors: {
+            required: 'At least one option must be selected',
+            none_and:
+              'Please check whether you have not received any other pay',
+          },
           options: {
             vacation_sick_pto: {
               label: 'Vacation, sick, or PTO pay',
