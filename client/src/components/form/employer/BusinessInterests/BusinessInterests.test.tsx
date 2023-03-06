@@ -70,6 +70,14 @@ describe('BusinessInterests component', () => {
           })
         : null
     }
+    const queryForSoleProprietorshipNotSureAnswer = () => {
+      const question = queryForSoleProprietorshipQuestion()
+      return question !== null
+        ? within(question).queryByRole('radio', {
+            name: 'employer_is_sole_proprietorship.options.not_sure',
+          })
+        : null
+    }
 
     const queryForRelatedToOwnerQuestion = () =>
       screen.queryByRole('group', {
@@ -122,6 +130,7 @@ describe('BusinessInterests component', () => {
       queryForSoleProprietorshipQuestion,
       queryForSoleProprietorshipYesAnswer,
       queryForSoleProprietorshipNoAnswer,
+      queryForSoleProprietorshipNotSureAnswer,
       queryForRelatedToOwnerQuestion,
       queryForRelatedToOwnerNoAnswer,
       queryForRelatedToOwnerSpouseAnswer,
@@ -180,6 +189,7 @@ describe('BusinessInterests component', () => {
         queryForSoleProprietorshipQuestion,
         queryForSoleProprietorshipYesAnswer,
         queryForSoleProprietorshipNoAnswer,
+        queryForSoleProprietorshipNotSureAnswer,
       } = renderBusinessInterests()
 
       expect(queryForSoleProprietorshipQuestion()).not.toBeInTheDocument()
@@ -191,11 +201,15 @@ describe('BusinessInterests component', () => {
 
       const soleProprietorshipYesAnswer = queryForSoleProprietorshipYesAnswer()
       const soleProprietorshipNoAnswer = queryForSoleProprietorshipNoAnswer()
+      const soleProprietorshipNotSureAnswer =
+        queryForSoleProprietorshipNotSureAnswer()
 
       expect(soleProprietorshipYesAnswer).toBeInTheDocument()
       expect(soleProprietorshipYesAnswer).not.toBeChecked()
       expect(soleProprietorshipNoAnswer).toBeInTheDocument()
       expect(soleProprietorshipNoAnswer).not.toBeChecked()
+      expect(soleProprietorshipNotSureAnswer).toBeInTheDocument()
+      expect(soleProprietorshipNotSureAnswer).not.toBeChecked()
 
       // Select an answer to the sole proprietorship question
       await user.click(soleProprietorshipYesAnswer as HTMLElement)
@@ -222,6 +236,7 @@ describe('BusinessInterests component', () => {
         corporateOfficerOrStockOwnershipNoAnswer,
         queryForSoleProprietorshipYesAnswer,
         queryForSoleProprietorshipNoAnswer,
+        queryForSoleProprietorshipNotSureAnswer,
         queryForRelatedToOwnerQuestion,
         queryForRelatedToOwnerNoAnswer,
         queryForRelatedToOwnerSpouseAnswer,
@@ -234,9 +249,12 @@ describe('BusinessInterests component', () => {
 
       const soleProprietorshipYesAnswer = queryForSoleProprietorshipYesAnswer()
       const soleProprietorshipNoAnswer = queryForSoleProprietorshipNoAnswer()
+      const soleProprietorshipNotSureAnswer =
+        queryForSoleProprietorshipNotSureAnswer()
 
       expect(soleProprietorshipYesAnswer).toBeInTheDocument()
       expect(soleProprietorshipNoAnswer).toBeInTheDocument()
+      expect(soleProprietorshipNotSureAnswer).toBeInTheDocument()
 
       // Make the related to owner question appear
       await user.click(soleProprietorshipYesAnswer as HTMLElement)
