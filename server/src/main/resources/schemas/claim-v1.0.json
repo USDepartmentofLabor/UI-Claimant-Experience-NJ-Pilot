@@ -411,7 +411,7 @@
         },
         "employer_is_sole_proprietorship": {
           "description": "There is only one owner or the business would file a Schedule C (Form 1040)",
-          "type": "enum",
+          "type": "string",
           "enum": ["yes", "no", "not_sure"],
           "if": {
             "properties": {
@@ -431,7 +431,7 @@
           "if": {
             "properties": {
               "employer_is_sole_proprietorship": {
-                "type": "enum",
+                "type": "string",
                 "const": ["yes", "not_sure"]
               }
             }
