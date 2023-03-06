@@ -5,46 +5,30 @@ import serverHttpClient from 'utils/http/serverHttpClient'
 import { APIResponseType } from 'types/ResponseTypes'
 import { Routes } from 'constants/routes'
 import { useRouter } from 'next/router'
-import { useClaimProgress } from 'hooks/useClaimProgress'
-import { useContext } from 'react'
-import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { useTranslation } from 'react-i18next'
+import { GoToClaimFormButton} from 'components/GoToClaimFormButton/GoToClaimFormButton'
 
 export type devHomeProps = {
   session: any // TODO MRH typecast more specifically
-  partialClaim: any // TODO MRH typecast more specifically
+  partialClaim: any
   hasInProgressClaim: boolean
+  setClaimStatus: any
 }
 
 export const DevHome = ({
   session,
   partialClaim,
   hasInProgressClaim,
+  setClaimStatus
 }: devHomeProps) => {
   const router = useRouter()
-  const { continuePath } = useClaimProgress()
   const { t } = useTranslation('home')
-  const { ssnInput, screenerInput } = useContext(IntakeAppContext)
-  const goToLastUnfinishedClaimFormPage = () => {
-    // TODO: handle what to do if they have a completed claim
-    let path
-    if (partialClaim?.ssn === undefined && ssnInput?.ssn === undefined) {
-      path = Routes.SSN
-    } else if (
-      partialClaim?.screener_current_country_us === undefined &&
-      screenerInput === undefined
-    ) {
-      path = Routes.SCREENER
-    } else {
-      path = continuePath
-    }
-    router.push(path)
-  }
   const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
   const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
   const goToUpdateContactInfoForm = () =>
     router.push(Routes.UPDATE_CONTACT_INFO)
   const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
+  const renderNoClaimPage = () => setClaimStatus("noCurrentClaim")
 
   return (
     <>
@@ -73,14 +57,18 @@ export const DevHome = ({
         <SignOut isNavLink={false} />
       </div>
       <div className="margin-bottom-1">
+        <GoToClaimFormButton
+          partialClaim={partialClaim}
+          hasInProgressClaim={hasInProgressClaim}
+        />
+      </div>
+      <div className="margin-bottom-1">
         <Button
           type="button"
-          onClick={goToLastUnfinishedClaimFormPage}
-          data-testid="go-to-claim-form"
+          onClick={renderNoClaimPage}
+          data-testid="view-no-current-claim-page"
         >
-          {hasInProgressClaim
-            ? t('continue_claim_button')
-            : t('file_a_claim_button')}
+          No Current Claim Page
         </Button>
       </div>
       {!isProd && (

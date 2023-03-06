@@ -1,43 +1,41 @@
 import { useTranslation } from 'react-i18next'
-import { Button, ProcessList } from '@trussworks/react-uswds'
+import { ProcessList,
+  ProcessListHeading,
+  ProcessListItem,
+  SummaryBox,
+  SummaryBoxContent,
+  SummaryBoxHeading }
+  from '@trussworks/react-uswds'
 import React from 'react'
-import styles from 'styles/pages/claim/home.module.scss'
-import { useRouter } from 'next/router'
-import { Routes } from '../../constants/routes'
+import { GoToClaimFormButton } from '../GoToClaimFormButton/GoToClaimFormButton'
 export const NoCurrentClaimHome = () => {
   const { t } = useTranslation('home')
   const preface2_url: string = t('preface2_link_url')
-  const router = useRouter()
-
-  const goToSsnPage = () => {
-    router.push(Routes.SSN)
-  }
 
   return (
     <>
       <div className="styleguide-content usa-prose site-prose">
-      <div className={styles.preface}>{t('preface1')}</div>
-      <div className={styles.preface}>
-        {t('preface2')}
-        <strong>{t('preface2_bold')}</strong>
-        {t('preface2_continued')}
-        <a target="_blank" rel="noreferrer" href={preface2_url}>
-          {t('preface2_link')}
-        </a>
-      </div>
-      <div>
-        {t('preface3')}
-        <strong>{t('preface3_bold')}</strong>
-        {t('preface3_continued')}
-      </div>
-      <h2 className={styles.intermediateHeader}>{t('how_to_apply')}</h2>
-      <ProcessList className="usa-process-list">
-        <ol className="usa-process-list__item">
-          <h4 className="usa-process-list__heading">
-            {t('process_list_1_header')}
-          </h4>
-          <p>{t('process_list_1_content')}</p>
-          <ul>
+        <div className="padding-bottom-105">{t('preface1')}</div>
+        <div className="padding-bottom-105">
+          {t('preface2')}
+          <strong>{t('preface2_bold')}</strong>
+          {t('preface2_continued')}
+          <a target="_blank" rel="noreferrer" href={preface2_url}>
+            {t('preface2_link')}
+          </a>
+        </div>
+        <div>
+          {t('preface3')}
+          <strong>{t('preface3_bold')}</strong>
+          {t('preface3_continued')}
+        </div>
+        <h2 className="margin-top-neg-2">{t('how_to_apply')}</h2>
+        <ProcessList>
+          <ProcessListItem>
+            <ProcessListHeading type={'h4'}>
+              {t('process_list_1_header')}
+            </ProcessListHeading>
+            <p>{t('process_list_1_content')}</p>
             <li>{t('process_list_1_bullet_pi')}</li>
             <li>{t('process_list_1_bullet_alien')}</li>
             <li>
@@ -54,40 +52,40 @@ export const NoCurrentClaimHome = () => {
             <li>{t('process_list_1_bullet_military')}</li>
             <li>{t('process_list_1_bullet_sf8')}</li>
             <li>{t('process_list_1_bullet_bank')}</li>
-          </ul>
-        </ol>
-        <ol className="usa-process-list__item">
-          <h4 className="usa-process-list__heading">
-            {t('process_list_2_header')}
-          </h4>
-          <p>{t('process_list_2_content')}</p>
-        </ol>
-        <ol className="usa-process-list__item">
-          <h4 className="usa-process-list__heading">
-            {t('process_list_3_header')}
-          </h4>
-          <p>{t('process_list_3_content')}</p>
-        </ol>
-        <ul className="usa-summary-box margin-bottom-4">
-          <div className="usa-summary-box__body">
-            <h2 className="usa-summary-box__heading">{t('screener_title')}</h2>
-            <Button type="button" id="screenerButton" onClick={goToSsnPage}>
-              {t('screener_button')}
-            </Button>
-          </div>
-        </ul>
-      </ProcessList>
-    </div>
-      <p>{t('data_privacy_title')}</p>
-      <br/>
-      <small className={'line-height-body-1 font-size-3'}>
-        {t('data_privacy_content')}
-      </small>
-      <br/>
-      <br/>
-      <small className={'line-height-body-1 font-size-3'}>
-        {t('data_privacy_continued')}
-      </small>
+          </ProcessListItem>
+          <ProcessListItem>
+            <ProcessListHeading type={'h4'}>
+              {t('process_list_2_header')}
+            </ProcessListHeading>
+            <p>{t('process_list_2_content')}</p>
+          </ProcessListItem>
+          <ProcessListItem>
+            <ProcessListHeading type={'h4'}>
+              {t('process_list_3_header')}
+            </ProcessListHeading>
+            <p>{t('process_list_3_content')}</p>
+          </ProcessListItem>
+        </ProcessList>
+        <SummaryBox className="bg-primary-lighter border-accent-cool-dark margin-bottom-4 margin-top-0">
+          <SummaryBoxContent >
+            <SummaryBoxHeading headingLevel={'h2'} className="padding-bottom-2">
+              {t('screener_title')}
+            </SummaryBoxHeading>
+            <GoToClaimFormButton/>
+          </SummaryBoxContent>
+        </SummaryBox>
+      </div>
+      <div>
+        <p className="padding-bottom-1">
+          {t('data_privacy_title')}
+        </p>
+        <p className="font-body-3xs measure-none">
+          {t('data_privacy_content')}
+        </p>
+        <p className="font-body-3xs measure-none">
+          {t('data_privacy_continued')}
+        </p>
+      </div>
     </>
   )
 }
