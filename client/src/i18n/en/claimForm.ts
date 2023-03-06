@@ -589,7 +589,12 @@ const claimForm = {
       },
       employer_is_sole_proprietorship: {
         label: 'Was this business a sole proprietorship?',
-        hint: 'Answer <strong>NO</strong> if this employer was a corporation, which usually has “Inc”.<br>Answer <strong>YES</strong> if there was only one owner, or if the business files a Schedule C (Form 1040), or if unsure how to answer this question.',
+        hint: 'A sole proprietor has only one owner. Answer "No" if this employer is a corporation, which usually has “Inc” in the name.',
+        options: {
+          yes: 'Yes',
+          no: 'No',
+          not_sure: "I'm not sure",
+        },
         errors: {
           required:
             'You must say whether this business was a sole proprietorship',

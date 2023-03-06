@@ -15,6 +15,7 @@ import {
   CountryOfOriginOption,
   EmptyOption,
   UntouchedCheckboxValue,
+  SolePropOption,
   ChangeInEmploymentOption,
   ReasonStillEmployedOption,
   UntouchedRadioValue,
@@ -101,7 +102,7 @@ export type Employer = ImportedEmployerFields & {
   self_employed: YesNoInput
   is_owner: YesNoInput
   corporate_officer_or_stock_ownership: YesNoInput
-  employer_is_sole_proprietorship: YesNoInput
+  employer_is_sole_proprietorship: SolePropOption | UntouchedRadioValue
   related_to_owner_or_child_of_owner_under_18:
     | EmployerRelationOption
     | UntouchedRadioValue
