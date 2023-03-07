@@ -94,7 +94,6 @@ class CompletedClaimControllerTest {
 
         ArrayList<String> validationErrors =
                 new ArrayList(Arrays.asList("I am a fake error", "I am also a fake error"));
-        System.out.println(validationErrors.toString());
         when(claimValidatorService.validateAgainstSchema(anyString())).thenReturn(validationErrors);
         MvcResult result =
                 this.mockMvc

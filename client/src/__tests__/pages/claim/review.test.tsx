@@ -202,7 +202,7 @@ describe('Review page', () => {
     })
   })
 
-  it('does not complete or submit the claim if the form is invalid, shows error message', async () => {
+  it('does not complete or submit the claim if the form is invalid', async () => {
     const user = userEvent.setup()
 
     mockUseFormikContext.mockReturnValue({

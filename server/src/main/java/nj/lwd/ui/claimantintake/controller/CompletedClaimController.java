@@ -48,8 +48,6 @@ public class CompletedClaimController {
                             objectMapper.writeValueAsString(externalClaim));
 
             if (errorList.size() > 0) {
-                // TODO - change here when detailed error msgs are desired on the frontend
-                System.out.println(errorList.toString());
                 return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
             }
 
