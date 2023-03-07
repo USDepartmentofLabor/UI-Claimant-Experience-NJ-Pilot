@@ -72,12 +72,6 @@ export const Review: NextPageWithLayout = () => {
                 pathname: Routes.HOME,
                 query: { completed: true },
               }),
-            onError: async () => {
-              console.log('i failed')
-              console.log(submitClaim?.data)
-              console.log(submitClaim?.error)
-              console.log(submitClaim?.status)
-            },
           })
         },
       })
@@ -111,7 +105,7 @@ export const Review: NextPageWithLayout = () => {
                 <ul>
                   {saveCompleteClaim.isError &&
                     saveCompleteClaim.error.response && (
-                      <div>
+                      <div data-testid={'error-list'}>
                         {formatStoredDateToDisplayData(
                           JSON.stringify(saveCompleteClaim.error.response.data)
                         )}

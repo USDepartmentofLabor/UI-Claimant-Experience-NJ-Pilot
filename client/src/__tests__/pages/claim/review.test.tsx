@@ -70,12 +70,13 @@ describe('Review page', () => {
 
     const queryForErrorMessage = () =>
       screen.queryByText('complete_claim_error')
-
+    const queryForErrorMessageList = () => screen.queryByTestId('error-list')
     return {
       preamble,
       backButton,
       submitButton,
       queryForErrorMessage,
+      queryForErrorMessageList,
     }
   }
 
@@ -120,18 +121,18 @@ describe('Review page', () => {
       isError: true,
       error: {
         response: {
-          data: 'API Response',
+          data: ['data line 1', '$.data with weird characters'],
         },
       },
     })
 
-    const { queryForErrorMessage } = renderReview()
-
+    const { queryForErrorMessage, queryForErrorMessageList } = renderReview()
     const errorMessage = queryForErrorMessage()
-    const apiResponse = screen.queryByText('API Response')
 
     expect(errorMessage).toBeInTheDocument()
-    expect(apiResponse).toBeInTheDocument()
+    expect(queryForErrorMessageList()).toBeInTheDocument()
+    expect(screen.queryByText('data line 1')).toBeInTheDocument()
+    expect(screen.queryByText('data with weird characters')).toBeInTheDocument()
   })
 
   it('renders an error message if submission has failed', () => {
@@ -201,7 +202,7 @@ describe('Review page', () => {
     })
   })
 
-  it('does not complete or submit the claim if the form is invalid', async () => {
+  it('does not complete or submit the claim if the form is invalid, shows error message', async () => {
     const user = userEvent.setup()
 
     mockUseFormikContext.mockReturnValue({
