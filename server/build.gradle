@@ -62,7 +62,7 @@ dependencies {
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 
-    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.77');
+    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.78');
 }
 
 tasks.named('test') {
