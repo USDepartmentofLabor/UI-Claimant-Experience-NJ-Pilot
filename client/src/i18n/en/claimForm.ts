@@ -502,6 +502,15 @@ const claimForm = {
           maxLength: 'Your FEIN must be at most 15 characters',
         },
       },
+      state_employer_payroll_number: {
+        label: 'State payroll number (optional)',
+        review_label: 'State payroll number',
+        hint: 'You can find this on your NJ state employee paystubs.',
+        errors: {
+          digitsOnly: 'Your state payroll number must numbers only',
+          incorrectLength: 'Your state payroll number must be 7 digits',
+        },
+      },
       employer_address: {
         address: { label: 'Employer street address 1' },
         address2: { label: 'Employer street address 2 (optional)' },

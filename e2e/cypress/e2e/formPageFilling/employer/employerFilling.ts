@@ -3,6 +3,7 @@ import { fillPaymentsReceived } from './PaymentsReceived'
 import fillYourEmployerFields from './yourEmployer'
 import fillChangeInEmployment from './changeInEmployment'
 import fillWorkLocationSection from './workLocation'
+import { STATE_EMPLOYER_PAYROLL_NUMBER_VALUE } from 'constants/formOptions'
 
 export const fillValidEditEmployer = () => {
   fillYourEmployerFields({ is_full_time: true })
@@ -52,7 +53,8 @@ export const fillValidEditEmployer = () => {
 export const fillValidAddEmployer1 = () => {
   fillYourEmployerFields({
     employer_name: 'Google',
-    fein: '543211770555581',
+    fein: STATE_EMPLOYER_PAYROLL_NUMBER_VALUE,
+    state_employer_payroll_number: '1234567',
     employer_address: {
       address: '19 Mailman road',
       address2: 'APT #111',

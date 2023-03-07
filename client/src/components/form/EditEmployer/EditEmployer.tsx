@@ -21,6 +21,7 @@ import {
   PayTypeOption,
   payTypeOptions,
   UNTOUCHED_RADIO_VALUE,
+  STATE_EMPLOYER_PAYROLL_NUMBER_VALUE,
 } from 'constants/formOptions'
 import { BusinessInterests } from 'components/form/employer/BusinessInterests/BusinessInterests'
 import { ChangeInEmployment } from 'components/form/employer/ChangeInEmployment/ChangeInEmployment'
@@ -119,6 +120,7 @@ export const EMPLOYER_SKELETON: Employer = {
   // Your Employer
   employer_name: '',
   fein: '',
+  state_employer_payroll_number: '',
   employer_address: { ...EMPLOYER_ADDRESS_SKELETON },
   employer_phone: { ...PHONE_SKELETON },
   is_full_time: UNTOUCHED_RADIO_VALUE,
@@ -183,6 +185,29 @@ export const yupEditEmployer = object().shape({
           i18n_claimForm.t('employers.your_employer.fein.errors.digitsOnly')
         ),
   }),
+  state_employer_payroll_number: string()
+    .nullable()
+    .when('is_imported', {
+      is: false,
+      then: (schema) =>
+        schema.when('fein', {
+          is: STATE_EMPLOYER_PAYROLL_NUMBER_VALUE,
+          then: (schema) =>
+            schema
+              .length(
+                7,
+                i18n_claimForm.t(
+                  'employers.your_employer.state_employer_payroll_number.errors.incorrectLength'
+                )
+              )
+              .matches(
+                /^[\d]{7}$/,
+                i18n_claimForm.t(
+                  'employers.your_employer.state_employer_payroll_number.errors.digitsOnly'
+                )
+              ),
+        }),
+    }),
   employer_address: mixed().when('is_imported', {
     is: false,
     then: yupEmployerAddress(),
