@@ -101,7 +101,7 @@ export const Review: NextPageWithLayout = () => {
                 validation
               >
                 <div>{tClaimForm('complete_claim_error')}</div>
-                <ul>
+                <ul className="usa-list">
                   {saveCompleteClaim.isError &&
                     saveCompleteClaim.error.response && (
                       <div data-testid={'error-list'}>
@@ -126,7 +126,7 @@ export const Review: NextPageWithLayout = () => {
                 {t('preamble.heading')}
               </SummaryBoxHeading>
               <SummaryBoxContent>
-                <ul>
+                <ul className="usa-list">
                   <li>{t('preamble.line1')}</li>
                   <li>{t('preamble.line2')}</li>
                   <li>{t('preamble.line3')}</li>
