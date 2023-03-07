@@ -6,7 +6,7 @@ import { APIResponseType } from 'types/ResponseTypes'
 import { Routes } from 'constants/routes'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
-import { GoToClaimFormButton} from 'components/GoToClaimFormButton/GoToClaimFormButton'
+import { GoToClaimFormButton } from 'components/GoToClaimFormButton/GoToClaimFormButton'
 
 export type devHomeProps = {
   session: any // TODO MRH typecast more specifically
@@ -19,7 +19,7 @@ export const DevHome = ({
   session,
   partialClaim,
   hasInProgressClaim,
-  setClaimStatus
+  setClaimStatus,
 }: devHomeProps) => {
   const router = useRouter()
   const { t } = useTranslation('home')
@@ -28,7 +28,7 @@ export const DevHome = ({
   const goToUpdateContactInfoForm = () =>
     router.push(Routes.UPDATE_CONTACT_INFO)
   const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
-  const renderNoClaimPage = () => setClaimStatus("noCurrentClaim")
+  const renderNoClaimPage = () => setClaimStatus('noCurrentClaim')
 
   return (
     <>

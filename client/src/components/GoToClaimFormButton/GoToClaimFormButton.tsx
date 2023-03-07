@@ -11,9 +11,9 @@ export type currentClaimProps = {
   hasInProgressClaim?: boolean
 }
 export const GoToClaimFormButton = ({
-                                      partialClaim,
-                                      hasInProgressClaim
-                                    }: currentClaimProps) => {
+  partialClaim,
+  hasInProgressClaim,
+}: currentClaimProps) => {
   const router = useRouter()
   const { continuePath } = useClaimProgress()
   const { t } = useTranslation('home')
@@ -34,15 +34,12 @@ export const GoToClaimFormButton = ({
     router.push(path)
   }
 
-  const setButtonText = () =>{
-    return partialClaim?
-      (
-        hasInProgressClaim
-          ? t('continue_claim_button')
-          : t('file_a_claim_button')
-      ) : (
-        t('screener_button')
-      )
+  const setButtonText = () => {
+    return partialClaim
+      ? hasInProgressClaim
+        ? t('continue_claim_button')
+        : t('file_a_claim_button')
+      : t('screener_button')
   }
 
   return (

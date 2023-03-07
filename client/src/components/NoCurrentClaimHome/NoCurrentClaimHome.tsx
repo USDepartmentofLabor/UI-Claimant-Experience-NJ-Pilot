@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next'
-import { ProcessList,
+import {
+  ProcessList,
   ProcessListHeading,
   ProcessListItem,
   SummaryBox,
   SummaryBoxContent,
-  SummaryBoxHeading }
-  from '@trussworks/react-uswds'
+  SummaryBoxHeading,
+} from '@trussworks/react-uswds'
 import React from 'react'
 import { GoToClaimFormButton } from '../GoToClaimFormButton/GoToClaimFormButton'
 export const NoCurrentClaimHome = () => {
   const { t } = useTranslation('home')
   const preface2_url: string = t('preface2_link_url')
-
   return (
     <>
       <div className="styleguide-content usa-prose site-prose">
@@ -66,19 +66,17 @@ export const NoCurrentClaimHome = () => {
             <p>{t('process_list_3_content')}</p>
           </ProcessListItem>
         </ProcessList>
-        <SummaryBox className="bg-primary-lighter border-accent-cool-dark margin-bottom-4 margin-top-0">
-          <SummaryBoxContent >
+        <SummaryBox className="bg-primary-lighter border-primary-light margin-bottom-4 margin-top-0">
+          <SummaryBoxContent>
             <SummaryBoxHeading headingLevel={'h2'} className="padding-bottom-2">
               {t('screener_title')}
             </SummaryBoxHeading>
-            <GoToClaimFormButton/>
+            <GoToClaimFormButton />
           </SummaryBoxContent>
         </SummaryBox>
       </div>
       <div>
-        <p className="padding-bottom-1">
-          {t('data_privacy_title')}
-        </p>
+        <p className="padding-bottom-1">{t('data_privacy_title')}</p>
         <p className="font-body-3xs measure-none">
           {t('data_privacy_content')}
         </p>

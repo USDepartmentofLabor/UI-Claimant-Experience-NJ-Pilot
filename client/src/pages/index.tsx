@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useTranslation } from 'react-i18next'
-import {Button} from '@trussworks/react-uswds'
+import { Button } from '@trussworks/react-uswds'
 import { useRouter } from 'next/router'
 import { useSession, signIn } from 'next-auth/react'
 import PageLoader from 'components/loaders/PageLoader'
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
   const { setClaimFormValues } = useContext(ClaimFormContext)
   //const { ssnInput, screenerInput } = useContext(IntakeAppContext)
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [claimStatus, setClaimStatus] = useState<string>("")
+  const [claimStatus, setClaimStatus] = useState<string>('')
   //const [showPromptClaimStatus, setShowPromptClaimStatus] = useState<boolean>(true) // TODO resume here
   const hasInProgressClaim =
     partialClaim !== undefined && Object.keys(partialClaim).length > 0
@@ -41,22 +41,21 @@ const Home: NextPage = () => {
     }
   }, [partialClaim, isLoadingGetPartialClaim])
 
-
-  const renderHomepageContents = (claimStatus:string) => {
-
-    switch( claimStatus ) {
+  const renderHomepageContents = (claimStatus: string) => {
+    switch (claimStatus) {
       case 'noCurrentClaim':
-         return <NoCurrentClaimHome/>
+        return <NoCurrentClaimHome />
       default:
-         return <DevHome
-          session={ session }
-          partialClaim={ partialClaim }
-          hasInProgressClaim={ hasInProgressClaim }
-          setClaimStatus={setClaimStatus}
-        />
-      }
+        return (
+          <DevHome
+            session={session}
+            partialClaim={partialClaim}
+            hasInProgressClaim={hasInProgressClaim}
+            setClaimStatus={setClaimStatus}
+          />
+        )
+    }
   }
-
 
   const renderedHomePage = (
     <div>
@@ -89,7 +88,9 @@ const Home: NextPage = () => {
         id="main-content"
       >
         <h1 data-testid="home-page-heading">
-          {claimStatus==="noCurrentClaim"? t('heading_no_claim'): t('heading')}
+          {claimStatus === 'noCurrentClaim'
+            ? t('heading_no_claim')
+            : t('heading')}
         </h1>
         {router?.query?.completed && (
           <Alert type="success" headingLevel="h4" className="margin-bottom-3">
