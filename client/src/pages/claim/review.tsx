@@ -96,11 +96,11 @@ export const Review: NextPageWithLayout = () => {
             {(saveCompleteClaim.isError || submitClaim.isError) && (
               <Alert
                 type="error"
-                headingLevel="h4"
+                headingLevel="h2"
                 className="margin-top-1"
+                heading={tClaimForm('complete_claim_error')}
                 validation
               >
-                <div>{tClaimForm('complete_claim_error')}</div>
                 <ul className="usa-list">
                   {saveCompleteClaim.isError &&
                     saveCompleteClaim.error.response && (
