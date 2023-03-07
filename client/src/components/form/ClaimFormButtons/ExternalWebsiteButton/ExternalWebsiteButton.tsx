@@ -29,10 +29,8 @@ export const ExternalWebsiteButton = ({ option }: ExternalWebsiteProps) => {
   }
 
   return (
-    <>
-      <Button type="button" secondary onClick={gotToExternalSite}>
-        {name}
-      </Button>
-    </>
+    <Button type="button" secondary onClick={gotToExternalSite}>
+      {name}
+    </Button>
   )
 }
