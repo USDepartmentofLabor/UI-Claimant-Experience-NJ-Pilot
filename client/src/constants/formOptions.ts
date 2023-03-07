@@ -102,6 +102,9 @@ export const suffixOptions = [
 ] as const
 export type SuffixOption = typeof suffixOptions[number]
 
+export const solePropOptions = ['yes', 'no', 'not_sure'] as const
+export type SolePropOption = typeof solePropOptions[number]
+
 export const changeInEmploymentOptions = [
   'laid_off',
   'fired_discharged_suspended',

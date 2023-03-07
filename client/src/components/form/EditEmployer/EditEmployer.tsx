@@ -14,6 +14,8 @@ import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer
 import {
   ChangeInEmploymentOption,
   changeInEmploymentOptions,
+  SolePropOption,
+  solePropOptions,
   employerRelationOptions,
   reasonStillEmployedOptions,
   PayTypeOption,
@@ -235,21 +237,24 @@ export const yupEditEmployer = object().shape({
     .required(
       i18n_claimForm.t('employers.business_interests.is_owner.errors.required')
     ),
-  employer_is_sole_proprietorship: boolean()
+  employer_is_sole_proprietorship: string()
     .nullable()
     .when('corporate_officer_or_stock_ownership', {
       is: false,
       then: (schema) =>
-        schema.required(
-          i18n_claimForm.t(
-            'employers.business_interests.employer_is_sole_proprietorship.errors.required'
-          )
-        ),
+        schema
+          .oneOf([...solePropOptions])
+          .required(
+            i18n_claimForm.t(
+              'employers.business_interests.employer_is_sole_proprietorship.errors.required'
+            )
+          ),
     }),
   related_to_owner_or_child_of_owner_under_18: string()
     .nullable()
     .when('employer_is_sole_proprietorship', {
-      is: true,
+      is: (solePropOptions: SolePropOption) =>
+        ['yes', 'not_sure'].includes(solePropOptions),
       then: (schema) =>
         schema
           .oneOf([...employerRelationOptions])
@@ -490,12 +495,16 @@ export const yupEditEmployer = object().shape({
           'employers.payments_received.payments_received_detail.date_pay_ended.label'
         )
       )
-        .max(
-          dayjs(new Date()).format('YYYY-MM-DD'),
-          i18n_claimForm.t(
-            'employers.payments_received.payments_received_detail.date_pay_ended.errors.max'
-          )
-        )
+        .when('pay_type', {
+          is: (payType: PayTypeOption) => ['holiday'].includes(payType),
+          then: (schema) =>
+            schema.max(
+              dayjs(new Date()).format('YYYY-MM-DD'),
+              i18n_claimForm.t(
+                'employers.payments_received.payments_received_detail.date_pay_ended.errors.max'
+              )
+            ),
+        })
         .when('date_pay_began', {
           is: (dateValue: string | undefined) => {
             return !!dateValue

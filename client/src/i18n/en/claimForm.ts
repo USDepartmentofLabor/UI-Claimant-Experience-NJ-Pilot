@@ -105,9 +105,9 @@ const claimForm = {
       no_work:
         'You said you did not have a job in the last 18 months.  If that\'s correct, click "next" below. If you did have a job, please go back and change your answer on <0>the first page</0>.',
     },
-    add_employer: 'Add Employer',
+    add_employer: 'Add employer',
     edit_employer: {
-      edit_details: 'Edit Details',
+      edit_details: 'Edit details',
       label: 'Edit details for {{employer}}',
       delete: 'Delete',
       delete_label: 'Delete employer {{employer}}',
@@ -589,7 +589,12 @@ const claimForm = {
       },
       employer_is_sole_proprietorship: {
         label: 'Was this business a sole proprietorship?',
-        hint: 'Answer <strong>NO</strong> if this employer was a corporation, which usually has “Inc”.<br>Answer <strong>YES</strong> if there was only one owner, or if the business files a Schedule C (Form 1040), or if unsure how to answer this question.',
+        hint: 'A sole proprietor has only one owner. Answer "No" if this employer is a corporation, which usually has “Inc” in the name.',
+        options: {
+          yes: 'Yes',
+          no: 'No',
+          not_sure: "I'm not sure",
+        },
         errors: {
           required:
             'You must say whether this business was a sole proprietorship',
@@ -947,14 +952,16 @@ const claimForm = {
       label: 'First name',
       errors: {
         required: 'First name is required',
-        alphabetical: 'First name must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your first name with only the letters A-Z.",
         maxLength: 'First name must be at most 36 characters',
       },
     },
     middle_initial: {
       label: 'Middle initial (optional)',
       errors: {
-        alphabetical: 'Middle initial must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your middle initial with only the letters A-Z.",
         maxLength: 'Middle initial must be at most 1 character',
       },
     },
@@ -962,7 +969,8 @@ const claimForm = {
       label: 'Last name',
       errors: {
         required: 'Last name is required',
-        alphabetical: 'Last name must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your last name with only the letters A-Z.",
         maxLength: 'Last name must be at most 36 characters',
       },
     },
@@ -985,7 +993,7 @@ const claimForm = {
     },
   },
   edit_employer: {
-    heading: 'Edit Employer',
+    heading: 'Edit employer',
   },
   payment: {
     heading: 'Payment information',

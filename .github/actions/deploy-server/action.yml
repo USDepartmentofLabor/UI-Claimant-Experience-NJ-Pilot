@@ -27,6 +27,8 @@ inputs:
     description: The aws security group for ECS server services used in deployment previews
   ecs-server-subnet:
     description: One subnet for ECS services used in deployment previews
+  server-tg-arn:
+    description: ARN for the server alb target group
 outputs:
   image-uri-without-aws-id:
     description: The uri for the server image pushed to AWS ECR without the AWS ID
@@ -183,19 +185,21 @@ runs:
       env:
         SERVICE_NAME: ${{ steps.ecs-service.outputs.service-name }}
         CLUSTER_NAME: dol-ui-claimant-intake-${{ inputs.deploy-env }}
-        TASK_DEF: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}-${{ inputs.pr }}
+        CONTAINER_NAME: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}-${{ inputs.pr }}
         SUBNET: ${{ inputs.ecs-server-subnet }}
         SECURITY_GROUP: ${{ inputs.ecs-server-security-group }}
+        TG_ARN: ${{ inputs.server-tg-arn }}
       shell: bash
       run: |
         aws ecs create-service \
         --region us-east-1 \
         --cluster "$CLUSTER_NAME" \
         --service-name "$SERVICE_NAME" \
-        --task-definition "$TASK_DEF" \
+        --task-definition "$CONTAINER_NAME" \
         --desired-count 1 \
         --launch-type "FARGATE" \
-        --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}"
+        --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
+        --load-balancers "targetGroupArn=$TG_ARN,loadBalancerName=dol-ui-claimant-dev,containerName=$CONTAINER_NAME,containerPort=8080"
 
     - name: Deploy Amazon ECS task definition (server)
       if: steps.preview-service-exist.outputs.service-count >= '1'
