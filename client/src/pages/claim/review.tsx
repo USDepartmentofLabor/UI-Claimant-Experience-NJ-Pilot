@@ -72,10 +72,22 @@ export const Review: NextPageWithLayout = () => {
                 pathname: Routes.HOME,
                 query: { completed: true },
               }),
+            onError: async () => {
+              console.log('i failed')
+              console.log(submitClaim?.data)
+              console.log(submitClaim?.error)
+              console.log(submitClaim?.status)
+            },
           })
         },
       })
     }
+  }
+
+  const formatStoredDateToDisplayData = (data: string) => {
+    const regex = /[$.|"]/g
+    const arr = data.slice(1, -1).replaceAll(regex, '').split(',')
+    return arr.map((element) => <li key={element}>{element}</li>)
   }
 
   return (
@@ -99,15 +111,13 @@ export const Review: NextPageWithLayout = () => {
                 <ul>
                   {saveCompleteClaim.isError &&
                     saveCompleteClaim.error.response && (
-                      <li>
-                        {typeof saveCompleteClaim.error.response.data ===
-                        'object'
-                          ? JSON.stringify(
-                              saveCompleteClaim.error.response.data
-                            )
-                          : saveCompleteClaim.error.response.data}
-                      </li>
+                      <div>
+                        {formatStoredDateToDisplayData(
+                          JSON.stringify(saveCompleteClaim.error.response.data)
+                        )}
+                      </div>
                     )}
+
                   {submitClaim.isError && submitClaim.error.response && (
                     <li>
                       {typeof submitClaim.error.response.data === 'object'
