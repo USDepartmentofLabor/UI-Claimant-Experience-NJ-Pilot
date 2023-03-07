@@ -29,6 +29,7 @@ interface IRadioFieldProps extends RadioInputProps {
   showsErrors?: boolean
   legend?: ReactNode
   fieldsetClassName?: string
+  hint?: ReactNode
 }
 
 export const RadioField = ({
@@ -39,6 +40,7 @@ export const RadioField = ({
   fieldsetClassName,
   errorMessage,
   showsErrors = true,
+  hint,
   ...inputProps
 }: IRadioFieldProps & JSX.IntrinsicElements['input']) => {
   const [fieldProps, metaProps] = useField(inputProps.name)
@@ -65,6 +67,11 @@ export const RadioField = ({
         }`}
         onInvalid={(e) => e.preventDefault()}
       >
+        {hint && (
+          <span className="usa-hint" id={`${inputProps.name}.hint`}>
+            {hint}
+          </span>
+        )}
         {showError && (
           <ErrorMessage>{errorMessage || metaProps.error}</ErrorMessage>
         )}

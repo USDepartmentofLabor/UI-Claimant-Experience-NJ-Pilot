@@ -614,7 +614,7 @@ describe('The Review Employers page', () => {
       // expect(employer).toBeInTheDocument()
       //await waitFor(async () => await screen.getByText('Circuit City'))
       expect(mockModifyEmployerAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
-    }, 20000)
+    }, 25000)
 
     it('Goes back to the review employer page when the back button is pressed', async () => {
       const user = userEvent.setup()

@@ -213,9 +213,14 @@ export const EmployerReview = ({
           )}
           value={employer?.corporate_officer_or_stock_ownership}
         />
-        <ReviewYesNo
+        <ReviewElement
           label={t('business_interests.employer_is_sole_proprietorship.label')}
-          value={employer?.employer_is_sole_proprietorship}
+          value={
+            employer.employer_is_sole_proprietorship &&
+            t(
+              `business_interests.employer_is_sole_proprietorship.options.${employer.employer_is_sole_proprietorship}`
+            )
+          }
         />
 
         <ReviewElement
