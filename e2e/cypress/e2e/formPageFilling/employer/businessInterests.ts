@@ -4,7 +4,7 @@ type BusinessInterestsOptions = {
   self_employed?: boolean
   is_owner?: boolean
   corporate_officer_or_stock_ownership?: boolean
-  employer_is_sole_proprietorship?: boolean
+  employer_is_sole_proprietorship?: string
   related_to_owner_or_child_of_owner_under_18?: string
 }
 
@@ -40,13 +40,7 @@ export const fillBusinessInterests = (options?: BusinessInterestsOptions) => {
   }
 
   if (employer_is_sole_proprietorship !== undefined) {
-    cy.get(
-      `input[id=employer_is_sole_proprietorship\\.${toYesOrNo(
-        employer_is_sole_proprietorship
-      )}]`
-    )
-      .parent()
-      .click()
+    cy.get(`input[id=employer_is_sole_proprietorship\\.yes]`).parent().click()
   }
 
   if (related_to_owner_or_child_of_owner_under_18 !== undefined) {

@@ -24,3 +24,6 @@ ignore:
   - vulnerability: GHSA-w37g-rhq8-7m4j
     package:
       name: snakeyaml
+  - vulnerability: GHSA-mjmj-j48q-9wg2
+    package:
+      name: snakeyaml
