@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
-  Button,
   Link,
   SummaryBox,
   SummaryBoxContent,
@@ -185,9 +184,6 @@ export const Review: NextPageWithLayout = () => {
                 </Trans>
               }
             />
-            <Button onClick={handleCompleteAndSubmit} type={'submit'}>
-              DeleteThisButton
-            </Button>
             <ClaimFormButtons>
               <BackButton previousPage={previousPage.path} />
               <SubmitButton onSubmit={handleCompleteAndSubmit} />
