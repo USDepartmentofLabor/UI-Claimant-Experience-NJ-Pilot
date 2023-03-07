@@ -20,7 +20,7 @@
         "middle_initial": {
           "type": "string",
           "maxLength": 1,
-          "pattern": "[A-Za-z]"
+          "pattern": "[A-Za-z -']"
         },
         "suffix": {
           "type": "string",
