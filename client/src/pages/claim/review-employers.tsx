@@ -213,7 +213,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
                               employer: employer.employer_name,
                             }
                           )}
-                          className="usa-button width-auto margin-left-2"
+                          className="usa-button width-auto margin-left-2 text-base-dark"
                           unstyled
                           type="button"
                           disabled={isDeleting}
