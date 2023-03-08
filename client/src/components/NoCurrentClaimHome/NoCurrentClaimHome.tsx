@@ -1,5 +1,6 @@
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import {
+  Link,
   ProcessList,
   ProcessListHeading,
   ProcessListItem,
@@ -11,56 +12,60 @@ import React from 'react'
 import { GoToClaimFormButton } from '../GoToClaimFormButton/GoToClaimFormButton'
 export const NoCurrentClaimHome = () => {
   const { t } = useTranslation('home')
-  const preface2_url: string = t('preface2_link_url')
   return (
     <>
-      <div className="styleguide-content usa-prose site-prose">
-        <p className="padding-bottom-105">{t('preface1')}</p>
-        <p className="padding-bottom-105">
-          {t('preface2')}
-          <strong>{t('preface2_bold')}</strong>
-          {t('preface2_continued')}
-          <a target="_blank" rel="noreferrer" href={preface2_url}>
-            {t('preface2_link')}
-          </a>
+      <div>
+        <p>{t('preface1')}</p>
+        <p>
+          <Trans t={t} i18nKey="preface2" />
+          <Trans>
+            <Link
+              variant="external"
+              referrerPolicy={'no-referrer'}
+              target={'_blank'}
+              href={t('preface2_link_url')}
+            >
+              {t('preface2_link_text')}
+            </Link>
+          </Trans>
         </p>
         <p>
-          {t('preface3')}
-          <strong>{t('preface3_bold')}</strong>
-          {t('preface3_continued')}
+          <Trans t={t} i18nKey="preface3" />
         </p>
-        <h2 className="margin-top-neg-2">{t('how_to_apply')}</h2>
+        <h1 className="margin-bottom-neg-05">{t('how_to_apply')}</h1>
         <ProcessList>
           <ProcessListItem>
-            <ProcessListHeading type={'h4'}>
+            <ProcessListHeading type={'h2'}>
               {t('process_list_1_header')}
             </ProcessListHeading>
             <p>{t('process_list_1_content')}</p>
-            <li>{t('process_list_1_bullet_pi')}</li>
-            <li>{t('process_list_1_bullet_alien')}</li>
-            <li>
-              {t('process_list_1_bullet_work_history')}
-              <ul>
-                <li>{t('process_list_1_wh_1_sub_emp_name')}</li>
-                <li>{t('process_list_1_wh_2_sub_emp_addr')}</li>
-                <li>{t('process_list_1_wh_3_sub_emp_phone')}</li>
-                <li>{t('process_list_1_wh_4_sub_emp_dates')}</li>
-                <li>{t('process_list_1_wh_5_sub_emp_reason')}</li>
-              </ul>
-            </li>
-            <li>{t('process_list_1_bullet_payments')}</li>
-            <li>{t('process_list_1_bullet_military')}</li>
-            <li>{t('process_list_1_bullet_sf8')}</li>
-            <li>{t('process_list_1_bullet_bank')}</li>
+            <ul className="margin-top-0">
+              <li>{t('process_list_1_bullet_pi')}</li>
+              <li>
+                {t('process_list_1_bullet_work_history')}
+                <ul>
+                  <li>{t('process_list_1_wh_1_sub_emp_name')}</li>
+                  <li>{t('process_list_1_wh_2_sub_emp_addr')}</li>
+                  <li>{t('process_list_1_wh_3_sub_emp_phone')}</li>
+                  <li>{t('process_list_1_wh_4_sub_emp_dates')}</li>
+                  <li>{t('process_list_1_wh_5_sub_emp_reason')}</li>
+                </ul>
+              </li>
+              <li>{t('process_list_1_bullet_payments')}</li>
+              <li>{t('process_list_1_bullet_alien')}</li>
+              <li>{t('process_list_1_bullet_military')}</li>
+              <li>{t('process_list_1_bullet_sf8')}</li>
+              <li>{t('process_list_1_bullet_bank')}</li>
+            </ul>
           </ProcessListItem>
           <ProcessListItem>
-            <ProcessListHeading type={'h4'}>
+            <ProcessListHeading type={'h2'}>
               {t('process_list_2_header')}
             </ProcessListHeading>
             <p>{t('process_list_2_content')}</p>
           </ProcessListItem>
           <ProcessListItem>
-            <ProcessListHeading type={'h4'}>
+            <ProcessListHeading type={'h2'}>
               {t('process_list_3_header')}
             </ProcessListHeading>
             <p>{t('process_list_3_content')}</p>
