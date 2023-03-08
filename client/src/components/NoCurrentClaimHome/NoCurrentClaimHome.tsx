@@ -15,20 +15,20 @@ export const NoCurrentClaimHome = () => {
   return (
     <>
       <div className="styleguide-content usa-prose site-prose">
-        <div className="padding-bottom-105">{t('preface1')}</div>
-        <div className="padding-bottom-105">
+        <p className="padding-bottom-105">{t('preface1')}</p>
+        <p className="padding-bottom-105">
           {t('preface2')}
           <strong>{t('preface2_bold')}</strong>
           {t('preface2_continued')}
           <a target="_blank" rel="noreferrer" href={preface2_url}>
             {t('preface2_link')}
           </a>
-        </div>
-        <div>
+        </p>
+        <p>
           {t('preface3')}
           <strong>{t('preface3_bold')}</strong>
           {t('preface3_continued')}
-        </div>
+        </p>
         <h2 className="margin-top-neg-2">{t('how_to_apply')}</h2>
         <ProcessList>
           <ProcessListItem>
