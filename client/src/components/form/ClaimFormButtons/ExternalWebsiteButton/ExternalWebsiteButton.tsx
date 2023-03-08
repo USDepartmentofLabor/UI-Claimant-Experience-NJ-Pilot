@@ -2,8 +2,9 @@ import { Button } from '@trussworks/react-uswds'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { Routes } from 'constants/routes'
+import { MouseEventHandler } from 'react'
 
-const externalWebsiteOptions = ['payment', 'tax', 'contact']
+const externalWebsiteOptions = ['payment', 'tax', 'contact'] as const
 export type ExternalWebsiteOption = typeof externalWebsiteOptions[number]
 
 export type ExternalWebsiteProps = {
@@ -13,23 +14,28 @@ export const ExternalWebsiteButton = ({ option }: ExternalWebsiteProps) => {
   const { t } = useTranslation('common')
   const router = useRouter()
 
-  const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
-  const goToUpdateContactInfoForm = () =>
-    router.push(Routes.UPDATE_CONTACT_INFO)
-  const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
-
-  let name = t('update_payment_button')
-  let gotToExternalSite = goToUpdatePaymentForm
-
-  if (option !== 'payment') {
-    name =
-      option === 'tax' ? t('tax_doc_button') : t('update_contact_info_button')
-    gotToExternalSite =
-      option === 'tax' ? goToTaxDocumentsPage : goToUpdateContactInfoForm
+  const externalWebsiteButtonPropsMap: Record<
+    ExternalWebsiteOption,
+    { name: string; onClick: MouseEventHandler<HTMLButtonElement> }
+  > = {
+    payment: {
+      name: t('update_payment_button'),
+      onClick: () => router.push(Routes.UPDATE_PAYMENT_INFO),
+    },
+    tax: {
+      name: t('tax_doc_button'),
+      onClick: () => router.push(Routes.UPDATE_CONTACT_INFO),
+    },
+    contact: {
+      name: t('update_contact_info_button'),
+      onClick: () => router.push(Routes.TAX_DOCUMENTS),
+    },
   }
 
+  const { name, onClick } = externalWebsiteButtonPropsMap[`${option}`]
+
   return (
-    <Button type="button" secondary onClick={gotToExternalSite}>
+    <Button type="button" secondary onClick={onClick}>
       {name}
     </Button>
   )
