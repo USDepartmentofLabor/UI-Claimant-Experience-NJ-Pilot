@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,18 +23,34 @@ public class ClaimValidatorService {
     private final Logger logger = LoggerFactory.getLogger(ClaimValidatorService.class);
     private final ObjectMapper mapper = new ObjectMapper();
     private final JsonSchema schema;
+    private final CustomValidationService customValidationService;
 
     @Autowired
     public ClaimValidatorService(
             // TODO: use default values that can access the claim-v1.0.json
             @Value("${RANDOM_SYS_PROP:classpath:}") String baseUrl,
-            @Value("${RANDOM_SYS_PROP:claim-v1.0}") String schemaName)
+            @Value("${RANDOM_SYS_PROP:claim-v1.0}") String schemaName,
+            CustomValidationService customValidationService)
             throws URISyntaxException {
         String schemaUri = baseUrl + "/schemas/" + schemaName + ".json";
         this.schema = getJsonSchemaFromUrl(schemaUri);
+        this.customValidationService = customValidationService;
     }
 
-    public ArrayList<String> validateAgainstSchema(String jsonData) throws IOException {
+    public ArrayList<String> validateClaim(Map<String, Object> claimData) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonData = objectMapper.writeValueAsString(claimData);
+
+        ArrayList<String> schemaValidationErrors = validateAgainstSchema(jsonData);
+        ArrayList<String> customValidationErrors =
+                customValidationService.performCustomValidations(claimData);
+
+        schemaValidationErrors.addAll(customValidationErrors);
+        return schemaValidationErrors;
+    }
+
+    private ArrayList<String> validateAgainstSchema(String jsonData) throws IOException {
+
         JsonNode node = getJsonNodeFromStringContent(jsonData);
         Set<ValidationMessage> errors = schema.validate(node);
         logErrors(errors);
