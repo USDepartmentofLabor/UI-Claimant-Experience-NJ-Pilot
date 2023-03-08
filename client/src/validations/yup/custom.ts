@@ -7,8 +7,8 @@ import {
 import { CENTS_REGEX } from 'constants/currency/format'
 import { i18n_claimForm, i18n_common } from 'i18n/i18n'
 import { boolean, date, object, string } from 'yup'
-import * as states from 'fixtures/states.json'
 import { suffixOptions } from 'constants/formOptions'
+import { statesAndTerritories } from 'fixtures/states_and_territories'
 
 export const yupAddress = () =>
   object().shape({
@@ -20,7 +20,7 @@ export const yupAddress = () =>
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
@@ -48,7 +48,7 @@ export const yupEmployerAddress = () =>
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
@@ -73,7 +73,7 @@ export const yupAddressWithoutPOBox = () =>
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
@@ -91,7 +91,7 @@ export const yupAddressWithoutStreet = () =>
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
