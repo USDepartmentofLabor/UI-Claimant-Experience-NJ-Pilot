@@ -31,8 +31,7 @@ describe('Tax Documents button', () => {
   it('renders and takes the user to the tax form page', async () => {
     const user = userEvent.setup()
 
-    const optionSelected = 'tax' as ExternalWebsiteOption
-    const { externalButton } = renderButton(optionSelected)
+    const { externalButton } = renderButton('tax')
 
     expect(externalButton).toBeInTheDocument()
     await user.click(externalButton as HTMLElement)
@@ -45,8 +44,7 @@ describe('Tax Documents button', () => {
   it('takes the user to the update contact info page', async () => {
     const user = userEvent.setup()
 
-    const optionSelected = 'contact' as ExternalWebsiteOption
-    const { externalButton } = renderButton(optionSelected)
+    const { externalButton } = renderButton('contact')
     await user.click(externalButton as HTMLElement)
 
     expect(mockNavigateToWebsite).toHaveBeenCalledTimes(1)
@@ -59,8 +57,7 @@ describe('Tax Documents button', () => {
   it('takes the user to the update payment info page', async () => {
     const user = userEvent.setup()
 
-    const optionSelected = 'payment' as ExternalWebsiteOption
-    const { externalButton } = renderButton(optionSelected)
+    const { externalButton } = renderButton('payment')
     await user.click(externalButton as HTMLElement)
 
     expect(mockNavigateToWebsite).toHaveBeenCalledTimes(1)

@@ -24,11 +24,11 @@ export const ExternalWebsiteButton = ({ option }: ExternalWebsiteProps) => {
     },
     tax: {
       name: t('tax_doc_button'),
-      onClick: () => router.push(Routes.UPDATE_CONTACT_INFO),
+      onClick: () => router.push(Routes.TAX_DOCUMENTS),
     },
     contact: {
       name: t('update_contact_info_button'),
-      onClick: () => router.push(Routes.TAX_DOCUMENTS),
+      onClick: () => router.push(Routes.UPDATE_CONTACT_INFO),
     },
   }
 
