@@ -15,31 +15,28 @@ export const NoCurrentClaimHome = () => {
   return (
     <>
       <div>
-        <p>{t('preface1')}</p>
-        <p>
-          <Trans t={t} i18nKey="preface2" />
-          <Trans>
+        <Trans t={t} i18nKey="preface">
+          <p>
+            {''}
             <Link
               variant="external"
               referrerPolicy={'no-referrer'}
               target={'_blank'}
-              href={t('preface2_link_url')}
-              aria-label={t('preface2_link_aria')}
+              href={t('preface_link_url')}
+              aria-label={t('preface_link_aria')}
             >
-              {t('preface2_link_text')}
+              {''}
             </Link>
-          </Trans>
-        </p>
-        <p>
-          <Trans t={t} i18nKey="preface3" />
-        </p>
-        <h1 className="margin-bottom-neg-05">{t('how_to_apply')}</h1>
+          </p>
+        </Trans>
+        <h2 className="margin-bottom-neg-05">{t('how_to_apply')}</h2>
         <ProcessList>
           <ProcessListItem>
-            <ProcessListHeading type={'h2'}>
+            <ProcessListHeading type={'h3'}>
               {t('process_list_1_header')}
             </ProcessListHeading>
             <p>{t('process_list_1_content')}</p>
+            {/*create a cleaner translation object for this content*/}
             <ul className="margin-top-0">
               <li>{t('process_list_1_bullet_pi')}</li>
               <li>
@@ -60,13 +57,13 @@ export const NoCurrentClaimHome = () => {
             </ul>
           </ProcessListItem>
           <ProcessListItem>
-            <ProcessListHeading type={'h2'}>
+            <ProcessListHeading type={'h3'}>
               {t('process_list_2_header')}
             </ProcessListHeading>
             <p>{t('process_list_2_content')}</p>
           </ProcessListItem>
           <ProcessListItem>
-            <ProcessListHeading type={'h2'}>
+            <ProcessListHeading type={'h3'}>
               {t('process_list_3_header')}
             </ProcessListHeading>
             <p>{t('process_list_3_content')}</p>
@@ -83,12 +80,9 @@ export const NoCurrentClaimHome = () => {
       </div>
       <div>
         <p className="padding-bottom-1">{t('data_privacy_title')}</p>
-        <p className="font-body-3xs measure-none">
-          {t('data_privacy_content')}
-        </p>
-        <p className="font-body-3xs measure-none">
-          {t('data_privacy_continued')}
-        </p>
+        <Trans t={t} i18nKey={'data_privacy_content'}>
+          <p className="font-body-3xs measure-none">{''}</p>
+        </Trans>
       </div>
     </>
   )
