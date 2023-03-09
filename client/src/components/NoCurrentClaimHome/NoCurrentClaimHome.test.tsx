@@ -28,7 +28,7 @@ describe('DevHome', () => {
     expect(screen.getByText('process_list_2_content'))
     expect(screen.getByText('process_list_3_content'))
     expect(screen.getByText('screener_title'))
-    expect(screen.getByText('screener_button'))
+    expect(screen.getByText('file_a_claim_button'))
     expect(screen.getByText('data_privacy_title'))
     expect(screen.getByText('data_privacy_content'))
     expect(screen.getByText('data_privacy_continued'))

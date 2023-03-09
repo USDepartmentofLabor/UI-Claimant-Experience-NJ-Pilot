@@ -7,21 +7,15 @@ import { Routes } from 'constants/routes'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { GoToClaimFormButton } from 'components/GoToClaimFormButton/GoToClaimFormButton'
+import { useSession } from 'next-auth/react'
 
 export type devHomeProps = {
-  session: any // TODO MRH typecast more specifically
-  partialClaim: any
-  hasInProgressClaim: boolean
   setClaimStatus: any
 }
 
-export const DevHome = ({
-  session,
-  partialClaim,
-  hasInProgressClaim,
-  setClaimStatus,
-}: devHomeProps) => {
+export const DevHome = ({ setClaimStatus }: devHomeProps) => {
   const router = useRouter()
+  const session = useSession()
   const { t } = useTranslation('home')
   const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
   const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
@@ -42,14 +36,15 @@ export const DevHome = ({
             </tr>
           </thead>
           <tbody>
-            {Object.entries(session.data.whoAmI as WhoAmI).map(
-              ([key, value], i) => (
-                <tr key={`${i}-${key}-${value}`}>
-                  <td>{key}</td>
-                  <td>{value}</td>
-                </tr>
-              )
-            )}
+            {session.data &&
+              Object.entries(session.data.whoAmI as WhoAmI).map(
+                ([key, value], i) => (
+                  <tr key={`${i}-${key}-${value}`}>
+                    <td>{key}</td>
+                    <td>{value}</td>
+                  </tr>
+                )
+              )}
           </tbody>
         </Table>
       </div>
@@ -57,10 +52,7 @@ export const DevHome = ({
         <SignOut isNavLink={false} />
       </div>
       <div className="margin-bottom-1">
-        <GoToClaimFormButton
-          partialClaim={partialClaim}
-          hasInProgressClaim={hasInProgressClaim}
-        />
+        <GoToClaimFormButton />
       </div>
       <div className="margin-bottom-1">
         <Button

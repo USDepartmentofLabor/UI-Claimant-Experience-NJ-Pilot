@@ -26,12 +26,8 @@ const Home: NextPage = () => {
   } = useGetPartialClaim()
 
   const { setClaimFormValues } = useContext(ClaimFormContext)
-  //const { ssnInput, screenerInput } = useContext(IntakeAppContext)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [claimStatus, setClaimStatus] = useState<string>('')
-  //const [showPromptClaimStatus, setShowPromptClaimStatus] = useState<boolean>(true) // TODO resume here
-  const hasInProgressClaim =
-    partialClaim !== undefined && Object.keys(partialClaim).length > 0
   useEffect(() => {
     if (!isLoadingGetPartialClaim) {
       if (partialClaim !== undefined) {
@@ -41,19 +37,13 @@ const Home: NextPage = () => {
     }
   }, [partialClaim, isLoadingGetPartialClaim])
 
+  //temporary - the home page contents will be rendered based on the Claim context and the Input Contexts
   const renderHomepageContents = (claimStatus: string) => {
     switch (claimStatus) {
       case 'noCurrentClaim':
         return <NoCurrentClaimHome />
       default:
-        return (
-          <DevHome
-            session={session}
-            partialClaim={partialClaim}
-            hasInProgressClaim={hasInProgressClaim}
-            setClaimStatus={setClaimStatus}
-          />
-        )
+        return <DevHome setClaimStatus={setClaimStatus} />
     }
   }
 

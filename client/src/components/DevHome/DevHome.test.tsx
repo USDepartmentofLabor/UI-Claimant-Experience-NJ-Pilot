@@ -28,14 +28,8 @@ describe('DevHome', () => {
       },
       status: 'authenticated',
     })
-    render(
-      <DevHome
-        session={useSession()}
-        partialClaim={mockUseGetPartialClaim}
-        hasInProgressClaim={true}
-        setClaimStatus={''}
-      />
-    )
+    render(<DevHome setClaimStatus={''} />)
     expect(screen.getByText('Signed in as:'))
+    expect(screen.getByText('email'))
   })
 })
