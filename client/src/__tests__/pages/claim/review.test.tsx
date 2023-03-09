@@ -196,8 +196,7 @@ describe('Review page', () => {
     )
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenCalledWith({
-      pathname: Routes.HOME,
-      query: { completed: true },
+      pathname: Routes.CLAIM.SUCCESS,
     })
   })
 

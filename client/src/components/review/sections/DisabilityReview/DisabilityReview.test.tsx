@@ -58,7 +58,7 @@ describe('DisabilityReview component', () => {
       recoveryDate,
       contactedLastEmployer,
     } = renderDisabilityReview(values)
-    screen.debug()
+
     expect(disabilityAppliedOrReceived[0]).toHaveTextContent('none')
     expect(disabledImmediatelyBefore[0]).toHaveTextContent('yes')
     expect(dateDisabilityBegan[0]).toHaveTextContent(
