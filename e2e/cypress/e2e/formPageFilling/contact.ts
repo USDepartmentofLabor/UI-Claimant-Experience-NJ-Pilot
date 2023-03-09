@@ -13,4 +13,16 @@ const fillContactFields = () => {
   cy.get('input[id=preferred_language_other]').clear().type('Klingon')
 }
 
-export default fillContactFields
+const checkUpdatedContactFields = () => {
+  cy.clickLink('/claim/contact', 'Edit')
+  // Click no interpreter required
+  cy.get('input[id=interpreter_required\\.no_interpreter_tty]').parent().click()
+  cy.clickNext()
+  cy.get('button').contains('Form steps').click()
+  cy.clickLink('/claim/review', 'Review application')
+  // Language fields should not appear after update
+  cy.get('legend').contains('What language do you speak?').should('not.exist')
+  cy.get('legend').contains('Enter the language you speak').should('not.exist')
+}
+
+export { fillContactFields, checkUpdatedContactFields }

@@ -6,6 +6,7 @@ import {
 } from 'contexts/IntakeAppContext'
 import userEvent from '@testing-library/user-event'
 import { pageInitialValues } from 'pages/screener'
+import { WorkOption } from 'constants/formOptions'
 
 describe('Screener-redirect page', () => {
   const mockAppContext: IntakeAppContextType = {
@@ -106,7 +107,7 @@ describe('Screener-redirect page', () => {
       const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
-        screener_work_nj: 'other',
+        screener_work_nj: 'other' as WorkOption,
       }
 
       render(

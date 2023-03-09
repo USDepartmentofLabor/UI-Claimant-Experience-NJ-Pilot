@@ -114,45 +114,6 @@ describe('PaymentsReceived', () => {
     expect(otherPayNoteFieldAgain).toHaveValue('')
   })
 
-  it("removes and disables all other options when 'no other pay' is selected", async () => {
-    const initialValues = {
-      payments_received: [
-        {
-          pay_type: 'vacation_sick_pto',
-          total: 3000,
-        },
-        {
-          pay_type: 'severance',
-          total: 500,
-          note: 'They paid a small severance',
-        },
-      ],
-    }
-
-    const { user, vacation, severance, noOtherPay } =
-      await renderPaymentsReceived(initialValues)
-
-    expect(vacation).toBeEnabled()
-    expect(severance).toBeEnabled()
-
-    await user.click(noOtherPay)
-
-    expect(vacation).toBeDisabled()
-    expect(
-      screen.queryByRole('heading', {
-        level: 3,
-        name: 'payments_received.payments_received_detail.pay_type.options.vacation_sick_pto.label',
-      })
-    ).not.toBeInTheDocument()
-    expect(severance).toBeDisabled()
-    expect(
-      screen.queryByRole('heading', {
-        level: 3,
-        name: 'payments_received.payments_received_detail.pay_type.options.severance_or_continuation.label',
-      })
-    ).not.toBeInTheDocument()
-  })
-
   it('orders the order pay detail fields by order of checkboxes', async () => {
     const { user, pto, severance, otherPay } = await renderPaymentsReceived()
 

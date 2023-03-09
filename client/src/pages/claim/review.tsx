@@ -39,6 +39,7 @@ import { UNTOUCHED_CHECKBOX_VALUE } from 'constants/formOptions'
 import { PaymentReview } from 'components/review/sections/PaymentReview/PaymentReview'
 import { DisabilityReview } from 'components/review/sections/DisabilityReview/DisabilityReview'
 import { DemographicsReview } from 'components/review/sections/DemographicsReview/DemographicsReview'
+import { ScreenerReview } from 'components/review/sections/ScreenerReview/ScreenerReview'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
@@ -127,6 +128,9 @@ export const Review: NextPageWithLayout = () => {
                 </ul>
               </SummaryBoxContent>
             </SummaryBox>
+
+            <ScreenerReview />
+            <HorizontalRule />
 
             <PrequalReview />
             <HorizontalRule />

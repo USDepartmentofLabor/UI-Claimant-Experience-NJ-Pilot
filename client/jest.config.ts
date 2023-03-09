@@ -26,10 +26,10 @@ const customJestConfig: Config.InitialOptions = {
   ],
   coverageThreshold: {
     global: {
-      statements: 90,
-      branches: 90,
-      functions: 90,
-      lines: 90,
+      statements: 95,
+      branches: 92,
+      functions: 93,
+      lines: 95,
     },
   },
   coverageDirectory: 'coverage/jest',

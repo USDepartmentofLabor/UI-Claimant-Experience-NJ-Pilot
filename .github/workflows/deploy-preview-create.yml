@@ -97,6 +97,23 @@ jobs:
           SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
+      - name: Create cognito urls
+        uses: ././github/actions/create-cognito-urls
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          pr-number: ${{ github.event.pull_request.number }}
+          cognito-client-id: ${{ secrets.COGNITO_CLIENT_ID }}
+          cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
+
+      - name: Setup deployment preview networking
+        id: preview-networking
+        uses: ././github/actions/preview-network
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          pr-number: ${{ github.event.pull_request.number }}
+
       - name: Build and deploy client image
         id: build-deploy-client
         uses: ./.github/actions/deploy-client
@@ -109,6 +126,7 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}
           ecs-client-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          client-tg-arn: ${{ steps.preview-networking.outputs.client-tg-arn }}
 
       - name: Build and deploy server image
         id: build-deploy-server
@@ -123,6 +141,7 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           ecs-server-security-group: ${{ secrets.ECS_SERVER_SECURITY_GROUP_DEV }}
           ecs-server-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          server-tg-arn: ${{ steps.preview-networking.outputs.server-tg-arn }}
 
   deploy-preview-will-not-create:
     needs: [should-deploy-preview-run]

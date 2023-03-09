@@ -11,6 +11,7 @@ type YourEmployerOptions = {
   employer_name?: string
   is_full_time?: boolean
   fein?: string
+  state_employer_payroll_number?: string
   employer_address?: EmployerAddressInput
   employer_phone?: string
 }
@@ -20,6 +21,7 @@ export const fillYourEmployerFields = (options: YourEmployerOptions = {}) => {
     employer_name,
     is_full_time,
     fein,
+    state_employer_payroll_number,
     employer_address,
     employer_phone,
   } = options
@@ -28,6 +30,11 @@ export const fillYourEmployerFields = (options: YourEmployerOptions = {}) => {
     cy.get('input[name=employer_name]').clear().type(employer_name)
 
   if (fein) cy.get('input[name=fein]').clear().type(fein)
+
+  if (state_employer_payroll_number)
+    cy.get('input[name=state_employer_payroll_number]')
+      .clear()
+      .type(state_employer_payroll_number)
 
   if (is_full_time !== undefined) {
     cy.get(`input[id=is_full_time\\.${is_full_time ? 'yes' : 'no'}]`).click({
