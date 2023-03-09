@@ -34,8 +34,8 @@ export const GoToClaimFormButton = () => {
   const setButtonText = () => {
     return claimFormValues !== undefined &&
       Object.keys(claimFormValues).length > 0
-      ? t('continue_claim_button')
-      : t('file_a_claim_button')
+      ? t('continue_to_screener_button')
+      : t('continue_to_get_ssn_button_name')
   }
 
   return (

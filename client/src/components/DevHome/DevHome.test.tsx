@@ -4,10 +4,6 @@ jest.mock('next-auth/react')
 import { useSession } from 'next-auth/react'
 
 const mockUseSession = useSession as jest.Mock
-const mockUseGetPartialClaim = jest.fn()
-jest.mock('queries/useGetPartialClaim', () => ({
-  useGetPartialClaim: () => mockUseGetPartialClaim(),
-}))
 
 const whoAmI = {
   firstName: 'ChetFaker',

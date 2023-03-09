@@ -18,7 +18,7 @@ describe('GoToClaimFormButton', () => {
     render(<GoToClaimFormButton />)
 
     expect(screen.getByTestId('go-to-claim-form')).toBeInTheDocument()
-    expect(screen.getByText('continue_claim_button')).toBeInTheDocument()
+    expect(screen.getByText('continue_to_screener_button')).toBeInTheDocument()
   })
 
   it('renders no claim in progress without error', () => {
@@ -28,6 +28,8 @@ describe('GoToClaimFormButton', () => {
     render(<GoToClaimFormButton />)
 
     expect(screen.getByTestId('go-to-claim-form')).toBeInTheDocument()
-    expect(screen.getByText('file_a_claim_button')).toBeInTheDocument()
+    expect(
+      screen.getByText('continue_to_get_ssn_button_name')
+    ).toBeInTheDocument()
   })
 })

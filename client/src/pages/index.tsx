@@ -78,6 +78,7 @@ const Home: NextPage = () => {
         id="main-content"
       >
         <h1 data-testid="home-page-heading">
+          {/*TODO: render based on claim status*/}
           {claimStatus === 'noCurrentClaim'
             ? t('heading_no_claim')
             : t('heading')}

@@ -402,7 +402,7 @@ describe('home page', () => {
       }))
 
       const { goToClaimButton } = renderHomePage(partialClaim)
-      expect(goToClaimButton).toHaveTextContent('continue_claim_button')
+      expect(goToClaimButton).toHaveTextContent('continue_to_screener_button')
       if (goToClaimButton) await user.click(goToClaimButton)
       expect(mockFileAClaim).toHaveBeenCalledTimes(1)
       expect(mockFileAClaim).toHaveBeenCalledWith(Routes.CLAIM.IDENTITY)

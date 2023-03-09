@@ -46,8 +46,9 @@ const home = {
     'After you have answered our basic questions, we will tell you how to apply. Most people will be able to use our online application, but in some cases you may have to apply by phone. Once you finish and submit your application, we will let you know what to do next.',
   screener_title:
     'Find out the best way for you to apply for unemployment insurance benefits.',
-  file_a_claim_button: 'Continue',
-  continue_claim_button: 'Continue claim',
+  // Button text for when next step is get SSN (no claim)
+  continue_to_get_ssn_button_name: 'Continue',
+  continue_to_screener_button: 'Continue to claim',
   data_privacy_title: 'Data privacy and security',
   data_privacy_content:
     'The information collected from your application for unemployment compensation is private data and cannot be released except when authorized by state or federal law, by a court order, or with your permission. The information you and/or your employer(s) provide may be used for New Jersey Department of Labor and Workforce Development purposes and may be used to provide income and eligibility verification between State Agencies administering programs under a plan approved under Title I, X, XIV, XVI as contained in Section 1137 (a)(6) of the Social Security Act. It may be shared with other state and/or federal agencies that determine eligibility for Medicaid, Food Stamps, Social Security, or other state and/or federal benefits and programs. Your Social Security Number will be validated with the Social Security Administration. If you are not a citizen of the United States, your work authorization in the United States will be verified with the Department of Homeland Security.',
