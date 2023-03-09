@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CustomValidationService {
-
+    private ArrayList<String> validationErrors;
     private final int MAX_MAILING_ADDRESS_LEN = 44;
     private final String SSN_FOURTH_FIFTH_CHARS = "00";
     private final String SSN_SIXTH_NINETH_CHARS = "0000";
@@ -35,19 +35,17 @@ public class CustomValidationService {
 
     public ArrayList<String> performCustomValidations(Map<String, Object> claimData) {
 
-        ArrayList<String> validationErrors = new ArrayList<>();
+        validationErrors = new ArrayList<>();
 
-        validateMailingAddress(validationErrors, claimData.get("mailing_address"));
-        validateSSN(validationErrors, (String) claimData.get("ssn"));
+        validateMailingAddress(claimData.get("mailing_address"));
+        validateSSN((String) claimData.get("ssn"));
         validateLastDateAfterStartDate(
-                validationErrors,
                 (String) claimData.get("employment_start_date"),
                 (String) claimData.get("employment_last_date"));
         validateRecallDateAfterLastDate(
-                validationErrors,
                 (String) claimData.get("definite_recall_date"),
                 (String) claimData.get("employment_last_date"));
-        return validationErrors;
+        return new ArrayList<>(validationErrors);
     }
 
     private boolean dateIsAfter(String earlierDateString, String laterDateString) {
@@ -62,8 +60,7 @@ public class CustomValidationService {
         return laterDate.isAfter(earlierDate);
     }
 
-    private void validateMailingAddress(
-            ArrayList<String> validationErrors, Object mailingAddressObj) {
+    private void validateMailingAddress(Object mailingAddressObj) {
         int addressLen = 0;
         int cityLen = 0;
         if (mailingAddressObj != null) {
@@ -74,9 +71,10 @@ public class CustomValidationService {
                         (Map<String, Object>)
                                 objectMapper.convertValue(
                                         mailingAddressObj, addressfields.getClass());
-                System.out.println(addressfields.toString());
+
                 String address = (String) addressfields.get("address");
                 String city = (String) addressfields.get("city");
+
                 if (address != null) {
                     addressLen = address.length();
                 }
@@ -95,7 +93,7 @@ public class CustomValidationService {
         }
     }
 
-    private void validateSSN(ArrayList<String> validationErrors, String ssn) {
+    private void validateSSN(String ssn) {
         if (!(ssn == null || ssn.length() != 9)) {
             String fourthFifthChars = ssn.substring(3, 5);
             String sixthSeventhChars = ssn.substring(5, 9);
@@ -113,18 +111,14 @@ public class CustomValidationService {
 
     // check defindate date of recall is after last date
     private void validateRecallDateAfterLastDate(
-            ArrayList<String> validationErrors,
-            String definiteRecallDateString,
-            String employmentLastDateString) {
+            String definiteRecallDateString, String employmentLastDateString) {
         if (!dateIsAfter(employmentLastDateString, definiteRecallDateString)) {
             validationErrors.add(RECALL_DATE_ERROR);
         }
     }
 
     private void validateLastDateAfterStartDate(
-            ArrayList<String> validationErrors,
-            String employmentStartDateString,
-            String employmentLastDateString) {
+            String employmentStartDateString, String employmentLastDateString) {
         if (!dateIsAfter(employmentStartDateString, employmentLastDateString)) {
             validationErrors.add(LAST_DATE_ERROR);
         }

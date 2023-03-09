@@ -45,7 +45,6 @@ public class CustomValidationServiceTest {
                                 """,
                         new TypeReference<>() {});
         ArrayList<String> errors = customValidationService.performCustomValidations(validClaim);
-        System.out.println(errors);
         assertEquals(0, errors.size());
     }
 
@@ -63,7 +62,6 @@ public class CustomValidationServiceTest {
                         new TypeReference<>() {});
         ArrayList<String> errors =
                 customValidationService.performCustomValidations(claimMissingFields);
-        System.out.println(errors);
         assertEquals(0, errors.size());
     }
 
@@ -85,7 +83,6 @@ public class CustomValidationServiceTest {
 
         ArrayList<String> errors =
                 customValidationService.performCustomValidations(claimWithBadDates);
-        System.out.println(errors);
 
         assertEquals(2, errors.size());
         assertTrue(
@@ -121,7 +118,6 @@ public class CustomValidationServiceTest {
 
         ArrayList<String> errors =
                 customValidationService.performCustomValidations(claimWithMailingAddress);
-        System.out.println(errors);
 
         assertEquals(1, errors.size());
         assertEquals(
@@ -142,7 +138,6 @@ public class CustomValidationServiceTest {
                               """,
                         new TypeReference<>() {});
         ArrayList<String> errors = customValidationService.performCustomValidations(validClaim);
-        System.out.println(errors);
         assertEquals(2, errors.size());
 
         assertTrue(errors.indexOf("SSN error: the 4th and 5th characters cannot equal 00") > -1);
