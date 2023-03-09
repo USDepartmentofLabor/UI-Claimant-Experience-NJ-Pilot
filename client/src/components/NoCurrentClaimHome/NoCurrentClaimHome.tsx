@@ -24,6 +24,7 @@ export const NoCurrentClaimHome = () => {
               referrerPolicy={'no-referrer'}
               target={'_blank'}
               href={t('preface2_link_url')}
+              aria-label={t('preface2_link_aria')}
             >
               {t('preface2_link_text')}
             </Link>

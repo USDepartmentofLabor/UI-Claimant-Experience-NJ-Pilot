@@ -12,6 +12,7 @@ const home = {
     'To get these benefits, you must apply. <strong> Anyone who has lost their job can apply, but applying does not mean you will get benefits.</strong> Your work situation must meet the ',
   preface2_link_text: 'eligibility requirements.',
   preface2_link_url: 'https://nj.gov/labor/myunemployment/before/about/who/',
+  preface2_link_aria: 'eligibility requirements, opens a new tab',
   preface3:
     'The eligibility requirements can be confusing - <strong>if you are not sure if you are eligible, you should still apply.</strong> The sooner you apply after losing your job, the better. After you submit your application, we will review it to see if you meet the requirements.',
   how_to_apply: 'How to apply',
