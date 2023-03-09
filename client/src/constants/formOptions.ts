@@ -10,6 +10,10 @@ export type UntouchedCheckboxValue = typeof UNTOUCHED_CHECKBOX_VALUE
 export const EMPTY_DROPDOWN_OPTION = '' as const
 export type EmptyOption = typeof EMPTY_DROPDOWN_OPTION
 
+export const STATE_EMPLOYER_PAYROLL_NUMBER_VALUE = '022248181800000' as const
+export type StateEmployerPayrollNumberValue =
+  typeof STATE_EMPLOYER_PAYROLL_NUMBER_VALUE
+
 export const interpreterTTYOptions = [
   'interpreter',
   'tty',
@@ -101,6 +105,9 @@ export const suffixOptions = [
   'senior',
 ] as const
 export type SuffixOption = typeof suffixOptions[number]
+
+export const solePropOptions = ['yes', 'no', 'not_sure'] as const
+export type SolePropOption = typeof solePropOptions[number]
 
 export const changeInEmploymentOptions = [
   'laid_off',

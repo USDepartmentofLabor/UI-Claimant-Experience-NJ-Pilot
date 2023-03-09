@@ -33,6 +33,7 @@ declare global {
       clickEditEmployer(employerName: string): Chainable<Element>
       clickDeleteEmployer(employerName: string): Chainable<Element>
       clickSubmit(): Chainable<Element>
+      clickLink(link: string, text: string): Chainable<Element>
       login(userObj: JWTPayload)
     }
   }

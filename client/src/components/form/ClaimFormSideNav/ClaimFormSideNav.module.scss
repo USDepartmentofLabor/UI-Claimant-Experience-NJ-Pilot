@@ -1,0 +1,44 @@
+@use 'uswds-core' as *;
+
+.sidenav {
+  display: none;
+}
+
+.nav_future {
+  cursor: not-allowed;
+  display: block;
+  @include u-text('gray-30');
+  padding: units(1) units(2);
+  line-height: inherit;
+}
+
+@media all and (max-width: units('desktop')) {
+  .sidenav_accordion_outer {
+    max-width: units('tablet');
+    @include u-margin-x('auto');
+    display: block;
+
+    :global(.usa-accordion__content) {
+      padding-top: 0;
+      padding-bottom: 0;
+
+      :global(ul.usa-sidenav) {
+        padding-left: 0;
+
+        :global(.usa-sidenav__item) {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+@media all and (min-width: units('desktop')) {
+  .sidenav_accordion_outer {
+    display: none;
+  }
+
+  .sidenav {
+    display: initial;
+  }
+}

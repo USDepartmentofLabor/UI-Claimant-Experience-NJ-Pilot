@@ -1,0 +1,172 @@
+name: Deployment Preview Networking Setup
+description: For deployment previews, create ALB target groups and listener rules to direct traffic to the preview ecs services
+inputs:
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  base-url:
+    description: Url for the deployment preview
+    required: true
+  pr-number:
+    description: Pull request number for ssm
+    required: true
+outputs:
+  client-tg-arn:
+    description: ARN of the client target group
+    value: ${{ steps.create-client-tg.outputs.client-tg-arn }}
+  server-tg-arn:
+    description: ARN of the server target group
+    value: ${{ steps.create-server-tg.outputs.server-tg-arn }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Does a target group already exist?
+      id: check-tg
+      env:
+        TG_NAME: ecs-client-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        TG_CHECK_COUNT=$( aws elbv2 describe-target-groups \
+        --names "$TG_NAME" \
+        | grep -c "TargetGroupArn" )
+        echo "tg-count=$TG_CHECK_COUNT" >> $GITHUB_OUTPUT
+
+    - name: Get ecs client dev tg json as template
+      id: tg-template
+      if: steps.check-tg.outputs.tg-count == '0'
+      shell: bash
+      run: |
+        aws elbv2 describe-target-groups \
+        --names ecs-client-dev \
+        --output json >> tg-template.json
+
+    - name: Create json file for preview client target group
+      id: client-tg-json
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        TG_NAME: ecs-client-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        jq \
+        --arg TG_NAME "$TG_NAME" \
+        '.TargetGroups[0] | del(.TargetGroupArn) | .TargetGroupName = $TG_NAME' \
+        tg-template.json >> preview-client-tg.json
+
+    - name: Create json file for preview server target group
+      id: server-tg-json
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        TG_NAME: ecs-server-dev-${{ inputs.pr-number }}
+        HC_PATH: /intake-api/actuator/health
+      shell: bash
+      run: |
+        jq \
+        --arg TG_NAME "$TG_NAME" \
+        --arg HC_PATH "$HC_PATH" \
+        '.TargetGroups[0] | del(.TargetGroupArn) | .HealthCheckPath = $HC_PATH | .TargetGroupName = $TG_NAME | .Port = 8080' \
+        tg-template.json >> preview-server-tg.json
+
+    - name: Create preview client target group
+      id: create-client-tg
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        TG_JSON: ${{ fromJSON(preview-client-tg.json) }}
+      shell: bash
+      run: |
+        CLIENT_TG_ARN=$( aws elbv2 create-target-group \
+        --cli-input-json "$TG_JSON" \
+        --output text \
+        --query 'TargetGroups[0].TargetGroupArn' )
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Create preview server target group
+      id: create-server-tg
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        TG_JSON: ${{ fromJSON(preview-server-tg.json) }}
+      shell: bash
+      run: |
+        SERVER_TG_ARN=$( aws elbv2 create-target-group \
+        --cli-input-json "$TG_JSON" \
+        --output text \
+        --query 'TargetGroups[0].TargetGroupArn' )
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get load balancer arn
+      id: lb-arn
+      if: steps.check-tg.outputs.tg-count == '0'
+      shell: bash
+      run: |
+        LB_ARN="$(jq -r '.TargetGroups[0].LoadBalancerArns[0]' tg-template.json)"
+        echo "lb-arn=$LB_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get listener arn
+      id: listener
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        LB_ARN: ${{ steps.lb-arn.outputs.lb-arn }}
+      shell: bash
+      run: |
+        LISTENER_ARN="$( aws elbv2 describe-listeners \
+        --load-balancer-arn $LB_ARN \
+        --query 'Listeners[?Port == to_number(`443`)].ListenerArn' \
+        --output text )"
+        echo "listener-arn=$LISTENER_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get highest priority rule number
+      id: priority
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
+        DEFAULT: default
+      shell: bash
+      run: |
+        MAX="$(aws elbv2 describe-rules \
+        --listener-arn $LISTENER_ARN \
+        --query 'Rules[].{Priority:Priority}' | \
+        jq --arg DEFAULT $DEFAULT \
+        'del(.[] | select(.Priority == $DEFAULT )) |  max.Priority | tonumber')"
+        echo "max=$MAX" >> GITHUB_OUTPUT
+        CLIENT_PRIORITY=$(($MAX+1))
+        SERVER_PRIORITY=$(($MAX+2))
+        echo "client-priority=$CLIENT_PRIORITY" >> GITHUB_OUTPUT
+        echo "server-priority=$SERVER_PRIORITY" >> GITHUB_OUTPUT
+
+    - name: Create client listener rule
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
+        PRIORITY: ${{ steps.priority.outputs.client-priority }}
+        CLIENT_TG_ARN: ${{ steps.create-client-tg.outputs.client-tg-arn }}
+        BASE_URL: ${{ inputs.base-url }}
+      shell: bash
+      run: |
+        aws elbv2 create-rule \
+        --listener-arn $LISTENER_ARN \
+        --priority $PRIORITY \
+        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} '
+        --actions Type=forward,TargetGroupArn=$CLIENT_TG_ARN
+
+    - name: Create server listener rule
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
+        PRIORITY: ${{ steps.priority.outputs.server-priority }}
+        SERVER_TG_ARN: ${{ steps.create-server-tg.outputs.server-tg-arn }}
+        BASE_URL: ${{ inputs.base-url }}
+      shell: bash
+      run: |
+        aws elbv2 create-rule \
+        --listener-arn $LISTENER_ARN \
+        --priority $PRIORITY \
+        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} '
+        --actions Type=forward,TargetGroupArn=$SERVER_TG_ARN
