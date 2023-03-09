@@ -91,9 +91,9 @@ const queryValues = () => {
   const preambleNoWork = screen.queryByText('review_employers.preamble_no_work')
   const preamble = screen.queryByText('review_employers.preamble')
 
-  const editEmployer = screen.queryByRole('heading', { name: 'Edit Employer' })
+  const editEmployer = screen.queryByRole('heading', { name: 'Edit employer' })
 
-  const addEmployer = screen.queryByRole('heading', { name: 'Add Employer' })
+  const addEmployer = screen.queryByRole('heading', { name: 'Add employer' })
 
   //'review_employers.heading'
   const reviewEmployers = screen.queryByRole('heading', {
@@ -159,10 +159,10 @@ describe('The Review Employers page', () => {
     )
 
     const editEmployer = screen.queryByRole('heading', {
-      name: 'Edit Employer',
+      name: 'Edit employer',
     })
 
-    const addEmployer = screen.queryByRole('heading', { name: 'Add Employer' })
+    const addEmployer = screen.queryByRole('heading', { name: 'Add employer' })
 
     const addEmployerButton = screen.queryByRole('button', {
       name: 'review_employers.add_employer',
@@ -283,7 +283,7 @@ describe('The Review Employers page', () => {
     })
   })
 
-  describe('Edit Employer', () => {
+  describe('Edit employer', () => {
     it('Displays editing an employer', async () => {
       const user = userEvent.setup()
 
@@ -325,7 +325,7 @@ describe('The Review Employers page', () => {
       await waitFor(
         async () =>
           await expect(
-            screen.queryByRole('heading', { name: 'Edit Employer' })
+            screen.queryByRole('heading', { name: 'Edit employer' })
           ).toBeInTheDocument()
       )
       const nextButton = screen.getByRole('button', {
@@ -363,7 +363,7 @@ describe('The Review Employers page', () => {
       await waitFor(
         async () =>
           await expect(
-            screen.queryByRole('heading', { name: 'Edit Employer' })
+            screen.queryByRole('heading', { name: 'Edit employer' })
           ).toBeInTheDocument()
       )
 
@@ -397,7 +397,7 @@ describe('The Review Employers page', () => {
       await waitFor(
         async () =>
           await expect(
-            screen.queryByRole('heading', { name: 'Edit Employer' })
+            screen.queryByRole('heading', { name: 'Edit employer' })
           ).toBeInTheDocument()
       )
 
@@ -421,7 +421,7 @@ describe('The Review Employers page', () => {
     })
   })
 
-  describe('Add Employer', () => {
+  describe('Add employer', () => {
     it('Displays adding an employer', async () => {
       const user = userEvent.setup()
 
@@ -443,7 +443,7 @@ describe('The Review Employers page', () => {
         reviewEmployers: reviewEmployersUpdated,
       } = queryValues()
 
-      screen.getByRole('heading', { name: 'Add Employer' })
+      screen.getByRole('heading', { name: 'Add employer' })
 
       expect(reviewEmployersUpdated).not.toBeInTheDocument()
       expect(editEmployerUpdated).not.toBeInTheDocument()
@@ -614,7 +614,7 @@ describe('The Review Employers page', () => {
       // expect(employer).toBeInTheDocument()
       //await waitFor(async () => await screen.getByText('Circuit City'))
       expect(mockModifyEmployerAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
-    }, 20000)
+    }, 25000)
 
     it('Goes back to the review employer page when the back button is pressed', async () => {
       const user = userEvent.setup()

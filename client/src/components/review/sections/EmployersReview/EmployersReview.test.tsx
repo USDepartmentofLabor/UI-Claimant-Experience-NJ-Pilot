@@ -329,7 +329,7 @@ describe('EmployerReview component', () => {
           self_employed: true,
           is_owner: true,
           corporate_officer_or_stock_ownership: false,
-          employer_is_sole_proprietorship: false,
+          employer_is_sole_proprietorship: 'no',
           related_to_owner_or_child_of_owner_under_18:
             'parent' as EmployerRelationOption,
         } as Employer,

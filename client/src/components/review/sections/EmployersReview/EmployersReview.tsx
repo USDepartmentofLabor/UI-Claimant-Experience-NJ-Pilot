@@ -160,6 +160,10 @@ export const EmployerReview = ({
           label={t('verified_fields.fein')}
           value={employer?.fein}
         />
+        <ReviewElement
+          label={t('your_employer.state_employer_payroll_number.review_label')}
+          value={employer?.state_employer_payroll_number}
+        />
         <ReviewYesNo
           label={t('your_employer.is_full_time.label')}
           value={employer?.is_full_time}
@@ -213,9 +217,14 @@ export const EmployerReview = ({
           )}
           value={employer?.corporate_officer_or_stock_ownership}
         />
-        <ReviewYesNo
+        <ReviewElement
           label={t('business_interests.employer_is_sole_proprietorship.label')}
-          value={employer?.employer_is_sole_proprietorship}
+          value={
+            employer.employer_is_sole_proprietorship &&
+            t(
+              `business_interests.employer_is_sole_proprietorship.options.${employer.employer_is_sole_proprietorship}`
+            )
+          }
         />
 
         <ReviewElement

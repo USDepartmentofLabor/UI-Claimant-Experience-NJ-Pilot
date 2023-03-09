@@ -6,7 +6,7 @@ import { useClearFields } from 'hooks/useClearFields'
 import { Employer } from 'types/claimantInput'
 import { ChangeEventHandler } from 'react'
 import { Fieldset } from '@trussworks/react-uswds'
-import { employerRelationOptions } from 'constants/formOptions'
+import { solePropOptions, employerRelationOptions } from 'constants/formOptions'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 export const BusinessInterests = () => {
@@ -44,7 +44,9 @@ export const BusinessInterests = () => {
   const showSoleProprietorship =
     values.corporate_officer_or_stock_ownership === false
   const showRelatedToOwner =
-    showSoleProprietorship && values.employer_is_sole_proprietorship === true
+    (showSoleProprietorship &&
+      values.employer_is_sole_proprietorship === 'yes') ||
+    values.employer_is_sole_proprietorship === 'not_sure'
 
   return (
     <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
@@ -59,10 +61,14 @@ export const BusinessInterests = () => {
         onChange={handleCorporateOfficerOrStockOwnershipChange}
       />
       {showSoleProprietorship && (
-        <YesNoQuestion
+        <RadioField
           name={`employer_is_sole_proprietorship`}
-          question={t('employer_is_sole_proprietorship.label')}
+          legend={t('employer_is_sole_proprietorship.label')}
           hint={<Trans t={t} i18nKey="employer_is_sole_proprietorship.hint" />}
+          options={solePropOptions.map((option) => ({
+            label: t(`employer_is_sole_proprietorship.options.${option}`),
+            value: option,
+          }))}
           onChange={handleSoleProprietorshipChange}
         />
       )}
