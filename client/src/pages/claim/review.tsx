@@ -77,8 +77,13 @@ export const Review: NextPageWithLayout = () => {
     }
   }
 
-  const formatStoredDataToDisplayData = (data: string) => {
+  const displayCompleteClaimErrors = (data: string) => {
     const regex = /[$.|"]/g
+    if (data.indexOf('[') !== 0) {
+      //not propper array of errors, just print the message
+      return <li key={'error_data'}>{data.replaceAll(regex, '')}</li>
+    }
+
     const arr = data.slice(1, -1).replaceAll(regex, '').split(',')
     return arr.map((element) => <li key={element}>{element}</li>)
   }
@@ -103,9 +108,9 @@ export const Review: NextPageWithLayout = () => {
               >
                 <ul className="usa-list">
                   {saveCompleteClaim.isError &&
-                    saveCompleteClaim.error.response && (
+                    saveCompleteClaim.error.response?.data && (
                       <div data-testid={'error-list'}>
-                        {formatStoredDataToDisplayData(
+                        {displayCompleteClaimErrors(
                           JSON.stringify(saveCompleteClaim.error.response.data)
                         )}
                       </div>

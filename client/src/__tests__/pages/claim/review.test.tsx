@@ -135,6 +135,26 @@ describe('Review page', () => {
     expect(screen.queryByText('data with weird characters')).toBeInTheDocument()
   })
 
+  it('renders the failure message for complete claim when response is just a string', () => {
+    mockUseSaveCompleteClaim.mockReturnValueOnce({
+      isError: true,
+      error: {
+        response: {
+          data: 'I am a fake internal server error',
+        },
+      },
+    })
+
+    const { queryForErrorMessage, queryForErrorMessageList } = renderReview()
+    const errorMessage = queryForErrorMessage()
+
+    expect(errorMessage).toBeInTheDocument()
+    expect(queryForErrorMessageList()).toBeInTheDocument()
+    expect(
+      screen.queryByText('I am a fake internal server error')
+    ).toBeInTheDocument()
+  })
+
   it('renders an error message if submission has failed', () => {
     mockUseSubmitClaim.mockReturnValueOnce({
       isError: true,
