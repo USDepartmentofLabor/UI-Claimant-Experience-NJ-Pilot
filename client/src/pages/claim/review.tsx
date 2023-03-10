@@ -77,7 +77,7 @@ export const Review: NextPageWithLayout = () => {
     }
   }
 
-  const formatStoredDateToDisplayData = (data: string) => {
+  const formatStoredDataToDisplayData = (data: string) => {
     const regex = /[$.|"]/g
     const arr = data.slice(1, -1).replaceAll(regex, '').split(',')
     return arr.map((element) => <li key={element}>{element}</li>)
@@ -105,7 +105,7 @@ export const Review: NextPageWithLayout = () => {
                   {saveCompleteClaim.isError &&
                     saveCompleteClaim.error.response && (
                       <div data-testid={'error-list'}>
-                        {formatStoredDateToDisplayData(
+                        {formatStoredDataToDisplayData(
                           JSON.stringify(saveCompleteClaim.error.response.data)
                         )}
                       </div>
