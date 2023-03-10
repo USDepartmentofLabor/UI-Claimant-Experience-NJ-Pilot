@@ -17,6 +17,8 @@ public class CustomValidationService {
             String.format(
                     "Mailing address error: street and city fields exceed the %d character maximum",
                     MAX_MAILING_ADDRESS_LEN);
+    private final String RECALL_DATE_ERROR =
+            "Mailing address error: unable to read the provided format";
     private final String SSN_FOURTH_FIFTH__ERROR =
             String.format(
                     "SSN error: the 4th and 5th characters cannot equal %s",
@@ -27,7 +29,8 @@ public class CustomValidationService {
                     SSN_SIXTH_NINETH_CHARS);
     private final String LAST_DATE_ERROR =
             "Employment last date error: last date cannot be before employment start date";
-    private final String RECALL_DATE_ERROR =
+
+    private final String MAILING_ADDRESS_INVALID_FORMAT =
             "Definite date of recall error: date of recall cannot be before employment last date";
     private final Logger logger = LoggerFactory.getLogger(CustomValidationService.class);
 
@@ -89,6 +92,7 @@ public class CustomValidationService {
             } catch (IllegalArgumentException e) {
                 logger.error(
                         "Mailing address was unable to be converted to a map but was not null.");
+                validationErrors.add(MAILING_ADDRESS_INVALID_FORMAT);
             }
         }
     }

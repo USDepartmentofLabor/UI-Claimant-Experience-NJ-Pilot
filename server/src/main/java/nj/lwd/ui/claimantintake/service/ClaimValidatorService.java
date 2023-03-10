@@ -49,7 +49,7 @@ public class ClaimValidatorService {
         return schemaValidationErrors;
     }
 
-    private ArrayList<String> validateAgainstSchema(String jsonData) throws IOException {
+    public ArrayList<String> validateAgainstSchema(String jsonData) throws IOException {
 
         JsonNode node = getJsonNodeFromStringContent(jsonData);
         Set<ValidationMessage> errors = schema.validate(node);
