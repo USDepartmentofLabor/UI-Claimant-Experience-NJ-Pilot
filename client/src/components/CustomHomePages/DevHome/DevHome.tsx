@@ -101,7 +101,7 @@ export const DevHome = ({ setClaimStatus }: devHomeProps) => {
           {t('update_contact_info_button')}
         </Button>
       </div>
-      <div>
+      <div className="margin-bottom-1">
         <Button
           type="button"
           secondary

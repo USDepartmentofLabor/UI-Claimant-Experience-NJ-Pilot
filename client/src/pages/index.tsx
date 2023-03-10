@@ -10,7 +10,6 @@ import { Alert } from '@trussworks/react-uswds'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import Error from 'next/error'
-import { ExternalWebsiteButton } from 'components/form/ClaimFormButtons/ExternalWebsiteButton/ExternalWebsiteButton'
 import { NoCurrentClaimHome } from '../components/CustomHomePages/NoCurrentClaimHome/NoCurrentClaimHome'
 import { DevHome } from '../components/CustomHomePages/DevHome/DevHome'
 

@@ -10,8 +10,16 @@ import {
 } from '@trussworks/react-uswds'
 import React from 'react'
 import { GoToClaimFormButton } from '../../GoToClaimFormButton/GoToClaimFormButton'
+
 export const NoCurrentClaimHome = () => {
   const { t } = useTranslation('home')
+  type process_list_1_list_type = Array<
+    string | { header: string; list: string[] }
+  >
+  const process_list_1_list: process_list_1_list_type = t(
+    'process_list_1_list',
+    { returnObjects: true }
+  )
   return (
     <>
       <div>
@@ -37,7 +45,7 @@ export const NoCurrentClaimHome = () => {
             </ProcessListHeading>
             <p>{t('process_list_1_content')}</p>
             <ul className="margin-top-0">
-              {t('process_list_1_list', { returnObjects: true }).map((item) => {
+              {process_list_1_list.map((item) => {
                 if (typeof item == 'string') {
                   return <li key={item}>{item}</li>
                 } else {
