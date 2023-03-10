@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
@@ -39,7 +40,7 @@ class CompletedClaimControllerTest {
     @Test
     @WithMockUser
     void shouldAcceptCompletedClaim() throws Exception {
-        ArrayList<String> validationMessageList = new ArrayList<String>();
+        List<String> validationMessageList = new ArrayList<String>();
         when(claimStorageService.completeClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateAgainstSchema(anyString()))
                 .thenReturn(validationMessageList);
@@ -58,7 +59,7 @@ class CompletedClaimControllerTest {
 
     @Test
     void shouldRejectUnauthorizedUser() throws Exception {
-        ArrayList<String> validationMessageList = new ArrayList<String>();
+        List<String> validationMessageList = new ArrayList<String>();
         when(claimStorageService.saveClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateAgainstSchema(anyString()))
                 .thenReturn(validationMessageList);
