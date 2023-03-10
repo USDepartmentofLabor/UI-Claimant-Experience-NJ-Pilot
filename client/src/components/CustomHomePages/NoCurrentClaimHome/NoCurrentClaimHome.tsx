@@ -9,7 +9,7 @@ import {
   SummaryBoxHeading,
 } from '@trussworks/react-uswds'
 import React from 'react'
-import { GoToClaimFormButton } from '../GoToClaimFormButton/GoToClaimFormButton'
+import { GoToClaimFormButton } from '../../GoToClaimFormButton/GoToClaimFormButton'
 export const NoCurrentClaimHome = () => {
   const { t } = useTranslation('home')
   return (
@@ -36,24 +36,23 @@ export const NoCurrentClaimHome = () => {
               {t('process_list_1_header')}
             </ProcessListHeading>
             <p>{t('process_list_1_content')}</p>
-            {/*create a cleaner translation object for this content*/}
             <ul className="margin-top-0">
-              <li>{t('process_list_1_bullet_pi')}</li>
-              <li>
-                {t('process_list_1_bullet_work_history')}
-                <ul>
-                  <li>{t('process_list_1_wh_1_sub_emp_name')}</li>
-                  <li>{t('process_list_1_wh_2_sub_emp_addr')}</li>
-                  <li>{t('process_list_1_wh_3_sub_emp_phone')}</li>
-                  <li>{t('process_list_1_wh_4_sub_emp_dates')}</li>
-                  <li>{t('process_list_1_wh_5_sub_emp_reason')}</li>
-                </ul>
-              </li>
-              <li>{t('process_list_1_bullet_payments')}</li>
-              <li>{t('process_list_1_bullet_alien')}</li>
-              <li>{t('process_list_1_bullet_military')}</li>
-              <li>{t('process_list_1_bullet_sf8')}</li>
-              <li>{t('process_list_1_bullet_bank')}</li>
+              {t('process_list_1_list', { returnObjects: true }).map((item) => {
+                if (typeof item == 'string') {
+                  return <li key={item}>{item}</li>
+                } else {
+                  return (
+                    <li key={item.header}>
+                      {item.header}
+                      <ul>
+                        {item.list.map((itemContent) => (
+                          <li key={itemContent}>{itemContent}</li>
+                        ))}
+                      </ul>
+                    </li>
+                  )
+                }
+              })}
             </ul>
           </ProcessListItem>
           <ProcessListItem>

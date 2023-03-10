@@ -16,26 +16,24 @@ const home = {
   process_list_1_header: 'Gather the required information',
   process_list_1_content:
     "To complete your Unemployment Insurance application, you'll need the following: ",
-  process_list_1_bullet_pi:
+  process_list_1_list: [
     'Your personal information: your name, Social Security Number, birthdate, and contact information.',
-  process_list_1_bullet_work_history:
-    'Your complete work history for the last 18 months, including:',
-  process_list_1_wh_1_sub_emp_name: 'Employer name(s)',
-  process_list_1_wh_2_sub_emp_addr: 'Employer address(es)',
-  process_list_1_wh_3_sub_emp_phone: 'Employer phone number(s)',
-  process_list_1_wh_4_sub_emp_dates: 'Start and end dates for each job',
-  process_list_1_wh_5_sub_emp_reason:
-    'A reason why each job ended, or why your hours changed',
-  process_list_1_bullet_payments:
+    {
+      header: 'Your complete work history for the last 18 months, including: ',
+      list: [
+        'Employer name(s)',
+        'Employer address(es)',
+        'Employer phone number(s)',
+        'Start and end dates for each job',
+        'A reason why each job ended, or why your hours changed',
+      ],
+    },
     'Details about other types of payments you receive(d)',
-  process_list_1_bullet_alien:
     "If you're not a U.S. citizen, Your Alien Registration Number",
-  process_list_1_bullet_military:
-    'If you were in the military in the last 18 months, Military form DD-214 ',
-  process_list_1_bullet_sf8:
+    'If you were in the military in the last 18 months, Military form DD-214',
     'If you were a federal employee during the last 18 months, Form SF-8 or SF-50',
-  process_list_1_bullet_bank:
     "If you'd like to get your benefits by direct deposit, your bank account information",
+  ],
   process_list_2_header: 'Answer a few basic questions on the next page',
   process_list_2_content:
     'Before you apply, we will ask you a few questions about where you live, your work history and your work location. These questions will help us find out if and how you should apply.',

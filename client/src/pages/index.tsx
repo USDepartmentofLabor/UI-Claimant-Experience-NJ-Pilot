@@ -10,8 +10,8 @@ import { Alert } from '@trussworks/react-uswds'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import Error from 'next/error'
-import { DevHome } from 'components/DevHome/DevHome'
-import { NoCurrentClaimHome } from 'components/NoCurrentClaimHome/NoCurrentClaimHome'
+import { DevHome } from 'components/CustomHomePages/DevHome/DevHome'
+import { NoCurrentClaimHome } from 'components/CustomHomePages/NoCurrentClaimHome/NoCurrentClaimHome'
 
 const Home: NextPage = () => {
   const session = useSession()
