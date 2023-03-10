@@ -6,6 +6,8 @@ describe('DevHome', () => {
     render(<NoCurrentClaimHome />)
     expect(screen.getByText('preface'))
     expect(screen.getByText('how_to_apply'))
+    expect(screen.getByText('process_list_1_header'))
+    expect(screen.getByText('process_list_1_content'))
     expect(screen.getByText('process_list_2_header'))
     expect(screen.getByText('process_list_2_content'))
     expect(screen.getByText('process_list_3_header'))

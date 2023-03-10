@@ -34,6 +34,7 @@ export const ExternalRoutes = () => {
     }
   }
 }
+export const EXTERNAL_CONTACT_EMAIL = 'userexperience@dol.nj.gov'
 
 export const Routes = {
   HOME: '/',
@@ -61,5 +62,6 @@ export const Routes = {
     DISABILITY: makeClaimFormRoute('disability'),
     PAYMENT: makeClaimFormRoute('payment'),
     REVIEW: makeClaimFormRoute('review'),
+    SUCCESS: makeClaimFormRoute('beta-success'),
   },
 }

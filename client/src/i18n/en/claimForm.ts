@@ -1,3 +1,5 @@
+import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
+
 const claimForm = {
   step_progress: 'step {{step}} of {{totalSteps}}',
   pagination: {
@@ -1159,6 +1161,12 @@ const claimForm = {
         required: 'Your certification is required',
       },
     },
+  },
+  success: {
+    heading: 'Success!',
+    success_details:
+      'You have successfully submitted your claim for unemployment insurance. We will be in touch soon to confirm we have received your information.',
+    contact_details: `If you don't hear from us in two weeks, please email us at <0>${EXTERNAL_CONTACT_EMAIL}<0/>`,
   },
 }
 
