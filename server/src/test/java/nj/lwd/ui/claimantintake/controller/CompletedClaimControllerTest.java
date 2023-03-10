@@ -93,7 +93,7 @@ class CompletedClaimControllerTest {
     @WithMockUser
     void shouldRejectInvalidClaim() throws Exception {
 
-        ArrayList<String> validationErrors =
+        List<String> validationErrors =
                 new ArrayList(Arrays.asList("I am a fake error", "I am also a fake error"));
         when(claimValidatorService.validateAgainstSchema(anyString())).thenReturn(validationErrors);
         MvcResult result =
