@@ -108,7 +108,7 @@ class CompletedClaimControllerTest {
                         .andDo(print())
                         .andExpect(status().isBadRequest())
                         .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
+
         assertEquals(
                 """
                 {"message":"Errors occured when validating the claim data","errors":["I am a fake error","I am also a fake error"]}
