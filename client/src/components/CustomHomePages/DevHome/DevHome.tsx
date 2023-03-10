@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { GoToClaimFormButton } from 'components/GoToClaimFormButton/GoToClaimFormButton'
 import { useSession } from 'next-auth/react'
+import { ExternalWebsiteButton } from '../../form/ClaimFormButtons/ExternalWebsiteButton/ExternalWebsiteButton'
 
 export type devHomeProps = {
   setClaimStatus: any
@@ -109,6 +110,15 @@ export const DevHome = ({ setClaimStatus }: devHomeProps) => {
         >
           {t('tax_doc_button')}
         </Button>
+        <div className="margin-bottom-1">
+          <ExternalWebsiteButton option={'payment'} />
+        </div>
+        <div className="margin-bottom-1">
+          <ExternalWebsiteButton option={'contact'} />
+        </div>
+        <div>
+          <ExternalWebsiteButton option={'tax'} />
+        </div>
       </div>
     </>
   )
