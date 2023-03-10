@@ -47,6 +47,10 @@ const previousPage = getPreviousPage(pageDefinition)
 const pageInitialValues = {
   certify: UNTOUCHED_CHECKBOX_VALUE,
 }
+type ErrorResponse = {
+  message: string
+  errors: string[] | null | undefined
+}
 
 export const Review: NextPageWithLayout = () => {
   const router = useRouter()
@@ -77,15 +81,17 @@ export const Review: NextPageWithLayout = () => {
     }
   }
 
-  const displayCompleteClaimErrors = (data: string) => {
-    const regex = /[$.|"]/g
-    if (data.indexOf('[') !== 0) {
-      //not propper array of errors, just print the message
-      return <li key={'error_data'}>{data.replaceAll(regex, '')}</li>
+  const displayCompleteClaimErrors = (data: any) => {
+    const response = data as ErrorResponse
+
+    if (!response?.errors) {
+      return <li key={'error_data'}>{response.message}</li>
     }
 
-    const arr = data.slice(1, -1).replaceAll(regex, '').split(',')
-    return arr.map((element) => <li key={element}>{element}</li>)
+    const regex = /[$.]/g
+    return response.errors.map((element) => (
+      <li key={element}>{element.replaceAll(regex, '')}</li>
+    ))
   }
 
   return (
@@ -111,7 +117,7 @@ export const Review: NextPageWithLayout = () => {
                     saveCompleteClaim.error.response?.data && (
                       <div data-testid={'error-list'}>
                         {displayCompleteClaimErrors(
-                          JSON.stringify(saveCompleteClaim.error.response.data)
+                          saveCompleteClaim.error.response.data
                         )}
                       </div>
                     )}

@@ -121,7 +121,10 @@ describe('Review page', () => {
       isError: true,
       error: {
         response: {
-          data: ['data line 1', '$.data with weird characters'],
+          data: {
+            message: 'I am a fake internal server error',
+            errors: ['data line 1', '$.data with weird characters'],
+          },
         },
       },
     })
@@ -140,7 +143,9 @@ describe('Review page', () => {
       isError: true,
       error: {
         response: {
-          data: 'I am a fake internal server error',
+          data: {
+            message: 'I am a fake internal server error',
+          },
         },
       },
     })
