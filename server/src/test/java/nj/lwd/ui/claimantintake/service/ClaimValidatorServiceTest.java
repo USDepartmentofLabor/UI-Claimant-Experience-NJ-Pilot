@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mockStatic;
 
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
-import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -28,7 +28,7 @@ public class ClaimValidatorServiceTest {
         ClaimValidatorService claimValidator =
                 new ClaimValidatorService("classpath:", testSchemaName);
 
-        ArrayList<String> errorMessages = claimValidator.validateAgainstSchema(validClaim);
+        List<String> errorMessages = claimValidator.validateAgainstSchema(validClaim);
         assert (errorMessages.size() < 1);
     }
 
@@ -45,7 +45,7 @@ public class ClaimValidatorServiceTest {
         ClaimValidatorService claimValidator =
                 new ClaimValidatorService("classpath:", testSchemaName);
 
-        ArrayList<String> errorMessages = claimValidator.validateAgainstSchema(invalidClaim);
+        List<String> errorMessages = claimValidator.validateAgainstSchema(invalidClaim);
         assert (errorMessages.size() == 2);
         assertTrue(
                 errorMessages.contains(

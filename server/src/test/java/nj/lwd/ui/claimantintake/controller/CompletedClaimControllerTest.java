@@ -111,8 +111,8 @@ class CompletedClaimControllerTest {
         System.out.println(result.getResponse().getContentAsString());
         assertEquals(
                 """
-                                ["I am a fake error","I am also a fake error"]
-                                """
+                {"message":"Errors occured when validating the claim data","errors":["I am a fake error","I am also a fake error"]}
+                """
                         .strip(),
                 result.getResponse().getContentAsString());
     }

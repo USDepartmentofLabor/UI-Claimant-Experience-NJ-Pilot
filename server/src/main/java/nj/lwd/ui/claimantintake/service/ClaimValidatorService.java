@@ -9,7 +9,7 @@ import com.networknt.schema.ValidationMessage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class ClaimValidatorService {
         this.schema = getJsonSchemaFromUrl(schemaUri);
     }
 
-    public ArrayList<String> validateAgainstSchema(String jsonData) throws IOException {
+    public List<String> validateAgainstSchema(String jsonData) throws IOException {
         JsonNode node = getJsonNodeFromStringContent(jsonData);
         Set<ValidationMessage> errors = schema.validate(node);
         logErrors(errors);
@@ -49,12 +49,8 @@ public class ClaimValidatorService {
         return mapper.readTree(content);
     }
 
-    private ArrayList<String> toStringArray(Set<ValidationMessage> errors) {
-        ArrayList<String> messages = new ArrayList<String>(errors.size());
-        for (ValidationMessage validationObject : errors) {
-            messages.add(validationObject.getMessage());
-        }
-        return messages;
+    private List<String> toStringArray(Set<ValidationMessage> errors) {
+        return errors.stream().map(ValidationMessage::getMessage).toList();
     }
 
     private void logErrors(Set<ValidationMessage> validationMessages) {
