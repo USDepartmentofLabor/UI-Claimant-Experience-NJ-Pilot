@@ -3,9 +3,6 @@ import { WhoAmI } from 'types/claimantInput'
 import { SignOut } from 'components/SignOut/SignOut'
 import serverHttpClient from 'utils/http/serverHttpClient'
 import { APIResponseType } from 'types/ResponseTypes'
-import { Routes } from 'constants/routes'
-import { useRouter } from 'next/router'
-import { useTranslation } from 'react-i18next'
 import { GoToClaimFormButton } from 'components/GoToClaimFormButton/GoToClaimFormButton'
 import { useSession } from 'next-auth/react'
 import { ExternalWebsiteButton } from '../../form/ClaimFormButtons/ExternalWebsiteButton/ExternalWebsiteButton'
@@ -15,13 +12,7 @@ export type devHomeProps = {
 }
 
 export const DevHome = ({ setClaimStatus }: devHomeProps) => {
-  const router = useRouter()
   const session = useSession()
-  const { t } = useTranslation('home')
-  const goToTaxDocumentsPage = () => router.push(Routes.TAX_DOCUMENTS)
-  const goToUpdatePaymentForm = () => router.push(Routes.UPDATE_PAYMENT_INFO)
-  const goToUpdateContactInfoForm = () =>
-    router.push(Routes.UPDATE_CONTACT_INFO)
   const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
   const renderNoClaimPage = () => setClaimStatus('noCurrentClaim')
 
@@ -82,43 +73,13 @@ export const DevHome = ({ setClaimStatus }: devHomeProps) => {
         </div>
       )}
       <div className="margin-bottom-1">
-        <Button
-          type="button"
-          secondary
-          onClick={goToUpdatePaymentForm}
-          data-testid="go-to-update-payment"
-        >
-          Update payment info
-        </Button>
+        <ExternalWebsiteButton option={'payment'} />
       </div>
       <div className="margin-bottom-1">
-        <Button
-          type="button"
-          secondary
-          onClick={goToUpdateContactInfoForm}
-          data-testid="go-to-update-contact-info"
-        >
-          {t('update_contact_info_button')}
-        </Button>
+        <ExternalWebsiteButton option={'contact'} />
       </div>
-      <div className="margin-bottom-1">
-        <Button
-          type="button"
-          secondary
-          onClick={goToTaxDocumentsPage}
-          data-testid="go-to-tax-documents"
-        >
-          {t('tax_doc_button')}
-        </Button>
-        <div className="margin-bottom-1">
-          <ExternalWebsiteButton option={'payment'} />
-        </div>
-        <div className="margin-bottom-1">
-          <ExternalWebsiteButton option={'contact'} />
-        </div>
-        <div>
-          <ExternalWebsiteButton option={'tax'} />
-        </div>
+      <div>
+        <ExternalWebsiteButton option={'tax'} />
       </div>
     </>
   )
