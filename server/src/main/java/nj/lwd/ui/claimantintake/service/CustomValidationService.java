@@ -5,36 +5,34 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import nj.lwd.ui.claimantintake.constants.CustomValidationErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CustomValidationService {
     private ArrayList<String> validationErrors;
-    private final int MAX_MAILING_ADDRESS_LEN = 44;
-    private final String SSN_FOURTH_FIFTH_CHARS = "00";
-    private final String SSN_SIXTH_NINETH_CHARS = "0000";
+    private final int MAX_MAILING_ADDRESS_LEN =
+            Integer.parseInt(CustomValidationErrors.MAX_MAILING_ADDRESS_LEN.value());
+
+    private final String SSN_FOURTH_FIFTH_CHARS =
+            CustomValidationErrors.SSN_FOURTH_FIFTH_CHARS.value();
+    private final String SSN_SIXTH_NINETH_CHARS =
+            CustomValidationErrors.SSN_SIXTH_NINETH_CHARS.value();
+
     private final String MAILING_ADDRESS_ERROR =
-            String.format(
-                    "Mailing address error: street and city fields exceed the %d character maximum",
-                    MAX_MAILING_ADDRESS_LEN);
-    private final String RECALL_DATE_ERROR =
-            "Mailing address error: unable to read the provided format";
-    private final String SSN_FOURTH_FIFTH__ERROR =
-            String.format(
-                    "SSN error: the 4th and 5th characters cannot equal %s",
-                    SSN_FOURTH_FIFTH_CHARS);
-    private final String SSN_SIXTH_SEVENTH_ERROR =
-            String.format(
-                    "SSN error: the 6th and 9th characters cannot equal %s",
-                    SSN_SIXTH_NINETH_CHARS);
-    private final String LAST_DATE_ERROR =
-            "Employment last date error: last date cannot be before employment start date";
-
+            CustomValidationErrors.MAILING_ADDRESS_ERROR.value();
     private final String MAILING_ADDRESS_INVALID_FORMAT =
-            "Definite date of recall error: date of recall cannot be before employment last date";
-    private final Logger logger = LoggerFactory.getLogger(CustomValidationService.class);
+            CustomValidationErrors.MAILING_ADDRESS_INVALID_FORMAT.value();
 
-    CustomValidationService() {}
+    private final String RECALL_DATE_ERROR = CustomValidationErrors.RECALL_DATE_ERROR.value();
+    private final String SSN_FOURTH_FIFTH__ERROR =
+            CustomValidationErrors.SSN_FOURTH_FIFTH__ERROR.value();
+
+    private final String SSN_SIXTH_SEVENTH_ERROR =
+            CustomValidationErrors.SSN_SIXTH_SEVENTH_ERROR.value();
+    private final String LAST_DATE_ERROR = CustomValidationErrors.LAST_DATE_ERROR.value();
+
+    private final Logger logger = LoggerFactory.getLogger(CustomValidationService.class);
 
     public ArrayList<String> performCustomValidations(Map<String, Object> claimData) {
 
