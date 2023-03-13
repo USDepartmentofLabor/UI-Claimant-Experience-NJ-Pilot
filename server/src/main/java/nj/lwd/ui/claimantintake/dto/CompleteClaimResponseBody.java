@@ -1,7 +1,8 @@
 package nj.lwd.ui.claimantintake.dto;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CompleteClaimResponseBody {
     private final String message;
@@ -9,15 +10,9 @@ public class CompleteClaimResponseBody {
 
     public CompleteClaimResponseBody(String message, List<String> errors) {
         this.message = message;
-        this.errors = copyList(errors);
-    }
 
-    // needed to avoid spotbugs error
-    private List<String> copyList(List<String> list) {
-        if (list == null) {
-            return null;
-        }
-        return list.stream().collect(Collectors.toList());
+        // needed to avoid spotbugs error
+        this.errors = errors == null ? Collections.emptyList() : new ArrayList<>(errors);
     }
 
     public String getMessage() {
@@ -25,6 +20,7 @@ public class CompleteClaimResponseBody {
     }
 
     public List<String> getErrors() {
-        return copyList(errors);
+        // copy needed to avoid spotbugs error
+        return new ArrayList<>(errors);
     }
 }
