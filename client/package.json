@@ -20,7 +20,7 @@
     "react-aria-live": "2.0.5",
     "react-dom": "18.2.0",
     "react-query": "^3.39.3",
-    "sass": "^1.58.1",
+    "sass": "^1.59.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {
