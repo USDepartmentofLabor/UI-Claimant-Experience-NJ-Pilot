@@ -13,7 +13,7 @@ describe('buildPersonalAddress', () => {
       state: 'CA',
       zipcode: '12345',
     })
-    console.log(personalAddress)
+
     expect(personalAddress).toEqual('some street, some city, CA 12345')
   })
   it('returns the expected date when missing fields', () => {
@@ -23,7 +23,7 @@ describe('buildPersonalAddress', () => {
       state: '',
       zipcode: '12345',
     })
-    console.log(personalAddress)
+
     expect(personalAddress).toEqual('some city, 12345')
   })
 })
@@ -34,7 +34,7 @@ describe('buildAlternateEmployerAddress', () => {
       state: 'CA',
       zipcode: '12345',
     })
-    console.log(alternateAddress)
+
     expect(alternateAddress).toEqual('some city, CA 12345')
   })
   it('returns the expected date when missing fields', () => {
@@ -43,7 +43,7 @@ describe('buildAlternateEmployerAddress', () => {
       state: '',
       zipcode: '12345',
     })
-    console.log(alternateAddress)
+
     expect(alternateAddress).toEqual('12345')
   })
 })
@@ -57,7 +57,7 @@ describe('buildImportedEmployerAddress', () => {
       employerAddressLine5: 'Nebraska',
       employerAddressZip: '12345',
     })
-    console.log(importedAddress)
+
     expect(importedAddress).toEqual(
       'suit#1\nRed building\n1234 main street\nsmall town\nNebraska\n12345'
     )
@@ -70,8 +70,8 @@ describe('buildImportedEmployerAddress', () => {
       employerAddressLine4: null,
       employerAddressLine5: 'Nebraska',
       employerAddressZip: '12345',
-    }) //as ImportedEmployerAddress
-    console.log(importedAddress)
+    })
+
     expect(importedAddress).toEqual('suit#1\n1234 main street\nNebraska\n12345')
   })
 })
@@ -86,7 +86,7 @@ describe('buildEmployerInputAddress', () => {
       state: 'CA',
       zipcode: '12345',
     })
-    console.log(employerInput)
+
     expect(employerInput).toEqual(
       'some street, some street2, some street3, some city, CA 12345'
     )
@@ -100,7 +100,7 @@ describe('buildEmployerInputAddress', () => {
       state: 'CA',
       zipcode: '12345',
     })
-    console.log(employerInput)
+
     expect(employerInput).toEqual('some street, some street2, CA 12345')
   })
 })
@@ -115,7 +115,7 @@ describe('buildEmployerInputAddress', () => {
       state: 'CA',
       zipcode: '12345',
     })
-    console.log(employerInput)
+
     expect(employerInput).toEqual(
       'some street, some street2, some street3, some city, CA 12345'
     )
@@ -129,7 +129,7 @@ describe('buildEmployerInputAddress', () => {
       state: 'CA',
       zipcode: '12345',
     })
-    console.log(employerInput)
+
     expect(employerInput).toEqual('some street, some street2, CA 12345')
   })
 })

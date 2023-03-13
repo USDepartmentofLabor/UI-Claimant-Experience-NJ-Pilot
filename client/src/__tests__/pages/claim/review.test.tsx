@@ -70,12 +70,13 @@ describe('Review page', () => {
 
     const queryForErrorMessage = () =>
       screen.queryByText('complete_claim_error')
-
+    const queryForErrorMessageList = () => screen.queryByTestId('error-list')
     return {
       preamble,
       backButton,
       submitButton,
       queryForErrorMessage,
+      queryForErrorMessageList,
     }
   }
 
@@ -120,18 +121,43 @@ describe('Review page', () => {
       isError: true,
       error: {
         response: {
-          data: 'API Response',
+          data: {
+            message: 'I am a fake internal server error',
+            errors: ['data line 1', '$.data with weird characters'],
+          },
         },
       },
     })
 
-    const { queryForErrorMessage } = renderReview()
-
+    const { queryForErrorMessage, queryForErrorMessageList } = renderReview()
     const errorMessage = queryForErrorMessage()
-    const apiResponse = screen.queryByText('API Response')
 
     expect(errorMessage).toBeInTheDocument()
-    expect(apiResponse).toBeInTheDocument()
+    expect(queryForErrorMessageList()).toBeInTheDocument()
+    expect(screen.queryByText('data line 1')).toBeInTheDocument()
+    expect(screen.queryByText('data with weird characters')).toBeInTheDocument()
+  })
+
+  it('renders the failure message for complete claim when response is just a string', () => {
+    mockUseSaveCompleteClaim.mockReturnValueOnce({
+      isError: true,
+      error: {
+        response: {
+          data: {
+            message: 'I am a fake internal server error',
+          },
+        },
+      },
+    })
+
+    const { queryForErrorMessage, queryForErrorMessageList } = renderReview()
+    const errorMessage = queryForErrorMessage()
+
+    expect(errorMessage).toBeInTheDocument()
+    expect(queryForErrorMessageList()).toBeInTheDocument()
+    expect(
+      screen.queryByText('I am a fake internal server error')
+    ).toBeInTheDocument()
   })
 
   it('renders an error message if submission has failed', () => {

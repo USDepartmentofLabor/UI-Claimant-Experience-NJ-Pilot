@@ -1,10 +1,10 @@
 package nj.lwd.ui.claimantintake.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.ValidationMessage;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import nj.lwd.ui.claimantintake.dto.CompleteClaimResponseBody;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
@@ -36,7 +36,7 @@ public class CompletedClaimController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> saveCompletedClaim(
+    public ResponseEntity<CompleteClaimResponseBody> saveCompletedClaim(
             @RequestBody Map<String, Object> completedClaimPayload, Authentication authentication) {
         String claimantIdpId = authentication.getName();
 
@@ -44,30 +44,40 @@ public class CompletedClaimController {
         try {
             Map<String, Object> externalClaim =
                     externalClaimFormatterService.formatClaim(completedClaimPayload, claimantIdpId);
-            Set<ValidationMessage> errorSet =
+            List<String> errorList =
                     claimValidatorService.validateAgainstSchema(
                             objectMapper.writeValueAsString(externalClaim));
-            if (errorSet.size() > 0) {
-                // TODO - change here when detailed error msgs are desired on the frontend
-                return new ResponseEntity<>(
-                        "Save failed, the schema was the correct JSON format but had invalid data.",
-                        HttpStatus.BAD_REQUEST);
+
+            if (errorList.size() > 0) {
+                CompleteClaimResponseBody response =
+                        new CompleteClaimResponseBody(
+                                "Errors occured when validating the claim data", errorList);
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
 
         } catch (IOException e) {
-
-            return new ResponseEntity<>(
-                    "Save failed, error occurred accessing or reading the schema on the server"
-                            + " side",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            CompleteClaimResponseBody response =
+                    new CompleteClaimResponseBody(
+                            "Save failed, error occurred accessing or reading the schema on the"
+                                    + " server side",
+                            null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         var saveStatus = claimStorageService.completeClaim(claimantIdpId, completedClaimPayload);
 
+        String message;
+        HttpStatus status;
         if (saveStatus) {
-            return new ResponseEntity<>("Save successful", HttpStatus.OK);
+            status = HttpStatus.OK;
+            message = "Save successful";
+
         } else {
-            return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message = "Save failed";
         }
+
+        CompleteClaimResponseBody response = new CompleteClaimResponseBody(message, null);
+        return new ResponseEntity<>(response, status);
     }
 }

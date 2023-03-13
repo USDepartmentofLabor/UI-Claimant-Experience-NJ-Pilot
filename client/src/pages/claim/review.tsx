@@ -47,6 +47,10 @@ const previousPage = getPreviousPage(pageDefinition)
 const pageInitialValues = {
   certify: UNTOUCHED_CHECKBOX_VALUE,
 }
+type ErrorResponse = {
+  message: string
+  errors: string[] | null | undefined
+}
 
 export const Review: NextPageWithLayout = () => {
   const router = useRouter()
@@ -76,6 +80,19 @@ export const Review: NextPageWithLayout = () => {
     }
   }
 
+  const displayCompleteClaimErrors = (data: any) => {
+    const response = data as ErrorResponse
+
+    if (!response?.errors) {
+      return <li key={'error_data'}>{response.message}</li>
+    }
+
+    const regex = /[$.]/g
+    return response.errors.map((element) => (
+      <li key={element}>{element.replaceAll(regex, '')}</li>
+    ))
+  }
+
   return (
     <ClaimFormik<ReviewInput>
       initialValues={pageInitialValues}
@@ -89,23 +106,21 @@ export const Review: NextPageWithLayout = () => {
             {(saveCompleteClaim.isError || submitClaim.isError) && (
               <Alert
                 type="error"
-                headingLevel="h4"
+                headingLevel="h2"
                 className="margin-top-1"
+                heading={tClaimForm('complete_claim_error')}
                 validation
               >
-                <div>{tClaimForm('complete_claim_error')}</div>
-                <ul>
+                <ul className="usa-list">
                   {saveCompleteClaim.isError &&
-                    saveCompleteClaim.error.response && (
-                      <li>
-                        {typeof saveCompleteClaim.error.response.data ===
-                        'object'
-                          ? JSON.stringify(
-                              saveCompleteClaim.error.response.data
-                            )
-                          : saveCompleteClaim.error.response.data}
-                      </li>
+                    saveCompleteClaim.error.response?.data && (
+                      <div data-testid={'error-list'}>
+                        {displayCompleteClaimErrors(
+                          saveCompleteClaim.error.response.data
+                        )}
+                      </div>
                     )}
+
                   {submitClaim.isError && submitClaim.error.response && (
                     <li>
                       {typeof submitClaim.error.response.data === 'object'
@@ -121,7 +136,7 @@ export const Review: NextPageWithLayout = () => {
                 {t('preamble.heading')}
               </SummaryBoxHeading>
               <SummaryBoxContent>
-                <ul>
+                <ul className="usa-list">
                   <li>{t('preamble.line1')}</li>
                   <li>{t('preamble.line2')}</li>
                   <li>{t('preamble.line3')}</li>
