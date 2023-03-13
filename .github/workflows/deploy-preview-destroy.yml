@@ -9,6 +9,11 @@ on:
         required: true
         description: Pull Request ID to be destroyed.
 
+# Stop building resources if the branch is closed before preview is deployed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   cleanup:
     runs-on: ubuntu-latest
@@ -23,3 +28,46 @@ jobs:
       - name: Nothing here yet
         shell: bash
         run: echo "Nothing to delete yet"
+
+  cleanup-auth:
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Compose server base url
+        id: server-base-url
+        env:
+          GIT_BRANCH: ${{ github.ref_name }}
+          DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+        shell: bash
+        run: |
+          SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
+          SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
+
+      - name: Delete cognito urls
+        uses: ././github/actions/delete-cognito-urls
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          pr-number: ${{ github.event.pull_request.number }}
+          cognito-client-id: ${{ secrets.COGNITO_CLIENT_ID }}
+          cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
+
+      - name: Delete Networking Components
+        uses: ././github/actions/delete-preview-network
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          pr-number: ${{ github.event.pull_request.number }}
+
+      - name: Delete ECS Services
+        uses: ././github/actions/delete-preview-ecs
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          pr-number: ${{ github.event.pull_request.number }}

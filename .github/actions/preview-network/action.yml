@@ -162,7 +162,7 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.server-priority }}
         SERVER_TG_ARN: ${{ steps.create-server-tg.outputs.server-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}
+        BASE_URL: ${{ inputs.base-url }}/intake-api/
       shell: bash
       run: |
         aws elbv2 create-rule \
