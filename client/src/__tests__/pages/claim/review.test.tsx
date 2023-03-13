@@ -121,7 +121,10 @@ describe('Review page', () => {
       isError: true,
       error: {
         response: {
-          data: ['data line 1', '$.data with weird characters'],
+          data: {
+            message: 'I am a fake internal server error',
+            errors: ['data line 1', '$.data with weird characters'],
+          },
         },
       },
     })
@@ -133,6 +136,28 @@ describe('Review page', () => {
     expect(queryForErrorMessageList()).toBeInTheDocument()
     expect(screen.queryByText('data line 1')).toBeInTheDocument()
     expect(screen.queryByText('data with weird characters')).toBeInTheDocument()
+  })
+
+  it('renders the failure message for complete claim when response is just a string', () => {
+    mockUseSaveCompleteClaim.mockReturnValueOnce({
+      isError: true,
+      error: {
+        response: {
+          data: {
+            message: 'I am a fake internal server error',
+          },
+        },
+      },
+    })
+
+    const { queryForErrorMessage, queryForErrorMessageList } = renderReview()
+    const errorMessage = queryForErrorMessage()
+
+    expect(errorMessage).toBeInTheDocument()
+    expect(queryForErrorMessageList()).toBeInTheDocument()
+    expect(
+      screen.queryByText('I am a fake internal server error')
+    ).toBeInTheDocument()
   })
 
   it('renders an error message if submission has failed', () => {
@@ -197,8 +222,7 @@ describe('Review page', () => {
     )
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenCalledWith({
-      pathname: Routes.HOME,
-      query: { completed: true },
+      pathname: Routes.CLAIM.SUCCESS,
     })
   })
 

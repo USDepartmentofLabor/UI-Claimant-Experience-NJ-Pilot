@@ -1,0 +1,110 @@
+name: Delete Deployment Preview ECS services
+description: For deployment previews, delete ECS services, task definitions, and untag images
+inputs:
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  pr-number:
+    description: Pull request number for ssm
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Get client preview service task def ARN
+      id: client-service
+      env:
+        CLUSTER: dol-ui-claimant-intake-dev
+        SERVICE_NAME: dol-ui-claimant-intake-client-{{ inputs.pr-number }}
+      shell: bash
+      run: |
+        CLIENT_TD_ARN=$( aws ecs describe-services \
+        --cluster $CLUSTER
+        --services $SERVICE_NAME
+        --query "services[0].taskDefinition"
+        --output text )
+        echo "client-td-arn=$CLIENT_TD_ARN" >> $GITHUB_OUTPUT
+
+    # using --force to have aws automagically set task count to 0 and stopping tasks
+    - name: Delete preview client service
+      if: steps.client-service.outputs.client-td-arn != ''
+      env:
+        CLUSTER: dol-ui-claimant-intake-dev
+        SERVICE: dol-ui-claimant-intake-client-{{ inputs.pr-number }}
+      shell: bash
+      run: |
+        aws ecs delete-service \
+        --cluster $CLUSTER \
+        --service $SERVICE \
+        --force
+
+    - name: Deregister preview client task definition
+      if: steps.client-service.outputs.client-td-arn != ''
+      env:
+        TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
+      shell: bash
+      run: |
+        aws ecs deregister-task-definition \
+        --task-definition $TD_ARN
+
+    - name: Delete preview client task definition
+      if: steps.client-service.outputs.client-td-arn != ''
+      env:
+        TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
+      shell: bash
+      run: |
+        aws ecs delete-task-definitions \
+        --task-definition $TD_ARN
+
+    - name: Get server preview service task def ARN
+      id: server-service
+      env:
+        CLUSTER: dol-ui-claimant-intake-dev
+        SERVICE_NAME: dol-ui-claimant-intake-server-{{ inputs.pr-number }}
+      shell: bash
+      run: |
+        SERVER_TD_ARN=$( aws ecs describe-services \
+        --cluster $CLUSTER
+        --services $SERVICE_NAME
+        --query "services[0].taskDefinition"
+        --output text )
+        echo "server-td-arn=$SERVER_TD_ARN" >> $GITHUB_OUTPUT
+
+    # using --force to have aws automagically set task count to 0 and stopping tasks
+    - name: Delete preview server service
+      if: steps.server-service.outputs.server-td-arn != ''
+      env:
+        CLUSTER: dol-ui-claimant-intake-dev
+        SERVICE: dol-ui-claimant-intake-server-{{ inputs.pr-number }}
+      shell: bash
+      run: |
+        aws ecs delete-service \
+        --cluster $CLUSTER \
+        --service $SERVICE \
+        --force
+
+    - name: Deregister preview server task definition
+      if: steps.server-service.outputs.server-td-arn != ''
+      env:
+        TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
+      shell: bash
+      run: |
+        aws ecs deregister-task-definition \
+        --task-definition $TD_ARN
+
+    - name: Delete preview server task definition
+      if: steps.server-service.outputs.server-td-arn != ''
+      env:
+        TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
+      shell: bash
+      run: |
+        aws ecs delete-task-definitions \
+        --task-definition $TD_ARN

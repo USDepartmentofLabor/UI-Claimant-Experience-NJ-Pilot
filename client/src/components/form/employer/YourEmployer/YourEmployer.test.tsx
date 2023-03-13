@@ -6,6 +6,7 @@ import { noop } from 'helpers/noop/noop'
 import userEvent from '@testing-library/user-event'
 import { Employer } from 'types/claimantInput'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
+import { STATE_EMPLOYER_PAYROLL_NUMBER_VALUE } from 'constants/formOptions'
 
 export const validImportedEditEmployer: Employer = {
   ...EMPLOYER_SKELETON,
@@ -56,6 +57,7 @@ const validManuallyAddedEmployer: Employer = {
   employer_phone: { number: '', sms: null },
   employer_name: '',
   fein: '',
+  state_employer_payroll_number: '',
   is_imported: false,
 }
 
@@ -247,8 +249,18 @@ describe('YourEmployer component for non-imported employer', () => {
     await userEvent.type(employerNameQuestion, 'Microsoft')
     expect(employerNameQuestion).toHaveValue('Microsoft')
 
-    await userEvent.type(FEINQuestion, '12345678901234')
-    expect(FEINQuestion).toHaveValue('12345678901234')
+    await userEvent.type(FEINQuestion, STATE_EMPLOYER_PAYROLL_NUMBER_VALUE)
+    expect(FEINQuestion).toHaveValue(STATE_EMPLOYER_PAYROLL_NUMBER_VALUE)
+
+    const stateEmployerPayrollNumberQuestion = screen.getByLabelText(
+      'state_employer_payroll_number.label',
+      {
+        exact: false,
+      }
+    )
+
+    await userEvent.type(stateEmployerPayrollNumberQuestion, '1234567')
+    expect(stateEmployerPayrollNumberQuestion).toHaveValue('1234567')
 
     await userEvent.type(employerStreetAddress, '1 Main St')
     expect(employerStreetAddress).toHaveValue('1 Main St')
@@ -273,5 +285,51 @@ describe('YourEmployer component for non-imported employer', () => {
 
     await userEvent.click(fullTimePartTimeQuestionYesAnswer)
     expect(fullTimePartTimeQuestionYesAnswer).toBeChecked()
+  })
+
+  it('clears state employer payroll number value when hidden, then shown', async () => {
+    const { employerNameQuestion, FEINQuestion } = renderYourEmployer(
+      validManuallyAddedEmployer
+    )
+
+    await userEvent.type(employerNameQuestion, 'Google')
+    expect(employerNameQuestion).toHaveValue('Google')
+
+    await userEvent.type(FEINQuestion, STATE_EMPLOYER_PAYROLL_NUMBER_VALUE)
+    expect(FEINQuestion).toHaveValue(STATE_EMPLOYER_PAYROLL_NUMBER_VALUE)
+
+    const stateEmployerPayrollNumberQuestion = screen.getByLabelText(
+      'state_employer_payroll_number.label',
+      {
+        exact: false,
+      }
+    )
+
+    await userEvent.type(stateEmployerPayrollNumberQuestion, '1234567')
+    expect(stateEmployerPayrollNumberQuestion).toHaveValue('1234567')
+
+    await userEvent.clear(FEINQuestion)
+    expect(FEINQuestion).toHaveValue('')
+
+    await userEvent.type(FEINQuestion, '022248181800001')
+    expect(FEINQuestion).toHaveValue('022248181800001')
+
+    expect(stateEmployerPayrollNumberQuestion).not.toBeInTheDocument()
+
+    await userEvent.clear(FEINQuestion)
+    expect(FEINQuestion).toHaveValue('')
+
+    await userEvent.type(FEINQuestion, STATE_EMPLOYER_PAYROLL_NUMBER_VALUE)
+    expect(FEINQuestion).toHaveValue(STATE_EMPLOYER_PAYROLL_NUMBER_VALUE)
+
+    const stateEmployerPayrollNumberQuestionChanged = screen.getByLabelText(
+      'state_employer_payroll_number.label',
+      {
+        exact: false,
+      }
+    )
+
+    expect(stateEmployerPayrollNumberQuestionChanged).toBeInTheDocument()
+    expect(stateEmployerPayrollNumberQuestionChanged).toHaveValue('')
   })
 })

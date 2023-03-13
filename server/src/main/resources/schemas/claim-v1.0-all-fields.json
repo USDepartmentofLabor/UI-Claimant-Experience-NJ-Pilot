@@ -377,6 +377,24 @@
           "maxLength": 15,
           "pattern": "^[\\d]{0,15}$"
         },
+        "state_employer_payroll_number": {
+          "description": "NJ State Employer Payroll only applies when using State of NJ FEIN",
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[\\d]{7}$",
+          "if": {
+            "properties": {
+              "fein": {
+                "type": "string",
+                "const": "022248181800000"
+              }
+            }
+          },
+          "then": {
+            "required": ["state_employer_payroll_number"]
+          }
+        },
         "is_full_time": {
           "description": "Job was more than 32 hours per week",
           "type": "boolean"

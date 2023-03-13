@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import nj.lwd.ui.claimantintake.constants.CustomValidationErrors;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class CustomValidationService {
 
     private final Logger logger = LoggerFactory.getLogger(CustomValidationService.class);
 
-    public ArrayList<String> performCustomValidations(Map<String, Object> claimData) {
+    public List<String> performCustomValidations(Map<String, Object> claimData) {
 
         validationErrors = new ArrayList<>();
 

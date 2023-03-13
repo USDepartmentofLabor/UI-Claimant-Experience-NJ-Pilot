@@ -47,6 +47,10 @@ const previousPage = getPreviousPage(pageDefinition)
 const pageInitialValues = {
   certify: UNTOUCHED_CHECKBOX_VALUE,
 }
+type ErrorResponse = {
+  message: string
+  errors: string[] | null | undefined
+}
 
 export const Review: NextPageWithLayout = () => {
   const router = useRouter()
@@ -68,8 +72,7 @@ export const Review: NextPageWithLayout = () => {
           await submitClaim.mutate(completeClaimValues, {
             onSuccess: async () =>
               await router.push({
-                pathname: Routes.HOME,
-                query: { completed: true },
+                pathname: Routes.CLAIM.SUCCESS,
               }),
           })
         },
@@ -77,10 +80,17 @@ export const Review: NextPageWithLayout = () => {
     }
   }
 
-  const formatStoredDateToDisplayData = (data: string) => {
-    const regex = /[$.|"]/g
-    const arr = data.slice(1, -1).replaceAll(regex, '').split(',')
-    return arr.map((element) => <li key={element}>{element}</li>)
+  const displayCompleteClaimErrors = (data: any) => {
+    const response = data as ErrorResponse
+
+    if (!response?.errors) {
+      return <li key={'error_data'}>{response.message}</li>
+    }
+
+    const regex = /[$.]/g
+    return response.errors.map((element) => (
+      <li key={element}>{element.replaceAll(regex, '')}</li>
+    ))
   }
 
   return (
@@ -103,10 +113,10 @@ export const Review: NextPageWithLayout = () => {
               >
                 <ul className="usa-list">
                   {saveCompleteClaim.isError &&
-                    saveCompleteClaim.error.response && (
+                    saveCompleteClaim.error.response?.data && (
                       <div data-testid={'error-list'}>
-                        {formatStoredDateToDisplayData(
-                          JSON.stringify(saveCompleteClaim.error.response.data)
+                        {displayCompleteClaimErrors(
+                          saveCompleteClaim.error.response.data
                         )}
                       </div>
                     )}

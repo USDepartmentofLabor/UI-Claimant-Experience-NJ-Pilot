@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class CustomValidationServiceTest {
                                 }
                                 """,
                         new TypeReference<>() {});
-        ArrayList<String> errors = customValidationService.performCustomValidations(validClaim);
+        List<String> errors = customValidationService.performCustomValidations(validClaim);
         assertEquals(0, errors.size());
     }
 
@@ -60,8 +60,7 @@ public class CustomValidationServiceTest {
                 }
                                     """,
                         new TypeReference<>() {});
-        ArrayList<String> errors =
-                customValidationService.performCustomValidations(claimMissingFields);
+        List<String> errors = customValidationService.performCustomValidations(claimMissingFields);
         assertEquals(0, errors.size());
     }
 
@@ -81,8 +80,7 @@ public class CustomValidationServiceTest {
                                 """,
                         new TypeReference<>() {});
 
-        ArrayList<String> errors =
-                customValidationService.performCustomValidations(claimWithBadDates);
+        List<String> errors = customValidationService.performCustomValidations(claimWithBadDates);
 
         assertEquals(2, errors.size());
         assertTrue(
@@ -116,7 +114,7 @@ public class CustomValidationServiceTest {
                                 """,
                         new TypeReference<>() {});
 
-        ArrayList<String> errors =
+        List<String> errors =
                 customValidationService.performCustomValidations(claimWithMailingAddress);
 
         assertEquals(1, errors.size());
@@ -137,7 +135,7 @@ public class CustomValidationServiceTest {
                               }
                               """,
                         new TypeReference<>() {});
-        ArrayList<String> errors = customValidationService.performCustomValidations(validClaim);
+        List<String> errors = customValidationService.performCustomValidations(validClaim);
         assertEquals(2, errors.size());
 
         assertTrue(errors.indexOf("SSN error: the 4th and 5th characters cannot equal 00") > -1);

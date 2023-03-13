@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import nj.lwd.ui.claimantintake.service.CustomValidationService;
@@ -41,8 +42,7 @@ class CompletedClaimControllerTest {
     @Test
     @WithMockUser
     void shouldAcceptCompletedClaim() throws Exception {
-        ArrayList<String> validationMessageList = new ArrayList<String>();
-
+        List<String> validationMessageList = new ArrayList<String>();
         when(claimStorageService.completeClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationMessageList);
         this.mockMvc
@@ -60,7 +60,7 @@ class CompletedClaimControllerTest {
 
     @Test
     void shouldRejectUnauthorizedUser() throws Exception {
-        ArrayList<String> validationMessageList = new ArrayList<String>();
+        List<String> validationMessageList = new ArrayList<String>();
         when(claimStorageService.saveClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationMessageList);
         this.mockMvc
@@ -93,7 +93,7 @@ class CompletedClaimControllerTest {
     @WithMockUser
     void shouldRejectInvalidClaim() throws Exception {
 
-        ArrayList<String> validationErrors =
+        List<String> validationErrors =
                 new ArrayList(Arrays.asList("I am a fake error", "I am also a fake error"));
         when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationErrors);
         MvcResult result =
@@ -109,11 +109,11 @@ class CompletedClaimControllerTest {
                         .andDo(print())
                         .andExpect(status().isBadRequest())
                         .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
+
         assertEquals(
                 """
-                                ["I am a fake error","I am also a fake error"]
-                                """
+                {"message":"Errors occured when validating the claim data","errors":["I am a fake error","I am also a fake error"]}
+                """
                         .strip(),
                 result.getResponse().getContentAsString());
     }

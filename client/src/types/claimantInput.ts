@@ -79,6 +79,7 @@ export type Employer = ImportedEmployerFields & {
   employer_phone: PhoneInput
 
   fein: string
+  state_employer_payroll_number: string
   employer_name: string
   is_full_time: YesNoInput
 

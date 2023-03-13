@@ -9,9 +9,12 @@ import com.networknt.schema.ValidationMessage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,20 +40,20 @@ public class ClaimValidatorService {
         this.customValidationService = customValidationService;
     }
 
-    public ArrayList<String> validateClaim(Map<String, Object> claimData) throws IOException {
+    public List<String> validateClaim(Map<String, Object> claimData) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonData = objectMapper.writeValueAsString(claimData);
 
-        ArrayList<String> schemaValidationErrors = validateAgainstSchema(jsonData);
-        ArrayList<String> customValidationErrors =
+        List<String> schemaValidationErrors = validateAgainstSchema(jsonData);
+        List<String> customValidationErrors =
                 customValidationService.performCustomValidations(claimData);
 
-        schemaValidationErrors.addAll(customValidationErrors);
-        return schemaValidationErrors;
+        return Stream.of(customValidationErrors, schemaValidationErrors)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
-    public ArrayList<String> validateAgainstSchema(String jsonData) throws IOException {
-
+    public List<String> validateAgainstSchema(String jsonData) throws IOException {
         JsonNode node = getJsonNodeFromStringContent(jsonData);
         Set<ValidationMessage> errors = schema.validate(node);
         logErrors(errors);
@@ -66,12 +69,8 @@ public class ClaimValidatorService {
         return mapper.readTree(content);
     }
 
-    private ArrayList<String> toStringArray(Set<ValidationMessage> errors) {
-        ArrayList<String> messages = new ArrayList<String>(errors.size());
-        for (ValidationMessage validationObject : errors) {
-            messages.add(validationObject.getMessage());
-        }
-        return messages;
+    private List<String> toStringArray(Set<ValidationMessage> errors) {
+        return errors.stream().map(ValidationMessage::getMessage).toList();
     }
 
     private void logErrors(Set<ValidationMessage> validationMessages) {

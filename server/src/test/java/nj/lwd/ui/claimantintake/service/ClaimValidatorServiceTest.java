@@ -14,13 +14,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 public class ClaimValidatorServiceTest {
 
-    final ArrayList<String> noCustomErrors = new ArrayList<>();
+    final List<String> noCustomErrors = new ArrayList<>();
     final String testSchemaName = "test/claim-validation-testV1";
     final String invalidClaim =
             """
@@ -55,7 +56,7 @@ public class ClaimValidatorServiceTest {
         ClaimValidatorService claimValidator =
                 new ClaimValidatorService("classpath:", testSchemaName, customValidationService);
 
-        ArrayList<String> errorMessages = claimValidator.validateClaim(validClaimMap);
+        List<String> errorMessages = claimValidator.validateClaim(validClaimMap);
         assert (errorMessages.size() < 1);
     }
 
@@ -67,7 +68,7 @@ public class ClaimValidatorServiceTest {
         ClaimValidatorService claimValidator =
                 new ClaimValidatorService("classpath:", testSchemaName, customValidationService);
 
-        ArrayList<String> errorMessages = claimValidator.validateAgainstSchema(invalidClaim);
+        List<String> errorMessages = claimValidator.validateAgainstSchema(invalidClaim);
         assertEquals(2, errorMessages.size());
         assertTrue(
                 errorMessages.contains(
@@ -79,7 +80,7 @@ public class ClaimValidatorServiceTest {
 
     @Test
     void returnsBothCustomAnSchemaErrors() throws Exception {
-        ArrayList<String> customErrors = new ArrayList<>();
+        List<String> customErrors = new ArrayList<>();
         customErrors.add("I am a custom error");
 
         var customValidationService = mock(CustomValidationService.class);
@@ -89,7 +90,7 @@ public class ClaimValidatorServiceTest {
         ClaimValidatorService claimValidator =
                 new ClaimValidatorService("classpath:", testSchemaName, customValidationService);
 
-        ArrayList<String> errorMessages = claimValidator.validateClaim(inValidClaimMap);
+        List<String> errorMessages = claimValidator.validateClaim(inValidClaimMap);
         assertEquals(3, errorMessages.size());
         assertTrue(
                 errorMessages.contains(

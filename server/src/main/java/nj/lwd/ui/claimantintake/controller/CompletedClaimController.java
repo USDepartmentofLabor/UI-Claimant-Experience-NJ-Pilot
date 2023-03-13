@@ -1,8 +1,9 @@
 package nj.lwd.ui.claimantintake.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import nj.lwd.ui.claimantintake.dto.CompleteClaimResponseBody;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
@@ -34,33 +35,44 @@ public class CompletedClaimController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> saveCompletedClaim(
+    public ResponseEntity<CompleteClaimResponseBody> saveCompletedClaim(
             @RequestBody Map<String, Object> completedClaimPayload, Authentication authentication) {
         String claimantIdpId = authentication.getName();
 
         try {
             Map<String, Object> externalClaim =
                     externalClaimFormatterService.formatClaim(completedClaimPayload, claimantIdpId);
-            ArrayList<String> errorList = claimValidatorService.validateClaim(externalClaim);
-
+            List<String> errorList = claimValidatorService.validateClaim(externalClaim);
             if (errorList.size() > 0) {
-                return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
+                CompleteClaimResponseBody response =
+                        new CompleteClaimResponseBody(
+                                "Errors occured when validating the claim data", errorList);
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
 
         } catch (IOException e) {
-
-            return new ResponseEntity<>(
-                    "Save failed, error occurred accessing or reading the schema on the server"
-                            + " side",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            CompleteClaimResponseBody response =
+                    new CompleteClaimResponseBody(
+                            "Save failed, error occurred accessing or reading the schema on the"
+                                    + " server side",
+                            null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         var saveStatus = claimStorageService.completeClaim(claimantIdpId, completedClaimPayload);
 
+        String message;
+        HttpStatus status;
         if (saveStatus) {
-            return new ResponseEntity<>("Save successful", HttpStatus.OK);
+            status = HttpStatus.OK;
+            message = "Save successful";
+
         } else {
-            return new ResponseEntity<>("Save failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message = "Save failed";
         }
+
+        CompleteClaimResponseBody response = new CompleteClaimResponseBody(message, null);
+        return new ResponseEntity<>(response, status);
     }
 }

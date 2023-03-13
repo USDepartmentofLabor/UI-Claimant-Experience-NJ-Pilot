@@ -6,24 +6,6 @@ ignore:
   # Ignore the following SnakeYAML vulnerabilities. The claimant intake
   # application does not use SnakeYAML to parse untrusted input.
   # See the discussion at https://github.com/spring-projects/spring-boot/issues/32221
-  - vulnerability: GHSA-c4r9-r8fh-9vj2
-    package:
-      name: snakeyaml
-  - vulnerability: GHSA-hhhw-99gj-p3c3
-    package:
-      name: snakeyaml
-  - vulnerability: GHSA-3mc7-4q67-w48m
-    package:
-      name: snakeyaml
-  - vulnerability: GHSA-98wm-3w3q-mw94
-    package:
-      name: snakeyaml
-  - vulnerability: GHSA-9w3m-gqgf-c4p9
-    package:
-      name: snakeyaml
-  - vulnerability: GHSA-w37g-rhq8-7m4j
-    package:
-      name: snakeyaml
   - vulnerability: GHSA-mjmj-j48q-9wg2
     package:
       name: snakeyaml

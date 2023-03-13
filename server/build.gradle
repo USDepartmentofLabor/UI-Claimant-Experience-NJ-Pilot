@@ -62,7 +62,11 @@ dependencies {
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
 
-    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.77');
+    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.78');
+
+    // --- begin overrides of spring boot managed versions
+    implementation 'org.yaml:snakeyaml:1.33'
+    // --- end overrides of spring boot managed versions
 }
 
 tasks.named('test') {
