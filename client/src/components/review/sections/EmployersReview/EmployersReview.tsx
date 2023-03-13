@@ -160,6 +160,10 @@ export const EmployerReview = ({
           label={t('verified_fields.fein')}
           value={employer?.fein}
         />
+        <ReviewElement
+          label={t('your_employer.state_employer_payroll_number.review_label')}
+          value={employer?.state_employer_payroll_number}
+        />
         <ReviewYesNo
           label={t('your_employer.is_full_time.label')}
           value={employer?.is_full_time}

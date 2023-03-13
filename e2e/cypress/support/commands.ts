@@ -173,3 +173,11 @@ Cypress.Commands.add('clickSubmit', () => {
     .should('be.visible')
     .click()
 })
+
+Cypress.Commands.add('clickLink', (link: string, text: string) => {
+  cy.get(`a[href="${link}"]`)
+    .contains(text)
+    .scrollIntoView()
+    .should('be.visible')
+    .click()
+})

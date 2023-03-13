@@ -24,7 +24,7 @@ runs:
     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
       with:
         role-to-assume: ${{ inputs.aws-role-to-assume }}
         aws-region: us-east-1
@@ -162,7 +162,7 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.server-priority }}
         SERVER_TG_ARN: ${{ steps.create-server-tg.outputs.server-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}
+        BASE_URL: ${{ inputs.base-url }}/intake-api/
       shell: bash
       run: |
         aws elbv2 create-rule \

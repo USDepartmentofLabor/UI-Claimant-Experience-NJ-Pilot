@@ -4,7 +4,10 @@ import fillScreenerFields from './formPageFilling/screener'
 import fillPrequalFields from './formPageFilling/prequal'
 import fillPersonalFields from './formPageFilling/personal'
 import fillDemographicsFields from './formPageFilling/demographics'
-import fillContactFields from './formPageFilling/contact'
+import {
+  fillContactFields,
+  checkUpdatedContactFields,
+} from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
 import fillDisabilityFields from './formPageFilling/disability'
@@ -211,10 +214,11 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     // Review page
+    checkUpdatedContactFields()
     fillReviewFields()
     cy.clickSubmit()
 
     // User lands on home page on successful completion
-    cy.url().should('eq', `${Cypress.config().baseUrl}/?completed=true`)
+    cy.url().should('eq', `${Cypress.config().baseUrl}/claim/beta-success`)
   })
 })

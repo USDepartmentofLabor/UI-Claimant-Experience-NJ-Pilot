@@ -1,3 +1,5 @@
+import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
+
 const claimForm = {
   step_progress: 'step {{step}} of {{totalSteps}}',
   pagination: {
@@ -500,6 +502,15 @@ const claimForm = {
         errors: {
           digitsOnly: 'FEIN can only be numbers',
           maxLength: 'Your FEIN must be at most 15 characters',
+        },
+      },
+      state_employer_payroll_number: {
+        label: 'State payroll number (optional)',
+        review_label: 'State payroll number',
+        hint: 'You can find this on your NJ state employee paystubs.',
+        errors: {
+          digitsOnly: 'Your state payroll number must numbers only',
+          incorrectLength: 'Your state payroll number must be 7 digits',
         },
       },
       employer_address: {
@@ -1150,6 +1161,12 @@ const claimForm = {
         required: 'Your certification is required',
       },
     },
+  },
+  success: {
+    heading: 'Success!',
+    success_details:
+      'You have successfully submitted your claim for unemployment insurance. We will be in touch soon to confirm we have received your information.',
+    contact_details: `If you don't hear from us in two weeks, please email us at <0>${EXTERNAL_CONTACT_EMAIL}<0/>`,
   },
 }
 

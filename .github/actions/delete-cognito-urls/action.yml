@@ -1,5 +1,5 @@
-name: Create Cognito URLs
-description: For deployment previews, create logout and redirect urls and add them to cognito and ssm
+name: Delete Cognito URLs
+description: For deployment previews, delete logout and redirect urls and remvoe them from cognito and ssm
 inputs:
   aws-role-to-assume:
     description: The AWS role to assume
@@ -23,7 +23,7 @@ runs:
     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+      uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
       with:
         role-to-assume: ${{ inputs.aws-role-to-assume }}
         aws-region: us-east-1
@@ -41,21 +41,18 @@ runs:
         | grep -c "Value" )
         echo "ssm-count=$SSM_CHECK_COUNT" >> $GITHUB_OUTPUT
 
-    - name: Create ssm parameter
-      if: steps.check-ssm.outputs.ssm-count == '0'
+    - name: Delete ssm parameter
+      if: steps.check-ssm.outputs.ssm-count == '1'
       env:
         PARAMETER_NAME: /dol-ui-claimant-intake-dev/nextauth-url/${{ inputs.pr-number }}
-        PARAMETER_VALUE: ${{ base-url }}
       shell: bash
       run: |
-        aws ssm put-parameter \
+        aws ssm delete-parameter \
         --region us-east-1 \
-        --name "$PARAMETER_NAME" \
-        --value "$PARAMETER_VALUE" \
-        --type "SecureString"
+        --name "$PARAMETER_NAME"
 
     - name: Get user pool client json
-      if: steps.check-ssm.outputs.ssm-count == '0'
+      if: steps.check-ssm.outputs.ssm-count == '1'
       id: client-json
       env:
         USER_POOL_ID: ${{ inputs.cognito-user-pool-id }}
@@ -69,7 +66,7 @@ runs:
         --output json >> user-pool-client.json
 
     - name: Update user pool client json
-      if: steps.check-ssm.outputs.ssm-count == '0'
+      if: steps.check-ssm.outputs.ssm-count == '1'
       id: updated-json
       env:
         CALLBACK_URL: ${{ base-url }}/api/auth/callback/cognito
@@ -79,11 +76,11 @@ runs:
         jq \
         --arg CALLBACK_URL "$CALLBACK_URL" \
         --arg SIGNOUT_URL "$SIGNOUT_URL" \
-        '.UserPoolClient.CallbackURLs += [$CALLBACK_URL] | .UserPoolClient.LogoutURLs += [$SIGNOUT_URL]' \
+        'del(.UserPoolClient.CallbackURLs[] | select(. == $CALLBACK_URL)) | del(.UserPoolClient.LogoutURLs[] | select(. == $SIGNOUT_URL))' \
         user-pool-client.json >> updated-upc.json
 
     - name: Update cognito user pool client callback and signout with deployment preview URL
-      if: steps.check-ssm.outputs.ssm-count == '0'
+      if: steps.check-ssm.outputs.ssm-count == '1'
       env:
         UPDATED_JSON: ${{ fromJSON(updated-upc.json) }}
       shell: bash
