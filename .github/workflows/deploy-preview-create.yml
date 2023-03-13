@@ -98,7 +98,7 @@ jobs:
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
       - name: Create cognito urls
-        uses: ././github/actions/create-cognito-urls
+        uses: ./.github/actions/create-cognito-urls
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
@@ -108,7 +108,7 @@ jobs:
 
       - name: Setup deployment preview networking
         id: preview-networking
-        uses: ././github/actions/preview-network
+        uses: ./.github/actions/preview-network
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}

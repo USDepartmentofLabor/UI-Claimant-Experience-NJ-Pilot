@@ -69,8 +69,8 @@ runs:
       if: steps.check-ssm.outputs.ssm-count == '1'
       id: updated-json
       env:
-        CALLBACK_URL: ${{ base-url }}/api/auth/callback/cognito
-        SIGNOUT_URL: ${{ base-url }}
+        CALLBACK_URL: ${{ inputs.base-url }}/api/auth/callback/cognito
+        SIGNOUT_URL: ${{ inputs.base-url }}
       shell: bash
       run: |
         jq \
@@ -82,7 +82,7 @@ runs:
     - name: Update cognito user pool client callback and signout with deployment preview URL
       if: steps.check-ssm.outputs.ssm-count == '1'
       env:
-        UPDATED_JSON: ${{ fromJSON(updated-upc.json) }}
+        UPDATED_JSON: ${{ fromJSON(/updated-upc.json) }}
       shell: bash
       run: |
         aws cognito-idp update-user-pool-client \

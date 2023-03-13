@@ -51,7 +51,7 @@ jobs:
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
       - name: Delete cognito urls
-        uses: ././github/actions/delete-cognito-urls
+        uses: ./.github/actions/delete-cognito-urls
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
@@ -60,14 +60,14 @@ jobs:
           cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
 
       - name: Delete Networking Components
-        uses: ././github/actions/delete-preview-network
+        uses: ./.github/actions/delete-preview-network
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
           pr-number: ${{ github.event.pull_request.number }}
 
       - name: Delete ECS Services
-        uses: ././github/actions/delete-preview-ecs
+        uses: ./.github/actions/delete-preview-ecs
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           pr-number: ${{ github.event.pull_request.number }}
