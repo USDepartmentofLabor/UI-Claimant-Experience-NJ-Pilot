@@ -17,6 +17,7 @@ concurrency:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    environment: dev
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
       id-token: write
@@ -31,6 +32,7 @@ jobs:
 
   cleanup-auth:
     runs-on: ubuntu-latest
+    environment: dev
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
       id-token: write
