@@ -85,7 +85,6 @@ describe('SSN page', () => {
       </IntakeAppContext.Provider>
     )
     await user.click(screen.getByRole('button', { name: /next/i }))
-    screen.debug()
     expect(screen.queryByTestId('modalWindow')).toBeInTheDocument()
     expect(mockMutateAsync).toHaveBeenCalledTimes(1)
     expect(mockMutateAsync).toHaveBeenCalledWith(ssnValue)
