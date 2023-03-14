@@ -26,12 +26,14 @@ const validationSchema = object().shape({
       then: yupAddress(),
     })
     .test({
+      message: i18n_common.t('address.address.errors.maxLength.mailing'),
+
       test: ({ address, city }) => {
         const len = getLength(address) + getLength(city)
         return len > 44
           ? new ValidationError(
               i18n_common.t('address.address.errors.maxLength.mailing'),
-              false,
+              true,
               'LOCAL_mailing_address_same'
             )
           : true
