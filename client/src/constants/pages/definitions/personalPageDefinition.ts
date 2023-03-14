@@ -28,8 +28,9 @@ const validationSchema = object().shape({
     .test({
       message: i18n_common.t('address.address.errors.maxLength.mailing'),
 
-      test: ({ address, city }) => {
-        const len = getLength(address) + getLength(city)
+      test: (mailing_address) => {
+        const len =
+          getLength(mailing_address?.address) + getLength(mailing_address?.city)
         return len > 44
           ? new ValidationError(
               i18n_common.t('address.address.errors.maxLength.mailing'),
