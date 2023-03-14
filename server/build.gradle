@@ -43,7 +43,7 @@ dependencies {
     liquibaseRuntime sourceSets.main.output
 
     // AWS
-    implementation platform('software.amazon.awssdk:bom:2.20.18')
+    implementation platform('software.amazon.awssdk:bom:2.20.23')
     implementation 'software.amazon.awssdk:s3'
     implementation 'software.amazon.awssdk:rds'
 
