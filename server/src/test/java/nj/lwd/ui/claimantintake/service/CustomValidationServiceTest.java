@@ -30,9 +30,9 @@ public class CustomValidationServiceTest {
                 objectMapper.readValue(
                         """
                                 {
-                                    "employment_last_date":"2023-03-01",
-                                    "employment_start_date":"2003-12-02",
-                                    "definite_recall_date":"2023-12-03",
+                                    "employers":[{"employment_last_date":"2023-03-01", "employment_start_date":"2003-12-02",
+                                    "definite_recall_date":"2023-12-03"}],
+
                                     "ssn":"987654321",
                                     "Misc_additionalField":"some other data",
                                   "mailing_address": {
@@ -65,33 +65,61 @@ public class CustomValidationServiceTest {
     }
 
     @Test
-    void returnsDateErrors() throws JsonProcessingException {
+    void returnsDateErrorsWithMissingEmployerName() throws JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> claimWithBadDates =
                 objectMapper.readValue(
                         """
                                 {
-                                    "employment_last_date":"2023-12-01",
-                                    "employment_start_date":"2023-12-01",
-                                    "definite_recall_date":"2023-03-03"
+                                "employers":[{"employment_last_date":"2023-12-01", "employment_start_date":"2023-12-01",
+                                "definite_recall_date":"2023-03-03"}]
 
                                 }
                                 """,
                         new TypeReference<>() {});
 
         List<String> errors = customValidationService.performCustomValidations(claimWithBadDates);
-
         assertEquals(2, errors.size());
         assertTrue(
                 errors.indexOf(
-                                "Employment last date error: last date cannot be before employment"
-                                        + " start date")
+                                "Employment last date error on employer Unnamed employer: last date"
+                                        + " cannot be before employment start date")
                         > -1);
         assertTrue(
                 errors.indexOf(
-                                "Definite date of recall error: date of recall cannot be before"
-                                        + " employment last date")
+                                "Definite date of recall error on employer Unnamed employer: date"
+                                        + " of recall cannot be before employment last date")
+                        > -1);
+    }
+
+    @Test
+    void returnsDateErrorsWithEmployerName() throws JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> claimWithBadDates =
+                objectMapper.readValue(
+                        """
+                                {
+
+                                "employers":[{"employment_last_date":"2023-12-01","employer_name":"JambaJuice", "employment_start_date":"2023-12-01",
+                                "definite_recall_date":"2023-03-03"}]
+
+                                }
+                                """,
+                        new TypeReference<>() {});
+
+        List<String> errors = customValidationService.performCustomValidations(claimWithBadDates);
+        assertEquals(2, errors.size());
+        assertTrue(
+                errors.indexOf(
+                                "Employment last date error on employer JambaJuice: last date"
+                                        + " cannot be before employment start date")
+                        > -1);
+        assertTrue(
+                errors.indexOf(
+                                "Definite date of recall error on employer JambaJuice: date of"
+                                        + " recall cannot be before employment last date")
                         > -1);
     }
 

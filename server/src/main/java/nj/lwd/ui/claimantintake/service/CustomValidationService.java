@@ -34,7 +34,7 @@ public class CustomValidationService {
     private final String SSN_SIXTH_SEVENTH_ERROR =
             CustomValidationErrors.SSN_SIXTH_SEVENTH_ERROR.value();
     private final String LAST_DATE_ERROR = CustomValidationErrors.LAST_DATE_ERROR.value();
-
+    private final String UNNAMED_EMPLOYER = CustomValidationErrors.UNNAMED_EMPLOYER.value();
     private final Logger logger = LoggerFactory.getLogger(CustomValidationService.class);
 
     public List<String> performCustomValidations(Map<String, Object> claimData) {
@@ -43,12 +43,8 @@ public class CustomValidationService {
 
         validateMailingAddress(claimData.get("mailing_address"));
         validateSSN((String) claimData.get("ssn"));
-        validateLastDateAfterStartDate(
-                (String) claimData.get("employment_start_date"),
-                (String) claimData.get("employment_last_date"));
-        validateRecallDateAfterLastDate(
-                (String) claimData.get("definite_recall_date"),
-                (String) claimData.get("employment_last_date"));
+        validateEmployers(claimData.get("employers"));
+
         return new ArrayList<>(validationErrors);
     }
 
@@ -60,8 +56,35 @@ public class CustomValidationService {
 
         LocalDate earlierDate = LocalDate.parse(earlierDateString);
         LocalDate laterDate = LocalDate.parse(laterDateString);
-
         return laterDate.isAfter(earlierDate);
+    }
+
+    private void validateEmployers(Object employers) {
+        if (employers != null && employers instanceof List) {
+            List<Map<String, Object>> employerList = new ArrayList((List<?>) employers);
+            for (Object employer : employerList) {
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> claimMap = new HashMap<String, Object>();
+
+                claimMap = objectMapper.convertValue(employer, claimMap.getClass());
+
+                String employerName = (String) claimMap.get("employer_name");
+                if (employerName == null) {
+                    employerName = UNNAMED_EMPLOYER;
+                }
+
+                validateRecallDateAfterLastDate(
+                        (String) claimMap.get("definite_recall_date"),
+                        (String) claimMap.get("employment_last_date"),
+                        employerName);
+
+                validateLastDateAfterStartDate(
+                        (String) claimMap.get("employment_start_date"),
+                        (String) claimMap.get("employment_last_date"),
+                        employerName);
+            }
+        }
     }
 
     private void validateMailingAddress(Object mailingAddressObj) {
@@ -115,16 +138,19 @@ public class CustomValidationService {
     }
 
     private void validateRecallDateAfterLastDate(
-            String definiteRecallDateString, String employmentLastDateString) {
+            String definiteRecallDateString, String employmentLastDateString, String employerName) {
+
         if (!dateIsAfter(employmentLastDateString, definiteRecallDateString)) {
-            validationErrors.add(RECALL_DATE_ERROR);
+            validationErrors.add(String.format(RECALL_DATE_ERROR, employerName));
         }
     }
 
     private void validateLastDateAfterStartDate(
-            String employmentStartDateString, String employmentLastDateString) {
+            String employmentStartDateString,
+            String employmentLastDateString,
+            String employerName) {
         if (!dateIsAfter(employmentStartDateString, employmentLastDateString)) {
-            validationErrors.add(LAST_DATE_ERROR);
+            validationErrors.add(String.format(LAST_DATE_ERROR, employerName));
         }
     }
 }

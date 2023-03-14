@@ -10,12 +10,16 @@ public enum CustomValidationErrors {
                     + " character maximum"),
     MAILING_ADDRESS_INVALID_FORMAT("Mailing address error: unable to read the provided format"),
     RECALL_DATE_ERROR(
-            "Definite date of recall error: date of recall cannot be before employment last date"),
+            "Definite date of recall error on employer %s: date of recall cannot be before"
+                    + " employment last date"),
     SSN_FOURTH_FIFTH__ERROR(
             "SSN error: the 4th and 5th characters cannot equal " + SSN_FOURTH_FIFTH_CHARS.value()),
     SSN_SIXTH_SEVENTH_ERROR(
             "SSN error: the 6th and 9th characters cannot equal " + SSN_SIXTH_NINETH_CHARS.value()),
-    LAST_DATE_ERROR("Employment last date error: last date cannot be before employment start date");
+    LAST_DATE_ERROR(
+            "Employment last date error on employer %s: last date cannot be before employment start"
+                    + " date"),
+    UNNAMED_EMPLOYER("Unnamed employer");
 
     String value;
 
