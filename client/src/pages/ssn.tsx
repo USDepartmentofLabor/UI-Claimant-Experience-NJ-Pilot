@@ -113,13 +113,11 @@ const Ssn: NextPageWithLayout = () => {
 
         const showErrorSummary =
           submitCount > 0 && Object.keys(errors).length > 0
-
         return (
           <Form className={styles.screenerForm}>
             {showErrorSummary && (
               <FormErrorSummary key={submitCount} errors={errors} />
             )}
-
             <div className="margin-bottom-1">
               <TextField
                 label={t('label')}
