@@ -406,6 +406,7 @@ make server-bootRun-e2e
 # Terminal #3: Run cypress (two options)
 make e2e-test-gui-local      # Runs Cypress tests in browser
 make e2e-test-headless-local # Runs Cypress tests on the command line
+make e2e-test-gui-local-fast # Runs Cypress test in browser without lighthouse
 ```
 
 #### Option B: Run client, server in docker
