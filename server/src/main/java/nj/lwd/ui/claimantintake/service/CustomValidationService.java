@@ -9,7 +9,9 @@ import java.util.Map;
 import nj.lwd.ui.claimantintake.constants.CustomValidationErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CustomValidationService {
     private ArrayList<String> validationErrors;
     private final int MAX_MAILING_ADDRESS_LEN =
