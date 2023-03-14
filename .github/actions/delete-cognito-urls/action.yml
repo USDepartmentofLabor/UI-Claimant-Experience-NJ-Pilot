@@ -34,11 +34,10 @@ runs:
         PARAMETER_NAME: /dol-ui-claimant-intake-dev/nextauth-url/${{ inputs.pr-number }}
       shell: bash
       run: |
-        SSM_CHECK_COUNT=$( aws ssm get-parameter \
+        SSM_CHECK_COUNT=$( aws ssm describe-parameters \
         --region us-east-1 \
-        --name "$PARAMETER_NAME" \
-        --with-decryption \
-        | grep -c "Value" )
+        --parameter-filters "Key=Name,Values=$PARAMETER_NAME" \
+        --query "length(Parameters)" )
         echo "ssm-count=$SSM_CHECK_COUNT" >> $GITHUB_OUTPUT
 
     - name: Delete ssm parameter
