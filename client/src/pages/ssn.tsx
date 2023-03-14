@@ -161,11 +161,7 @@ const Ssn: NextPageWithLayout = () => {
               </Button>
             </IntakeAppButtons>
             {isLoadingSSN && (
-              <Modal
-                ref={modalRef}
-                id={'ssn-loading-modal'}
-                isInitiallyOpen={true}
-              >
+              <Modal ref={modalRef} id={'ssn-loading-modal'} isInitiallyOpen>
                 <h3>{t('loading')}</h3>
               </Modal>
             )}
