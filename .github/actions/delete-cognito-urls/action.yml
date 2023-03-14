@@ -81,9 +81,7 @@ runs:
 
     - name: Update cognito user pool client callback and signout with deployment preview URL
       if: steps.check-ssm.outputs.ssm-count == '1'
-      env:
-        UPDATED_JSON: ${{ fromJSON(/updated-upc.json) }}
       shell: bash
       run: |
         aws cognito-idp update-user-pool-client \
-        --cli-input-json $UPDATED_JSON
+        --cli-input-json file://updated-upc.json

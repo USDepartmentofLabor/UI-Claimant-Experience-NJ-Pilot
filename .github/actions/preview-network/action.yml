@@ -78,12 +78,10 @@ runs:
     - name: Create preview client target group
       id: create-client-tg
       if: steps.check-tg.outputs.tg-count == '0'
-      env:
-        TG_JSON: ${{ fromJSON(preview-client-tg.json) }}
       shell: bash
       run: |
         CLIENT_TG_ARN=$( aws elbv2 create-target-group \
-        --cli-input-json "$TG_JSON" \
+        --cli-input-json file://preview-client-tg.json \
         --output text \
         --query 'TargetGroups[0].TargetGroupArn' )
         echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
@@ -91,12 +89,10 @@ runs:
     - name: Create preview server target group
       id: create-server-tg
       if: steps.check-tg.outputs.tg-count == '0'
-      env:
-        TG_JSON: ${{ fromJSON(preview-server-tg.json) }}
       shell: bash
       run: |
         SERVER_TG_ARN=$( aws elbv2 create-target-group \
-        --cli-input-json "$TG_JSON" \
+        --cli-input-json file://preview-server-tg.json \
         --output text \
         --query 'TargetGroups[0].TargetGroupArn' )
         echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
