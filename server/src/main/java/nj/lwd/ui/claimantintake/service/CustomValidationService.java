@@ -114,7 +114,6 @@ public class CustomValidationService {
         }
     }
 
-    // check defindate date of recall is after last date
     private void validateRecallDateAfterLastDate(
             String definiteRecallDateString, String employmentLastDateString) {
         if (!dateIsAfter(employmentLastDateString, definiteRecallDateString)) {
