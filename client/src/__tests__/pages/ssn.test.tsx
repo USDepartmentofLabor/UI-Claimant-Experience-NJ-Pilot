@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import Ssn from 'pages/ssn'
@@ -69,7 +69,7 @@ describe('SSN page', () => {
     expect(mockAppContext.setSsn).toHaveBeenCalledWith({ ssn: ssnValue })
   })
 
-  it('continues to screener page when ssn is valid', async () => {
+  it('shows modal continues to screener page when ssn is valid', async () => {
     const ssnValue = '123-45-4444'
     const user = userEvent.setup()
     mockMutateAsync.mockClear()
@@ -85,10 +85,16 @@ describe('SSN page', () => {
       </IntakeAppContext.Provider>
     )
     await user.click(screen.getByRole('button', { name: /next/i }))
+    screen.debug()
+    expect(screen.queryByTestId('modalWindow')).toBeInTheDocument()
     expect(mockMutateAsync).toHaveBeenCalledTimes(1)
     expect(mockMutateAsync).toHaveBeenCalledWith(ssnValue)
     expect(mockPush).toHaveBeenCalledWith(Routes.SCREENER)
-  })
+    await waitFor(
+      () => expect(screen.queryByTestId('modalWindow')).not.toBeInTheDocument(),
+      { timeout: 4000 }
+    )
+  }, 6000)
 
   it('Goes to the home page when cancel button is clicked', async () => {
     const user = userEvent.setup()

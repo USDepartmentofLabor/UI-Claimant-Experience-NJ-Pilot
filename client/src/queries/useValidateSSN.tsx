@@ -10,7 +10,7 @@ const delay = (ms: number) => {
 
 const validateSSN = async (ssn: string) => {
   console.log('simulating validate ssn api call', ssn)
-  await delay(1000)
+  await delay(3000)
   return { data: 'success', status: 200 }
   // TODO - send post here instead
 }
