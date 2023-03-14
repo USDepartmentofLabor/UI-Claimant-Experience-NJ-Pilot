@@ -166,7 +166,7 @@ const Ssn: NextPageWithLayout = () => {
                 id={'ssn-loading-modal'}
                 isInitiallyOpen={true}
               >
-                <h3>{t('loading')}</h3>{' '}
+                <h3>{t('loading')}</h3>
               </Modal>
             )}
           </Form>
