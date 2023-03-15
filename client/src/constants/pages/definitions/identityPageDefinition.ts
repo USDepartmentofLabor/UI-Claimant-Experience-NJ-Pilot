@@ -40,7 +40,8 @@ const pageSchema = object().shape({
   alien_registration_number: string().when('authorization_type', {
     is: (alienRegistrationType: string) =>
       alienRegistrationType &&
-      alienRegistrationType !== 'US_citizen_or_national',
+      alienRegistrationType !== 'US_citizen_or_national' &&
+      alienRegistrationType !== 'not_legally_allowed_to_work_in_US',
     then: (schema) =>
       schema
         .matches(
@@ -54,9 +55,14 @@ const pageSchema = object().shape({
   LOCAL_re_enter_alien_registration_number: string().when(
     'authorization_type',
     {
-      is: (alienRegistrationType: string) =>
+      is: (alienRegistrationType: string, alien_registration_number: string) =>
         alienRegistrationType &&
-        alienRegistrationType !== 'US_citizen_or_national',
+        alienRegistrationType !== 'US_citizen_or_national' &&
+        alienRegistrationType !== 'not_legally_allowed_to_work_in_US' &&
+        !(
+          alienRegistrationType === 'not_legally_allowed_to_work_in_US' &&
+          alien_registration_number === ''
+        ),
       then: (schema) =>
         schema
           .oneOf(
