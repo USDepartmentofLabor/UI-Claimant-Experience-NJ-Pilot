@@ -23,7 +23,7 @@ runs:
       id: client-service
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE_NAME: dol-ui-claimant-intake-client-{{ inputs.pr-number }}
+        SERVICE_NAME: dol-ui-claimant-intake-client-${{ inputs.pr-number }}
       shell: bash
       run: |
         CLIENT_TD_ARN=$( aws ecs describe-services \
@@ -38,7 +38,7 @@ runs:
       if: steps.client-service.outputs.client-td-arn != 'None'
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE: dol-ui-claimant-intake-client-{{ inputs.pr-number }}
+        SERVICE: dol-ui-claimant-intake-client-${{ inputs.pr-number }}
       shell: bash
       run: |
         aws ecs delete-service \
@@ -68,7 +68,7 @@ runs:
       id: server-service
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE_NAME: dol-ui-claimant-intake-server-{{ inputs.pr-number }}
+        SERVICE_NAME: dol-ui-claimant-intake-server-${{ inputs.pr-number }}
       shell: bash
       run: |
         SERVER_TD_ARN=$( aws ecs describe-services \
@@ -83,7 +83,7 @@ runs:
       if: steps.server-service.outputs.server-td-arn != 'None'
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE: dol-ui-claimant-intake-server-{{ inputs.pr-number }}
+        SERVICE: dol-ui-claimant-intake-server-${{ inputs.pr-number }}
       shell: bash
       run: |
         aws ecs delete-service \

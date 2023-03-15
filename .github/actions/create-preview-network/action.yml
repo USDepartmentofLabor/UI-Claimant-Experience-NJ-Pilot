@@ -58,7 +58,7 @@ runs:
       run: |
         jq \
         --arg TG_NAME "$TG_NAME" \
-        '. del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | . + {Name: $TG_NAME}' \
+        'del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | . + {Name: $TG_NAME}' \
         tg-template.json >> preview-client-tg.json
 
     - name: Create json file for preview server target group
