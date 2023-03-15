@@ -29,9 +29,8 @@ runs:
       shell: bash
       run: |
         CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
-        --names "$TG_NAME" \
-        --query "TargetGroups[0].TargetGroupArn" \
-        --output text)
+        --query "TargetGroups[?TargetGroupName == $TG_NAME].TargetGroupArn" \
+        --output text )
         echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
 
     - name: Does a server target group exist?

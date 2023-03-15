@@ -36,8 +36,7 @@ runs:
       shell: bash
       run: |
         TG_CHECK_COUNT=$( aws elbv2 describe-target-groups \
-        --names "$TG_NAME" \
-        | grep -c "TargetGroupArn" )
+        --query "length(TargetGroups[?TargetGroupName == $TG_NAME])" )
         echo "tg-count=$TG_CHECK_COUNT" >> $GITHUB_OUTPUT
 
     - name: Get ecs client dev tg json as template

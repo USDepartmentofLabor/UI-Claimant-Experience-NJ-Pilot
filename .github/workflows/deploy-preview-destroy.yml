@@ -8,7 +8,7 @@ on:
       pull_request:
         required: true
         description: Pull Request Issue Number to be destroyed.
-      version:
+      branch:
         required: true
         description: Tag or branch to be deployed.
 
@@ -44,10 +44,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Get branch names
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
       - name: Compose server base url
         id: server-base-url
         env:
-          GIT_BRANCH: ${{ github.head_ref ||  github.event.inputs.version }}
+          GIT_BRANCH: ${{ steps.branch-name.outputs.current_branch ||  github.event.inputs.branch }}
           DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
         shell: bash
         run: |

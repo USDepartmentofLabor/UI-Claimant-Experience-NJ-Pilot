@@ -27,15 +27,15 @@ runs:
       shell: bash
       run: |
         CLIENT_TD_ARN=$( aws ecs describe-services \
-        --cluster $CLUSTER
-        --services $SERVICE_NAME
-        --query "services[0].taskDefinition"
+        --cluster $CLUSTER \
+        --services $SERVICE_NAME \
+        --query "services[0].taskDefinition" \
         --output text )
         echo "client-td-arn=$CLIENT_TD_ARN" >> $GITHUB_OUTPUT
 
     # using --force to have aws automagically set task count to 0 and stopping tasks
     - name: Delete preview client service
-      if: steps.client-service.outputs.client-td-arn != ''
+      if: steps.client-service.outputs.client-td-arn != 'None'
       env:
         CLUSTER: dol-ui-claimant-intake-dev
         SERVICE: dol-ui-claimant-intake-client-{{ inputs.pr-number }}
@@ -47,7 +47,7 @@ runs:
         --force
 
     - name: Deregister preview client task definition
-      if: steps.client-service.outputs.client-td-arn != ''
+      if: steps.client-service.outputs.client-td-arn != 'None'
       env:
         TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
       shell: bash
@@ -56,7 +56,7 @@ runs:
         --task-definition $TD_ARN
 
     - name: Delete preview client task definition
-      if: steps.client-service.outputs.client-td-arn != ''
+      if: steps.client-service.outputs.client-td-arn != 'None'
       env:
         TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
       shell: bash
@@ -80,7 +80,7 @@ runs:
 
     # using --force to have aws automagically set task count to 0 and stopping tasks
     - name: Delete preview server service
-      if: steps.server-service.outputs.server-td-arn != ''
+      if: steps.server-service.outputs.server-td-arn != 'None'
       env:
         CLUSTER: dol-ui-claimant-intake-dev
         SERVICE: dol-ui-claimant-intake-server-{{ inputs.pr-number }}
@@ -92,7 +92,7 @@ runs:
         --force
 
     - name: Deregister preview server task definition
-      if: steps.server-service.outputs.server-td-arn != ''
+      if: steps.server-service.outputs.server-td-arn != 'None'
       env:
         TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
       shell: bash
@@ -101,7 +101,7 @@ runs:
         --task-definition $TD_ARN
 
     - name: Delete preview server task definition
-      if: steps.server-service.outputs.server-td-arn != ''
+      if: steps.server-service.outputs.server-td-arn != 'None'
       env:
         TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
       shell: bash
