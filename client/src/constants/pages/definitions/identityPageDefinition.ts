@@ -56,13 +56,12 @@ const pageSchema = object().shape({
     ['authorization_type', 'alien_registration_number'],
     {
       is: (alienRegistrationType: string, alien_registration_number: string) =>
-        (alienRegistrationType &&
-          alienRegistrationType !== 'US_citizen_or_national' &&
+        alienRegistrationType &&
+        ((alienRegistrationType !== 'US_citizen_or_national' &&
           alienRegistrationType !== 'not_legally_allowed_to_work_in_US') ||
-        (alien_registration_number &&
-          alienRegistrationType &&
-          alienRegistrationType === 'not_legally_allowed_to_work_in_US' &&
-          alien_registration_number !== ''),
+          (alien_registration_number &&
+            alienRegistrationType === 'not_legally_allowed_to_work_in_US' &&
+            alien_registration_number !== '')),
       then: (schema) =>
         schema
           .oneOf(
