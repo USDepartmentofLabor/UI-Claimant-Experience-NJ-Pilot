@@ -327,6 +327,28 @@ describe('Identity Information Page', () => {
     expect(authorizationCardValidMonthFieldReturned).toHaveValue('')
     expect(authorizationCardValidYearFieldReturned).toHaveValue('')
   })
+  it('shows optional fields', async () => {
+    const user = userEvent.setup()
+    render(<Identity />)
+    const authorizationType = screen.getByRole('group', {
+      name: 'work_authorization.authorization_type.label',
+    })
+    const notAllowedToWorkInUs = within(authorizationType).getByRole('radio', {
+      name: 'work_authorization.authorization_type.options.not_legally_allowed_to_work_in_US',
+    })
+
+    // Select 'Yes; I have an employment authorization card/document' radio button
+    await user.click(notAllowedToWorkInUs)
+    screen.debug()
+    const alienRegistrationNumberOptional = screen.getByLabelText(
+      'work_authorization.alien_registration_number.label_optional',
+      {
+        exact: false,
+      }
+    )
+    expect(alienRegistrationNumberOptional).toBeInTheDocument()
+  })
+
   describe('verified fields', () => {
     it('does not show ssn', () => {
       render(<Identity />)
