@@ -792,6 +792,7 @@ describe('Change in Employment component', () => {
         queryForSeparationCircumstanceDetails,
         queryForStartDate,
         queryForFinishDate,
+        queryForDischargeDate,
       } = renderChangeInEmployment()
 
       const changeReasonUnsatisfactoryWorkPerformance =
@@ -802,6 +803,7 @@ describe('Change in Employment component', () => {
         queryForSeparationCircumstanceDetails(),
         queryForStartDate(),
         queryForFinishDate(),
+        queryForDischargeDate(),
       ])
     })
 
