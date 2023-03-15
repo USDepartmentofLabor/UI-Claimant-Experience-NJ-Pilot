@@ -46,6 +46,7 @@ runs:
       run: |
         aws elbv2 describe-target-groups \
         --names ecs-client-dev \
+        --query "TargetGroups[0]" \
         --output json >> tg-template.json
 
     - name: Create json file for preview client target group
@@ -57,7 +58,7 @@ runs:
       run: |
         jq \
         --arg TG_NAME "$TG_NAME" \
-        '.TargetGroups[0] | del(.TargetGroupArn) | .TargetGroupName = $TG_NAME' \
+        '. del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | . + {Name: $TG_NAME}' \
         tg-template.json >> preview-client-tg.json
 
     - name: Create json file for preview server target group
@@ -71,7 +72,7 @@ runs:
         jq \
         --arg TG_NAME "$TG_NAME" \
         --arg HC_PATH "$HC_PATH" \
-        '.TargetGroups[0] | del(.TargetGroupArn) | .HealthCheckPath = $HC_PATH | .TargetGroupName = $TG_NAME | .Port = 8080' \
+        'del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | .HealthCheckPath = $HC_PATH | . + {Name: $TG_NAME} | .Port = 8080' \
         tg-template.json >> preview-server-tg.json
 
     - name: Create preview client target group
@@ -101,7 +102,7 @@ runs:
       if: steps.check-tg.outputs.tg-count == '0'
       shell: bash
       run: |
-        LB_ARN="$(jq -r '.TargetGroups[0].LoadBalancerArns[0]' tg-template.json)"
+        LB_ARN="$(jq -r '.LoadBalancerArns[0]' tg-template.json)"
         echo "lb-arn=$LB_ARN" >> $GITHUB_OUTPUT
 
     - name: Get listener arn
@@ -148,7 +149,7 @@ runs:
         aws elbv2 create-rule \
         --listener-arn $LISTENER_ARN \
         --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} '
+        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} ' \
         --actions Type=forward,TargetGroupArn=$CLIENT_TG_ARN
 
     - name: Create server listener rule
@@ -163,5 +164,5 @@ runs:
         aws elbv2 create-rule \
         --listener-arn $LISTENER_ARN \
         --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} '
+        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} ' \
         --actions Type=forward,TargetGroupArn=$SERVER_TG_ARN
