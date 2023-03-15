@@ -238,8 +238,7 @@ const claimForm = {
       label: 'Expiration date',
       errors: {
         required: 'Expiration date is required',
-        maxDate: "Expiration date can't be in the future",
-        minDate: "Expiration date can't be before valid from / issued on date",
+        minDate: "Expiration date can't be in the past",
       },
     },
   },
