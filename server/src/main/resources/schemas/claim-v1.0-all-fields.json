@@ -483,7 +483,8 @@
                   "enum": [
                     "laid_off",
                     "still_employed",
-                    "federal_or_state_shutdown"
+                    "federal_or_state_shutdown",
+                    "unsatisfactory_work_performance"
                   ]
                 }
               }
@@ -552,7 +553,10 @@
             "properties": {
               "separation_circumstance": {
                 "type": "string",
-                "enum": ["fired_discharged_suspended"]
+                "enum": [
+                  "fired_discharged_suspended",
+                  "unsatisfactory_work_performance"
+                ]
               }
             }
           },
