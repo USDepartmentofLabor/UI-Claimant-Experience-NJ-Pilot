@@ -40,28 +40,28 @@ const pageSchema = object().shape({
   alien_registration_number: string().when('authorization_type', {
     is: (alienRegistrationType: string) =>
       alienRegistrationType &&
-      alienRegistrationType !== 'US_citizen_or_national' &&
-      alienRegistrationType !== 'not_legally_allowed_to_work_in_US',
+      alienRegistrationType !== 'US_citizen_or_national',
     then: (schema) =>
       schema
         .matches(
           /^[\d]{7,9}$/,
           t('work_authorization.alien_registration_number.errors.format')
         )
-        .required(
-          t('work_authorization.alien_registration_number.errors.required')
-        ),
+        .when('authorization_type', {
+          is: (alienRegistrationType: string) =>
+            alienRegistrationType &&
+            alienRegistrationType !== 'not_legally_allowed_to_work_in_US',
+          then: (schema) =>
+            schema.required(
+              t('work_authorization.alien_registration_number.errors.required')
+            ),
+        }),
   }),
   LOCAL_re_enter_alien_registration_number: string().when(
-    ['authorization_type', 'alien_registration_number'],
+    'alien_registration_number',
     {
-      is: (alienRegistrationType: string, alien_registration_number: string) =>
-        alienRegistrationType &&
-        ((alienRegistrationType !== 'US_citizen_or_national' &&
-          alienRegistrationType !== 'not_legally_allowed_to_work_in_US') ||
-          (alien_registration_number &&
-            alienRegistrationType === 'not_legally_allowed_to_work_in_US' &&
-            alien_registration_number !== '')),
+      is: (alien_registration_number: string) =>
+        alien_registration_number && alien_registration_number !== '',
       then: (schema) =>
         schema
           .oneOf(
@@ -70,11 +70,20 @@ const pageSchema = object().shape({
               'work_authorization.re_enter_alien_registration_number.errors.mustMatch'
             )
           )
-          .required(
-            i18n_claimForm.t(
-              'work_authorization.re_enter_alien_registration_number.errors.required'
-            )
-          ),
+          .when('authorization_type', {
+            is: (alienRegistrationType: string) =>
+              alienRegistrationType &&
+              ![
+                'US_citizen_or_national',
+                'not_legally_allowed_to_work_in_US',
+              ].includes(alienRegistrationType),
+            then: (schema) =>
+              schema.required(
+                i18n_claimForm.t(
+                  'work_authorization.re_enter_alien_registration_number.errors.required'
+                )
+              ),
+          }),
     }
   ),
   country_of_origin: string()
