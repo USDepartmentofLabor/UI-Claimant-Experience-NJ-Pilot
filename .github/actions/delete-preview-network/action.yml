@@ -129,7 +129,7 @@ runs:
         --target-group-arn "$TG_ARN"
 
     - name: Delete server target group
-      id: delete-client-tg
+      id: delete-server-tg
       if: steps.server-tg.outputs.server-tg-arn != ''
       env:
         TG_ARN: ${{ steps.server-tg.outputs.server-tg-arn }}

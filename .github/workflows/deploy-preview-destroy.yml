@@ -7,7 +7,10 @@ on:
     inputs:
       pull_request:
         required: true
-        description: Pull Request ID to be destroyed.
+        description: Pull Request Issue Number to be destroyed.
+      version:
+        required: true
+        description: Tag or branch to be deployed.
 
 # Stop building resources if the branch is closed before preview is deployed
 concurrency:
@@ -44,7 +47,7 @@ jobs:
       - name: Compose server base url
         id: server-base-url
         env:
-          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_BRANCH: ${{ github.head_ref ||  github.event.inputs.version }}
           DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
         shell: bash
         run: |
@@ -57,7 +60,7 @@ jobs:
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
-          pr-number: ${{ github.event.pull_request.number }}
+          pr-number: ${{ github.event.pull_request.number ||  github.event.inputs.pull_request }}
           cognito-client-id: ${{ secrets.COGNITO_CLIENT_ID }}
           cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
 
@@ -66,10 +69,10 @@ jobs:
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
-          pr-number: ${{ github.event.pull_request.number }}
+          pr-number: ${{ github.event.pull_request.number || github.event.inputs.pull_request }}
 
       - name: Delete ECS Services
         uses: ./.github/actions/delete-preview-ecs
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          pr-number: ${{ github.event.pull_request.number }}
+          pr-number: ${{ github.event.pull_request.number || github.event.inputs.pull_request }}

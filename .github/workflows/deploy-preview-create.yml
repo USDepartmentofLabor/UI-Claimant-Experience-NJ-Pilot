@@ -7,7 +7,6 @@ on:
     paths:
       - "client/**"
       - "server/**"
-  workflow_dispatch:
 
 # Cancel redundant deployments on same branch
 concurrency:
@@ -89,7 +88,7 @@ jobs:
       - name: Compose server base url
         id: server-base-url
         env:
-          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_BRANCH: ${{ github.head_ref }}
           DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
         shell: bash
         run: |

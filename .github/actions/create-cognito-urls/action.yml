@@ -65,6 +65,7 @@ runs:
         --region us-east-1 \
         --user-pool-id $USER_POOL_ID \
         --client-id $CLIENT_ID \
+        --query "UserPoolClient" \
         --output json >> user-pool-client.json
 
     - name: Update user pool client json
