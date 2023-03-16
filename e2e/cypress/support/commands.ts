@@ -104,7 +104,7 @@ Cypress.Commands.add('login', (userObj: JWTPayload) => {
 
 // TODO: remove hideElements when pa11y uses WCAG 3
 Cypress.Commands.add('checkA11y', (options: Options = {}) => {
-  if (!(Cypress.env('SKIP_CHECKS') === 'enabled')) {
+  if (!Cypress.env('SKIP_A11Y')) {
     cy.pa11y({
       hideElements: 'span[class*=nav_future]',
       runners: ['htmlcs'],
@@ -118,11 +118,10 @@ Cypress.Commands.add('checkA11y', (options: Options = {}) => {
 Cypress.Commands.add(
   'checkLighthouse',
   (thresholds: Cypress.LighthouseThresholds = undefined) => {
-    if (!(Cypress.env('SKIP_CHECKS') === 'enabled')) {
+    if (!Cypress.env('SKIP_LIGHTHOUSE')) {
       if (thresholds) return cy.lighthouse(thresholds)
       else return cy.lighthouse()
     }
-    return
   }
 )
 
