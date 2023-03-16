@@ -72,9 +72,9 @@ runs:
       shell: bash
       run: |
         SERVER_TD_ARN=$( aws ecs describe-services \
-        --cluster $CLUSTER
-        --services $SERVICE_NAME
-        --query "services[0].taskDefinition"
+        --cluster $CLUSTER \
+        --services $SERVICE_NAME \
+        --query "services[0].taskDefinition" \
         --output text )
         echo "server-td-arn=$SERVER_TD_ARN" >> $GITHUB_OUTPUT
 
