@@ -4,6 +4,9 @@ inputs:
   aws-role-to-assume:
     description: The AWS role to assume
     required: true
+  base-url-wo-https:
+    description: Url for the deployment preview without https:// for listener rules
+    required: true
   base-url:
     description: Url for the deployment preview
     required: true
@@ -145,7 +148,7 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.client-priority }}
         CLIENT_TG_ARN: ${{ steps.create-client-tg.outputs.client-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}
+        BASE_URL: ${{ inputs.base-url-wo-https }}
       shell: bash
       run: |
         aws elbv2 create-rule \
@@ -160,7 +163,7 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.server-priority }}
         SERVER_TG_ARN: ${{ steps.create-server-tg.outputs.server-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}/intake-api/
+        BASE_URL: ${{ inputs.base-url-wo-https }}/intake-api/
       shell: bash
       run: |
         aws elbv2 create-rule \
