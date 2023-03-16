@@ -21,12 +21,6 @@ export const DevHome = ({ setClaimStatus }: devHomeProps) => {
       <div className="margin-bottom-1">
         <h3>Signed in as:</h3>
         <Table>
-          <thead>
-            <tr>
-              <th>Property</th>
-              <th>Value</th>
-            </tr>
-          </thead>
           <tbody>
             {session.data &&
               Object.entries(session.data.whoAmI as WhoAmI).map(

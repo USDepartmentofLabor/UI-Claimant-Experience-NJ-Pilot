@@ -7,7 +7,6 @@ on:
     paths:
       - "client/**"
       - "server/**"
-  workflow_dispatch:
 
 # Cancel redundant deployments on same branch
 concurrency:
@@ -86,10 +85,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Get branch names
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
       - name: Compose server base url
         id: server-base-url
         env:
-          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_BRANCH: ${{ steps.branch-name.outputs.current_branch }}
           DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
         shell: bash
         run: |
@@ -108,7 +111,7 @@ jobs:
 
       - name: Setup deployment preview networking
         id: preview-networking
-        uses: ./.github/actions/preview-network
+        uses: ./.github/actions/create-preview-network
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
