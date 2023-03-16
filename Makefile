@@ -39,19 +39,25 @@ e2e-deps: ## installs dependencies for client
 	cd e2e && yarn install --frozen-lockfile
 
 e2e-test-gui-local: ## Runs Cypress tests in browser running the app on localhost
-	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
+	cd e2e && yarn cypress open --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
 e2e-test-gui-local-fast: ## Runs Cypress tests without lighthouse or a11y
-	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000" --env "SKIP_CHECKS=enabled,SERVER_BASE_URL=http://localhost:8080"
+	cd e2e && yarn cypress open --config "baseUrl=http://localhost:3000" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=http://localhost:8080"
 
 e2e-test-gui-docker: ## Runs Cypress tests in browser running the app dockerized
-	cd e2e && yarn run cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
+	cd e2e && yarn cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
+
+e2e-test-gui-docker-fast: ## Runs Cypress tests in browser running the app dockerized without lighthouse or a11y
+	cd e2e && yarn cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
 
 e2e-test-headless-local: ## Runs Cypress tests on the command line running the app on localhost
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
-e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized
-	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
+e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized TODO: Don't skip lighthouse
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
+
+e2e-test-headless-docker-fast: ## Runs Cypress tests on the command line running the app dockerized without lighthouse or a11y
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
 
 e2e-compile-check: ## check e2e for typescript compilation
 	cd e2e && yarn tsc --noEmit
