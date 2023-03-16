@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { NoCurrentClaimHome } from './NoCurrentClaimHome'
 
-describe('DevHome', () => {
-  it('renders without error', () => {
+describe('NoCurrentClaimHome', () => {
+  it('renders without error and how to apply is header 2', () => {
     render(<NoCurrentClaimHome />)
     expect(screen.getByText('preface'))
     const level2Headings = screen.getAllByRole('heading', { level: 2 })
