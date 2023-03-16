@@ -74,10 +74,6 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     // Identity page
-    const today = new Date()
-    const dd = String(today.getDate()).padStart(2, '0')
-    const mm = String(today.getMonth() + 1).padStart(2, '0') //January is 0!
-    const yyyy = today.getFullYear()
     fillIdentityFields({
       has_nj_issued_id: 'yes',
       drivers_license_or_state_id_number: 'D12345678912345',
@@ -97,7 +93,7 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
           day: '05',
           yr: '2019',
         },
-        employment_authorization_end_date: { mo: mm, day: dd, yr: yyyy },
+        employment_authorization_end_date: { mo: '01', day: '05', yr: '2020' },
       },
     })
     cy.checkA11y()
