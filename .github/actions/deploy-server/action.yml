@@ -175,7 +175,7 @@ runs:
     - name: Register task definition for deployment preview
       if: steps.preview-service-exist.outputs.service-count == '0'
       env:
-        TASK_DEF: ${{ steps.task-def.outputs.task-definition }}
+        TASK_DEF: ${{ steps.task-def-server.outputs.task-definition }}
       shell: bash
       run: |
         aws ecs register-task-definition \
