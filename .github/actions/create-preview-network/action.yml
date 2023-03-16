@@ -154,7 +154,7 @@ runs:
         aws elbv2 create-rule \
         --listener-arn $LISTENER_ARN \
         --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} ' \
+        --conditions '{"Field":"host-header","Values":["$BASE_URL"]} ' \
         --actions Type=forward,TargetGroupArn=$CLIENT_TG_ARN
 
     - name: Create server listener rule
@@ -163,11 +163,12 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.server-priority }}
         SERVER_TG_ARN: ${{ steps.create-server-tg.outputs.server-tg-arn }}
-        BASE_URL: ${{ inputs.base-url-wo-https }}/intake-api/
+        BASE_URL: ${{ inputs.base-url-wo-https }}
+        SERVER_PATH: /intake-api/
       shell: bash
       run: |
         aws elbv2 create-rule \
         --listener-arn $LISTENER_ARN \
         --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} ' \
+        --conditions '[{"Field":"host-header","Values":["$BASE_URL"]},{"Field":"path-pattern","Values":["$SERVER_PATH"]}]' \
         --actions Type=forward,TargetGroupArn=$SERVER_TG_ARN
