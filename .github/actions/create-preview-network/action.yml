@@ -136,8 +136,8 @@ runs:
         echo $CLIENT_PRIORITY
         SERVER_PRIORITY=$(($MAX+2))
         echo $SERVER_PRIORITY
-        echo "client-priority=$CLIENT_PRIORITY" >> GITHUB_OUTPUT
-        echo "server-priority=$SERVER_PRIORITY" >> GITHUB_OUTPUT
+        echo "client-priority=$CLIENT_PRIORITY" >> $GITHUB_OUTPUT
+        echo "server-priority=$SERVER_PRIORITY" >> $GITHUB_OUTPUT
 
     - name: Create client listener rule
       if: steps.check-tg.outputs.tg-count == '0'
