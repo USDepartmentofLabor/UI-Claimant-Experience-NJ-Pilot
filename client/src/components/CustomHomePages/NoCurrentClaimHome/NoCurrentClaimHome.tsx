@@ -38,25 +38,14 @@ export const NoCurrentClaimHome = () => {
             <ProcessListHeading type={'h3'}>
               {t('process_list_1_header')}
             </ProcessListHeading>
-            <p>{t('process_list_1_content')}</p>
-            <ul className="margin-top-0">
-              <li>{t('process_list_1_bullet_pi')}</li>
-              <li>
-                {t('process_list_1_bullet_work_history')}
+            <Trans t={t} i18nKey="process_list_1_content">
+              <div>
+                {''}
                 <ul>
-                  <li>{t('process_list_1_wh_1_sub_emp_name')}</li>
-                  <li>{t('process_list_1_wh_2_sub_emp_addr')}</li>
-                  <li>{t('process_list_1_wh_3_sub_emp_phone')}</li>
-                  <li>{t('process_list_1_wh_4_sub_emp_dates')}</li>
-                  <li>{t('process_list_1_wh_5_sub_emp_reason')}</li>
+                  <li>{''}</li>
                 </ul>
-              </li>
-              <li>{t('process_list_1_bullet_payments')}</li>
-              <li>{t('process_list_1_bullet_alien')}</li>
-              <li>{t('process_list_1_bullet_military')}</li>
-              <li>{t('process_list_1_bullet_sf8')}</li>
-              <li>{t('process_list_1_bullet_bank')}</li>
-            </ul>
+              </div>
+            </Trans>
           </ProcessListItem>
           <ProcessListItem>
             <ProcessListHeading type={'h3'}>
