@@ -97,7 +97,9 @@ jobs:
         shell: bash
         run: |
           SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
-          SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          PREVIEW_BASE_URL_WITHOUT_HTTPS="${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          SERVER_BASE_URL="https://${PREVIEW_BASE_URL_WITHOUT_HTTPS}"
+          echo "preview-base-url-wo-https=$PREVIEW_BASE_URL_WITHOUT_HTTPS" >> $GITHUB_OUTPUT
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
       - name: Create cognito urls
@@ -114,6 +116,7 @@ jobs:
         uses: ./.github/actions/create-preview-network
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url-wo-https: ${{ steps.server-base-url.outputs.preview-base-url-wo-https }}
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
           pr-number: ${{ github.event.pull_request.number }}
 
