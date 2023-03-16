@@ -32,7 +32,7 @@ const common = {
           address_generic_max: 'Address must be at most 64 characters',
           residence: 'Address must be at most 30 characters',
           mailing:
-            'Mailing Address and mailing city  combined must be at most 44 characters',
+            'Mailing address and mailing city  combined must be at most 44 characters',
         },
       },
     },
