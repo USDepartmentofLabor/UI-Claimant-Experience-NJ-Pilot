@@ -129,7 +129,7 @@ runs:
         --desired-count 1 \
         --launch-type "FARGATE" \
         --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
-        --load-balancers "targetGroupArn=$TG_ARN,loadBalancerName=dol-ui-claimant-dev,containerName=$CONTAINER_NAME,containerPort=3000"
+        --load-balancers "targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=3000"
 
     - name: Deploy Amazon ECS task definition
       if: steps.preview-service-exist.outputs.service-count != '0'
