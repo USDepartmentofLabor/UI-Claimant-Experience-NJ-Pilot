@@ -126,14 +126,16 @@ runs:
         DEFAULT: default
       shell: bash
       run: |
-        MAX="$(aws elbv2 describe-rules \
+        MAX=$(aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
         --query 'Rules[].{Priority:Priority}' | \
         jq --arg DEFAULT $DEFAULT \
-        'del(.[] | select(.Priority == $DEFAULT )) |  max.Priority | tonumber')"
-        echo "max=$MAX" >> GITHUB_OUTPUT
+        'del(.[] | select(.Priority == $DEFAULT )) |  max.Priority | tonumber')
+        echo $MAX
         CLIENT_PRIORITY=$(($MAX+1))
+        echo $CLIENT_PRIORITY
         SERVER_PRIORITY=$(($MAX+2))
+        echo $SERVER_PRIORITY
         echo "client-priority=$CLIENT_PRIORITY" >> GITHUB_OUTPUT
         echo "server-priority=$SERVER_PRIORITY" >> GITHUB_OUTPUT
 
