@@ -62,6 +62,7 @@ runs:
         --region us-east-1 \
         --user-pool-id $USER_POOL_ID \
         --client-id $CLIENT_ID \
+        --query "UserPoolClient" \
         --output json >> user-pool-client.json
 
     - name: Update user pool client json
@@ -75,7 +76,7 @@ runs:
         jq \
         --arg CALLBACK_URL "$CALLBACK_URL" \
         --arg SIGNOUT_URL "$SIGNOUT_URL" \
-        'del(.UserPoolClient.CallbackURLs[] | select(. == $CALLBACK_URL)) | del(.UserPoolClient.LogoutURLs[] | select(. == $SIGNOUT_URL))' \
+        'del(.CallbackURLs[] | select(. == $CALLBACK_URL)) | del(.LogoutURLs[] | select(. == $SIGNOUT_URL)) | del(.ClientSecret, .LastModifiedDate, .CreationDate)' \
         user-pool-client.json >> updated-upc.json
 
     - name: Update cognito user pool client callback and signout with deployment preview URL

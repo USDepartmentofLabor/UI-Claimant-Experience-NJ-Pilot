@@ -15,9 +15,13 @@ const fillContactFields = () => {
 
 const checkUpdatedContactFields = () => {
   cy.clickLink('/claim/contact', 'Edit')
+  // Verify reaching the contact page
+  cy.url().should('eq', `${Cypress.config().baseUrl}/claim/contact`)
   // Click no interpreter required
   cy.get('input[id=interpreter_required\\.no_interpreter_tty]').parent().click()
   cy.clickNext()
+  // Wait to land on the next page
+  cy.url().should('not.equal', `${Cypress.config().baseUrl}/claim/contact`)
   cy.get('button').contains('Form steps').click()
   cy.clickLink('/claim/review', 'Review application')
   // Language fields should not appear after update

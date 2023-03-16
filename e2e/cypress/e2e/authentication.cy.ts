@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { generateWhoAmI } from './utils/generateWhoAmI'
 
-context('Initial Claim form', { scrollBehavior: 'center' }, () => {
+context('Authentication', { scrollBehavior: 'center' }, () => {
   it('blocks access when not logged in except for privacy and home page', () => {
     cy.visit('/')
     cy.get("h1[data-testid='home-page-heading']").contains(

@@ -4,6 +4,9 @@ inputs:
   aws-role-to-assume:
     description: The AWS role to assume
     required: true
+  base-url-wo-https:
+    description: Url for the deployment preview without https:// for listener rules
+    required: true
   base-url:
     description: Url for the deployment preview
     required: true
@@ -36,8 +39,7 @@ runs:
       shell: bash
       run: |
         TG_CHECK_COUNT=$( aws elbv2 describe-target-groups \
-        --names "$TG_NAME" \
-        | grep -c "TargetGroupArn" )
+        --query "length(TargetGroups[?TargetGroupName == '$TG_NAME'])" )
         echo "tg-count=$TG_CHECK_COUNT" >> $GITHUB_OUTPUT
 
     - name: Get ecs client dev tg json as template
@@ -47,6 +49,7 @@ runs:
       run: |
         aws elbv2 describe-target-groups \
         --names ecs-client-dev \
+        --query "TargetGroups[0]" \
         --output json >> tg-template.json
 
     - name: Create json file for preview client target group
@@ -58,7 +61,7 @@ runs:
       run: |
         jq \
         --arg TG_NAME "$TG_NAME" \
-        '.TargetGroups[0] | del(.TargetGroupArn) | .TargetGroupName = $TG_NAME' \
+        'del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | . + {Name: $TG_NAME}' \
         tg-template.json >> preview-client-tg.json
 
     - name: Create json file for preview server target group
@@ -72,7 +75,7 @@ runs:
         jq \
         --arg TG_NAME "$TG_NAME" \
         --arg HC_PATH "$HC_PATH" \
-        '.TargetGroups[0] | del(.TargetGroupArn) | .HealthCheckPath = $HC_PATH | .TargetGroupName = $TG_NAME | .Port = 8080' \
+        'del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | .HealthCheckPath = $HC_PATH | . + {Name: $TG_NAME} | .Port = 8080' \
         tg-template.json >> preview-server-tg.json
 
     - name: Create preview client target group
@@ -102,7 +105,7 @@ runs:
       if: steps.check-tg.outputs.tg-count == '0'
       shell: bash
       run: |
-        LB_ARN="$(jq -r '.TargetGroups[0].LoadBalancerArns[0]' tg-template.json)"
+        LB_ARN="$(jq -r '.LoadBalancerArns[0]' tg-template.json)"
         echo "lb-arn=$LB_ARN" >> $GITHUB_OUTPUT
 
     - name: Get listener arn
@@ -126,16 +129,18 @@ runs:
         DEFAULT: default
       shell: bash
       run: |
-        MAX="$(aws elbv2 describe-rules \
+        MAX=$(aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
         --query 'Rules[].{Priority:Priority}' | \
         jq --arg DEFAULT $DEFAULT \
-        'del(.[] | select(.Priority == $DEFAULT )) |  max.Priority | tonumber')"
-        echo "max=$MAX" >> GITHUB_OUTPUT
+        'del(.[] | select(.Priority == $DEFAULT )) |  max.Priority | tonumber')
+        echo $MAX
         CLIENT_PRIORITY=$(($MAX+1))
+        echo $CLIENT_PRIORITY
         SERVER_PRIORITY=$(($MAX+2))
-        echo "client-priority=$CLIENT_PRIORITY" >> GITHUB_OUTPUT
-        echo "server-priority=$SERVER_PRIORITY" >> GITHUB_OUTPUT
+        echo $SERVER_PRIORITY
+        echo "client-priority=$CLIENT_PRIORITY" >> $GITHUB_OUTPUT
+        echo "server-priority=$SERVER_PRIORITY" >> $GITHUB_OUTPUT
 
     - name: Create client listener rule
       if: steps.check-tg.outputs.tg-count == '0'
@@ -143,13 +148,13 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.client-priority }}
         CLIENT_TG_ARN: ${{ steps.create-client-tg.outputs.client-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}
+        BASE_URL: ${{ inputs.base-url-wo-https }}/*
       shell: bash
       run: |
         aws elbv2 create-rule \
         --listener-arn $LISTENER_ARN \
         --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} '
+        --conditions Field=path-pattern,Values=$BASE_URL \
         --actions Type=forward,TargetGroupArn=$CLIENT_TG_ARN
 
     - name: Create server listener rule
@@ -158,11 +163,11 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.server-priority }}
         SERVER_TG_ARN: ${{ steps.create-server-tg.outputs.server-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}/intake-api/
+        SERVER_PATH: ${{ inputs.base-url-wo-https }}/intake-api/*
       shell: bash
       run: |
         aws elbv2 create-rule \
         --listener-arn $LISTENER_ARN \
         --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} '
+        --conditions Field=path-pattern,Values=$SERVER_PATH \
         --actions Type=forward,TargetGroupArn=$SERVER_TG_ARN
