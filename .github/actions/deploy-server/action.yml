@@ -167,8 +167,9 @@ runs:
       shell: bash
       run: |
         SERVICE_COUNT=$( aws ecs list-services \
-        --cluster "$CLUSTER_NAME" \
-        | grep -c "$SERVICE_NAME" )
+        --cluster $CLUSTER_NAME \
+        --query "length(serviceArns[?contains(@,'$SERVICE_NAME')])" )
+        echo $SERVICE_COUNT
         echo "service-count=$SERVICE_COUNT" >> $GITHUB_OUTPUT
 
     - name: Register task definition for deployment preview
@@ -202,7 +203,7 @@ runs:
         --load-balancers "targetGroupArn=$TG_ARN,loadBalancerName=dol-ui-claimant-dev,containerName=$CONTAINER_NAME,containerPort=8080"
 
     - name: Deploy Amazon ECS task definition (server)
-      if: steps.preview-service-exist.outputs.service-count >= '1'
+      if: steps.preview-service-exist.outputs.service-count != '0'
       uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
       with:
         task-definition: ${{ steps.task-def-server.outputs.task-definition }}
