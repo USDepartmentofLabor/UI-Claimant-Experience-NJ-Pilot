@@ -16,10 +16,10 @@ inputs:
 outputs:
   client-tg-arn:
     description: ARN of the client target group
-    value: ${{ steps.create-client-tg.outputs.client-tg-arn }}
+    value: ${{ steps.client-tg-arn.outputs.client-tg-arn }}
   server-tg-arn:
     description: ARN of the server target group
-    value: ${{ steps.create-server-tg.outputs.server-tg-arn }}
+    value: ${{ steps.server-tg-arn.outputs.server-tg-arn }}
 
 runs:
   using: "composite"
@@ -171,3 +171,55 @@ runs:
         --priority $PRIORITY \
         --conditions Field=path-pattern,Values=$SERVER_PATH \
         --actions Type=forward,TargetGroupArn=$SERVER_TG_ARN
+
+    - name: Get existing client target group ARN
+      id: get-client-tg
+      if: steps.check-tg.outputs.tg-count != '0'
+      env:
+        TG_NAME: ecs-client-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn"
+        --output text )
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get existing server target group ARN
+      id: get-server-tg
+      if: steps.check-tg.outputs.tg-count != '0'
+      env:
+        TG_NAME: ecs-server-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn"
+        --output text )
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Output client tg ARN
+      id: client-tg-arn
+      env:
+        TG_ALREADY_EXISTS: ${{ steps.check-tg.outputs.tg-count != '0' }}
+      shell: bash
+      run: |
+        if [[ "$TG_ALREADY_EXISTS" == true ]]; then
+          echo "client TG already exists"
+          CLIENT_TG_ARN=${{ steps.get-client-tg.outputs.client-tg-arn }}
+        else
+          echo "client TG was created"
+          CLIENT_TG_ARN=${{ steps.create-client-tg.outputs.client-tg-arn }}
+        fi
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Output server tg ARN
+      id: server-tg-arn
+      env:
+        TG_ALREADY_EXISTS: ${{ steps.check-tg.outputs.tg-count != '0' }}
+      shell: bash
+      run: |
+        if [[ "$TG_ALREADY_EXISTS" == true ]]; then
+          SERVER_TG_ARN=${{ steps.get-server-tg.outputs.server-tg-arn }}
+        else
+          SERVER_TG_ARN=${{ steps.create-server-tg.outputs.server-tg-arn }}
+        fi
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
