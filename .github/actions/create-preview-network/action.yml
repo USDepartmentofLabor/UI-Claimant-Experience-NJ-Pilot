@@ -180,7 +180,7 @@ runs:
       shell: bash
       run: |
         CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
-        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn"
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
         --output text )
         echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
 
@@ -192,7 +192,7 @@ runs:
       shell: bash
       run: |
         SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
-        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn"
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
         --output text )
         echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
 
