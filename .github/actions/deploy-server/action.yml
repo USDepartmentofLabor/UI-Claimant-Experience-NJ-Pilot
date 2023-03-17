@@ -194,12 +194,12 @@ runs:
       run: |
         aws ecs create-service \
         --region us-east-1 \
-        --cluster "$CLUSTER_NAME" \
-        --service-name "$SERVICE_NAME" \
-        --task-definition "$CONTAINER_NAME" \
+        --cluster $CLUSTER_NAME \
+        --service-name $SERVICE_NAME \
+        --task-definition $CONTAINER_NAME \
         --desired-count 1 \
         --launch-type "FARGATE" \
-        --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
+        --network-configuration awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED} \
         --load-balancers targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=8080
 
     - name: Deploy Amazon ECS task definition (server)
