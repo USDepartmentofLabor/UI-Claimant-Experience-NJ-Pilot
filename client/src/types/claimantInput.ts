@@ -195,6 +195,8 @@ export type PaymentInput = {
   apply_for_increased_payment_for_dependents: YesNoInput
 }
 
+export type AddressVerificationInput = ClaimantAddressInput
+
 export type PersonalInput = ClaimantNameInput & ClaimantAddressInput
 
 export type PersonNameInput = {

@@ -50,6 +50,7 @@ export const Routes = {
   CLAIM: {
     PREQUAL: makeClaimFormRoute('prequal'),
     PERSONAL: makeClaimFormRoute('personal'),
+    ADDRESS_VERIFICATION: makeClaimFormRoute('address-verification'),
     CONTACT: makeClaimFormRoute('contact'),
     DEMOGRAPHICS: makeClaimFormRoute('demographics'),
     IDENTITY: makeClaimFormRoute('identity'),
