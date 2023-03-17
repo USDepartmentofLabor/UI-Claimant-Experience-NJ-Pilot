@@ -128,7 +128,7 @@ runs:
         --task-definition $CONTAINER_NAME \
         --desired-count 1 \
         --launch-type "FARGATE" \
-        --network-configuration awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED} \
+        --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
         --load-balancers targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=3000
 
     - name: Deploy Amazon ECS task definition
