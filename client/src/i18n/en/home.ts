@@ -15,25 +15,18 @@ const home = {
   how_to_apply: 'How to apply',
   process_list_1_header: 'Gather the required information',
   process_list_1_content:
-    "To complete your Unemployment Insurance application, you'll need the following: ",
-  process_list_1_list: [
-    'Your personal information: your name, Social Security Number, birthdate, and contact information.',
-    {
-      header: 'Your complete work history for the last 18 months, including: ',
-      list: [
-        'Employer name(s)',
-        'Employer address(es)',
-        'Employer phone number(s)',
-        'Start and end dates for each job',
-        'A reason why each job ended, or why your hours changed',
-      ],
-    },
-    'Details about other types of payments you receive(d)',
-    "If you're not a U.S. citizen, Your Alien Registration Number",
-    'If you were in the military in the last 18 months, Military form DD-214',
-    'If you were a federal employee during the last 18 months, Form SF-8 or SF-50',
-    "If you'd like to get your benefits by direct deposit, your bank account information",
-  ],
+    "<0>To complete your Unemployment Insurance application, you'll need the following:</0>" +
+    '<0>Your personal information: your name, Social Security Number, birthdate, and contact information.' +
+    '<1>Employer name(s)</1>' +
+    '<1>Employer address(es)</1>' +
+    '<1>Employer phone number(s)</1>' +
+    '<1>Start and end dates for each job</1>' +
+    '<1>A reason why each job ended, or why your hours changed</1></0>' +
+    '<0>Details about other types of payments you receive(d)</0>' +
+    "<0>If you're not a U.S. citizen, Your Alien Registration Number</0>" +
+    '<0>If you were in the military in the last 18 months, Military form DD-214</0>' +
+    '<0>If you were a federal employee during the last 18 months, Form SF-8 or SF-50</0>' +
+    "<0>If you'd like to get your benefits by direct deposit, your bank account information</0>",
   process_list_2_header: 'Answer a few basic questions on the next page',
   process_list_2_content:
     'Before you apply, we will ask you a few questions about where you live, your work history and your work location. These questions will help us find out if and how you should apply.',
