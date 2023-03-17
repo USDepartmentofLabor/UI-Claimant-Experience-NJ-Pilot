@@ -208,6 +208,7 @@ export type PersonNameInput = {
 
 export type AddressInput = {
   address: string
+  address2: string
   city: string
   state: string
   zipcode: string
