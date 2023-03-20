@@ -72,9 +72,7 @@ const pageSchema = object().shape({
           'not_legally_allowed_to_work_in_US',
         ].includes(alienRegistrationType) ||
           (alien_registration_number &&
-            ['not_legally_allowed_to_work_in_US'].includes(
-              alienRegistrationType
-            ) &&
+            'not_legally_allowed_to_work_in_US' === alienRegistrationType &&
             alien_registration_number !== '')),
       then: (schema) =>
         schema.required(
