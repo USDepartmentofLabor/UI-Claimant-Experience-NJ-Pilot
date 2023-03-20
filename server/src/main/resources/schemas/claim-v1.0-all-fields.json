@@ -1442,10 +1442,7 @@
           "authorization_type": {
             "not": {
               "type": "string",
-              "enum": [
-                "US_citizen_or_national",
-                "not_legally_allowed_to_work_in_US"
-              ]
+              "enum": ["US_citizen_or_national"]
             }
           }
         }
@@ -1453,7 +1450,6 @@
       "then": {
         "required": [
           "employment_authorization_document_name",
-          "alien_registration_number",
           "country_of_origin"
         ]
       }
@@ -1463,14 +1459,14 @@
         "properties": {
           "authorization_type": {
             "type": "string",
-            "enum": ["not_legally_allowed_to_work_in_US"]
+            "enum": [
+              "US_citizen_or_national",
+              "not_legally_allowed_to_work_in_US"
+            ]
           }
         },
         "then": {
-          "required": [
-            "employment_authorization_document_name",
-            "country_of_origin"
-          ]
+          "required": ["alien_registration_number"]
         }
       }
     },
