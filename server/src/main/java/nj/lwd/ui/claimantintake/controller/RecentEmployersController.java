@@ -49,7 +49,7 @@ public class RecentEmployersController {
         String ssn = claimStorageService.getSSN(claimantIdpId);
 
         if (ssn == null || ssn.equals("")) {
-            logger.info("SSN was null for claimant IdpId {}", claimantIdpId);
+            logger.info("SSN was null or empty for claimant IdpId {}", claimantIdpId);
             return new ResponseEntity<>(
                     "SSN not found for given claimant, unable to complete request",
                     HttpStatus.BAD_REQUEST);
