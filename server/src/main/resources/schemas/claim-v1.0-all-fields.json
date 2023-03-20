@@ -1463,6 +1463,22 @@
         "properties": {
           "authorization_type": {
             "type": "string",
+            "enum": ["not_legally_allowed_to_work_in_US"]
+          }
+        },
+        "then": {
+          "required": [
+            "employment_authorization_document_name",
+            "country_of_origin"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "authorization_type": {
+            "type": "string",
             "enum": ["employment_authorization_or_card_or_doc"]
           }
         },
