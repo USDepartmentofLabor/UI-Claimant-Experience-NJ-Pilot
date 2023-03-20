@@ -97,7 +97,8 @@ runs:
       run: |
         SERVICE_COUNT=$( aws ecs list-services \
         --cluster "$CLUSTER_NAME" \
-        | grep -c "$SERVICE_NAME" )
+        --query "length(serviceArns[?contains(@,'$SERVICE_NAME')])" )
+        echo $SERVICE_COUNT
         echo "service-count=$SERVICE_COUNT" >> $GITHUB_OUTPUT
 
     - name: Register task definition for deployment preview
@@ -122,16 +123,16 @@ runs:
       run: |
         aws ecs create-service \
         --region us-east-1 \
-        --cluster "$CLUSTER_NAME" \
-        --service-name "$SERVICE_NAME" \
-        --task-definition "$CONTAINER_NAME" \
+        --cluster $CLUSTER_NAME \
+        --service-name $SERVICE_NAME \
+        --task-definition $CONTAINER_NAME \
         --desired-count 1 \
         --launch-type "FARGATE" \
         --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
-        --load-balancers "targetGroupArn=$TG_ARN,loadBalancerName=dol-ui-claimant-dev,containerName=$CONTAINER_NAME,containerPort=3000"
+        --load-balancers targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=3000
 
     - name: Deploy Amazon ECS task definition
-      if: steps.preview-service-exist.outputs.service-count >= '1'
+      if: steps.preview-service-exist.outputs.service-count != '0'
       uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
