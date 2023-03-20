@@ -59,7 +59,6 @@ const claimForm = {
   },
   personal: {
     heading: 'Personal information',
-    address_confirmation: 'Address confirmation',
     verified_legal_name: { label: 'Legal name' },
     residence_address: {
       label: 'Residence address',
