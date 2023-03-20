@@ -34,10 +34,12 @@ export const PaymentReview = () => {
       <ReviewElement
         label={t('payment.routing_number.label')}
         value={claimFormValues?.routing_number}
+        maskable
       />
       <ReviewElement
         label={t('payment.account_number.label')}
         value={claimFormValues?.account_number}
+        maskable
       />
 
       <ReviewYesNo
