@@ -1458,11 +1458,13 @@
       "if": {
         "properties": {
           "authorization_type": {
-            "type": "string",
-            "enum": [
-              "US_citizen_or_national",
-              "not_legally_allowed_to_work_in_US"
-            ]
+            "not": {
+              "type": "string",
+              "enum": [
+                "US_citizen_or_national",
+                "not_legally_allowed_to_work_in_US"
+              ]
+            }
           }
         },
         "then": {
