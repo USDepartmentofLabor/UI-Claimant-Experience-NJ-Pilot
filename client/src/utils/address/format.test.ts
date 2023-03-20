@@ -9,6 +9,7 @@ describe('buildPersonalAddress', () => {
   it('returns the expected date with filled fields', () => {
     const personalAddress = buildPersonalAddress({
       address: 'some street',
+      address2: '',
       city: 'some city',
       state: 'CA',
       zipcode: '12345',
@@ -19,6 +20,7 @@ describe('buildPersonalAddress', () => {
   it('returns the expected date when missing fields', () => {
     const personalAddress = buildPersonalAddress({
       address: '',
+      address2: '',
       city: 'some city',
       state: '',
       zipcode: '12345',
