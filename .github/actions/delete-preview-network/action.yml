@@ -78,7 +78,7 @@ runs:
       run: |
         CLIENT_RULE_ARN="$( aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
-        --query "Rules[?Conditions[0].Values[0]==$RULE_VALUE].RuleArn" \
+        --query 'Rules[?Conditions[0].Values[0]=="$RULE_VALUE"].RuleArn' \
         --output text
         )"
         echo "client-rule-arn=$CLIENT_RULE_ARN" >> $GITHUB_OUTPUT
@@ -102,7 +102,7 @@ runs:
       run: |
         SERVER_RULE_ARN="$( aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
-        --query "Rules[?Conditions[0].Values[0]==$RULE_VALUE].RuleArn" \
+        --query 'Rules[?Conditions[0].Values[0]=="$RULE_VALUE"].RuleArn' \
         --output text
         )"
         echo "server-rule-arn=$SERVER_RULE_ARN" >> $GITHUB_OUTPUT
