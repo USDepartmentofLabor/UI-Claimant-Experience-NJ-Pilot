@@ -8,11 +8,14 @@ import { PaymentPageDefinition } from 'constants/pages/definitions/paymentPageDe
 
 export const PaymentReview = () => {
   const { t } = useTranslation('claimForm')
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, maskSensitiveData, hideEditUrl } =
+    useContext(ClaimFormContext)
+  const maskAccountInfo =
+    maskSensitiveData === undefined ? true : maskSensitiveData
   const { heading, path } = PaymentPageDefinition
 
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewElement
         label={t('payment.payment_method.label')}
         value={
@@ -34,12 +37,12 @@ export const PaymentReview = () => {
       <ReviewElement
         label={t('payment.routing_number.label')}
         value={claimFormValues?.routing_number}
-        maskable
+        maskable={maskAccountInfo}
       />
       <ReviewElement
         label={t('payment.account_number.label')}
         value={claimFormValues?.account_number}
-        maskable
+        maskable={maskAccountInfo}
       />
 
       <ReviewYesNo

@@ -10,15 +10,17 @@ import { formatStoredDateToDisplayDate } from 'utils/date/format'
 export const IdentityReview = () => {
   const { t } = useTranslation('claimForm')
   const { t: tSsn } = useTranslation('ssn')
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, maskSensitiveData, hideEditUrl } =
+    useContext(ClaimFormContext)
+  const maskSSN = maskSensitiveData === undefined ? true : maskSensitiveData
   const { heading, path } = IdentityPageDefinition
 
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewElement
         label={tSsn('label')}
         value={claimFormValues?.ssn}
-        maskable
+        maskable={maskSSN}
       />
       <ReviewElement
         label={t('birthdate.label')}
