@@ -73,12 +73,12 @@ runs:
       if: steps.client-tg.outputs.client-tg-arn != ''
       env:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
-        RULE_VALUE: ${{ inputs.base-url }}
+        TG_ARN: ${{ steps.client-tg.outputs.client-tg-arn }}
       shell: bash
       run: |
         CLIENT_RULE_ARN="$( aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
-        --query 'Rules[?Conditions[0].Values[0]=="$RULE_VALUE"].RuleArn' \
+        --query "Rules[?Actions[0].TargetGroupArn=='$TG_ARN'].RuleArn" \
         --output text
         )"
         echo "client-rule-arn=$CLIENT_RULE_ARN" >> $GITHUB_OUTPUT
@@ -97,12 +97,12 @@ runs:
       if: steps.server-tg.outputs.server-tg-arn != ''
       env:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
-        RULE_VALUE: ${{ inputs.base-url }}/intake-api/
+        TG_ARN: ${{ steps.server-tg.outputs.server-tg-arn }}
       shell: bash
       run: |
         SERVER_RULE_ARN="$( aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
-        --query 'Rules[?Conditions[0].Values[0]=="$RULE_VALUE"].RuleArn' \
+        --query "Rules[?Actions[0].TargetGroupArn=='$TG_ARN'].RuleArn" \
         --output text
         )"
         echo "server-rule-arn=$SERVER_RULE_ARN" >> $GITHUB_OUTPUT
