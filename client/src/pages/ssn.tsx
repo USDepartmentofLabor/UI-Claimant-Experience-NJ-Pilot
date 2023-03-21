@@ -91,7 +91,6 @@ const Ssn: NextPageWithLayout = () => {
             openModal()
             const validateSSNResult = await validateSSN.mutateAsync(values.ssn)
             setDisableButtons(false)
-            closeModal()
             return validateSSNResult.status === 200
             //TODO - change this to handle error states
           }
@@ -105,7 +104,13 @@ const Ssn: NextPageWithLayout = () => {
             if (validRef.current) {
               const isVerifiedSSN = await lockButtonsAndVerifySSN()
               if (isVerifiedSSN) {
-                await router.push(Routes.SCREENER)
+                router.push(Routes.SCREENER).then(() => {
+                  setDisableButtons(false)
+                  closeModal()
+                })
+              } else {
+                setDisableButtons(false)
+                closeModal()
               }
             }
           })
