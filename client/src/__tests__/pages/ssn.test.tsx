@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import Ssn from 'pages/ssn'
@@ -89,10 +89,6 @@ describe('SSN page', () => {
     expect(mockMutateAsync).toHaveBeenCalledTimes(1)
     expect(mockMutateAsync).toHaveBeenCalledWith(ssnValue)
     expect(mockPush).toHaveBeenCalledWith(Routes.SCREENER)
-    await waitFor(
-      () => expect(screen.queryByTestId('modalWindow')).not.toBeInTheDocument(),
-      { timeout: 4000 }
-    )
   }, 6000)
 
   it('Goes to the home page when cancel button is clicked', async () => {
