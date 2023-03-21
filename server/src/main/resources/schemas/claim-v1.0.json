@@ -1440,10 +1440,10 @@
               ]
             }
           }
-        },
-        "then": {
-          "required": ["alien_registration_number"]
         }
+      },
+      "then": {
+        "required": ["alien_registration_number"]
       }
     },
     {
@@ -1453,13 +1453,13 @@
             "type": "string",
             "enum": ["employment_authorization_or_card_or_doc"]
           }
-        },
-        "then": {
-          "required": [
-            "employment_authorization_start_date",
-            "employment_authorization_end_date"
-          ]
         }
+      },
+      "then": {
+        "required": [
+          "employment_authorization_start_date",
+          "employment_authorization_end_date"
+        ]
       }
     },
     {
@@ -1469,10 +1469,10 @@
             "type": "boolean",
             "const": true
           }
-        },
-        "then": {
-          "required": ["state_province_territory_where_filed"]
         }
+      },
+      "then": {
+        "required": ["state_province_territory_where_filed"]
       }
     },
     {
@@ -1480,12 +1480,12 @@
         "properties": {
           "lived_outside_nj_when_working_nj": {
             "type": "boolean",
-            "const": false
+            "const": true
           }
-        },
-        "then": {
-          "required": ["will_look_for_work_in_nj"]
         }
+      },
+      "then": {
+        "required": ["will_look_for_work_in_nj"]
       }
     }
   ]
