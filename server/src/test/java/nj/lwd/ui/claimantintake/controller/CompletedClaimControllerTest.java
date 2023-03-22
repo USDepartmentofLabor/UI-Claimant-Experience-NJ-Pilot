@@ -5,13 +5,16 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
 import nj.lwd.ui.claimantintake.service.CustomValidationService;
@@ -42,7 +45,7 @@ class CompletedClaimControllerTest {
     @Test
     @WithMockUser
     void shouldAcceptCompletedClaim() throws Exception {
-        List<String> validationMessageList = new ArrayList<String>();
+        List<String> validationMessageList = new ArrayList<>();
         when(claimStorageService.completeClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationMessageList);
         this.mockMvc
@@ -60,7 +63,7 @@ class CompletedClaimControllerTest {
 
     @Test
     void shouldRejectUnauthorizedUser() throws Exception {
-        List<String> validationMessageList = new ArrayList<String>();
+        List<String> validationMessageList = new ArrayList<>();
         when(claimStorageService.saveClaim(anyString(), anyMap())).thenReturn(true);
         when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationMessageList);
         this.mockMvc
@@ -94,8 +97,9 @@ class CompletedClaimControllerTest {
     void shouldRejectInvalidClaim() throws Exception {
 
         List<String> validationErrors =
-                new ArrayList(Arrays.asList("I am a fake error", "I am also a fake error"));
+                Arrays.asList("I am a fake error", "I am also a fake error");
         when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationErrors);
+
         MvcResult result =
                 this.mockMvc
                         .perform(
@@ -112,9 +116,42 @@ class CompletedClaimControllerTest {
 
         assertEquals(
                 """
-                {"message":"Errors occured when validating the claim data","errors":["I am a fake error","I am also a fake error"]}
+                {"message":"Errors occurred when validating the claim data","errors":["I am a fake error","I am also a fake error"]}
                 """
                         .strip(),
                 result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @WithMockUser
+    void getCompleteClaimReturnsClaimData() throws Exception {
+        var completeClaim = new HashMap<String, Object>();
+        completeClaim.put("ssn", "123456789");
+
+        when(claimStorageService.getCompleteClaim(anyString()))
+                .thenReturn(Optional.of(completeClaim));
+
+        mockMvc.perform(
+                        get("/complete-claim")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ssn").value("123456789"));
+    }
+
+    @Test
+    @WithMockUser
+    void getCompleteClaimReturns404WhenNotFound() throws Exception {
+        when(claimStorageService.getCompleteClaim(anyString())).thenReturn(Optional.empty());
+
+        mockMvc.perform(
+                        get("/complete-claim")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

@@ -39,7 +39,7 @@ import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
 import { Employer } from 'types/claimantInput'
 import Error from 'next/error'
-
+import { useRouter } from 'next/router'
 const pageDefinition = RecentEmployersPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
@@ -54,6 +54,7 @@ type RecentEmployerValues = {
 export const RecentEmployers: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
   const { t: tCommon } = useTranslation('common')
+  const router = useRouter()
   const headingRef = useRef<HTMLHeadingElement>(null)
   const { claimFormValues } = useContext(ClaimFormContext)
   const {
@@ -96,6 +97,12 @@ export const RecentEmployers: NextPageWithLayout = () => {
 
   if (isLoadingRecentEmployers) {
     return <PageLoader />
+  } else if (
+    isRecentEmployersError &&
+    recentEmployerError?.response?.status === 400
+  ) {
+    router.push(Routes.SSN)
+    return null
   } else if (
     isRecentEmployersError &&
     recentEmployerError?.response?.status !== 503

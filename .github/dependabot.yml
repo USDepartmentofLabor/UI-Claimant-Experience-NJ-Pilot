@@ -32,6 +32,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
+    directory: "/ops/envoy"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
     directory: "/server"
     schedule:
       interval: "daily"
