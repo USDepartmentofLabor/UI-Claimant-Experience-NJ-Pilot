@@ -60,12 +60,14 @@ and other development commands.
       ```
       node -v
       ```
-    - If you have an issue run the following command and then close and re-open your terminal to be sure changes have taken affect
+    - If you have an issue run the following command and then close and re-open your terminal to be sure changes
+      have taken affect
       ```
       asdf reshim nodejs
       ```
     - If you are still running into an issue due to previous installations of node, do the following
-      - Add the node version to your path file by opening your startup file (ex. `~/.zshrc` or `~/.bash-profile`) and adding the following to the bottom:
+      - Add the node version to your path file by opening your startup file (ex. `~/.zshrc` or `~/.bash-profile`)
+        and adding the following to the bottom:
         ```
         export PATH=“/Users/<YourUsername>/.asdf/installs/nodejs/<DesiredVersion>//bin:$PATH”
         ```
@@ -83,13 +85,16 @@ and other development commands.
 #### Server
 
 - [Java](https://adoptium.net/temurin/releases)
-  - The above link is directed to the Eclipse Temurin SDK. The Eclipse foundation has taken over AdoptOpenJDK as of 2021
+  - The above link is directed to the Eclipse Temurin SDK. The Eclipse foundation has taken over AdoptOpenJDK as of
+    2021
     which is still the best choice for free OpenJDK builds. You can either download and manually install the binaries
     from Adoptium, or use an SDK manager, as outlined below.
   - This project uses the current LTS version of Java, specified in [.tool-versions](./.tool-versions).
   - Since [Java versions](https://www.oracle.com/java/technologies/java-se-support-roadmap.html) now enter and exit
-    active LTS on a much faster cadence than in its early days, using a version manager like [asdf](https://asdf-vm.com/)
-    is highly encouraged. While asdf is only supported on UNIX-like platforms. WSL is the recommended way to use asdf on
+    active LTS on a much faster cadence than in its early days, using a version manager
+    like [asdf](https://asdf-vm.com/)
+    is highly encouraged. While asdf is only supported on UNIX-like platforms. WSL is the recommended way to use asdf
+    on
     Windows.
   - With asdf [installed](https://asdf-vm.com/guide/getting-started.html), proceed with installing Java:
     - Add the asdf java plugin
@@ -184,7 +189,8 @@ Make a copy of [`e2e/cypress.env.json-template`](/e2e/cypress.env.json-template)
 cp e2e/cypress.env.json-template e2e/cypress.env.json
 ```
 
-In your copies of the env files, you should remove comments/references about not adding secrets which would have been carried
+In your copies of the env files, you should remove comments/references about not adding secrets which would have been
+carried
 over from the `.env-template` files, since you _will_ be adding secrets there.
 
 Add values for the environment variables. Note some variables in the .env-template include instructions for what values
@@ -212,6 +218,27 @@ make server-build
 make server-bootRun
 ```
 
+### Troubleshooting Local Web Server
+
+When running the above commands, you may encounter one of the following:
+
+#### Hikari Pool Definition Exception:
+
+`org.postgresql.util.PSQLException: FATAL: role "localdev-postgres" does not exist `
+
+This error occurs when another instance or postgres is running in the background.
+Use `brew services list` or your Activity Monitor to find any existing postgres instances and end them
+
+After closing any other instances of Postgres, re-run `make server-bootRun` and the port/postgres instance should be
+free to host this application's DB
+
+#### Script `make server-bootRun` remains at "80% EXECUTING"
+
+The client is dependent upon locally hosted backend services. Running ` make server-bootRun` starts an open task that
+runs continuously. There is no need to wait for the status to reach 100%
+
+The \`make client-dev' script for the frontend should be executed in a different terminal window
+
 ### API documentation
 
 The web server exposes several API endpoints, and uses swagger as a self-documenting API tool.
@@ -228,7 +255,8 @@ To run the application locally in docker, use:
 make docker-up
 ```
 
-Or, if you prefer to run the application(s) outside of docker (in dev-mode for example) alongside dockerized services, use:
+Or, if you prefer to run the application(s) outside of docker (in dev-mode for example) alongside dockerized services,
+use:
 
 ```sh
 make docker-services-up
@@ -406,6 +434,7 @@ make server-bootRun-e2e
 # Terminal #3: Run cypress (two options)
 make e2e-test-gui-local      # Runs Cypress tests in browser
 make e2e-test-headless-local # Runs Cypress tests on the command line
+make e2e-test-gui-local-fast # Runs Cypress test in browser without lighthouse
 ```
 
 #### Option B: Run client, server in docker

@@ -9,14 +9,19 @@ import {
 import CheckboxField from 'components/form/fields/CheckboxField/CheckboxField'
 import { Trans } from 'next-i18next'
 import { NextPageWithLayout } from 'pages/_app'
-import { FormEventHandler, ReactNode, useContext, useRef } from 'react'
+import {
+  FormEventHandler,
+  ReactNode,
+  useContext,
+  useRef,
+  useState,
+} from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { ReviewPageDefinition } from 'constants/pages/definitions/reviewPageDefinition'
 import {
   getPreviousPage,
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
-import { ReviewInput } from 'types/claimantInput'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
@@ -40,6 +45,9 @@ import { PaymentReview } from 'components/review/sections/PaymentReview/PaymentR
 import { DisabilityReview } from 'components/review/sections/DisabilityReview/DisabilityReview'
 import { DemographicsReview } from 'components/review/sections/DemographicsReview/DemographicsReview'
 import { ScreenerReview } from 'components/review/sections/ScreenerReview/ScreenerReview'
+import { ReviewInput } from 'types/claimantInput'
+import { useGetBetaTestReview } from 'queries/useGetBetaTestReview'
+import { isAxiosError } from 'axios'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
@@ -59,22 +67,55 @@ export const Review: NextPageWithLayout = () => {
   const { claimFormValues } = useContext(ClaimFormContext)
   const saveCompleteClaim = useSaveCompleteClaim()
   const submitClaim = useSubmitClaim()
+  const { refetch } = useGetBetaTestReview()
+  const [betaTestError, setBetaTestError] = useState<string | undefined>(
+    undefined
+  )
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0 })
+    }
+  }
 
   const valuesRef = useRef(claimFormValues)
   valuesRef.current = claimFormValues
 
-  const handleCompleteAndSubmit: FormEventHandler<HTMLButtonElement> = () => {
+  const handleCompleteAndSubmit: FormEventHandler<
+    HTMLButtonElement
+  > = async () => {
     // Make sure we're using the updated context value now that the formik form has been saved
     const completeClaimValues = valuesRef.current
     if (completeClaimValues !== undefined) {
+      setIsSubmitting(true)
       saveCompleteClaim.mutate(completeClaimValues, {
         onSuccess: async () => {
-          await submitClaim.mutate(completeClaimValues, {
-            onSuccess: async () =>
-              await router.push({
-                pathname: Routes.CLAIM.SUCCESS,
-              }),
-          })
+          // Send HTML review artifact of review page to backend server
+          const betaTestReviewResult = await refetch()
+          if (betaTestReviewResult.data?.status === 200) {
+            submitClaim.mutate(completeClaimValues, {
+              onSuccess: async () => {
+                await router.push({
+                  pathname: Routes.CLAIM.SUCCESS,
+                })
+              },
+              onError: () => {
+                scrollToTop()
+                setIsSubmitting(false)
+              },
+            })
+          } else {
+            const { error } = betaTestReviewResult
+            if (error && isAxiosError(error))
+              setBetaTestError(error.response?.data || error.message)
+            scrollToTop()
+            setIsSubmitting(false)
+          }
+        },
+        onError: () => {
+          scrollToTop()
+          setIsSubmitting(false)
         },
       })
     }
@@ -103,7 +144,9 @@ export const Review: NextPageWithLayout = () => {
       {() => {
         return (
           <>
-            {(saveCompleteClaim.isError || submitClaim.isError) && (
+            {(saveCompleteClaim.isError ||
+              submitClaim.isError ||
+              betaTestError) && (
               <Alert
                 type="error"
                 headingLevel="h2"
@@ -128,6 +171,7 @@ export const Review: NextPageWithLayout = () => {
                         : submitClaim.error.response.data}
                     </li>
                   )}
+                  {betaTestError && <li>{betaTestError}</li>}
                 </ul>
               </Alert>
             )}
@@ -195,8 +239,14 @@ export const Review: NextPageWithLayout = () => {
               }
             />
             <ClaimFormButtons>
-              <BackButton previousPage={previousPage.path} />
-              <SubmitButton onSubmit={handleCompleteAndSubmit} />
+              <BackButton
+                previousPage={previousPage.path}
+                disabled={isSubmitting}
+              />
+              <SubmitButton
+                onSubmit={handleCompleteAndSubmit}
+                disabled={isSubmitting}
+              />
             </ClaimFormButtons>
           </>
         )

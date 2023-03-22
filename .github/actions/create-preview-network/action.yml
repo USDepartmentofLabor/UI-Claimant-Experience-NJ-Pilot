@@ -4,6 +4,9 @@ inputs:
   aws-role-to-assume:
     description: The AWS role to assume
     required: true
+  base-url-wo-https:
+    description: Url for the deployment preview without https:// for listener rules
+    required: true
   base-url:
     description: Url for the deployment preview
     required: true
@@ -13,10 +16,10 @@ inputs:
 outputs:
   client-tg-arn:
     description: ARN of the client target group
-    value: ${{ steps.create-client-tg.outputs.client-tg-arn }}
+    value: ${{ steps.client-tg-arn.outputs.client-tg-arn }}
   server-tg-arn:
     description: ARN of the server target group
-    value: ${{ steps.create-server-tg.outputs.server-tg-arn }}
+    value: ${{ steps.server-tg-arn.outputs.server-tg-arn }}
 
 runs:
   using: "composite"
@@ -58,7 +61,7 @@ runs:
       run: |
         jq \
         --arg TG_NAME "$TG_NAME" \
-        '. del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | . + {Name: $TG_NAME}' \
+        'del(.TargetGroupArn, .TargetGroupName, .LoadBalancerArns) | . + {Name: $TG_NAME}' \
         tg-template.json >> preview-client-tg.json
 
     - name: Create json file for preview server target group
@@ -126,31 +129,18 @@ runs:
         DEFAULT: default
       shell: bash
       run: |
-        MAX="$(aws elbv2 describe-rules \
+        MAX=$(aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
         --query 'Rules[].{Priority:Priority}' | \
         jq --arg DEFAULT $DEFAULT \
-        'del(.[] | select(.Priority == $DEFAULT )) |  max.Priority | tonumber')"
-        echo "max=$MAX" >> GITHUB_OUTPUT
-        CLIENT_PRIORITY=$(($MAX+1))
-        SERVER_PRIORITY=$(($MAX+2))
-        echo "client-priority=$CLIENT_PRIORITY" >> GITHUB_OUTPUT
-        echo "server-priority=$SERVER_PRIORITY" >> GITHUB_OUTPUT
-
-    - name: Create client listener rule
-      if: steps.check-tg.outputs.tg-count == '0'
-      env:
-        LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
-        PRIORITY: ${{ steps.priority.outputs.client-priority }}
-        CLIENT_TG_ARN: ${{ steps.create-client-tg.outputs.client-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}
-      shell: bash
-      run: |
-        aws elbv2 create-rule \
-        --listener-arn $LISTENER_ARN \
-        --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} ' \
-        --actions Type=forward,TargetGroupArn=$CLIENT_TG_ARN
+        'del(.[] | select(.Priority == $DEFAULT )) |  max.Priority | tonumber')
+        echo $MAX
+        CLIENT_PRIORITY=$(($MAX+2))
+        echo $CLIENT_PRIORITY
+        SERVER_PRIORITY=$(($MAX+1))
+        echo $SERVER_PRIORITY
+        echo "client-priority=$CLIENT_PRIORITY" >> $GITHUB_OUTPUT
+        echo "server-priority=$SERVER_PRIORITY" >> $GITHUB_OUTPUT
 
     - name: Create server listener rule
       if: steps.check-tg.outputs.tg-count == '0'
@@ -158,11 +148,79 @@ runs:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
         PRIORITY: ${{ steps.priority.outputs.server-priority }}
         SERVER_TG_ARN: ${{ steps.create-server-tg.outputs.server-tg-arn }}
-        BASE_URL: ${{ inputs.base-url }}/intake-api/
+        BASE_URL: ${{ inputs.base-url-wo-https }}
+        SERVER_PATH: /intake-api/*
       shell: bash
       run: |
         aws elbv2 create-rule \
         --listener-arn $LISTENER_ARN \
         --priority $PRIORITY \
-        --conditions '{"Field":"host-header","HostHeaderConfig":{"Values":["$BASE_URL"]}} ' \
+        --conditions Field=host-header,Values="$BASE_URL" Field=path-pattern,Values=$SERVER_PATH \
         --actions Type=forward,TargetGroupArn=$SERVER_TG_ARN
+
+    - name: Create client listener rule
+      if: steps.check-tg.outputs.tg-count == '0'
+      env:
+        LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
+        PRIORITY: ${{ steps.priority.outputs.client-priority }}
+        CLIENT_TG_ARN: ${{ steps.create-client-tg.outputs.client-tg-arn }}
+        BASE_URL: ${{ inputs.base-url-wo-https }}
+      shell: bash
+      run: |
+        aws elbv2 create-rule \
+        --listener-arn $LISTENER_ARN \
+        --priority $PRIORITY \
+        --conditions Field=host-header,Values="$BASE_URL" \
+        --actions Type=forward,TargetGroupArn=$CLIENT_TG_ARN
+
+    - name: Get existing client target group ARN
+      id: get-client-tg
+      if: steps.check-tg.outputs.tg-count != '0'
+      env:
+        TG_NAME: ecs-client-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get existing server target group ARN
+      id: get-server-tg
+      if: steps.check-tg.outputs.tg-count != '0'
+      env:
+        TG_NAME: ecs-server-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Output client tg ARN
+      id: client-tg-arn
+      env:
+        TG_ALREADY_EXISTS: ${{ steps.check-tg.outputs.tg-count != '0' }}
+      shell: bash
+      run: |
+        if [[ "$TG_ALREADY_EXISTS" == true ]]; then
+          echo "client TG already exists"
+          CLIENT_TG_ARN=${{ steps.get-client-tg.outputs.client-tg-arn }}
+        else
+          echo "client TG was created"
+          CLIENT_TG_ARN=${{ steps.create-client-tg.outputs.client-tg-arn }}
+        fi
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Output server tg ARN
+      id: server-tg-arn
+      env:
+        TG_ALREADY_EXISTS: ${{ steps.check-tg.outputs.tg-count != '0' }}
+      shell: bash
+      run: |
+        if [[ "$TG_ALREADY_EXISTS" == true ]]; then
+          SERVER_TG_ARN=${{ steps.get-server-tg.outputs.server-tg-arn }}
+        else
+          SERVER_TG_ARN=${{ steps.create-server-tg.outputs.server-tg-arn }}
+        fi
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT

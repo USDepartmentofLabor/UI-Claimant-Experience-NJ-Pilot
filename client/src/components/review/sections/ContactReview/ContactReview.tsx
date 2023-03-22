@@ -10,12 +10,12 @@ import { formatStoredToDisplayPhone } from 'utils/phone/format'
 export const ContactReview = () => {
   const { t } = useTranslation('claimForm')
 
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
 
   const { heading, path } = ContactPageDefinition
 
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewElement
         label={t('contact.claimant_phone.label')}
         value={formatStoredToDisplayPhone(

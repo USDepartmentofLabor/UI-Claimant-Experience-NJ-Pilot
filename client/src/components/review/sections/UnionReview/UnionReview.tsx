@@ -8,10 +8,10 @@ import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
 
 export const UnionReview = () => {
   const { t } = useTranslation('claimForm')
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
   const { heading, path } = UnionPageDefinition
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewYesNo
         label={t('union.required_to_seek_work_through_hiring_hall.label')}
         value={claimFormValues?.required_to_seek_work_through_hiring_hall}

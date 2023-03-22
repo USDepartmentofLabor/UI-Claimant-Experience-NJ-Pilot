@@ -133,7 +133,7 @@ const claimForm = {
     options: {
       female: 'Female',
       male: 'Male',
-      unspecified: 'X (unspecified)',
+      unspecified: 'Unspecified (X)',
     },
     errors: {
       required: 'You must select a sex',
@@ -239,7 +239,6 @@ const claimForm = {
       label: 'Expiration date',
       errors: {
         required: 'Expiration date is required',
-        maxDate: "Expiration date can't be in the future",
         minDate: "Expiration date can't be before valid from / issued on date",
       },
     },

@@ -175,8 +175,26 @@ public class RecentEmployersControllerTest {
 
     @Test
     @WithMockUser
-    void shouldReturnEmptyIfNoSSN() throws Exception {
+    void shouldReturnEmptyIfNullSSN() throws Exception {
         when(claimStorageService.getSSN(anyString())).thenReturn(null);
+        String expectedResponse = "SSN not found for given claimant, unable to complete request";
+
+        this.mockMvc
+                .perform(
+                        MockMvcRequestBuilders.get("/recent-employers")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedResponse));
+        verify(claimStorageService, times(0)).saveRecentEmployer(any(), any());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnEmptyIfEmptyStringSSN() throws Exception {
+        when(claimStorageService.getSSN(anyString())).thenReturn("");
         String expectedResponse = "SSN not found for given claimant, unable to complete request";
 
         this.mockMvc

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,16 +67,36 @@ public class S3Service {
 
     public void upload(String bucket, String key, Object object, String kmsKey)
             throws AwsServiceException, SdkClientException, JsonProcessingException {
-        var request =
+        var requestBody = buildRequestBody(object);
+        put(requestBody, bucket, key, kmsKey);
+    }
+
+    public void upload(String bucket, String key, String fileContent, String kmsKey)
+            throws AwsServiceException, SdkClientException {
+        var requestBody = buildRequestBody(fileContent);
+        var contentType = "text/html";
+        put(requestBody, bucket, key, kmsKey, contentType);
+    }
+
+    private void put(RequestBody requestBody, String bucket, String key, String kmsKey) {
+        put(requestBody, bucket, key, kmsKey, null);
+    }
+
+    private void put(
+            RequestBody requestBody, String bucket, String key, String kmsKey, String contentType) {
+        var requestBuilder =
                 PutObjectRequest.builder()
                         .bucket(bucket)
                         .key(key)
                         .bucketKeyEnabled(true)
                         .serverSideEncryption(ServerSideEncryption.AWS_KMS)
-                        .ssekmsKeyId(kmsKey)
-                        .build();
-        var requestBody = buildRequestBody(object);
+                        .ssekmsKeyId(kmsKey);
 
+        if (contentType != null) {
+            requestBuilder.contentType(contentType);
+        }
+
+        var request = requestBuilder.build();
         var response = s3Client.putObject(request, requestBody);
         final URL reportUrl =
                 s3Client.utilities()
@@ -97,6 +118,11 @@ public class S3Service {
     private RequestBody buildRequestBody(Object object) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         byte[] content = mapper.writeValueAsBytes(object);
+        return RequestBody.fromByteBuffer(ByteBuffer.wrap(content));
+    }
+
+    private RequestBody buildRequestBody(String fileContent) {
+        byte[] content = fileContent.getBytes(StandardCharsets.UTF_8);
         return RequestBody.fromByteBuffer(ByteBuffer.wrap(content));
     }
 }
