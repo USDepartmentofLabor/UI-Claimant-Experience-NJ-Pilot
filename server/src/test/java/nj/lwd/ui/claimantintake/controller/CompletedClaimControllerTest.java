@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import nj.lwd.ui.claimantintake.service.ClaimStorageService;
 import nj.lwd.ui.claimantintake.service.ClaimValidatorService;
+import nj.lwd.ui.claimantintake.service.CustomValidationService;
 import nj.lwd.ui.claimantintake.service.ExternalClaimFormatterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ class CompletedClaimControllerTest {
     @Autowired private MockMvc mockMvc;
     @MockBean private ClaimStorageService claimStorageService;
     @MockBean private ClaimValidatorService claimValidatorService;
+    @MockBean private CustomValidationService customValidationService;
     @MockBean private ExternalClaimFormatterService externalClaimFormatterService;
 
     @Test
@@ -45,8 +47,7 @@ class CompletedClaimControllerTest {
     void shouldAcceptCompletedClaim() throws Exception {
         List<String> validationMessageList = new ArrayList<>();
         when(claimStorageService.completeClaim(anyString(), anyMap())).thenReturn(true);
-        when(claimValidatorService.validateAgainstSchema(anyString()))
-                .thenReturn(validationMessageList);
+        when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationMessageList);
         this.mockMvc
                 .perform(
                         post("/complete-claim")
@@ -64,8 +65,7 @@ class CompletedClaimControllerTest {
     void shouldRejectUnauthorizedUser() throws Exception {
         List<String> validationMessageList = new ArrayList<>();
         when(claimStorageService.saveClaim(anyString(), anyMap())).thenReturn(true);
-        when(claimValidatorService.validateAgainstSchema(anyString()))
-                .thenReturn(validationMessageList);
+        when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationMessageList);
         this.mockMvc
                 .perform(
                         post("/completed-claim")
@@ -98,7 +98,8 @@ class CompletedClaimControllerTest {
 
         List<String> validationErrors =
                 Arrays.asList("I am a fake error", "I am also a fake error");
-        when(claimValidatorService.validateAgainstSchema(anyString())).thenReturn(validationErrors);
+        when(claimValidatorService.validateClaim(anyMap())).thenReturn(validationErrors);
+
         MvcResult result =
                 this.mockMvc
                         .perform(
