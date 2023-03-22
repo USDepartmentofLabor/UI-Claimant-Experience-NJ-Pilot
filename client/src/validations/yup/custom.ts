@@ -15,6 +15,10 @@ export const yupAddress = () =>
     address: string()
       .max(64, i18n_common.t('address.address.errors.maxLength'))
       .required(i18n_common.t('address.address.errors.required')),
+    address2: string()
+      .nullable()
+      .optional()
+      .max(64, i18n_common.t('address.address.errors.maxLength')),
     city: string()
       .max(64, i18n_common.t('address.city.errors.maxLength'))
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
@@ -68,6 +72,10 @@ export const yupAddressWithoutPOBox = () =>
         i18n_common.t('address.address.errors.pobox')
       )
       .required(i18n_common.t('address.address.errors.required')),
+    address2: string()
+      .nullable()
+      .optional()
+      .max(64, i18n_common.t('address.address.errors.maxLength')),
     city: string()
       .max(64, i18n_common.t('address.city.errors.maxLength'))
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
