@@ -69,7 +69,7 @@ describe('SSN page', () => {
     expect(mockAppContext.setSsn).toHaveBeenCalledWith({ ssn: ssnValue })
   })
 
-  it('continues to screener page when ssn is valid', async () => {
+  it('shows modal continues to screener page when ssn is valid', async () => {
     const ssnValue = '123-45-4444'
     const user = userEvent.setup()
     mockMutateAsync.mockClear()
@@ -85,10 +85,11 @@ describe('SSN page', () => {
       </IntakeAppContext.Provider>
     )
     await user.click(screen.getByRole('button', { name: /next/i }))
+    expect(screen.queryByTestId('modalWindow')).toBeInTheDocument()
     expect(mockMutateAsync).toHaveBeenCalledTimes(1)
     expect(mockMutateAsync).toHaveBeenCalledWith(ssnValue)
     expect(mockPush).toHaveBeenCalledWith(Routes.SCREENER)
-  })
+  }, 6000)
 
   it('Goes to the home page when cancel button is clicked', async () => {
     const user = userEvent.setup()

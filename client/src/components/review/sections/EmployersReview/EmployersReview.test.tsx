@@ -234,7 +234,9 @@ describe('EmployerReview component', () => {
     expect(phoneNumber[0]).toHaveTextContent('555-555-5555')
     expect(fein[0]).toHaveTextContent(values.employers[0].fein)
     //your employer
-    expect(isFullTimePartTime).toHaveTextContent('yes')
+    expect(isFullTimePartTime).toHaveTextContent(
+      'your_employer.is_full_time.options.full_time'
+    )
     //work location
     expect(workedAtAddress[0]).toHaveTextContent('yes')
     expect(altAddress.length).toBe(0)
