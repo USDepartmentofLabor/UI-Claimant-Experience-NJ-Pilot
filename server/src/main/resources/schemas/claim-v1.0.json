@@ -483,8 +483,7 @@
                   "enum": [
                     "laid_off",
                     "still_employed",
-                    "federal_or_state_shutdown",
-                    "unsatisfactory_work_performance"
+                    "federal_or_state_shutdown"
                   ]
                 }
               }
