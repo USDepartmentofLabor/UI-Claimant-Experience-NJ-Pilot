@@ -13,6 +13,7 @@ import {
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
 import { ADDRESS_SKELETON } from 'constants/initialValues'
+import { AddressVerificationField } from 'components/form/fields/AddressVerificationField/AddressVerificationField'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -24,9 +25,31 @@ export const pageInitialValues = {
   mailing_address: { ...ADDRESS_SKELETON },
 }
 
+const MAILING_ADDRESS_OPTIONS = [
+  {
+    label: 'You entered:',
+    address: {
+      address: '123 Test St',
+      city: 'Hoboken',
+      state: 'NJ',
+      zipcode: '01833',
+    },
+    value: 'as-entered',
+  },
+  {
+    label: 'U.S. Postal Service recommends:',
+    address: {
+      address: '1234 Test St',
+      city: 'Hoboken',
+      state: 'NJ',
+      zipcode: '01833',
+    },
+    value: 'as-verified',
+  },
+]
+
 const AddressVerification: NextPageWithLayout = () => {
   // const { t } = useTranslation('claimForm')
-
   return (
     <ClaimFormik<AddressVerificationInput>
       initialValues={pageInitialValues}
@@ -37,6 +60,11 @@ const AddressVerification: NextPageWithLayout = () => {
       {() => {
         return (
           <>
+            <AddressVerificationField
+              name="mailing_address"
+              options={MAILING_ADDRESS_OPTIONS}
+              legend={`Which address do you want to use for your mailing address?`}
+            />
             <ClaimFormButtons nextStep={nextPage.heading}>
               <BackButton previousPage={previousPage.path} />
               <NextButton nextPage={nextPage.path} />
