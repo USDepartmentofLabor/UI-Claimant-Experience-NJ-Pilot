@@ -21,7 +21,7 @@ import { generateWhoAmI } from './utils/generateWhoAmI'
 import { fillEditEmployerFields } from './formPageFilling/edit-employer'
 import fillReviewEmployersFields from './formPageFilling/review-employers'
 
-context('Initial Claim form', { scrollBehavior: 'center' }, () => {
+context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
     //,{defaultCommandTimeout:6000}
     const whoAmI = generateWhoAmI()
@@ -219,6 +219,9 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickSubmit()
 
     // User lands on home page on successful completion
-    cy.url().should('eq', `${Cypress.config().baseUrl}/claim/beta-success`)
+    cy.url({ timeout: 10000 }).should(
+      'eq',
+      `${Cypress.config().baseUrl}/claim/beta-success`
+    )
   })
 })

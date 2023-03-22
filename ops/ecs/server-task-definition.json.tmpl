@@ -1,20 +1,15 @@
 {
-  "ipcMode": null,
   "executionRoleArn": "ecs-task-execution-role-dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
   "containerDefinitions": [
     {
-      "dnsSearchDomains": null,
-      "environmentFiles": null,
       "logConfiguration": {
         "logDriver": "awslogs",
-        "secretOptions": null,
         "options": {
           "awslogs-group": "/ecs/ENVIRONMENT_PLACEHOLDER/dol-ui-claimant-intake-APP_PLACEHOLDER",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "dol-ui-claimant-intake-APP_PLACEHOLDER-PR_PLACEHOLDER"
         }
       },
-      "entryPoint": null,
       "portMappings": [
         {
           "hostPort": 8080,
@@ -22,9 +17,6 @@
           "containerPort": 8080
         }
       ],
-      "command": null,
-      "linuxParameters": null,
-      "cpu": null,
       "environment": [
         {
           "name": "SPRING_PROFILES_ACTIVE",
@@ -39,16 +31,12 @@
           "value": "service.name=dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER"
         }
       ],
-      "resourceRequirements": null,
-      "ulimits": null,
-      "dnsServers": null,
       "mountPoints": [
         {
           "containerPath": "/tmp/app",
           "sourceVolume": "app_tmp"
         }
       ],
-      "workingDirectory": null,
       "secrets": [
         {
           "valueFrom": "/dol-ui-claimant-intake-ENVIRONMENT_PLACEHOLDER/database-host",
@@ -83,33 +71,16 @@
           "name": "COGNITO_ISSUER"
         }
       ],
-      "dockerSecurityOptions": null,
-      "memory": null,
-      "memoryReservation": null,
       "volumesFrom": [],
-      "stopTimeout": null,
       "image": null,
-      "startTimeout": null,
-      "firelensConfiguration": null,
       "dependsOn": [
         {
           "containerName": "aws-otel-collector",
           "condition": "START"
         }
       ],
-      "disableNetworking": null,
-      "interactive": null,
-      "healthCheck": null,
       "essential": true,
-      "links": null,
-      "hostname": null,
-      "extraHosts": null,
-      "pseudoTerminal": null,
-      "user": null,
       "readonlyRootFilesystem": true,
-      "dockerLabels": null,
-      "systemControls": null,
-      "privileged": null,
       "name": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER-PR_PLACEHOLDER"
     },
     {
@@ -138,15 +109,10 @@
   "placementConstraints": [],
   "memory": "2048",
   "taskRoleArn": "ecs-task-role-dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER",
-  "taskDefinitionArn": null,
   "family": "dol-ui-claimant-intake-server-ENVIRONMENT_PLACEHOLDER-PR_PLACEHOLDER",
-  "pidMode": null,
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
-  "runtimePlatform": null,
   "cpu": "1024",
-  "inferenceAccelerators": null,
-  "proxyConfiguration": null,
   "volumes": [
     {
       "name": "app_tmp"

@@ -263,6 +263,67 @@ public class ClaimStorageService {
         }
     }
 
+    public Optional<Map<String, Object>> getCompleteClaim(String claimantIdpId)
+            throws ClaimDataRetrievalException {
+        logger.info("Checking for complete claim data associated with user {}", claimantIdpId);
+        Optional<Claimant> existingClaimant = claimantStorageService.getClaimant(claimantIdpId);
+        if (existingClaimant.isEmpty()) {
+            String errorMessage =
+                    "Received request to retrieve a completed claim for user that does not have a corresponding claimant entry %s"
+                            .formatted(claimantIdpId);
+            logger.error(errorMessage);
+            throw new ClaimDataRetrievalException(
+                    errorMessage, new UnsupportedOperationException(errorMessage));
+        }
+
+        Claimant claimant = existingClaimant.get();
+        Optional<Claim> existingClaim = claimant.getActiveCompletedClaim();
+        if (existingClaim.isPresent()) {
+            Claim claim = existingClaim.get();
+            logger.info(
+                    "Getting completed claim data for claimant {} and claim {}",
+                    claimant.getId(),
+                    claim.getId());
+            try {
+                String s3Key = getS3Location(claimant, claim);
+                InputStream stream = s3Service.get(claimsBucket, s3Key);
+                var claimData = deserializeToClaimData(stream);
+                logger.info(
+                        "Successfully retrieved completed claim data for claim {} and claimant {}"
+                                + " from {} in S3",
+                        claim.getId(),
+                        claimant.getId(),
+                        s3Key);
+                return Optional.of(claimData);
+            } catch (AwsServiceException e) {
+                var errorMessage =
+                        String.format(
+                                "Amazon S3 unable to process request to get completed claim data"
+                                        + " for claim %s",
+                                claim.getId());
+                throw new ClaimDataRetrievalException(errorMessage, e);
+            } catch (SdkClientException e) {
+                var errorMessage =
+                        String.format(
+                                "Unable to contact Amazon S3 or unable to parse the response while"
+                                        + " trying to get completed claim %s from S3",
+                                claim.getId());
+                throw new ClaimDataRetrievalException(errorMessage, e);
+            } catch (IOException e) {
+                var errorMessage =
+                        String.format(
+                                "Unable to process S3 object data for completed claim %s",
+                                claim.getId());
+                throw new ClaimDataRetrievalException(errorMessage, e);
+            }
+        } else {
+            logger.info(
+                    "Claimant {} does not yet have an active completed claim to retrieve",
+                    claimant.getId());
+            return Optional.empty();
+        }
+    }
+
     private Claim getOrCreatePartialClaim(Claimant claimant) {
         logger.info("Checking for active partial claim for claimant {}", claimant.getId());
         Optional<Claim> existingClaim = claimant.getActivePartialClaim();

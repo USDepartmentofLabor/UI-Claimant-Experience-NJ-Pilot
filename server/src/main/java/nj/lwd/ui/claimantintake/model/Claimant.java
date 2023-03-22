@@ -86,7 +86,7 @@ public class Claimant {
 
     List<Claim> getCompletedClaims() {
         return claims.stream()
-                .filter(claim -> claim.isComplete())
+                .filter(Claim::isComplete)
                 .filter(claim -> !claim.isSubmitted())
                 .toList();
     }
@@ -123,7 +123,7 @@ public class Claimant {
     }
 
     /**
-     * As there can be more than one partial claim, allowing multiple complete claims
+     * As there can be more than one partial claim, allowing multiple completed claims
      *
      * @return the most recently completed claim that has yet to be submitted externally
      */

@@ -11,12 +11,12 @@ export const PersonalReview = () => {
   const { t } = useTranslation('claimForm')
   const { t: tContact } = useTranslation('contact')
 
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
 
   const { heading, path } = PersonalPageDefinition
 
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewElement
         label={t('name.first_name.label')}
         value={claimFormValues?.claimant_name?.first_name}

@@ -10,7 +10,7 @@ import { formatStoredDateToDisplayDate } from 'utils/date/format'
 
 export const DisabilityReview = () => {
   const { t } = useTranslation('claimForm')
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
 
   const { heading, path } = DisabilityPageDefinition
   const buildDisabililtyOptionText = (
@@ -36,7 +36,7 @@ export const DisabilityReview = () => {
     return displayText
   }
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewElement
         label={t('disability.disability_applied_to_or_received.label')}
         value={buildDisabililtyOptionText(
