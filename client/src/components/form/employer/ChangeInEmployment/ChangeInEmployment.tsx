@@ -31,8 +31,10 @@ export const ChangeInEmployment = () => {
   const showRecallQuestions = values.expect_to_be_recalled === true
   const showDefiniteRecall =
     values.expect_to_be_recalled === true && values.definite_recall === true
-  const showDischargeDate =
-    values.separation_circumstance === 'fired_discharged_suspended'
+  const showDischargeDate = [
+    'fired_discharged_suspended',
+    'unsatisfactory_work_performance',
+  ].includes(values.separation_circumstance ?? '')
   const showStillEmployed = values.separation_circumstance === 'still_employed'
   const showHoursReducedPercentage =
     showStillEmployed &&

@@ -552,7 +552,10 @@
             "properties": {
               "separation_circumstance": {
                 "type": "string",
-                "enum": ["fired_discharged_suspended"]
+                "enum": [
+                  "fired_discharged_suspended",
+                  "unsatisfactory_work_performance"
+                ]
               }
             }
           },
