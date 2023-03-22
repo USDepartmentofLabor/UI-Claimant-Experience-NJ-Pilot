@@ -8,11 +8,11 @@ import { DemographicsPageDefinition } from 'constants/pages/definitions/demograp
 
 export const DemographicsReview = () => {
   const { t } = useTranslation('claimForm')
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
   const { heading, path } = DemographicsPageDefinition
 
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewElement
         label={t(`sex.label`)}
         value={claimFormValues?.sex && t(`sex.options.${claimFormValues?.sex}`)}

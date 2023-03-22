@@ -13,13 +13,7 @@ import { GoToClaimFormButton } from '../../GoToClaimFormButton/GoToClaimFormButt
 
 export const NoCurrentClaimHome = () => {
   const { t } = useTranslation('home')
-  type process_list_1_list_type = Array<
-    string | { header: string; list: string[] }
-  >
-  const process_list_1_list: process_list_1_list_type = t(
-    'process_list_1_list',
-    { returnObjects: true }
-  )
+
   return (
     <>
       <div>
@@ -28,6 +22,7 @@ export const NoCurrentClaimHome = () => {
             {''}
             <Link
               variant="external"
+              data-testid="eligibility"
               referrerPolicy={'no-referrer'}
               target={'_blank'}
               href={t('preface_link_url')}
@@ -43,25 +38,14 @@ export const NoCurrentClaimHome = () => {
             <ProcessListHeading type={'h3'}>
               {t('process_list_1_header')}
             </ProcessListHeading>
-            <p>{t('process_list_1_content')}</p>
-            <ul className="margin-top-0">
-              {process_list_1_list.map((item) => {
-                if (typeof item == 'string') {
-                  return <li key={item}>{item}</li>
-                } else {
-                  return (
-                    <li key={item.header}>
-                      {item.header}
-                      <ul>
-                        {item.list.map((itemContent) => (
-                          <li key={itemContent}>{itemContent}</li>
-                        ))}
-                      </ul>
-                    </li>
-                  )
-                }
-              })}
-            </ul>
+            <Trans t={t} i18nKey="process_list_1_content">
+              <div>
+                {''}
+                <ul>
+                  <li>{''}</li>
+                </ul>
+              </div>
+            </Trans>
           </ProcessListItem>
           <ProcessListItem>
             <ProcessListHeading type={'h3'}>

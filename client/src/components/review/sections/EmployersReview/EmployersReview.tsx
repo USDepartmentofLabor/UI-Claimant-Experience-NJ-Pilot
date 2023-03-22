@@ -97,9 +97,11 @@ export const PaymentsReview = ({
 export const EmployerReview = ({
   employer,
   index,
+  hideEditUrl,
 }: {
   employer: Employer
   index: number
+  hideEditUrl: boolean
 }) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   let { path } = EditEmployerPageDefinition
@@ -143,7 +145,10 @@ export const EmployerReview = ({
   return (
     <>
       {index !== 0 && <HorizontalRule />}
-      <ReviewSection heading={employer.employer_name} editUrl={path}>
+      <ReviewSection
+        heading={employer.employer_name}
+        editUrl={!hideEditUrl ? path : undefined}
+      >
         <ReviewElement
           label={t('verified_fields.employer_address')}
           value={buildImportedEmployerAddress(employer?.imported_address)}
@@ -300,14 +305,19 @@ export const EmployerReview = ({
   )
 }
 export const EmployersReview = () => {
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
 
   return (
     <>
       {claimFormValues?.employers &&
         claimFormValues?.employers.length > 0 &&
         claimFormValues?.employers.map((employer, idx) => (
-          <EmployerReview employer={employer} index={idx} key={idx} />
+          <EmployerReview
+            employer={employer}
+            index={idx}
+            key={idx}
+            hideEditUrl={hideEditUrl || false}
+          />
         ))}
     </>
   )

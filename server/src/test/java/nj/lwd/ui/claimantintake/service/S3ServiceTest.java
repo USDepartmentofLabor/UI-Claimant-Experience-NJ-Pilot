@@ -100,4 +100,17 @@ class S3ServiceTest {
         // then: the s3 client makes a put object requests
         verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
     }
+
+    @Test
+    void uploadCanBeOverloadedWithAStringForFileContent() throws Exception {
+        when(s3Client.utilities().getUrl(any(GetUrlRequest.class)))
+                .thenReturn(new URL("http://url-to-uploaded-object"));
+        String fileContent = "some content that goes in a file";
+
+        // when: upload is called with Employer object
+        s3Service.upload("some-bucket", "my-key.txt", fileContent, "some-kms-key");
+
+        // then: the s3 client makes a put object requests
+        verify(s3Client, times(1)).putObject(any(PutObjectRequest.class), any(RequestBody.class));
+    }
 }

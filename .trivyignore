@@ -1,3 +1,7 @@
 # Ignore CVE-2016-1000027 while we research the finding
 # See https://github.com/newjersey/dol-ui-claimant-intake/issues/1224
 CVE-2016-1000027
+# Ignore the following SnakeYAML vulnerabilities. The claimant intake
+# application does not use SnakeYAML to parse untrusted input.
+# See the discussion at https://github.com/spring-projects/spring-boot/issues/33457
+CVE-2022-1471

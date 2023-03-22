@@ -7,10 +7,10 @@ import { OccupationPageDefinition } from 'constants/pages/definitions/occupation
 
 export const OccupationReview = () => {
   const { t } = useTranslation('claimForm')
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
   const { heading, path } = OccupationPageDefinition
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewElement
         label={t('occupation.job_title.label')}
         value={claimFormValues?.job_title}

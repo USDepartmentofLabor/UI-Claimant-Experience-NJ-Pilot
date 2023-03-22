@@ -180,6 +180,17 @@ describe('Recent employers page', () => {
     expect(screen.getByText('errorStatus.500.')).toBeInTheDocument()
   })
 
+  it('redirects to ssn on 400 error', async () => {
+    renderRecentEmployers({
+      isLoading: false,
+      isError: true,
+      error: { response: { status: 400 } },
+      data: [],
+    })
+    expect(mockPush).toHaveBeenCalledTimes(1)
+    expect(mockPush).toHaveBeenCalledWith(`${Routes.SSN}`)
+  })
+
   it('shows wgpm warning box when WGPM call fails', async () => {
     renderRecentEmployers({
       isLoading: false,

@@ -20,7 +20,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+    - uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
@@ -65,6 +65,7 @@ runs:
         --region us-east-1 \
         --user-pool-id $USER_POOL_ID \
         --client-id $CLIENT_ID \
+        --query "UserPoolClient" \
         --output json >> user-pool-client.json
 
     - name: Update user pool client json
@@ -78,7 +79,7 @@ runs:
         jq \
         --arg CALLBACK_URL "$CALLBACK_URL" \
         --arg SIGNOUT_URL "$SIGNOUT_URL" \
-        '.UserPoolClient.CallbackURLs += [$CALLBACK_URL] | .UserPoolClient.LogoutURLs += [$SIGNOUT_URL]' \
+        '.CallbackURLs += [$CALLBACK_URL] | .LogoutURLs += [$SIGNOUT_URL] | del(.ClientSecret, .LastModifiedDate, .CreationDate)' \
         user-pool-client.json >> updated-upc.json
 
     - name: Update cognito user pool client callback and signout with deployment preview URL

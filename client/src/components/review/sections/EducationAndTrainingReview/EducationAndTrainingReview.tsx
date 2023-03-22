@@ -7,10 +7,10 @@ import { ReviewYesNo } from 'components/review/ReviewYesNo/ReviewYesNo'
 
 export const EducationAndTrainingReview = () => {
   const { t } = useTranslation('claimForm')
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
   const { heading, path } = EducationAndTrainingPageDefinition
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewYesNo
         label={t('education_and_training.attending_training.label')}
         value={claimFormValues?.attending_college_or_job_training}

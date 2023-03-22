@@ -29,9 +29,8 @@ runs:
       shell: bash
       run: |
         CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
-        --names "$TG_NAME" \
-        --query "TargetGroups[0].TargetGroupArn" \
-        --output text)
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
         echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
 
     - name: Does a server target group exist?
@@ -41,8 +40,7 @@ runs:
       shell: bash
       run: |
         SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
-        --names "$TG_NAME" \
-        --query "TargetGroups[0].TargetGroupArn" \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
         --output text)
         echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
 
@@ -75,12 +73,12 @@ runs:
       if: steps.client-tg.outputs.client-tg-arn != ''
       env:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
-        RULE_VALUE: ${{ inputs.base-url }}
+        TG_ARN: ${{ steps.client-tg.outputs.client-tg-arn }}
       shell: bash
       run: |
         CLIENT_RULE_ARN="$( aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
-        --query "Rules[?Conditions[0].Values[0]==$RULE_VALUE].RuleArn" \
+        --query "Rules[?Actions[0].TargetGroupArn=='$TG_ARN'].RuleArn" \
         --output text
         )"
         echo "client-rule-arn=$CLIENT_RULE_ARN" >> $GITHUB_OUTPUT
@@ -99,12 +97,12 @@ runs:
       if: steps.server-tg.outputs.server-tg-arn != ''
       env:
         LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
-        RULE_VALUE: ${{ inputs.base-url }}/intake-api/
+        TG_ARN: ${{ steps.server-tg.outputs.server-tg-arn }}
       shell: bash
       run: |
         SERVER_RULE_ARN="$( aws elbv2 describe-rules \
         --listener-arn $LISTENER_ARN \
-        --query "Rules[?Conditions[0].Values[0]==$RULE_VALUE].RuleArn" \
+        --query "Rules[?Actions[0].TargetGroupArn=='$TG_ARN'].RuleArn" \
         --output text
         )"
         echo "server-rule-arn=$SERVER_RULE_ARN" >> $GITHUB_OUTPUT
@@ -129,7 +127,7 @@ runs:
         --target-group-arn "$TG_ARN"
 
     - name: Delete server target group
-      id: delete-client-tg
+      id: delete-server-tg
       if: steps.server-tg.outputs.server-tg-arn != ''
       env:
         TG_ARN: ${{ steps.server-tg.outputs.server-tg-arn }}
