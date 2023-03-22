@@ -24,9 +24,19 @@ export const pageInitialValues = {
   mailing_address: { ...ADDRESS_SKELETON },
 }
 
-const AddressVerification: NextPageWithLayout = () => {
-  // const { t } = useTranslation('claimForm')
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const res = await fetch(
+    `http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address?street=1600+Pennsylvania+Ave&zip=20500`
+  )
+  const data = await res.json()
 
+  // Pass data to the page via props
+  return { props: { data } }
+}
+const AddressVerification: NextPageWithLayout = ({ data }) => {
+  // const { t } = useTranslation('claimForm')
+  console.log(data)
   return (
     <ClaimFormik<AddressVerificationInput>
       initialValues={pageInitialValues}
