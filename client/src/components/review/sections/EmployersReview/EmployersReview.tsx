@@ -142,6 +142,14 @@ export const EmployerReview = ({
     return paymentListString
   }
 
+  const buildFullTimeReviewAnswer = (isFullTime: boolean | null) => {
+    return isFullTime === true || isFullTime === false
+      ? isFullTime
+        ? t('your_employer.is_full_time.options.full_time')
+        : t('your_employer.is_full_time.options.part_time')
+      : null
+  }
+
   return (
     <>
       {index !== 0 && <HorizontalRule />}
@@ -169,9 +177,9 @@ export const EmployerReview = ({
           label={t('your_employer.state_employer_payroll_number.review_label')}
           value={employer?.state_employer_payroll_number}
         />
-        <ReviewYesNo
+        <ReviewElement
           label={t('your_employer.is_full_time.label')}
-          value={employer?.is_full_time}
+          value={buildFullTimeReviewAnswer(employer?.is_full_time)}
         />
         <ReviewYesNo
           label={
