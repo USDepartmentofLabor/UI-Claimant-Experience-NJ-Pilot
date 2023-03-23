@@ -14,7 +14,8 @@ export const AppContextProviders = ({ children }: AppContextProvidersProps) => {
   const [claimFormValues, setClaimFormValues] = useState<
     ClaimantInput | undefined
   >(undefined)
-
+  console.log('in appcontextprovider: ssn is  ', ssnInput?.ssn)
+  console.log('claimform values ssn ', claimFormValues?.ssn)
   return (
     <IntakeAppContext.Provider
       value={{

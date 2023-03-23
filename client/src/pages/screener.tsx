@@ -45,7 +45,7 @@ const Screener: NextPageWithLayout = () => {
   const { ssnInput, setScreenerInput } = useContext(IntakeAppContext)
   const { data: partialClaim } = useGetPartialClaim()
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
-
+  // console.log("screener ssn input",ssnInput?.ssn)
   const validationSchema = object().shape({
     screener_current_country_us: boolean()
       .nullable()

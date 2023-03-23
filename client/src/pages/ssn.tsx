@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import TextField from 'components/form/fields/TextField/TextField'
 import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLayout'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
+// import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { SsnInput } from 'types/claimantInput'
 import { IntakeAppButtons } from 'components/IntakeAppButtons/IntakeAppButtons'
 import { Button, Modal, ModalRef } from '@trussworks/react-uswds'
@@ -30,12 +31,16 @@ const Ssn: NextPageWithLayout = () => {
   const [showSsn, setShowSsn] = useState<boolean>(false)
   const [disableButtons, setDisableButtons] = useState<boolean>(false)
   const validateSSN = useValidateSSN()
-
+  // const { claimFormValues, setClaimFormValues } = useContext(ClaimFormContext)
   const handleToggleSsn = () => {
     setShowSsn(!showSsn)
   }
-
+  // console.log("outside functions: ssnInput from context is ",ssnInput?.ssn)
+  // console.log("claim form values is ",claimFormValues)
   const initialValues = { ssn: ssnInput?.ssn || '' }
+
+  // console.log("outside functions: intial values is now ",initialValues.ssn)
+
   const validationSchema = object().shape({
     ssn: string()
       .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, t('errors.badFormat'))
@@ -54,7 +59,9 @@ const Ssn: NextPageWithLayout = () => {
   ) => {
     const { setSubmitting } = helpers
     values.ssn = getFormattedSsn(values.ssn)
+    // console.log("handlesubmit called: value being set is",values?.ssn)
     setSsn(values)
+    // setClaimFormValues(values)
     setSubmitting(false)
   }
   const modalRef = useRef<ModalRef>(null)
