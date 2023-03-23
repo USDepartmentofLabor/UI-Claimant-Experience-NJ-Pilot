@@ -201,14 +201,16 @@ runs:
       id: client-tg-arn
       env:
         TG_ALREADY_EXISTS: ${{ steps.check-tg.outputs.tg-count != '0' }}
+        GET_CLIENT_TG: ${{ steps.get-client-tg.outputs.client-tg-arn }}
+        CREATE_CLIENT_TG: ${{ steps.create-client-tg.outputs.client-tg-arn }}
       shell: bash
       run: |
         if [[ "$TG_ALREADY_EXISTS" == true ]]; then
           echo "client TG already exists"
-          CLIENT_TG_ARN=${{ steps.get-client-tg.outputs.client-tg-arn }}
+          CLIENT_TG_ARN=$GET_CLIENT_TG
         else
           echo "client TG was created"
-          CLIENT_TG_ARN=${{ steps.create-client-tg.outputs.client-tg-arn }}
+          CLIENT_TG_ARN=$CREATE_CLIENT_TG
         fi
         echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
 
@@ -216,11 +218,13 @@ runs:
       id: server-tg-arn
       env:
         TG_ALREADY_EXISTS: ${{ steps.check-tg.outputs.tg-count != '0' }}
+        GET_SERVER_TG: ${{ steps.get-server-tg.outputs.server-tg-arn }}
+        CREATE_SERVER_TG: ${{ steps.create-server-tg.outputs.server-tg-arn }}
       shell: bash
       run: |
         if [[ "$TG_ALREADY_EXISTS" == true ]]; then
-          SERVER_TG_ARN=${{ steps.get-server-tg.outputs.server-tg-arn }}
+          SERVER_TG_ARN=$GET_SERVER_TG
         else
-          SERVER_TG_ARN=${{ steps.create-server-tg.outputs.server-tg-arn }}
+          SERVER_TG_ARN=$CREATE_SERVER_TG
         fi
         echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
