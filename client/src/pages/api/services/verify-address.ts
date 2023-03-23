@@ -52,9 +52,9 @@ export default async function handler(
   res: NextApiResponse<JSON>
 ): Promise<any> {
   try {
-    const params = convertJSONAddressToURLParams(req.body)
+    const params = req.url && req.url.slice(req.url.indexOf('?'))
     const accumailResponse = await axios.get(
-      'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address?' + params
+      'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address' + params
     )
     if (accumailResponse.data && accumailResponse.data.success) {
       const responseData: AddressVerificationResponse = createResponse(
@@ -77,13 +77,6 @@ export default async function handler(
   }
 }
 
-const convertJSONAddressToURLParams = (params: AddressInput): string => {
-  let urlParams = new URLSearchParams(params).toString()
-  urlParams = urlParams.replace('address', 'street')
-  urlParams = urlParams.replace('address2', 'street2')
-  urlParams = urlParams.replace('zipcode', 'zip')
-  return urlParams
-}
 const createResponse = (
   response: AccumailResponse
 ): AddressVerificationResponse => {

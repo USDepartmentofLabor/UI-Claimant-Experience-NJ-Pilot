@@ -3,8 +3,8 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { AddressInput } from '../types/claimantInput'
 
 const getVerifiedAddress = async (address: AddressInput) => {
-  // POST so that the JSON Address can be sent directly, keeping param conversion logic in the API handler
-  return await axios.post('/api/services/verify-address', address)
+  let addressParams = convertJSONAddressToURLParams(address)
+  return await axios.get('/api/services/verify-address?' + addressParams)
 }
 
 export const useGetVerifiedAddress = (address: AddressInput) => {
@@ -12,4 +12,12 @@ export const useGetVerifiedAddress = (address: AddressInput) => {
     'getVerifiedAddress',
     () => getVerifiedAddress(address)
   )
+}
+
+const convertJSONAddressToURLParams = (params: AddressInput): string => {
+  let urlParams = new URLSearchParams(params).toString()
+  urlParams = urlParams.replace('address', 'street')
+  urlParams = urlParams.replace('address2', 'street2')
+  urlParams = urlParams.replace('zipcode', 'zip')
+  return urlParams
 }
