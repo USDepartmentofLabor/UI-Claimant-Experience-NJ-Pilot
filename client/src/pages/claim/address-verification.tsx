@@ -1,6 +1,6 @@
 import { AddressInput, AddressVerificationInput } from 'types/claimantInput'
 import { NextPageWithLayout } from 'pages/_app'
-import { ReactNode } from 'react'
+import { ReactNode, useContext } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { AddressVerificationPageDefinition } from 'constants/pages/definitions/addressVerificationPageDefinition'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
@@ -15,6 +15,7 @@ import {
 import { ADDRESS_SKELETON } from 'constants/initialValues'
 import { AddressVerificationField } from 'components/form/fields/AddressVerificationField/AddressVerificationField'
 import { useGetVerifiedAddress } from '../../queries/useGetVerifiedAddress'
+import { ClaimFormContext } from '../../contexts/ClaimFormContext'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -28,6 +29,55 @@ export const pageInitialValues = {
 
 const AddressVerification: NextPageWithLayout = () => {
   // const { t } = useTranslation('claimForm')
+  const input = useContext(ClaimFormContext)
+  const {
+    data: verifiedMailingAddress,
+    isLoading: isLoadingVerifiedMailingAddress,
+    isError: isVerifiedMailingAddressError,
+    error: verifiedMailingAddressError,
+  } = useGetVerifiedAddress(input?.claimFormValues?.mailing_address)
+  const {
+    data: verifiedResidentialAddress,
+    isLoading: isLoadingVerifiedResidentialAddress,
+    isError: isVerifiedResidentialAddressError,
+    error: verifiedResidentialAddressError,
+  } = useGetVerifiedAddress(input?.claimFormValues?.residence_address)
+  const resolvedVerifiedMailingAddress = (): AddressInput => {
+    return (
+      !isLoadingVerifiedMailingAddress && verifiedMailingAddress?.data.address
+    )
+  }
+  const resolvedVerifiedResidentialAddress = (): AddressInput => {
+    return (
+      !isLoadingVerifiedResidentialAddress &&
+      verifiedResidentialAddress?.data.address
+    )
+  }
+  const MAILING_ADDRESS_OPTIONS = [
+    {
+      label: 'You entered:',
+      address: input?.claimFormValues?.mailing_address || ADDRESS_SKELETON,
+      value: 'as-entered',
+    },
+    {
+      label: 'U.S. Postal Service recommends:',
+      address: resolvedVerifiedMailingAddress(), // TODO MRH: Why is this the same as the residential address call?
+      value: 'as-verified',
+    },
+  ]
+
+  const RESIDENCE_ADDRESS_OPTIONS = [
+    {
+      label: 'You entered:',
+      address: input?.claimFormValues?.residence_address || ADDRESS_SKELETON,
+      value: 'as-entered',
+    },
+    {
+      label: 'U.S. Postal Service recommends:',
+      address: resolvedVerifiedResidentialAddress(),
+      value: 'as-verified',
+    },
+  ]
 
   return (
     <ClaimFormik<AddressVerificationInput>
@@ -37,49 +87,6 @@ const AddressVerification: NextPageWithLayout = () => {
       index={pageDefinitions.indexOf(pageDefinition)}
     >
       {({ values }) => {
-        const {
-          data: verifiedMailingAddress,
-          isLoading: isLoadingVerifiedMailingAddress,
-          isError: isVerifiedMailingAddressError,
-          error: verifiedMailingAddressError,
-        } = useGetVerifiedAddress(values.mailing_address)
-        const {
-          data: verifiedResidentialAddress,
-          isLoading: isLoadingVerifiedResidentialAddress,
-          isError: isVerifiedResidentialAddressError,
-          error: verifiedResidentialAddressError,
-        } = useGetVerifiedAddress(values.residence_address)
-        const resolvedVerifiedMailingAddress = (): AddressInput => {
-          return verifiedMailingAddress?.data.address || ADDRESS_SKELETON
-        }
-        const resolvedVerifiedResidentialAddress = (): AddressInput => {
-          return verifiedResidentialAddress?.data.address || ADDRESS_SKELETON
-        }
-        const MAILING_ADDRESS_OPTIONS = [
-          {
-            label: 'You entered:',
-            address: values.mailing_address,
-            value: 'as-entered',
-          },
-          {
-            label: 'U.S. Postal Service recommends:',
-            address: resolvedVerifiedMailingAddress(), // TODO MRH: Why is this the same as the residential address call?
-            value: 'as-verified',
-          },
-        ]
-
-        const RESIDENCE_ADDRESS_OPTIONS = [
-          {
-            label: 'You entered:',
-            address: values.residence_address,
-            value: 'as-entered',
-          },
-          {
-            label: 'U.S. Postal Service recommends:',
-            address: resolvedVerifiedResidentialAddress(),
-            value: 'as-verified',
-          },
-        ]
         return (
           <>
             {/*TODO MRH handle Loading state*/}
