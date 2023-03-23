@@ -15,14 +15,6 @@ export const DevHome = ({ setClaimStatus }: devHomeProps) => {
   const session = useSession()
   const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'production'
   const renderNoClaimPage = () => setClaimStatus('noCurrentClaim')
-  const foo = async () => {
-    console.log('addressVerfication button clicked')
-    const foo = await fetch('/api/services/addressVerification', {
-      method: 'GET',
-    }).catch((e) => console.log(e))
-    foo && console.log(foo)
-    console.log('addressVerfication buttonCLick function done')
-  }
 
   return (
     <>
@@ -41,11 +33,6 @@ export const DevHome = ({ setClaimStatus }: devHomeProps) => {
               )}
           </tbody>
         </Table>
-      </div>
-      <div className="margin-bottom-1">
-        <Button type="button" onClick={foo} data-testid="test nextjs api">
-          Address Verification
-        </Button>
       </div>
       <div className="margin-bottom-1">
         <SignOut isNavLink={false} />
