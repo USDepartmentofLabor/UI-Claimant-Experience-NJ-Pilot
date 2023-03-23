@@ -1,5 +1,5 @@
-import { array, boolean, mixed, object } from 'yup'
-import { i18n_claimForm } from 'i18n/i18n'
+import { array, boolean, mixed, object, ValidationError } from 'yup'
+import { i18n_claimForm, i18n_common } from 'i18n/i18n'
 import {
   yupAddress,
   yupAddressWithoutPOBox,
@@ -7,7 +7,9 @@ import {
 } from 'validations/yup/custom'
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { Routes } from 'constants/routes'
-
+const getLength = (field: string | undefined) => {
+  return field?.length ? field?.length : 0
+}
 const validationSchema = object().shape({
   LOCAL_claimant_has_alternate_names: boolean()
     .nullable()
@@ -18,10 +20,26 @@ const validationSchema = object().shape({
   }),
   LOCAL_mailing_address_same: boolean(),
   residence_address: yupAddressWithoutPOBox(),
-  mailing_address: mixed().when('LOCAL_mailing_address_same', {
-    is: false,
-    then: yupAddress(),
-  }),
+  mailing_address: mixed()
+    .when('LOCAL_mailing_address_same', {
+      is: false,
+      then: yupAddress(),
+    })
+    .test({
+      message: i18n_common.t('address.address.errors.maxLength.mailing'),
+
+      test: (mailing_address) => {
+        const len =
+          getLength(mailing_address?.address) + getLength(mailing_address?.city)
+        return len > 44
+          ? new ValidationError(
+              i18n_common.t('address.address.errors.maxLength.mailing'),
+              true,
+              'LOCAL_mailing_address_same'
+            )
+          : true
+      },
+    }),
 })
 
 export const PersonalPageDefinition: PageDefinition = {

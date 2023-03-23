@@ -10,12 +10,12 @@ import { getStatesTerritoriesProvincesNameFromAbbrev } from 'utils/review/review
 export const PrequalReview = () => {
   const { t } = useTranslation('claimForm')
 
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
 
   const { heading, path } = PrequalPageDefinition
 
   return (
-    <ReviewSection heading={heading} editUrl={path}>
+    <ReviewSection heading={heading} editUrl={!hideEditUrl ? path : undefined}>
       <ReviewYesNo
         label={t('prequal.filed_in_last_12mo.label')}
         value={claimFormValues?.filed_in_last_12mo}

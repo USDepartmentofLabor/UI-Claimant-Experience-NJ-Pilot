@@ -9,8 +9,12 @@ import com.networknt.schema.ValidationMessage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +26,31 @@ public class ClaimValidatorService {
     private final Logger logger = LoggerFactory.getLogger(ClaimValidatorService.class);
     private final ObjectMapper mapper = new ObjectMapper();
     private final JsonSchema schema;
+    private final CustomValidationService customValidationService;
 
     @Autowired
     public ClaimValidatorService(
             // TODO: use default values that can access the claim-v1.0.json
             @Value("${RANDOM_SYS_PROP:classpath:}") String baseUrl,
-            @Value("${RANDOM_SYS_PROP:claim-v1.0}") String schemaName)
+            @Value("${RANDOM_SYS_PROP:claim-v1.0}") String schemaName,
+            CustomValidationService customValidationService)
             throws URISyntaxException {
         String schemaUri = baseUrl + "/schemas/" + schemaName + ".json";
         this.schema = getJsonSchemaFromUrl(schemaUri);
+        this.customValidationService = customValidationService;
+    }
+
+    public List<String> validateClaim(Map<String, Object> claimData) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonData = objectMapper.writeValueAsString(claimData);
+
+        List<String> schemaValidationErrors = validateAgainstSchema(jsonData);
+        List<String> customValidationErrors =
+                customValidationService.performCustomValidations(claimData);
+
+        return Stream.of(customValidationErrors, schemaValidationErrors)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public List<String> validateAgainstSchema(String jsonData) throws IOException {

@@ -5,6 +5,8 @@ const ssn = {
   showSsn: 'Show number',
   hideSsn: 'Hide number',
   hint: 'Use format 000-00-0000',
+  loading:
+    'We are checking your identity information. This should take just a few seconds...',
   errors: {
     badFormat:
       'Social Security number must be exactly 9 numbers with format 000-00-0000',

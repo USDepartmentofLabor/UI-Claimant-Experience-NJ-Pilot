@@ -27,7 +27,13 @@ const common = {
         required: 'Address is required',
         pobox:
           'P.O. boxes can only be used as a mailing address, not a residential address. If you do not have another address, then please contact us.',
-        maxLength: 'Address must be at most 40 characters',
+        maxLength: {
+          employer: 'Address must be at most 40 characters',
+          address_generic_max: 'Address must be at most 64 characters',
+          residence: 'Address must be at most 30 characters',
+          mailing:
+            'Mailing address and mailing city  combined must be at most 44 characters',
+        },
       },
     },
     address2: { label: 'Address 2 (optional)' },
@@ -37,7 +43,11 @@ const common = {
       errors: {
         required: 'City is required',
         noNumbers: 'Do not use numbers',
-        maxLength: 'City must be at most 64 characters',
+        maxLength: {
+          residence: 'City must be at most 19 characters',
+          employer: 'City must be at most 40 characters',
+          address_generic_max: 'City must be at most 64 characters',
+        },
       },
     },
     state: {

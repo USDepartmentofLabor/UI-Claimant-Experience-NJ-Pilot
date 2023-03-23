@@ -17,7 +17,7 @@ export const ReviewElement = ({
   legendProps,
   pProps,
   maskable,
-  defaultMasked = true,
+  defaultMasked,
   ...fieldSetProps
 }: ReviewElementProps) =>
   value ? (

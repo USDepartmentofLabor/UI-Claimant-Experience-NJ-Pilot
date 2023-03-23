@@ -16,4 +16,8 @@ public enum ClaimEventCategory {
     INITIATED_SUBMIT, // Attempt has been made to submit "downstream" (to RCC)
     SUBMITTED, // Claim has been successfully submitted "downstream" (to RCC)
     SUBMIT_FAILED, // The claim was not able to be submitted
+
+    INITIATED_BETA_TEST_SUBMIT, // The beta test submission flow has been initiated
+    BETA_TEST_SUBMITTED, // The beta test submission has succeeded
+    BETA_TEST_SUBMIT_FAILED // The beta test submission failed
 }

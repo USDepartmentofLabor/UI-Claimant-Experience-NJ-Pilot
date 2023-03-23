@@ -97,9 +97,11 @@ export const PaymentsReview = ({
 export const EmployerReview = ({
   employer,
   index,
+  hideEditUrl,
 }: {
   employer: Employer
   index: number
+  hideEditUrl: boolean
 }) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
   let { path } = EditEmployerPageDefinition
@@ -140,10 +142,21 @@ export const EmployerReview = ({
     return paymentListString
   }
 
+  const buildFullTimeReviewAnswer = (isFullTime: boolean | null) => {
+    return isFullTime === true || isFullTime === false
+      ? isFullTime
+        ? t('your_employer.is_full_time.options.full_time')
+        : t('your_employer.is_full_time.options.part_time')
+      : null
+  }
+
   return (
     <>
       {index !== 0 && <HorizontalRule />}
-      <ReviewSection heading={employer.employer_name} editUrl={path}>
+      <ReviewSection
+        heading={employer.employer_name}
+        editUrl={!hideEditUrl ? path : undefined}
+      >
         <ReviewElement
           label={t('verified_fields.employer_address')}
           value={buildImportedEmployerAddress(employer?.imported_address)}
@@ -164,9 +177,9 @@ export const EmployerReview = ({
           label={t('your_employer.state_employer_payroll_number.review_label')}
           value={employer?.state_employer_payroll_number}
         />
-        <ReviewYesNo
+        <ReviewElement
           label={t('your_employer.is_full_time.label')}
-          value={employer?.is_full_time}
+          value={buildFullTimeReviewAnswer(employer?.is_full_time)}
         />
         <ReviewYesNo
           label={
@@ -300,14 +313,19 @@ export const EmployerReview = ({
   )
 }
 export const EmployersReview = () => {
-  const { claimFormValues } = useContext(ClaimFormContext)
+  const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
 
   return (
     <>
       {claimFormValues?.employers &&
         claimFormValues?.employers.length > 0 &&
         claimFormValues?.employers.map((employer, idx) => (
-          <EmployerReview employer={employer} index={idx} key={idx} />
+          <EmployerReview
+            employer={employer}
+            index={idx}
+            key={idx}
+            hideEditUrl={hideEditUrl || false}
+          />
         ))}
     </>
   )

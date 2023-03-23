@@ -104,7 +104,7 @@ public class SubmissionService {
                 && validatedClaimPayload.get("alternate_phone") instanceof Map
                 && ((Map<String, Object>) validatedClaimPayload.get("alternate_phone"))
                         .get("number")
-                        .equals("0000000000")) {
+                        .equals("000111111")) {
             logger.debug("Forcing sendClaim to return false");
             return false;
         }
