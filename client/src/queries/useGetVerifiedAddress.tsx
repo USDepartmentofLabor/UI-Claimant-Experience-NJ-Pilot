@@ -8,8 +8,9 @@ const getVerifiedAddress = async (address: AddressInput | undefined) => {
 }
 
 export const useGetVerifiedAddress = (address: AddressInput | undefined) => {
+  //using the first line of the address as a key to differentiate requests and responses
   return useQuery<AxiosResponse<any, any> | undefined, AxiosError<any>>(
-    'getVerifiedAddress',
+    address?.address || 'getVerifiedAddress',
     () => getVerifiedAddress(address)
   )
 }

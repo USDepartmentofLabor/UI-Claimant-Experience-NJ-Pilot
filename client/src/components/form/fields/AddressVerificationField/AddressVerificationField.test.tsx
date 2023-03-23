@@ -6,6 +6,7 @@ const MAILING_ADDRESS_OPTIONS = [
     label: 'You entered:',
     address: {
       address: '123 Test St',
+      address2: '',
       city: 'Hoboken',
       state: 'NJ',
       zipcode: '01833',
@@ -16,6 +17,8 @@ const MAILING_ADDRESS_OPTIONS = [
     label: 'U.S. Postal Service recommends:',
     address: {
       address: '1234 Test St',
+
+      address2: '',
       city: 'Hoboken',
       state: 'NJ',
       zipcode: '01833',

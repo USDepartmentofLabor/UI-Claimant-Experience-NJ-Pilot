@@ -16,6 +16,7 @@ import { ADDRESS_SKELETON } from 'constants/initialValues'
 import { AddressVerificationField } from 'components/form/fields/AddressVerificationField/AddressVerificationField'
 import { useGetVerifiedAddress } from '../../queries/useGetVerifiedAddress'
 import { ClaimFormContext } from '../../contexts/ClaimFormContext'
+import PageLoader from '../../components/loaders/PageLoader'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -33,26 +34,12 @@ const AddressVerification: NextPageWithLayout = () => {
   const {
     data: verifiedMailingAddress,
     isLoading: isLoadingVerifiedMailingAddress,
-    isError: isVerifiedMailingAddressError,
-    error: verifiedMailingAddressError,
   } = useGetVerifiedAddress(input?.claimFormValues?.mailing_address)
   const {
     data: verifiedResidentialAddress,
     isLoading: isLoadingVerifiedResidentialAddress,
-    isError: isVerifiedResidentialAddressError,
-    error: verifiedResidentialAddressError,
   } = useGetVerifiedAddress(input?.claimFormValues?.residence_address)
-  const resolvedVerifiedMailingAddress = (): AddressInput => {
-    return (
-      !isLoadingVerifiedMailingAddress && verifiedMailingAddress?.data.address
-    )
-  }
-  const resolvedVerifiedResidentialAddress = (): AddressInput => {
-    return (
-      !isLoadingVerifiedResidentialAddress &&
-      verifiedResidentialAddress?.data.address
-    )
-  }
+
   const MAILING_ADDRESS_OPTIONS = [
     {
       label: 'You entered:',
@@ -61,7 +48,10 @@ const AddressVerification: NextPageWithLayout = () => {
     },
     {
       label: 'U.S. Postal Service recommends:',
-      address: resolvedVerifiedMailingAddress(), // TODO MRH: Why is this the same as the residential address call?
+      address:
+        (!isLoadingVerifiedMailingAddress &&
+          verifiedMailingAddress?.data.address) ||
+        ADDRESS_SKELETON,
       value: 'as-verified',
     },
   ]
@@ -74,44 +64,55 @@ const AddressVerification: NextPageWithLayout = () => {
     },
     {
       label: 'U.S. Postal Service recommends:',
-      address: resolvedVerifiedResidentialAddress(),
+      address:
+        (!isLoadingVerifiedResidentialAddress &&
+          verifiedResidentialAddress?.data.address) ||
+        ADDRESS_SKELETON,
       value: 'as-verified',
     },
   ]
+  const arePendingVerifications =
+    isLoadingVerifiedResidentialAddress ||
+    (!input.claimFormValues?.LOCAL_mailing_address_same &&
+      isLoadingVerifiedMailingAddress)
 
-  return (
-    <ClaimFormik<AddressVerificationInput>
-      initialValues={pageInitialValues}
-      validationSchema={pageDefinition.validationSchema}
-      heading={pageDefinition.heading}
-      index={pageDefinitions.indexOf(pageDefinition)}
-    >
-      {({ values }) => {
-        return (
-          <>
-            {/*TODO MRH handle Loading state*/}
-            <AddressVerificationField
-              name="residence_address"
-              options={RESIDENCE_ADDRESS_OPTIONS}
-              legend={`Which address do you want to use as your residence?`}
-            />
-            {!values.LOCAL_mailing_address_same && (
+  if (arePendingVerifications) {
+    return <PageLoader />
+  } else {
+    return (
+      <ClaimFormik<AddressVerificationInput>
+        initialValues={pageInitialValues}
+        validationSchema={pageDefinition.validationSchema}
+        heading={pageDefinition.heading}
+        index={pageDefinitions.indexOf(pageDefinition)}
+      >
+        {({ values }) => {
+          return (
+            <>
+              {/*TODO MRH handle Loading state*/}
               <AddressVerificationField
-                className="margin-top-2"
-                name="mailing_address"
-                options={MAILING_ADDRESS_OPTIONS}
-                legend={`Which address do you want to use for your mailing address?`}
+                name="residence_address"
+                options={RESIDENCE_ADDRESS_OPTIONS}
+                legend={`Which address do you want to use as your residence?`}
               />
-            )}
-            <ClaimFormButtons nextStep={nextPage.heading}>
-              <BackButton previousPage={previousPage.path} />
-              <NextButton nextPage={nextPage.path} />
-            </ClaimFormButtons>
-          </>
-        )
-      }}
-    </ClaimFormik>
-  )
+              {!values.LOCAL_mailing_address_same && (
+                <AddressVerificationField
+                  className="margin-top-2"
+                  name="mailing_address"
+                  options={MAILING_ADDRESS_OPTIONS}
+                  legend={`Which address do you want to use for your mailing address?`}
+                />
+              )}
+              <ClaimFormButtons nextStep={nextPage.heading}>
+                <BackButton previousPage={previousPage.path} />
+                <NextButton nextPage={nextPage.path} />
+              </ClaimFormButtons>
+            </>
+          )
+        }}
+      </ClaimFormik>
+    )
+  }
 }
 
 AddressVerification.getLayout = (page: ReactNode) => {
