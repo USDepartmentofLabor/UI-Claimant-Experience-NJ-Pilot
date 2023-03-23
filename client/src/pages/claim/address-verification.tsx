@@ -63,7 +63,7 @@ const AddressVerification: NextPageWithLayout = () => {
           },
           {
             label: 'U.S. Postal Service recommends:',
-            address: resolvedVerifiedMailingAddress(),
+            address: resolvedVerifiedMailingAddress(), // TODO MRH: Why is this the same as the residential address call?
             value: 'as-verified',
           },
         ]
@@ -82,7 +82,7 @@ const AddressVerification: NextPageWithLayout = () => {
         ]
         return (
           <>
-            //TODO MRH handle Loading state
+            {/*TODO MRH handle Loading state*/}
             <AddressVerificationField
               name="residence_address"
               options={RESIDENCE_ADDRESS_OPTIONS}
