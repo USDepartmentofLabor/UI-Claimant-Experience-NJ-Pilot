@@ -21,20 +21,15 @@ export const useSaveClaimFormValues = () => {
   const appendAndSaveClaimFormValues = async (
     values: Partial<ClaimantInput>
   ) => {
-    // console.log("in append")
     const appendedClaimFormValues = appendValuesToClaimFormContext(values)
     await saveClaimFormValues(appendedClaimFormValues)
   }
 
   const appendValuesToClaimFormContext = (values: Partial<ClaimantInput>) => {
-    // console.log("appendValuesToClaimFormContext-> claimf form values before appending ",JSON.stringify(claimFormValues))
-    // console.log("appendValuesToClaimFormContext ->values from partial claim ",JSON.stringify(values))
-
     const merged = {
       ...claimFormValues,
       ...values,
     }
-    // console.log("merged became",JSON.stringify(merged))
     return merged
   }
 
