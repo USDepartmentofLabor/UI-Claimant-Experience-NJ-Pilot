@@ -82,8 +82,6 @@ jobs:
     environment: dev
     outputs:
       server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
-      client-tg-arn: ${{ steps.preview-networking.outputs.client-tg-arn }}
-      server-tg-arn: ${{ steps.preview-networking.outputs.server-tg-arn }}
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -159,7 +157,6 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}
           ecs-client-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
-          client-tg-arn: ${{ needs.deploy-preview-auth-and-network.outputs.client-tg-arn }}
 
   deploy-preview-server-service:
     needs:
@@ -193,7 +190,6 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           ecs-server-security-group: ${{ secrets.ECS_SERVER_SECURITY_GROUP_DEV }}
           ecs-server-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
-          server-tg-arn: ${{ needs.deploy-preview-auth-and-network.outputs.server-tg-arn }}
 
   deploy-preview-will-not-create:
     needs: [should-deploy-preview-run]
