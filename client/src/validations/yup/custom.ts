@@ -19,7 +19,6 @@ export const yupAddress = () =>
       )
       .required(i18n_common.t('address.address.errors.required')),
     address2: string()
-      .nullable()
       .optional()
       .max(64, i18n_common.t('address.address.errors.maxLength')),
     city: string()
