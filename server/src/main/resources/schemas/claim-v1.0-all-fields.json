@@ -37,6 +37,10 @@
           "type": "string",
           "maxLength": 64
         },
+        "address2": {
+          "type": "string",
+          "maxLength": 64
+        },
         "city": {
           "type": "string",
           "maxLength": 64,
@@ -61,6 +65,10 @@
           "type": "string",
           "maxLength": 30,
           "pattern": "^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$"
+        },
+        "address2": {
+          "type": "string",
+          "maxLength": 64
         },
         "city": {
           "type": "string",
