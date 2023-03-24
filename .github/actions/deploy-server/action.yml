@@ -27,8 +27,6 @@ inputs:
     description: The aws security group for ECS server services used in deployment previews
   ecs-server-subnet:
     description: One subnet for ECS services used in deployment previews
-  server-tg-arn:
-    description: ARN for the server alb target group
 outputs:
   image-uri-without-aws-id:
     description: The uri for the server image pushed to AWS ECR without the AWS ID
@@ -181,6 +179,18 @@ runs:
         aws ecs register-task-definition \
         --cli-input-json "file://${TASK_DEF}"
 
+    - name: Get existing server target group ARN
+      id: get-server-tg
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        TG_NAME: ecs-server-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
+
     - name: Create ECS service for deployment preview
       if: steps.preview-service-exist.outputs.service-count == '0'
       env:
@@ -189,7 +199,7 @@ runs:
         CONTAINER_NAME: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}-${{ inputs.pr }}
         SUBNET: ${{ inputs.ecs-server-subnet }}
         SECURITY_GROUP: ${{ inputs.ecs-server-security-group }}
-        TG_ARN: ${{ inputs.server-tg-arn }}
+        TG_ARN: ${{ steps.get-server-tg.outputs.server-tg-arn }}
       shell: bash
       run: |
         aws ecs create-service \
