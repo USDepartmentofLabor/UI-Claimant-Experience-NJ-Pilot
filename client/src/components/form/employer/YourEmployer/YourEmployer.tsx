@@ -38,6 +38,21 @@ export const YourEmployer = () => {
     }
   }
 
+  const handleEmployerPhoneChange: ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
+    if (e.target.value === '') {
+      await clearField(
+        `is_employer_phone_accurate`,
+        EMPLOYER_SKELETON.is_employer_phone_accurate
+      )
+      await clearField(
+        `work_location_phone.number`,
+        EMPLOYER_SKELETON.work_location_phone.number
+      )
+    }
+  }
+
   return (
     <>
       <div>
@@ -90,6 +105,7 @@ export const YourEmployer = () => {
               name="employer_phone"
               label={t('your_employer.employer_phone.label')}
               showSMS={false}
+              onChange={handleEmployerPhoneChange}
             />
           </>
         )}
