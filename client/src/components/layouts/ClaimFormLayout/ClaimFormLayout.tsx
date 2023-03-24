@@ -15,6 +15,11 @@ import { ClaimFormSideNav } from 'components/form/ClaimFormSideNav/ClaimFormSide
 import { useGetPartialClaim } from 'queries/useGetPartialClaim'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useClaimProgress } from 'hooks/useClaimProgress'
+// import { IntakeAppContext } from 'contexts/IntakeAppContext'
+// import { useInitialScreenerValues } from 'pages/screener'
+// import { pageInitialValues } from 'pages/screener'
+// import { ScreenerInput } from 'types/claimantInput'
+// import { merge } from 'lodash'
 
 type ClaimFormProps = {
   pageDefinition: PageDefinition
@@ -22,13 +27,23 @@ type ClaimFormProps = {
   children: ReactNode
   isDynamic?: boolean
 }
+// //MESSY JUST TESTING IF THIS CHANGES ANY FUNCTIONALITY
+// const useInitialScreenerValues = (screenerInput: ScreenerInput | undefined) => {
+//   const initialValues = pageInitialValues as ScreenerInput
 
+//   merge(initialValues, screenerInput)
+//   return {
+//     initialValues,
+//   }
+// }
 export const ClaimFormLayout = ({
   children,
   pageDefinition,
   index,
 }: ClaimFormProps) => {
   const { setClaimFormValues } = useContext(ClaimFormContext)
+  // const { setSsn, setScreenerInput, screenerInput } = useContext(IntakeAppContext)
+
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
   const {
@@ -49,6 +64,33 @@ export const ClaimFormLayout = ({
     // Wait for success or error, specifically
     if (partialClaimIsSuccess && partialClaim !== undefined) {
       setClaimFormValues(partialClaim)
+      // if (partialClaim?.ssn){
+      // setSsn({ssn:partialClaim.ssn})
+      // }
+      // const {initialValues: screenerValues}= useInitialScreenerValues(screenerInput)
+      // setScreenerInput(screenerValues)
+      // const {
+      //   screener_current_country_us,
+      //   screener_live_in_canada,
+      //   screener_job_last_eighteen_months,
+      //   screener_work_nj,
+      //   screener_military_service_eighteen_months,
+      //   screener_currently_disabled,
+      //   screener_federal_work_in_last_eighteen_months,
+      //   screener_maritime_employer_eighteen_months,
+      // }=partialClaim
+      //   setScreenerInput(
+      //     {
+      //       screener_current_country_us:screener_current_country_us,
+      //       screener_live_in_canada:screener_live_in_canada,
+      //       screener_job_last_eighteen_months:screener_job_last_eighteen_months,
+      //       screener_work_nj:screener_work_nj,
+      //       screener_military_service_eighteen_months:screener_military_service_eighteen_months,
+      //       screener_currently_disabled: screener_currently_disabled,
+      //       screener_currently_disabled:screener_federal_work_in_last_eighteen_months,
+      //       screener_currently_disabled:screener_maritime_employer_eighteen_months,
+      //     }
+      // }
     }
     if (!partialClaimIsIdle && !isLoadingGetPartialClaim) {
       setIsLoading(false)

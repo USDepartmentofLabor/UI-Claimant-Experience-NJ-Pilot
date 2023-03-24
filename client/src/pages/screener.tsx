@@ -11,6 +11,7 @@ import {
   ReactNode,
   useContext,
   useRef,
+  // useEffect,
 } from 'react'
 import { NextPageWithLayout } from 'pages/_app'
 import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLayout'
@@ -27,6 +28,15 @@ import formStyles from 'components/form/form.module.scss'
 import styles from 'styles/pages/screener.module.scss'
 import { useGetPartialClaim } from '../queries/useGetPartialClaim'
 import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
+// import { ClaimFormContext } from 'contexts/ClaimFormContext'
+import { merge } from 'lodash'
+// import isEqual from 'lodash/isEqual'
+import { PartialClaimResponseType } from 'types/ResponseTypes'
+// import {
+//   ClearFieldFunction,
+//   ClearFieldsFunction,
+//   DEFAULT_TOUCHED,
+// } from 'types/ClearFieldTypes'
 
 export const pageInitialValues = {
   screener_current_country_us: UNTOUCHED_RADIO_VALUE,
@@ -39,13 +49,84 @@ export const pageInitialValues = {
   screener_maritime_employer_eighteen_months: UNTOUCHED_RADIO_VALUE,
 }
 
+// const useInitialScreenerValues=(partialClaim: PartialClaimResponseType | undefined)=>{
+//   const { screenerInput } = useContext(IntakeAppContext)
+//   const initialValues = pageInitialValues as ScreenerInput
+
+//   merge(initialValues, screenerInput)
+//   if (partialClaim){
+//     console.log("partial claim is not null")
+
+//     merge(initialValues,{
+//       screener_current_country_us:partialClaim?.screener_current_country_us,
+//       screener_live_in_canada:partialClaim?.screener_live_in_canada,
+//       screener_work_nj:partialClaim?.screener_work_nj,
+//       screener_job_last_eighteen_months:partialClaim?.screener_job_last_eighteen_months,
+//       screener_military_service_eighteen_months:partialClaim?.screener_military_service_eighteen_months,
+//       screener_currently_disabled:partialClaim?.screener_currently_disabled,
+//       screener_federal_work_in_last_eighteen_months:partialClaim?.screener_federal_work_in_last_eighteen_months,
+//       screener_maritime_employer_eighteen_months:partialClaim?.screener_maritime_employer_eighteen_months,
+//     } as ScreenerInput )
+//   }
+//   return {
+//     initialValues
+//   }
+// }
+// const ScreenerClearFieldFunctions = (
+//   getFieldMeta: FormikContextType<ScreenerInput>['getFieldMeta'],
+//   setFieldValue: FormikContextType<ScreenerInput>['setFieldValue'],
+//   setFieldTouched: FormikContextType<ScreenerInput>['setFieldTouched']
+// ): {
+//   clearField: ClearFieldFunction
+//   clearFields: ClearFieldsFunction
+// } => {
+//   const clear = useCallback(
+//     async (fieldName: string, value: unknown, touched: boolean) => {
+//       const meta = getFieldMeta(fieldName)
+//       if (!isEqual(meta.value, value)) {
+//         await setFieldValue(fieldName, value)
+//       }
+//       if (!isEqual(meta.touched, touched)) {
+//         setFieldTouched(fieldName, touched)
+//       }
+//     },
+//     [getFieldMeta, setFieldValue, setFieldTouched]
+//   )
+
+//   const clearField = async (
+//     field: string,
+//     value: unknown,
+//     touched: boolean = DEFAULT_TOUCHED
+//   ) => {
+//     await clear(field, value, touched)
+//   }
+
+//   /**
+//    * Convenience for clearing multiple fields. While clear operations are async,
+//    * they each must be awaited in series for proper Formik state update and
+//    * validation behavior
+//    * @param fields
+//    */
+//   const clearFields = async (fields: { [field: string]: unknown }) => {
+//     for (const [field, value] of Object.entries(fields)) {
+//       await clearField(field, value)
+//     }
+//   }
+
+//   return {
+//     clearField,
+//     clearFields,
+//   }
+// }
+
 const Screener: NextPageWithLayout = () => {
   const { t } = useTranslation('screener')
   const router = useRouter()
   const { ssnInput, setScreenerInput } = useContext(IntakeAppContext)
   const { data: partialClaim } = useGetPartialClaim()
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
-  // console.log("screener ssn input",ssnInput?.ssn)
+  // const {initialValues} = useInitialScreenerValues(partialClaim)
+  // const initialValues = pageInitialValues
   const validationSchema = object().shape({
     screener_current_country_us: boolean()
       .nullable()
@@ -108,6 +189,23 @@ const Screener: NextPageWithLayout = () => {
         )
       ),
   })
+  const removeConditionalsFromPartialClaim = (
+    partialClaim: PartialClaimResponseType
+  ) => {
+    if (
+      partialClaim?.screener_job_last_eighteen_months &&
+      partialClaim?.screener_work_nj !== undefined
+    ) {
+      partialClaim.screener_work_nj = undefined
+    }
+    if (
+      partialClaim?.screener_current_country_us &&
+      partialClaim?.screener_live_in_canada !== undefined
+    ) {
+      partialClaim.screener_work_nj = undefined
+    }
+    return partialClaim
+  }
 
   const handleSubmit = (
     values: ScreenerInput,
@@ -140,7 +238,9 @@ const Screener: NextPageWithLayout = () => {
           setFieldValue,
           setFieldTouched
         )
-
+        // const {clearField: appIntakeContextClearField}=ScreenerClearFieldFunctions(  getFieldMeta,
+        //   setFieldValue,
+        //   setFieldTouched)
         const validRef = useRef(isValid)
         validRef.current = isValid
 
@@ -202,12 +302,22 @@ const Screener: NextPageWithLayout = () => {
               if (shouldRedirect) {
                 await router.push(Routes.SCREENER_REDIRECT)
               } else {
-                const intakeAppValues = { ...ssnInput, ...values }
+                const ssnToUse = ssnInput?.ssn
+                  ? ssnInput.ssn
+                  : partialClaim?.ssn
+                  ? partialClaim.ssn
+                  : ''
+                console.log('using ssn on click as ' + ssnToUse)
+                const intakeAppValues = { ...{ ssn: ssnToUse }, ...values }
                 if (
                   partialClaim !== undefined &&
                   Object.keys(intakeAppValues).length !== 0
                 ) {
-                  await appendAndSaveClaimFormValues(intakeAppValues)
+                  //set claim form values and merge with get partial claim
+                  const modifiedClaim =
+                    removeConditionalsFromPartialClaim(partialClaim)
+                  merge(modifiedClaim, intakeAppValues)
+                  await appendAndSaveClaimFormValues(partialClaim)
                 }
                 await router.push(Routes.CLAIM.PREQUAL)
               }
