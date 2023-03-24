@@ -10,6 +10,7 @@ import {
   MouseEventHandler,
   ReactNode,
   useContext,
+  useRef,
 } from 'react'
 import { NextPageWithLayout } from 'pages/_app'
 import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLayout'
