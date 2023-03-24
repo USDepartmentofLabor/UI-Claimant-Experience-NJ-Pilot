@@ -11,9 +11,9 @@ describe('AddressVerificationField component', () => {
       address: {
         address: '123 Main St',
         address2: 'Apt 4B',
-        city: 'New York',
-        state: 'NY',
-        zipcode: '10001',
+        city: 'Hoboken',
+        state: 'NJ',
+        zipcode: '07030',
       },
     },
     {
@@ -24,7 +24,7 @@ describe('AddressVerificationField component', () => {
         address2: '',
         city: 'Hoboken',
         state: 'NJ',
-        zipcode: '01833',
+        zipcode: '07030',
       },
     },
   ]
