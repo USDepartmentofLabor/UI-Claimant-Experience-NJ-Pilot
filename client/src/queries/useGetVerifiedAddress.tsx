@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { AddressInput } from '../types/claimantInput'
 
 const getVerifiedAddress = async (address: AddressInput | undefined) => {
-  let addressParams = convertJSONAddressToURLParams(address)
+  const addressParams = convertJSONAddressToURLParams(address)
   return await axios.get('/api/services/verify-address?' + addressParams)
 }
 

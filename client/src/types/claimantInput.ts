@@ -206,6 +206,12 @@ export type PersonNameInput = {
   suffix: SuffixOption | EmptyOption
 }
 
+export type AddressOption = {
+  label: string
+  value: string
+  address: AddressInput
+}
+
 export type AddressInput = {
   address: string
   address2: string

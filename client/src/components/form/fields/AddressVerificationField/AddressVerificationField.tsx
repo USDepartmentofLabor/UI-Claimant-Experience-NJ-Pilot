@@ -6,7 +6,7 @@ import {
   Fieldset,
 } from '@trussworks/react-uswds'
 
-import { AddressInput } from 'types/claimantInput'
+import { AddressOption } from 'types/claimantInput'
 import { ChangeEvent, ComponentProps, ReactNode, useRef } from 'react'
 
 import { useShowErrors } from 'hooks/useShowErrors'
@@ -14,19 +14,13 @@ import { useFocusFirstError } from 'hooks/useFocusFirstError'
 
 import styles from './AddressVerificationField.module.scss'
 
-interface IAddressOption {
-  label: ReactNode
-  value: string
-  address: AddressInput
-}
-
 type RadioInputProps = Optional<
   Omit<ComponentProps<typeof Radio>, 'label' | 'value'>,
   'id'
 >
 
 interface IAddressVerificationFieldProps extends RadioInputProps {
-  options: IAddressOption[]
+  options: AddressOption[]
   errorMessage?: string
   showsErrors?: boolean
   legend?: ReactNode
@@ -98,29 +92,20 @@ export const AddressVerificationField = ({
             </div>
           )
 
-          const containerClass =
-            fieldProps?.value === option.value
-              ? `border-primary bg-primary-lighter`
-              : ``
-
           return (
-            <div
-              className={`address-verification-option border-width-2px border margin-top-1 radius-sm ${containerClass}`}
-              key={`${id}.${index}.${option.value}`}
-            >
-              <Radio
-                {...fieldProps}
-                id={`${id}.${option.value}`}
-                data-testid={`${id}.${option.value}`}
-                label={label}
-                value={option.value}
-                checked={metaProps.value === option.value}
-                onChange={handleChange}
-                className={`padding-1 padding-top-0`}
-                {...inputProps}
-                inputRef={index === 0 ? radioRef : undefined}
-              />
-            </div>
+            <Radio
+              {...fieldProps}
+              id={`${id}.${option.value}`}
+              data-testid={`${id}.${option.value}`}
+              key={`${id}.${option.value}`}
+              label={label}
+              value={option.value}
+              checked={metaProps.value === option.value}
+              onChange={handleChange}
+              tile={true}
+              {...inputProps}
+              inputRef={index === 0 ? radioRef : undefined}
+            />
           )
         })}
       </Fieldset>

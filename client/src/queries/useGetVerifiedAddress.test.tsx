@@ -1,5 +1,4 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import axios from 'axios'
 import { useGetVerifiedAddress } from './useGetVerifiedAddress'
 import { QueryClient, QueryClientProvider } from 'react-query'
 

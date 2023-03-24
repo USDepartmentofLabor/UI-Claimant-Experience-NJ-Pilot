@@ -1,4 +1,4 @@
-import { AddressInput, AddressVerificationInput } from 'types/claimantInput'
+import { AddressVerificationInput } from 'types/claimantInput'
 import { NextPageWithLayout } from 'pages/_app'
 import { ReactNode, useContext } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'

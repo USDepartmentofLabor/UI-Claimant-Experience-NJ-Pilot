@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 import { AddressInput } from '../../../types/claimantInput'
 import { ADDRESS_SKELETON } from '../../../constants/initialValues'
-import address from '../../../components/form/Address/Address'
 
 export type AccumailResponse = {
   success: boolean
@@ -85,7 +84,7 @@ const createResponse = (
   return { address: parseResponseAddress(response), errorSummary: '' }
 }
 const parseResponseAddress = (response: AccumailResponse): AddressInput => {
-  let convertedAddress = ADDRESS_SKELETON
+  const convertedAddress = ADDRESS_SKELETON
   convertedAddress.address = response.result.destinationAddress.street
   convertedAddress.address2 = response.result.destinationAddress.street2
   convertedAddress.city = response.result.destinationAddress.city
