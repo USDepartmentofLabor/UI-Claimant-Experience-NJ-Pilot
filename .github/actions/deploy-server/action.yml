@@ -183,7 +183,7 @@ runs:
       id: get-server-tg
       if: steps.preview-service-exist.outputs.service-count == '0'
       env:
-        TG_NAME: ecs-server-dev-${{ inputs.pr-number }}
+        TG_NAME: ecs-server-dev-${{ inputs.pr }}
       shell: bash
       run: |
         SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
