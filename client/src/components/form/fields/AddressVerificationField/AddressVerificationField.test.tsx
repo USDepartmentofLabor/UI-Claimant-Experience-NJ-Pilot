@@ -20,11 +20,11 @@ describe('AddressVerificationField component', () => {
       label: 'Address 2',
       value: 'address2',
       address: {
-        address: '456 Broadway St',
+        address: '1234 Test St',
         address2: '',
-        city: 'Los Angeles',
-        state: 'CA',
-        zipcode: '90001',
+        city: 'Hoboken',
+        state: 'NJ',
+        zipcode: '01833',
       },
     },
   ]

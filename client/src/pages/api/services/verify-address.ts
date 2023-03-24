@@ -48,7 +48,7 @@ export type AddressVerificationResponse = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<JSON>
+  res: NextApiResponse<AddressVerificationResponse>
 ): Promise<any> {
   try {
     const params = req.url && req.url.slice(req.url.indexOf('?'))
@@ -59,11 +59,12 @@ export default async function handler(
       const responseData: AddressVerificationResponse = createResponse(
         accumailResponse.data
       )
-      return res.status(200).send(<JSON>(<unknown>responseData)) //TODO MRH is there a better way?
+      return res.status(200).send(responseData)
     } else {
-      return res
-        .status(500)
-        .send(<JSON>(<unknown>{ error: 'No Response from AccuMail' }))
+      return res.status(500).send({
+        address: ADDRESS_SKELETON,
+        errorSummary: 'No Response from AccuMail',
+      })
     }
   } catch (error) {
     res.setHeader('Content-Type', 'text/plain')
