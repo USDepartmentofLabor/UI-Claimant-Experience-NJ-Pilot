@@ -890,6 +890,7 @@ const claimForm = {
     union_local_number: {
       label: 'Union local number',
       errors: {
+        digitsOnly: 'Union number can only be numbers',
         required: 'You must give your union local number',
         maxLength: 'Union local number must be at most 16 characters',
       },
