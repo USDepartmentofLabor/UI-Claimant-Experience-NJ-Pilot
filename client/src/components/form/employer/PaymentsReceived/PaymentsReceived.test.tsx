@@ -56,15 +56,14 @@ describe('PaymentsReceived', () => {
         screen.queryByRole('textbox', {
           name: 'payments_received.payments_received_detail.other_note.label',
         }),
+      queryForHintText: () => screen.getByTestId('payments_hint'),
     }
   }
   it('renders properly', async () => {
-    await renderPaymentsReceived()
-    expect(
-      screen.getByRole('group', {
-        name: 'payments_received.payments_received_detail.pay_type.label',
-      })
-    ).toBeInTheDocument()
+    const { queryForHintText, payTypeGroup } = await renderPaymentsReceived()
+
+    expect(payTypeGroup).toBeInTheDocument()
+    expect(queryForHintText()).toBeInTheDocument()
   })
 
   it('opens additional fields based on pay type selection', async () => {
