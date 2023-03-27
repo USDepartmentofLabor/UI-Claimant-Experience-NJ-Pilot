@@ -206,13 +206,8 @@ export const Review: NextPageWithLayout = () => {
             <DemographicsReview />
             <HorizontalRule />
 
-            {claimFormValues?.employers &&
-              claimFormValues?.employers.length > 0 && (
-                <div>
-                  <EmployersReview />
-                  <HorizontalRule />
-                </div>
-              )}
+            <EmployersReview />
+
             <OccupationReview />
             <HorizontalRule />
 

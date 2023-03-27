@@ -323,17 +323,25 @@ export const EmployersReview = () => {
         index,
         employer,
       }))) {
+        console.log('checking index ' + index)
         if (
           employer?.worked_for_imported_employer_in_last_18mo &&
           employer.is_imported
         ) {
+          console.log('employer name is ' + employer?.employer_name)
+
+          console.log('returning ' + index)
           return index
-        } else {
+        } else if (!employer?.is_imported) {
+          console.log(
+            'employer name is in the else, not imported ' +
+              employer?.employer_name
+          )
           return index
         }
       }
     }
-
+    console.log('returning -1')
     return -1
   }
 
@@ -351,6 +359,7 @@ export const EmployersReview = () => {
             hideEditUrl={hideEditUrl || false}
           />
         ))}
+      {firstEmployer > -1 && <HorizontalRule />}
     </>
   )
 }

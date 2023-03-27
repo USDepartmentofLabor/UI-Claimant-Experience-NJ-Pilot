@@ -276,7 +276,7 @@ describe('EmployerReview component', () => {
     expect(paymentsReceivedList[0]).toHaveTextContent(
       'payments_received.payments_received_detail.pay_type.options.none.label'
     )
-    expect(horizontalRules.length).toBe(0)
+    expect(horizontalRules.length).toBe(1)
   })
 
   it('shows conditional values for Work location', () => {
@@ -572,6 +572,6 @@ describe('EmployerReview component', () => {
     expect(employerAddress[1]).toHaveTextContent(
       `building 2, 123 main street, smallville, KS 12345`
     )
-    expect(horizontalRules.length).toBe(1)
+    expect(horizontalRules.length).toBe(2)
   })
 })
