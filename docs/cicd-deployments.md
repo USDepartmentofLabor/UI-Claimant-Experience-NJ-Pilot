@@ -4,6 +4,14 @@ This project uses GitHub Actions for Continuous Integration / Continuous
 Delivery/Deployment (CI/CD). See the related
 [ADR](../docs/adr/0004-github-actions-for-cicd.md).
 
+The application is deployed to Amazon Web Services (AWS) and uses the following
+core infrastructure components:
+
+- Application Load Balancer (ALB)
+- Two Amazon Elastic Container Service (ECS) services (client and server)
+- Amazon Relational Database Service (RDS)
+- Amazon Simple Storage Service (S3) bucket
+
 ## Pull requests
 
 When a developer opens a pull request, we run a series of checks to validate
@@ -52,6 +60,32 @@ the backend server image once per deployment workflow. The image is built and
 pushed to the Dev AWS Elastic Container Registry (ECR) repository and then
 promoted to Test and Prod by allowing the Test and Prod accounts to pull the
 images from the Dev ECR repository.
+
+## ECS task definitions
+
+The primary configuration for an ECS service or ECS task is the ECS task
+definition. It specifies, among other things, CPU and memory settings, which
+version of a container image to run, which environment variables and secrets to
+use, data volumes, IAM roles, logging, sidecar containers (if applicable), proxy
+configurations, and more. See the [AWS
+documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html)
+for complete details.
+
+The task definitions are dynamically configured in the CI deployment stage using
+a Python script (`scripts/create-task-definition.py`). The script can be used to
+create task definitions for the NextJS client, the Spring Boot server, and the
+database migration ECS task, which is a single instance of the Spring Boot
+server that runs prior to a server deployment.
+
+The Python script is invoked with the following `make` targets:
+
+```
+make client-task-definition-v2
+make server-task-definition-v2
+make db-migrations-task-definition-v2
+```
+
+Consult the `Makefile` for details on which arguments the `make` targets expect.
 
 ## CI/CD secrets
 

@@ -521,7 +521,7 @@ const claimForm = {
         zipcode: { label: 'ZIP' },
       },
       employer_phone: {
-        label: 'Employer phone number',
+        label: 'Employer phone number (optional)',
       },
       is_full_time: {
         help_text:
@@ -562,7 +562,7 @@ const claimForm = {
         required: "Please check that the employer's phone number is right",
       },
       work_location_phone: {
-        label: 'Work location phone number',
+        label: 'Work location phone number (optional)',
       },
     },
     hours_reduced_twenty_percent: {
@@ -890,6 +890,7 @@ const claimForm = {
     union_local_number: {
       label: 'Union local number',
       errors: {
+        digitsOnly: 'Union number can only be numbers',
         required: 'You must give your union local number',
         maxLength: 'Union local number must be at most 16 characters',
       },

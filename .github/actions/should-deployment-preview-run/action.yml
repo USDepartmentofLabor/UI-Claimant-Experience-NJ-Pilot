@@ -14,25 +14,6 @@ runs:
         echo "RUN_DEPLOYMENT_PREVIEW=true" >> $GITHUB_ENV
       shell: bash
 
-    - name: Get s3 schema file change
-      id: s3-schema-file
-      uses: tj-actions/changed-files@v35
-      with:
-        files: server/src/main/resources/schemas/**
-
-    - name: Echo changed s3 schema files
-      run: |
-        for file in ${{ steps.s3-schema-file.outputs.all_changed_and_modified_files }}; do
-          echo "$file was added or modified"
-        done
-      shell: bash
-
-    - name: Check PR changes does not include s3 claim schema files
-      id: s3-claim-schema
-      if: steps.s3-schema-file.outputs.any_changed == 'true'
-      run: echo "RUN_DEPLOYMENT_PREVIEW=false" >> $GITHUB_ENV
-      shell: bash
-
     - name: Get DB schema file change
       id: db-schema-file
       uses: tj-actions/changed-files@v35

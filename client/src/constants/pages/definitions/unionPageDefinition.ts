@@ -24,6 +24,10 @@ const validationSchema = object().shape({
       is: true,
       then: (schema) =>
         schema
+          .matches(
+            /^\d+$/,
+            i18n_claimForm.t('union.union_local_number.errors.digitsOnly')
+          )
           .max(
             16,
             i18n_claimForm.t('union.union_local_number.errors.maxLength')

@@ -7,7 +7,7 @@ import {
   yupEmployerAddress,
   yupAddressWithoutStreet,
   yupCurrency,
-  yupPhone,
+  yupPhoneOptional,
 } from 'validations/yup/custom'
 import { i18n_claimForm } from 'i18n/i18n'
 import { YourEmployer } from 'components/form/employer/YourEmployer/YourEmployer'
@@ -214,7 +214,7 @@ export const yupEditEmployer = object().shape({
   }),
   employer_phone: mixed().when('is_imported', {
     is: false,
-    then: yupPhone,
+    then: yupPhoneOptional,
   }),
   is_full_time: boolean()
     .nullable()
@@ -235,14 +235,18 @@ export const yupEditEmployer = object().shape({
   }),
   is_employer_phone_accurate: boolean()
     .nullable()
-    .required(
-      i18n_claimForm.t(
-        'employers.work_location.is_employer_phone_accurate.required'
-      )
-    ),
+    .when('employer_phone.number', {
+      is: (number: string) => !!number,
+      then: (schema) =>
+        schema.required(
+          i18n_claimForm.t(
+            'employers.work_location.is_employer_phone_accurate.required'
+          )
+        ),
+    }),
   work_location_phone: mixed().when('is_employer_phone_accurate', {
     is: false,
-    then: yupPhone,
+    then: yupPhoneOptional,
   }),
   // Business Interests
   self_employed: boolean()

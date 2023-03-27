@@ -1173,6 +1173,7 @@
     "union_local_number": {
       "description": "Union's local number",
       "type": "string",
+      "pattern": "^[\\d]{1,16}$",
       "maxLength": 16
     },
     "disability_applied_to_or_received": {

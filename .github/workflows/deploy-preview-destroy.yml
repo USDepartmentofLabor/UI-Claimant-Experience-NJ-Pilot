@@ -18,28 +18,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  cleanup:
+  setup:
     runs-on: ubuntu-latest
     environment: dev
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
       id-token: write
       contents: read
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Nothing here yet
-        shell: bash
-        run: echo "Nothing to delete yet"
-
-  cleanup-auth:
-    runs-on: ubuntu-latest
-    environment: dev
-    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
-    permissions:
-      id-token: write
-      contents: read
+    outputs:
+      server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
 
     steps:
       - uses: actions/checkout@v3
@@ -59,21 +46,54 @@ jobs:
           SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
+  cleanup-auth:
+    runs-on: ubuntu-latest
+    environment: dev
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Delete cognito urls
         uses: ./.github/actions/delete-cognito-urls
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          base-url: ${{ needs.setup.outputs.server-base-url }}
           pr-number: ${{ github.event.pull_request.number ||  github.event.inputs.pull_request }}
           cognito-client-id: ${{ secrets.COGNITO_CLIENT_ID }}
           cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
+
+  cleanup-network:
+    runs-on: ubuntu-latest
+    environment: dev
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Delete Networking Components
         uses: ./.github/actions/delete-preview-network
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          base-url: ${{ needs.setup.outputs.server-base-url }}
           pr-number: ${{ github.event.pull_request.number || github.event.inputs.pull_request }}
+
+  cleanup-service:
+    runs-on: ubuntu-latest
+    environment: dev
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Delete ECS Services
         uses: ./.github/actions/delete-preview-ecs

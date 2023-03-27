@@ -37,12 +37,16 @@ jobs:
         id: preview-check
         uses: ./.github/actions/should-deployment-preview-run
 
+      - name: Get branch names
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
       - name: Comment preview will be created
         uses: peter-evans/create-or-update-comment@v2
         if: steps.preview-check.outputs.run-deployment-preview == 'true'
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: Deployment Preview will be created for this PR at ${{ github.sha }}
+          body: Deployment Preview will be created for this PR, ${{ github.sha }}, at https://${{ steps.branch-name.outputs.current_branch }}.${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
 
       - name: Comment preview will not be created
         uses: peter-evans/create-or-update-comment@v2
@@ -71,11 +75,13 @@ jobs:
           JAVA_VERSION: ${{ env.JAVA_VERSION }}
           NODE_VERSION: ${{ env.NODE_VERSION }}
 
-  deploy-preview-create:
+  deploy-preview-auth-and-network:
     needs: [should-deploy-preview-run, build-lint-and-test]
     if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
     runs-on: ubuntu-latest
     environment: dev
+    outputs:
+      server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -120,19 +126,55 @@ jobs:
           base-url: ${{ steps.server-base-url.outputs.server-base-url }}
           pr-number: ${{ github.event.pull_request.number }}
 
+  deploy-preview-client-service:
+    needs:
+      [
+        should-deploy-preview-run,
+        build-lint-and-test,
+        deploy-preview-auth-and-network,
+      ]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Build and deploy client image
         id: build-deploy-client
         uses: ./.github/actions/deploy-client
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          server-base-url: ${{ needs.deploy-preview-auth-and-network.outputs.server-base-url }}
           app-env: development
-          app: preview
           pr: ${{ github.event.pull_request.number }}
           ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}
           ecs-client-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
-          client-tg-arn: ${{ steps.preview-networking.outputs.client-tg-arn }}
+
+  deploy-preview-server-service:
+    needs:
+      [
+        should-deploy-preview-run,
+        build-lint-and-test,
+        deploy-preview-auth-and-network,
+      ]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Build and deploy server image
         id: build-deploy-server
@@ -143,11 +185,9 @@ jobs:
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
           otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
-          app: preview
           pr: ${{ github.event.pull_request.number }}
           ecs-server-security-group: ${{ secrets.ECS_SERVER_SECURITY_GROUP_DEV }}
           ecs-server-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
-          server-tg-arn: ${{ steps.preview-networking.outputs.server-tg-arn }}
 
   deploy-preview-will-not-create:
     needs: [should-deploy-preview-run]
