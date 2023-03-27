@@ -57,56 +57,54 @@ const PaymentsReceived = () => {
   }, [values.payments_received.length])
 
   return (
-    <div>
-      <Fieldset
-        className="form-section"
-        legend={<h2>{t('payments_received.heading')}</h2>}
-      >
-        <FieldArray
-          name={`payments_received`}
-          render={(arrayHelpers) => (
-            <>
-              <CheckboxGroupField
-                name={`LOCAL_pay_types`}
-                legend={t(
-                  'payments_received.payments_received_detail.pay_type.label'
-                )}
-                options={payTypeOptions.map((option) => ({
-                  label: t(
-                    `payments_received.payments_received_detail.pay_type.options.${option}.label`
+    <Fieldset
+      className="form-section"
+      legend={<h2>{t('payments_received.heading')}</h2>}
+    >
+      <FieldArray
+        name={`payments_received`}
+        render={(arrayHelpers) => (
+          <>
+            <CheckboxGroupField
+              name={`LOCAL_pay_types`}
+              legend={t(
+                'payments_received.payments_received_detail.pay_type.label'
+              )}
+              options={payTypeOptions.map((option) => ({
+                label: t(
+                  `payments_received.payments_received_detail.pay_type.options.${option}.label`
+                ),
+                value: option,
+                checkboxProps: {
+                  'aria-description':
+                    option === 'none'
+                      ? t(
+                          `payments_received.payments_received_detail.pay_type.options.none.ariaDescription`
+                        )
+                      : undefined,
+                  labelDescription: t(
+                    `payments_received.payments_received_detail.pay_type.options.${option}.description`
                   ),
-                  value: option,
-                  checkboxProps: {
-                    'aria-description':
-                      option === 'none'
-                        ? t(
-                            `payments_received.payments_received_detail.pay_type.options.none.ariaDescription`
-                          )
-                        : undefined,
-                    labelDescription: t(
-                      `payments_received.payments_received_detail.pay_type.options.${option}.description`
-                    ),
-                    tile: true,
-                    onChange: (e) => {
-                      if (e.target.checked) {
-                        arrayHelpers.push(createEmptyPayType(option))
-                      } else {
-                        const indexOfPaymentReceivedToRemove =
-                          findIndexOfPaymentReceived(option)
-                        indexOfPaymentReceivedToRemove !== undefined &&
-                          arrayHelpers.remove(indexOfPaymentReceivedToRemove)
-                      }
-                    },
+                  tile: true,
+                  onChange: (e) => {
+                    if (e.target.checked) {
+                      arrayHelpers.push(createEmptyPayType(option))
+                    } else {
+                      const indexOfPaymentReceivedToRemove =
+                        findIndexOfPaymentReceived(option)
+                      indexOfPaymentReceivedToRemove !== undefined &&
+                        arrayHelpers.remove(indexOfPaymentReceivedToRemove)
+                    }
                   },
-                }))}
-              />
-              <span className="usa-hint" data-testid="payments_hint">
-                {t('payments_received.hint')}
-              </span>
-              {!!values.payments_received &&
-                sortPayDetails(values.payments_received, [
-                  ...payTypeOptions,
-                ]).map((paymentsReceivedDetail) => {
+                },
+              }))}
+            />
+            <span className="usa-hint" data-testid="payments_hint">
+              {t('payments_received.hint')}
+            </span>
+            {!!values.payments_received &&
+              sortPayDetails(values.payments_received, [...payTypeOptions]).map(
+                (paymentsReceivedDetail) => {
                   const indexOfPaymentReceivedToDisplay =
                     findIndexOfPaymentReceived(paymentsReceivedDetail.pay_type)
                   return (
@@ -124,12 +122,12 @@ const PaymentsReceived = () => {
                       />
                     )
                   )
-                })}
-            </>
-          )}
-        />
-      </Fieldset>
-    </div>
+                }
+              )}
+          </>
+        )}
+      />
+    </Fieldset>
   )
 }
 
