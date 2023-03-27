@@ -22,9 +22,9 @@ describe('AddressVerificationField component', () => {
       address: {
         address: '1234 Test St',
         address2: '',
-        city: 'Hoboken',
+        city: 'Trenton',
         state: 'NJ',
-        zipcode: '07030',
+        zipcode: '07034',
       },
     },
   ]
@@ -47,6 +47,7 @@ describe('AddressVerificationField component', () => {
 
   it('renders options correctly', () => {
     renderComponent()
+    screen.debug()
     options.forEach((option) => {
       expect(screen.getByText(option.label)).toBeInTheDocument()
       expect(screen.getByText(option.address.address)).toBeInTheDocument()

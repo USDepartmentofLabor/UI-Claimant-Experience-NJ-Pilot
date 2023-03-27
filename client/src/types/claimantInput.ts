@@ -40,6 +40,7 @@ export type ClaimantInput = Partial<
     PrequalInput &
     IdentityInput &
     PersonalInput &
+    AddressVerificationInput &
     ContactInput &
     DemographicsInput &
     EmployerInput &

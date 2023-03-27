@@ -60,7 +60,7 @@ const AddressVerification: NextPageWithLayout = () => {
     {
       label: 'You entered:',
       address: input?.claimFormValues?.residence_address || ADDRESS_SKELETON,
-      value: 'as-entered',
+      value: input?.claimFormValues?.residence_address || ADDRESS_SKELETON,
     },
     {
       label: 'U.S. Postal Service recommends:',
@@ -68,7 +68,10 @@ const AddressVerification: NextPageWithLayout = () => {
         (!isLoadingVerifiedResidentialAddress &&
           verifiedResidentialAddress?.data.address) ||
         ADDRESS_SKELETON,
-      value: 'as-verified',
+      value:
+        (!isLoadingVerifiedResidentialAddress &&
+          verifiedResidentialAddress?.data.address) ||
+        ADDRESS_SKELETON,
     },
   ]
   const arePendingVerifications =
@@ -89,7 +92,6 @@ const AddressVerification: NextPageWithLayout = () => {
         {({ values }) => {
           return (
             <>
-              {/*TODO MRH handle Loading state*/}
               <AddressVerificationField
                 name="residence_address"
                 options={RESIDENCE_ADDRESS_OPTIONS}
