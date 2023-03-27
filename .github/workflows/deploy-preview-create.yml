@@ -153,7 +153,6 @@ jobs:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           server-base-url: ${{ needs.deploy-preview-auth-and-network.outputs.server-base-url }}
           app-env: development
-          app: preview
           pr: ${{ github.event.pull_request.number }}
           ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}
           ecs-client-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
@@ -186,7 +185,6 @@ jobs:
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
           otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
-          app: preview
           pr: ${{ github.event.pull_request.number }}
           ecs-server-security-group: ${{ secrets.ECS_SERVER_SECURITY_GROUP_DEV }}
           ecs-server-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
