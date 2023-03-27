@@ -563,7 +563,6 @@ describe('EmployerReview component', () => {
     }
 
     const { employerAddress, horizontalRules } = renderEmployerReview(values)
-    screen.debug()
 
     expect(employerAddress.length).toBe(2)
     expect(employerAddress[0]).toHaveTextContent(
