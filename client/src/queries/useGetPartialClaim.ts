@@ -7,7 +7,6 @@ import { PartialClaimResponseType } from 'types/ResponseTypes'
 import { useSession } from 'next-auth/react'
 
 const getPartialClaim = async () => {
-  // console.log("**performing get partial claim")
   try {
     const { data } = await serverHttpClient.get<PartialClaimResponseType>(
       '/partial-claim',
