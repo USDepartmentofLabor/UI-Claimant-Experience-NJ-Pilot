@@ -97,10 +97,12 @@ export const PaymentsReview = ({
 export const EmployerReview = ({
   employer,
   index,
+  isFirstEmployer,
   hideEditUrl,
 }: {
   employer: Employer
   index: number
+  isFirstEmployer: boolean
   hideEditUrl: boolean
 }) => {
   const { t } = useTranslation('claimForm', { keyPrefix: 'employers' })
@@ -152,7 +154,7 @@ export const EmployerReview = ({
 
   return (
     <>
-      {index !== 0 && <HorizontalRule />}
+      {!isFirstEmployer && <HorizontalRule />}
       <ReviewSection
         heading={employer.employer_name}
         editUrl={!hideEditUrl ? path : undefined}
@@ -312,17 +314,39 @@ export const EmployerReview = ({
     </>
   )
 }
+
 export const EmployersReview = () => {
   const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
+  const getFirstEmployer = (employers: Employer[] | undefined) => {
+    if (employers && employers.length > 0) {
+      for (const { index, employer } of employers.map((employer, index) => ({
+        index,
+        employer,
+      }))) {
+        if (
+          employer?.worked_for_imported_employer_in_last_18mo &&
+          employer.is_imported
+        ) {
+          return index
+        } else {
+          return index
+        }
+      }
+    }
 
+    return -1
+  }
+
+  const firstEmployer = getFirstEmployer(claimFormValues?.employers)
   return (
     <>
       {claimFormValues?.employers &&
-        claimFormValues?.employers.length > 0 &&
+        firstEmployer > -1 &&
         claimFormValues?.employers.map((employer, idx) => (
           <EmployerReview
             employer={employer}
             index={idx}
+            isFirstEmployer={idx == firstEmployer}
             key={idx}
             hideEditUrl={hideEditUrl || false}
           />
