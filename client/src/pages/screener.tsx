@@ -27,6 +27,9 @@ import formStyles from 'components/form/form.module.scss'
 import styles from 'styles/pages/screener.module.scss'
 import { useGetPartialClaim } from '../queries/useGetPartialClaim'
 import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
+import { merge } from 'lodash'
+
+import { PartialClaimResponseType } from 'types/ResponseTypes'
 
 export const pageInitialValues = {
   screener_current_country_us: UNTOUCHED_RADIO_VALUE,
@@ -108,6 +111,23 @@ const Screener: NextPageWithLayout = () => {
         )
       ),
   })
+  const removeConditionalsFromPartialClaim = (
+    partialClaim: PartialClaimResponseType
+  ) => {
+    if (
+      partialClaim?.screener_job_last_eighteen_months &&
+      partialClaim?.screener_work_nj !== undefined
+    ) {
+      partialClaim.screener_work_nj = undefined
+    }
+    if (
+      partialClaim?.screener_current_country_us &&
+      partialClaim?.screener_live_in_canada !== undefined
+    ) {
+      partialClaim.screener_work_nj = undefined
+    }
+    return partialClaim
+  }
 
   const handleSubmit = (
     values: ScreenerInput,
@@ -202,12 +222,22 @@ const Screener: NextPageWithLayout = () => {
               if (shouldRedirect) {
                 await router.push(Routes.SCREENER_REDIRECT)
               } else {
-                const intakeAppValues = { ...ssnInput, ...values }
+                const ssnToUse = ssnInput?.ssn
+                  ? ssnInput.ssn
+                  : partialClaim?.ssn
+                  ? partialClaim.ssn
+                  : ''
+
+                const intakeAppValues = { ...{ ssn: ssnToUse }, ...values }
                 if (
                   partialClaim !== undefined &&
                   Object.keys(intakeAppValues).length !== 0
                 ) {
-                  await appendAndSaveClaimFormValues(intakeAppValues)
+                  //set claim form values and merge with get partial claim
+                  const modifiedClaim =
+                    removeConditionalsFromPartialClaim(partialClaim)
+                  merge(modifiedClaim, intakeAppValues)
+                  await appendAndSaveClaimFormValues(partialClaim)
                 }
                 await router.push(Routes.CLAIM.PREQUAL)
               }

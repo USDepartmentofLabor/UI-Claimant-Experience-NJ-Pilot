@@ -391,7 +391,7 @@ describe('Screener page', () => {
     })
   })
 
-  it('saves a claim with IntakeApp context values upon next', async () => {
+  it('saves a claim with IntakeApp context values upon next when claim is empty', async () => {
     const user = userEvent.setup()
 
     const intakeAppContext = {
@@ -422,6 +422,56 @@ describe('Screener page', () => {
     expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
     expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
       intakeAppValues
+    )
+  })
+  it('saves a claim with IntakeApp context values and the partial claim contents when claim is already exists', async () => {
+    const user = userEvent.setup()
+    //set context to be refreshed and unset
+    const intakeAppContext = {
+      setScreenerInput: jest.fn(),
+      setSsn: jest.fn(),
+      ssnInput: undefined,
+      screenerInput: undefined,
+    }
+
+    const intakeAppExpectedValues = {
+      ssn: '123-45-6789',
+      filed_in_last_12mo: true,
+      ...canUseFormValues,
+    }
+
+    //set screener fields and part of first page already filled in
+    mockUseGetPartialClaim.mockImplementation(() => ({
+      isLoading: false,
+      data: {
+        screener_current_country_us: false,
+        screener_live_in_canada: undefined,
+        screener_job_last_eighteen_months: false,
+        screener_military_service_eighteen_months: true,
+        screener_work_nj: undefined,
+        screener_currently_disabled: true,
+        screener_federal_work_in_last_eighteen_months: true,
+        screener_maritime_employer_eighteen_months: true,
+        ssn: '123-45-6789',
+        filed_in_last_12mo: true,
+      },
+    }))
+
+    const formValues: { [key: string]: boolean | string | null } = {
+      ...canUseFormValues,
+    }
+    render(
+      <IntakeAppContext.Provider value={intakeAppContext}>
+        <Screener />
+      </IntakeAppContext.Provider>
+    )
+
+    await fillScreenerFields(user, formValues)
+    await user.click(screen.getByRole('button', { name: /next/i }))
+
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
+      intakeAppExpectedValues
     )
   })
 })
