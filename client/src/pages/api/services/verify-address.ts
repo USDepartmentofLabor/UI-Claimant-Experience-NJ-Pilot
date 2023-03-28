@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '../auth/[...nextauth]'
 import axios from 'axios'
 import { AddressInput } from '../../../types/claimantInput'
 import { ADDRESS_SKELETON } from '../../../constants/initialValues'
@@ -50,30 +52,41 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AddressVerificationResponse>
 ): Promise<any> {
-  try {
-    const params = req.url && req.url.slice(req.url.indexOf('?'))
-    const accumailResponse = await axios.get(
-      'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address' + params
-    )
-    if (accumailResponse.data && accumailResponse.data.success) {
-      return res
-        .status(200)
-        .send(summarizeValidationAndCreateResponseObject(accumailResponse.data))
-    } else {
-      return res.status(500).send({
-        address: ADDRESS_SKELETON,
-        validationSummary: 'No Response from AccuMail',
-      })
+  const session = await getServerSession(req, res, authOptions)
+
+  if (session) {
+    // Signed in
+    try {
+      const params = req.url && req.url.slice(req.url.indexOf('?'))
+      const accumailResponse = await axios.get(
+        'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address' + params
+      )
+      if (accumailResponse.data && accumailResponse.data.success) {
+        return res
+          .status(200)
+          .send(
+            summarizeValidationAndCreateResponseObject(accumailResponse.data)
+          )
+      } else {
+        return res.status(500).send({
+          address: ADDRESS_SKELETON,
+          validationSummary: 'No Response from AccuMail',
+        })
+      }
+    } catch (error) {
+      res.setHeader('Content-Type', 'text/plain')
+      if (axios.isAxiosError(error)) {
+        return res
+          .status(error.response?.status || 500)
+          .send(error.response?.data || error.message)
+      }
+      return res.status(400)
     }
-  } catch (error) {
-    res.setHeader('Content-Type', 'text/plain')
-    if (axios.isAxiosError(error)) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || error.message)
-    }
-    return res.status(400)
+  } else {
+    // Not signed in
+    res.status(401)
   }
+  res.end()
 }
 
 const summarizeValidationAndCreateResponseObject = (
