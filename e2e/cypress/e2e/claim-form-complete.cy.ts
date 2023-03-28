@@ -4,7 +4,10 @@ import fillScreenerFields from './formPageFilling/screener'
 import fillPrequalFields from './formPageFilling/prequal'
 import fillPersonalFields from './formPageFilling/personal'
 import fillDemographicsFields from './formPageFilling/demographics'
-import fillContactFields from './formPageFilling/contact'
+import {
+  fillContactFields,
+  checkUpdatedContactFields,
+} from './formPageFilling/contact'
 import fillUnionFields from './formPageFilling/union'
 import fillIdentityFields from './formPageFilling/identity'
 import fillDisabilityFields from './formPageFilling/disability'
@@ -18,7 +21,7 @@ import { generateWhoAmI } from './utils/generateWhoAmI'
 import { fillEditEmployerFields } from './formPageFilling/edit-employer'
 import fillReviewEmployersFields from './formPageFilling/review-employers'
 
-context('Initial Claim form', { scrollBehavior: 'center' }, () => {
+context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
     //,{defaultCommandTimeout:6000}
     const whoAmI = generateWhoAmI()
@@ -211,10 +214,14 @@ context('Initial Claim form', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     // Review page
+    checkUpdatedContactFields()
     fillReviewFields()
     cy.clickSubmit()
 
     // User lands on home page on successful completion
-    cy.url().should('eq', `${Cypress.config().baseUrl}/?completed=true`)
+    cy.url({ timeout: 10000 }).should(
+      'eq',
+      `${Cypress.config().baseUrl}/claim/beta-success`
+    )
   })
 })

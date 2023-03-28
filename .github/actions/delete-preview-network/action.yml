@@ -1,0 +1,137 @@
+name: Delete Deployment Preview Networking
+description: For deployment previews, delete ALB target groups and listener rules
+inputs:
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  base-url:
+    description: Url for the deployment preview
+    required: true
+  pr-number:
+    description: Pull request number for ssm
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Does a client target group exist?
+      id: client-tg
+      env:
+        TG_NAME: ecs-client-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Does a server target group exist?
+      id: server-tg
+      env:
+        TG_NAME: ecs-server-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text)
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get load balancer arn
+      id: lb-arn
+      if: steps.client-tg.outputs.client-tg-arn != ''
+      shell: bash
+      run: |
+        LB_ARN=$(aws elbv2 describe-target-groups \
+        --names ecs-client-dev \
+        --query "TargetGroups[0].LoadBalancerArns[0]" \
+        --output text)
+        echo "lb-arn=$LB_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get listener arn
+      id: listener
+      if: steps.client-tg.outputs.client-tg-arn != ''
+      env:
+        LB_ARN: ${{ steps.lb-arn.outputs.lb-arn }}
+      shell: bash
+      run: |
+        LISTENER_ARN="$( aws elbv2 describe-listeners \
+        --load-balancer-arn $LB_ARN \
+        --query 'Listeners[?Port == to_number(`443`)].ListenerArn' \
+        --output text )"
+        echo "listener-arn=$LISTENER_ARN" >> $GITHUB_OUTPUT
+
+    - name: Get client preview rule arn
+      id: client-rule-arn
+      if: steps.client-tg.outputs.client-tg-arn != ''
+      env:
+        LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
+        TG_ARN: ${{ steps.client-tg.outputs.client-tg-arn }}
+      shell: bash
+      run: |
+        CLIENT_RULE_ARN="$( aws elbv2 describe-rules \
+        --listener-arn $LISTENER_ARN \
+        --query "Rules[?Actions[0].TargetGroupArn=='$TG_ARN'].RuleArn" \
+        --output text
+        )"
+        echo "client-rule-arn=$CLIENT_RULE_ARN" >> $GITHUB_OUTPUT
+
+    - name: Delete client preview listener rule
+      if: steps.client-rule-arn.outputs.client-rule-arn != ''
+      env:
+        RULE_ARN: ${{ steps.client-rule-arn.outputs.client-rule-arn }}
+      shell: bash
+      run: |
+        aws elbv2 delete-rule \
+        --rule-arn $RULE_ARN
+
+    - name: Get server preview rule arn
+      id: server-rule-arn
+      if: steps.server-tg.outputs.server-tg-arn != ''
+      env:
+        LISTENER_ARN: ${{ steps.listener.outputs.listener-arn }}
+        TG_ARN: ${{ steps.server-tg.outputs.server-tg-arn }}
+      shell: bash
+      run: |
+        SERVER_RULE_ARN="$( aws elbv2 describe-rules \
+        --listener-arn $LISTENER_ARN \
+        --query "Rules[?Actions[0].TargetGroupArn=='$TG_ARN'].RuleArn" \
+        --output text
+        )"
+        echo "server-rule-arn=$SERVER_RULE_ARN" >> $GITHUB_OUTPUT
+
+    - name: Delete server preview listener rule
+      if: steps.server-rule-arn.outputs.server-rule-arn != ''
+      env:
+        RULE_ARN: ${{ steps.server-rule-arn.outputs.server-rule-arn }}
+      shell: bash
+      run: |
+        aws elbv2 delete-rule \
+        --rule-arn $RULE_ARN
+
+    - name: Delete client target group
+      id: delete-client-tg
+      if: steps.client-tg.outputs.client-tg-arn != ''
+      env:
+        TG_ARN: ${{ steps.client-tg.outputs.client-tg-arn }}
+      shell: bash
+      run: |
+        aws elbv2 delete-target-group \
+        --target-group-arn "$TG_ARN"
+
+    - name: Delete server target group
+      id: delete-server-tg
+      if: steps.server-tg.outputs.server-tg-arn != ''
+      env:
+        TG_ARN: ${{ steps.server-tg.outputs.server-tg-arn }}
+      shell: bash
+      run: |
+        aws elbv2 delete-target-group \
+        --target-group-arn "$TG_ARN"

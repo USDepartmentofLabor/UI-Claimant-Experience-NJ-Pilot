@@ -4,6 +4,14 @@ This project uses GitHub Actions for Continuous Integration / Continuous
 Delivery/Deployment (CI/CD). See the related
 [ADR](../docs/adr/0004-github-actions-for-cicd.md).
 
+The application is deployed to Amazon Web Services (AWS) and uses the following
+core infrastructure components:
+
+- Application Load Balancer (ALB)
+- Two Amazon Elastic Container Service (ECS) services (client and server)
+- Amazon Relational Database Service (RDS)
+- Amazon Simple Storage Service (S3) bucket
+
 ## Pull requests
 
 When a developer opens a pull request, we run a series of checks to validate
@@ -53,6 +61,32 @@ pushed to the Dev AWS Elastic Container Registry (ECR) repository and then
 promoted to Test and Prod by allowing the Test and Prod accounts to pull the
 images from the Dev ECR repository.
 
+## ECS task definitions
+
+The primary configuration for an ECS service or ECS task is the ECS task
+definition. It specifies, among other things, CPU and memory settings, which
+version of a container image to run, which environment variables and secrets to
+use, data volumes, IAM roles, logging, sidecar containers (if applicable), proxy
+configurations, and more. See the [AWS
+documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html)
+for complete details.
+
+The task definitions are dynamically configured in the CI deployment stage using
+a Python script (`scripts/create-task-definition.py`). The script can be used to
+create task definitions for the NextJS client, the Spring Boot server, and the
+database migration ECS task, which is a single instance of the Spring Boot
+server that runs prior to a server deployment.
+
+The Python script is invoked with the following `make` targets:
+
+```
+make client-task-definition-v2
+make server-task-definition-v2
+make db-migrations-task-definition-v2
+```
+
+Consult the `Makefile` for details on which arguments the `make` targets expect.
+
 ## CI/CD secrets
 
 Secrets and sensitive information should not be committed to the code
@@ -90,6 +124,7 @@ appropriate AWS access can retrieve the values from SSM.
 | GitHub environment | Secret name                         | AWS environment | SSM parameter name                                                    |
 | ------------------ | ----------------------------------- | --------------- | --------------------------------------------------------------------- |
 | repository         | COGNITO_CLIENT_ID                   | dev             | `/dol-ui-claimant-intake-dev/cognito-client-id`                       |
+|                    | COGNITO_USER_POOL_ID                |                 | `/dol-ui-claimant-intake-dev/cognito-user-pool-id`                    |
 |                    | COGNITO_CLIENT_SECRET               |                 | `/dol-ui-claimant-intake-dev/cognito-client-secret`                   |
 |                    | COGNITO_DOMAIN                      |                 | `/dol-ui-claimant-intake-dev/cognito-domain`                          |
 |                    | COGNITO_ISSUER                      |                 | `/dol-ui-claimant-intake-dev/cognito-issuer`                          |
@@ -102,6 +137,8 @@ appropriate AWS access can retrieve the values from SSM.
 |                    | `DB_MIGRATIONS_SECURITY_GROUP_DEV`  |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |
 |                    | `DB_MIGRATIONS_SUBNET_DEV`          |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-subnet`         |
 |                    | `NEXT_PUBLIC_SERVER_BASE_URL`       |                 | `/dol-ui-claimant-intake-github-actions/next-public-server-base-url`  |
+|                    | `ECS_CLIENT_SECURITY_GROUP_DEV`     |                 | `/dol-ui-claimant-intake-github-actions/ecs-client-security-group`    |
+|                    | `ECS_SERVER_SECURITY_GROUP_DEV`     |                 | `/dol-ui-claimant-intake-github-actions/ecs-server-security-group`    |
 | ci                 | `AWS_ROLE_TO_ASSUME_CI`             | dev             | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume-ci`        |
 | test               | `AWS_ROLE_TO_ASSUME_TEST`           | test            | `/dol-ui-claimant-intake-github-actions/aws-role-to-assume`           |
 |                    | `DB_MIGRATIONS_SECURITY_GROUP_TEST` |                 | `/dol-ui-claimant-intake-github-actions/db-migrations-security-group` |

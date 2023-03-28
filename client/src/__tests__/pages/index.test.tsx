@@ -44,16 +44,16 @@ describe('home page', () => {
 
     const loader = screen.queryByTestId('page-loading')
     const signInButton = screen.queryByRole('button', {
-      name: 'Sign in with Cognito',
+      name: 'header.signin',
     })
     const signOutButton = screen.queryByRole('button', {
-      name: 'Sign out',
+      name: 'signout',
     })
     const taxDocButton = screen.queryByRole('button', {
       name: 'tax_doc_button',
     })
     const updatePaymentButton = screen.queryByRole('button', {
-      name: 'Update payment info',
+      name: 'update_payment_button',
     })
     const updateContactInfoButton = screen.queryByRole('button', {
       name: 'update_contact_info_button',
@@ -198,38 +198,6 @@ describe('home page', () => {
     expect(signOut).toHaveBeenCalledTimes(1)
   })
 
-  it('takes the user to the tax download page', async () => {
-    const user = userEvent.setup()
-    setMocks()
-    const mockNavigateTaxDoc = jest.fn()
-    mockRouter.mockImplementation(() => ({
-      push: mockNavigateTaxDoc,
-    }))
-
-    const { taxDocButton } = renderHomePage()
-
-    await user.click(taxDocButton as HTMLElement)
-    expect(mockNavigateTaxDoc).toHaveBeenCalledTimes(1)
-    expect(mockNavigateTaxDoc).toHaveBeenCalledWith(Routes.TAX_DOCUMENTS)
-  })
-
-  it('takes the user to the update payment form page', async () => {
-    const user = userEvent.setup()
-    setMocks()
-    const mockNavigateUpdatePayment = jest.fn()
-    mockRouter.mockImplementation(() => ({
-      push: mockNavigateUpdatePayment,
-    }))
-
-    const { updatePaymentButton } = renderHomePage()
-
-    await user.click(updatePaymentButton as HTMLElement)
-    expect(mockNavigateUpdatePayment).toHaveBeenCalledTimes(1)
-    expect(mockNavigateUpdatePayment).toHaveBeenCalledWith(
-      Routes.UPDATE_PAYMENT_INFO
-    )
-  })
-
   it('resets the claim when it clicks the reset button', async () => {
     process.env.NEXT_PUBLIC_APP_ENV = 'test'
 
@@ -263,25 +231,6 @@ describe('home page', () => {
     expect(resetButton).not.toBeInTheDocument()
   })
 
-  it('takes the user to the update contact info form page', async () => {
-    const user = userEvent.setup()
-
-    setMocks()
-
-    const mockNavigateUpdateContact = jest.fn()
-    mockRouter.mockImplementation(() => ({
-      push: mockNavigateUpdateContact,
-    }))
-
-    const { updateContactInfoButton } = renderHomePage()
-
-    await user.click(updateContactInfoButton as HTMLElement)
-    expect(mockNavigateUpdateContact).toHaveBeenCalledTimes(1)
-    expect(mockNavigateUpdateContact).toHaveBeenCalledWith(
-      Routes.UPDATE_CONTACT_INFO
-    )
-  })
-
   it.each([null, { user: null }])(
     'instructs the user to sign in if the session is missing a user',
     async (data) => {
@@ -309,18 +258,6 @@ describe('home page', () => {
       expect(updateContactInfoButton).not.toBeInTheDocument()
     }
   )
-  it('Shows a success alert when a claim form has been submitted', () => {
-    mockRouter.mockImplementation(() => ({
-      query: { completed: true },
-      asPath: '/',
-    }))
-
-    setMocks()
-
-    renderHomePage()
-    const alert = screen.getByTestId('alert')
-    expect(alert).toBeInTheDocument()
-  })
 
   describe('File a claim button', () => {
     it('takes a user to ssn page if there is no existing partial or completed claim', async () => {
@@ -402,7 +339,7 @@ describe('home page', () => {
       }))
 
       const { goToClaimButton } = renderHomePage(partialClaim)
-      expect(goToClaimButton).toHaveTextContent('continue_claim_button')
+      expect(goToClaimButton).toHaveTextContent('continue_to_screener_button')
       if (goToClaimButton) await user.click(goToClaimButton)
       expect(mockFileAClaim).toHaveBeenCalledTimes(1)
       expect(mockFileAClaim).toHaveBeenCalledWith(Routes.CLAIM.IDENTITY)

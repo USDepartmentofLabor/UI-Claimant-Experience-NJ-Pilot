@@ -35,7 +35,7 @@ export const EditEmployers: NextPageWithLayout = () => {
       claimFormValues.employers.length > editEmployerIndexNum &&
       editEmployerIndexNum >= 0 &&
       claimFormValues.employers[parseInt(editEmployerIndex)]
-        .worked_for_imported_employer_in_last_18mo
+        .worked_for_imported_employer_in_last_18mo !== false
 
     const initialValues = claimFormValues?.employers
       ? {

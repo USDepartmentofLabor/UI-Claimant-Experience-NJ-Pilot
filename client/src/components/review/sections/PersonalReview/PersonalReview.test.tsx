@@ -1,11 +1,9 @@
 import { render, screen } from '@testing-library/react'
-import {
-  buildReviewAddress,
-  PersonalReview,
-} from 'components/review/sections/PersonalReview/PersonalReview'
+import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { ClaimantInput } from 'types/claimantInput'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { EMPTY_DROPDOWN_OPTION, SuffixOption } from 'constants/formOptions'
+import { buildPersonalAddress } from 'utils/address/format'
 
 describe('PersonalReview component', () => {
   const renderPersonalReview = (claimFormValues: ClaimantInput) => {
@@ -123,7 +121,7 @@ describe('PersonalReview component', () => {
 
     expect(residenceAddress).toBeInTheDocument()
     expect(residenceAddress).toHaveTextContent(
-      buildReviewAddress(values.residence_address) as string
+      buildPersonalAddress(values.residence_address) as string
     )
 
     expect(mailingAddressSame).toBeInTheDocument()
@@ -131,7 +129,7 @@ describe('PersonalReview component', () => {
 
     expect(mailingAddress).toBeInTheDocument()
     expect(mailingAddress).toHaveTextContent(
-      buildReviewAddress(values.mailing_address) as string
+      buildPersonalAddress(values.mailing_address) as string
     )
   })
 
@@ -157,7 +155,7 @@ describe('PersonalReview component', () => {
 
     expect(residenceAddress).toBeInTheDocument()
     expect(residenceAddress).toHaveTextContent(
-      buildReviewAddress(values.residence_address) as string
+      buildPersonalAddress(values.residence_address) as string
     )
 
     expect(mailingAddressSame).toBeInTheDocument()

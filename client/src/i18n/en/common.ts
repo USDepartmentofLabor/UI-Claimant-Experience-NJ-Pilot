@@ -27,7 +27,13 @@ const common = {
         required: 'Address is required',
         pobox:
           'P.O. boxes can only be used as a mailing address, not a residential address. If you do not have another address, then please contact us.',
-        maxLength: 'Address must be at most 40 characters',
+        maxLength: {
+          employer: 'Address must be at most 40 characters',
+          address_generic_max: 'Address must be at most 64 characters',
+          residence: 'Address must be at most 30 characters',
+          mailing:
+            'Mailing address and mailing city  combined must be at most 44 characters',
+        },
       },
     },
     address2: { label: 'Address 2 (optional)' },
@@ -37,7 +43,11 @@ const common = {
       errors: {
         required: 'City is required',
         noNumbers: 'Do not use numbers',
-        maxLength: 'City must be at most 64 characters',
+        maxLength: {
+          residence: 'City must be at most 19 characters',
+          employer: 'City must be at most 40 characters',
+          address_generic_max: 'City must be at most 64 characters',
+        },
       },
     },
     state: {
@@ -88,6 +98,9 @@ const common = {
     default_heading:
       'The following information has been added to your application:',
   },
+  update_payment_button: 'Update payment info',
+  tax_doc_button: 'Get your 1099-G',
+  update_contact_info_button: 'Update Address/Telephone',
   page_loader: 'Loading...',
   header: {
     home: 'Home',
@@ -97,6 +110,8 @@ const common = {
     appeal: 'File an appeal',
     privacy: 'Data privacy and security',
     logout: 'Log out',
+    signout: 'Sign out',
+    signin: 'Sign in',
     title: 'Unemployment Insurance benefits',
     menu: 'Menu',
   },

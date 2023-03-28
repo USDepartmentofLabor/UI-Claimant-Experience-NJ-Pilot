@@ -8,19 +8,23 @@ import {
   NavMenuButton,
   Title,
   Link,
+  Button,
 } from '@trussworks/react-uswds'
 import { useRouter } from 'next/router'
 // import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { Routes, CLAIM_FORM_BASE_ROUTE } from 'constants/routes'
 import { SignOut } from 'components/SignOut/SignOut'
+import { useSession, signIn } from 'next-auth/react'
 
 export const NewJerseyHeader = () => {
+  const session = useSession()
   const { t } = useTranslation('common', { keyPrefix: 'header' })
   const router = useRouter()
   const [expanded, setExpanded] = useState(false)
   const onClick = (): void => setExpanded((prvExpanded) => !prvExpanded)
   const [isOpen, setIsOpen] = useState([false, false])
   const submitted = router?.query?.completed
+  const isLoggedIn = session?.data?.user !== undefined
   const menuItems = [
     <Link
       href={Routes.HOME}
@@ -101,7 +105,17 @@ export const NewJerseyHeader = () => {
     >
       {t('privacy')}
     </Link>,
-    <SignOut isNavLink key="logout" />,
+    isLoggedIn ? (
+      <SignOut isNavLink key="logout" />
+    ) : (
+      <Button
+        type="button"
+        className="usa-link usa-nav__link"
+        onClick={() => signIn('cognito')}
+      >
+        {t('signin')}
+      </Button>
+    ),
   ]
 
   const onToggle = (

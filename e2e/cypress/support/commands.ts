@@ -104,9 +104,9 @@ Cypress.Commands.add('login', (userObj: JWTPayload) => {
 
 // TODO: remove hideElements when pa11y uses WCAG 3
 Cypress.Commands.add('checkA11y', (options: Options = {}) => {
-  if (!(Cypress.env('SKIP_CHECKS') === 'enabled')) {
+  if (!Cypress.env('SKIP_A11Y')) {
     cy.pa11y({
-      hideElements: '.nav-future',
+      hideElements: 'span[class*=nav_future]',
       runners: ['htmlcs'],
       standard: 'WCAG2AA',
       actions: ['wait for element #page-loading to be hidden'],
@@ -118,11 +118,10 @@ Cypress.Commands.add('checkA11y', (options: Options = {}) => {
 Cypress.Commands.add(
   'checkLighthouse',
   (thresholds: Cypress.LighthouseThresholds = undefined) => {
-    if (!(Cypress.env('SKIP_CHECKS') === 'enabled')) {
+    if (!Cypress.env('SKIP_LIGHTHOUSE')) {
       if (thresholds) return cy.lighthouse(thresholds)
       else return cy.lighthouse()
     }
-    return
   }
 )
 
@@ -144,18 +143,18 @@ Cypress.Commands.add('clickBack', () => {
 
 Cypress.Commands.add('clickAddEmployer', () => {
   cy.get(`button[data-testid=button]`)
-    .contains('Add Employer')
+    .contains('Add employer')
     .should('be.visible')
     .click()
-  cy.contains('h1', 'Add Employer')
+  cy.contains('h1', 'Add employer')
 })
 
 Cypress.Commands.add('clickEditEmployer', (employerName: string) => {
   cy.get(`div[data-testid="${employerName}"]`)
-    .contains('Edit Details')
+    .contains('Edit details')
     .should('be.visible')
     .click()
-  cy.contains('h1', 'Edit Employer')
+  cy.contains('h1', 'Edit employer')
 })
 
 Cypress.Commands.add('clickDeleteEmployer', (employerName: string) => {
@@ -169,6 +168,14 @@ Cypress.Commands.add('clickDeleteEmployer', (employerName: string) => {
 Cypress.Commands.add('clickSubmit', () => {
   cy.get('[data-testid=submit-button]')
     .contains('Submit')
+    .scrollIntoView()
+    .should('be.visible')
+    .click()
+})
+
+Cypress.Commands.add('clickLink', (link: string, text: string) => {
+  cy.get(`a[href="${link}"]`)
+    .contains(text)
     .scrollIntoView()
     .should('be.visible')
     .click()

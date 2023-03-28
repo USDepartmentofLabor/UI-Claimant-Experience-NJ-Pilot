@@ -5,8 +5,8 @@ const contact = {
     city: 'City',
     state: 'State',
     zipcode: 'ZIP Code',
-    primary_address: '<strong>Where do you live?</strong>',
-    mailing_address: '<strong>What is your mailing address?</strong>',
+    primary_address: 'Where do you live?',
+    mailing_address: 'What is your mailing address?',
     mailing_address_same:
       'My mailing address is the same as my residence address.',
     email_address: 'Email address',

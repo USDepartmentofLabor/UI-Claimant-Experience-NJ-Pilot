@@ -1,3 +1,5 @@
+import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
+
 const claimForm = {
   step_progress: 'step {{step}} of {{totalSteps}}',
   pagination: {
@@ -105,9 +107,9 @@ const claimForm = {
       no_work:
         'You said you did not have a job in the last 18 months.  If that\'s correct, click "next" below. If you did have a job, please go back and change your answer on <0>the first page</0>.',
     },
-    add_employer: 'Add Employer',
+    add_employer: 'Add employer',
     edit_employer: {
-      edit_details: 'Edit Details',
+      edit_details: 'Edit details',
       label: 'Edit details for {{employer}}',
       delete: 'Delete',
       delete_label: 'Delete employer {{employer}}',
@@ -130,7 +132,7 @@ const claimForm = {
     options: {
       female: 'Female',
       male: 'Male',
-      unspecified: 'X (unspecified)',
+      unspecified: 'Unspecified (X)',
     },
     errors: {
       required: 'You must select a sex',
@@ -236,7 +238,6 @@ const claimForm = {
       label: 'Expiration date',
       errors: {
         required: 'Expiration date is required',
-        maxDate: "Expiration date can't be in the future",
         minDate: "Expiration date can't be before valid from / issued on date",
       },
     },
@@ -502,6 +503,15 @@ const claimForm = {
           maxLength: 'Your FEIN must be at most 15 characters',
         },
       },
+      state_employer_payroll_number: {
+        label: 'State payroll number (optional)',
+        review_label: 'State payroll number',
+        hint: 'You can find this on your NJ state employee paystubs.',
+        errors: {
+          digitsOnly: 'Your state payroll number must numbers only',
+          incorrectLength: 'Your state payroll number must be 7 digits',
+        },
+      },
       employer_address: {
         address: { label: 'Employer street address 1' },
         address2: { label: 'Employer street address 2 (optional)' },
@@ -511,7 +521,7 @@ const claimForm = {
         zipcode: { label: 'ZIP' },
       },
       employer_phone: {
-        label: 'Employer phone number',
+        label: 'Employer phone number (optional)',
       },
       is_full_time: {
         help_text:
@@ -552,7 +562,7 @@ const claimForm = {
         required: "Please check that the employer's phone number is right",
       },
       work_location_phone: {
-        label: 'Work location phone number',
+        label: 'Work location phone number (optional)',
       },
     },
     hours_reduced_twenty_percent: {
@@ -589,7 +599,12 @@ const claimForm = {
       },
       employer_is_sole_proprietorship: {
         label: 'Was this business a sole proprietorship?',
-        hint: 'Answer yes if there was only one owner, or if the business would file a Schedule C (Form 1040). Answer no if it was a corporation, which usually has “Inc” in the name.',
+        hint: 'A sole proprietor has only one owner. Answer "No" if this employer is a corporation, which usually has “Inc” in the name.',
+        options: {
+          yes: 'Yes',
+          no: 'No',
+          not_sure: "I'm not sure",
+        },
         errors: {
           required:
             'You must say whether this business was a sole proprietorship',
@@ -624,7 +639,11 @@ const claimForm = {
         pay_type: {
           label:
             'Have you received any payments from this employer since your last day of work?',
-          errors: { required: 'At least one option must be selected' },
+          errors: {
+            required: 'At least one option must be selected',
+            none_and:
+              'Please check whether you have not received any other pay',
+          },
           options: {
             vacation_sick_pto: {
               label: 'Vacation, sick, or PTO pay',
@@ -674,6 +693,7 @@ const claimForm = {
         },
         total: {
           label: 'Total of this pay',
+          reviewLabel: 'Total of {{payType}}',
           description: {
             vacation_sick_pto:
               'Pay you received for approved time off or a pay out of unused time off',
@@ -702,6 +722,7 @@ const claimForm = {
         },
         date_pay_began: {
           label: 'Start date of this pay',
+          reviewLabel: 'Start date of {{payType}}',
           errors: {
             required: 'Start date is required',
             max: 'Date must be today or in the past',
@@ -709,6 +730,7 @@ const claimForm = {
         },
         date_pay_ended: {
           label: 'End date of this pay',
+          reviewLabel: 'End date of {{payType}}',
           errors: {
             required: 'End date is required',
             max: 'Date must be today or in the past',
@@ -717,6 +739,7 @@ const claimForm = {
         },
         other_note: {
           label: 'Please explain what type of pay you received',
+          reviewLabel: 'Please explain what type of other pay you received',
           errors: {
             required: 'Please give further details',
             maxLength:
@@ -867,6 +890,7 @@ const claimForm = {
     union_local_number: {
       label: 'Union local number',
       errors: {
+        digitsOnly: 'Union number can only be numbers',
         required: 'You must give your union local number',
         maxLength: 'Union local number must be at most 16 characters',
       },
@@ -939,14 +963,16 @@ const claimForm = {
       label: 'First name',
       errors: {
         required: 'First name is required',
-        alphabetical: 'First name must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your first name with only the letters A-Z.",
         maxLength: 'First name must be at most 36 characters',
       },
     },
     middle_initial: {
       label: 'Middle initial (optional)',
       errors: {
-        alphabetical: 'Middle initial must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your middle initial with only the letters A-Z.",
         maxLength: 'Middle initial must be at most 1 character',
       },
     },
@@ -954,7 +980,8 @@ const claimForm = {
       label: 'Last name',
       errors: {
         required: 'Last name is required',
-        alphabetical: 'Last name must be alphabetical',
+        alphabetical:
+          "Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your last name with only the letters A-Z.",
         maxLength: 'Last name must be at most 36 characters',
       },
     },
@@ -977,17 +1004,17 @@ const claimForm = {
     },
   },
   edit_employer: {
-    heading: 'Edit Employer',
+    heading: 'Edit employer',
   },
   payment: {
     heading: 'Payment information',
     header_description: {
       line1:
         "Once you're approved for benefits, you can have your payments directly deposited into your bank account or loaded onto a prepaid debit card.",
-      line2: 'Questions? Please visit our <0>payments information page</0>.',
+      line2: 'Questions? Please visit our <0>payments information page</0>',
     },
     federal_income_tax_withheld: {
-      header: '<strong>Taxes and deductions</strong>',
+      header: 'Taxes and deductions',
       description:
         'Unemployment Insurance payments will be counted as reportable income on your federal taxes. Federal tax withholding will only be made after amounts are deducted and withheld for any unemployment overpayments, child support obligations, or any other amounts that must be deducted and withheld by law.',
       label:
@@ -999,7 +1026,7 @@ const claimForm = {
       },
     },
     payment_method: {
-      header: '<strong>Benefits payments</strong>',
+      header: 'Benefits payments',
       label: 'How would you like to receive your benefits payments?',
       direct_deposit_description:
         "Direct deposit can take up to 7 days to take effect, but it's usually faster than the debit card option.",
@@ -1023,12 +1050,12 @@ const claimForm = {
       },
     },
     apply_for_increased_payment_for_dependents: {
-      header: '<strong>Dependency benefits</strong>',
+      header: 'Dependency benefits',
       label:
         'Are you interested in applying for an increased payment based on your dependents?',
       description: {
         line1:
-          "You may qualify for an increase to your benefit amount based on your family’s situation. If you are not receiving the max benefit amount, and you are interested in an increased rate for Dependency Benefits, you will need to give proof of the dependents you are claiming along with supporting legal documentation. To be eligible, your spouse/civil union partner can't be employed during the week you start your claim or already be collecting dependency benefits. <0>Read more about eligibility here</0>.",
+          "You may qualify for an increase to your benefit amount based on your family’s situation. If you are not receiving the max benefit amount, and you are interested in an increased rate for Dependency Benefits, you will need to give proof of the dependents you are claiming along with supporting legal documentation. To be eligible, your spouse/civil union partner can't be employed during the week you start your claim or already be collecting dependency benefits. <0>Read more about eligibility here</0>",
         line2:
           'If interested, within a few business days you will receive two emails—one explaining who could be eligible for dependency benefits, and a second with a link to an online application where you will be asked to answer a few questions and submit further information.',
       },
@@ -1077,7 +1104,7 @@ const claimForm = {
       },
     },
     routing_and_account_number: {
-      label: '<strong>How do I find these numbers?</strong>',
+      label: 'How do I find these numbers?',
       image_alt:
         'A picture of a check showing where to find the routing and account numbers',
       description: {
@@ -1134,6 +1161,12 @@ const claimForm = {
         required: 'Your certification is required',
       },
     },
+  },
+  success: {
+    heading: 'Success!',
+    success_details:
+      'You have successfully submitted your claim for unemployment insurance. We will be in touch soon to confirm we have received your information.',
+    contact_details: `If you don't hear from us in two weeks, please email us at <0>${EXTERNAL_CONTACT_EMAIL}<0/>`,
   },
 }
 

@@ -92,7 +92,6 @@ export const ReviewEmployers: NextPageWithLayout = () => {
     setState(REVIEW)
     //setEmployerIndex(0)
   }
-
   return (
     <>
       {state === REVIEW && (
@@ -141,7 +140,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
             return (
               <>
                 <SummaryBox
-                  className="margin-bottom-6"
+                  className="margin-bottom-4"
                   data-testid="review-employers"
                 >
                   <SummaryBoxContent>
@@ -183,11 +182,11 @@ export const ReviewEmployers: NextPageWithLayout = () => {
 
                   return (
                     <div
-                      className="margin-bottom-1em"
+                      className="margin-bottom-4"
                       key={index}
                       data-testid={employer.employer_name}
                     >
-                      <h2 className="font-heading-sm margin-bottom-0">
+                      <h2 className="font-heading-lg margin-bottom-0">
                         {employer.employer_name}
                       </h2>
                       <Button
@@ -213,7 +212,7 @@ export const ReviewEmployers: NextPageWithLayout = () => {
                               employer: employer.employer_name,
                             }
                           )}
-                          className="usa-button width-auto margin-left-2"
+                          className="usa-button width-auto margin-left-2 text-base-dark"
                           unstyled
                           type="button"
                           disabled={isDeleting}

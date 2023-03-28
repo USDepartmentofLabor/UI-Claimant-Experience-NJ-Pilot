@@ -12,6 +12,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
+env:
+  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
+
 jobs:
   dev-client-deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -57,6 +60,7 @@ jobs:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
 
   test-client-deploy:
     needs: [dev-client-deploy, dev-server-deploy]
@@ -106,6 +110,7 @@ jobs:
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_TEST }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_TEST }}
           image-uri: ${{ secrets.ECR_REGISTRY_DEV }}${{ needs.dev-server-deploy.outputs.image-uri-without-aws-id }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
 
   prod-client-deploy:
     needs: [test-client-deploy, test-server-deploy]
@@ -153,3 +158,4 @@ jobs:
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_PROD }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_PROD }}
           image-uri: ${{ secrets.ECR_REGISTRY_DEV }}${{ needs.test-server-deploy.outputs.image-uri-without-aws-id }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}

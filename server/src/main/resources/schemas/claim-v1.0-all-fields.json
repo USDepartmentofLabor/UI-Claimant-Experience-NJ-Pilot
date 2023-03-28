@@ -20,7 +20,7 @@
         "middle_initial": {
           "type": "string",
           "maxLength": 1,
-          "pattern": "[A-Za-z]"
+          "pattern": "[A-Za-z -']"
         },
         "suffix": {
           "type": "string",
@@ -59,12 +59,12 @@
       "properties": {
         "address": {
           "type": "string",
-          "maxLength": 64,
+          "maxLength": 30,
           "pattern": "^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$"
         },
         "city": {
           "type": "string",
-          "maxLength": 64,
+          "maxLength": 19,
           "pattern": "^([^0-9]*)$"
         },
         "state": {
@@ -377,6 +377,24 @@
           "maxLength": 15,
           "pattern": "^[\\d]{0,15}$"
         },
+        "state_employer_payroll_number": {
+          "description": "NJ State Employer Payroll only applies when using State of NJ FEIN",
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[\\d]{7}$",
+          "if": {
+            "properties": {
+              "fein": {
+                "type": "string",
+                "const": "022248181800000"
+              }
+            }
+          },
+          "then": {
+            "required": ["state_employer_payroll_number"]
+          }
+        },
         "is_full_time": {
           "description": "Job was more than 32 hours per week",
           "type": "boolean"
@@ -411,7 +429,8 @@
         },
         "employer_is_sole_proprietorship": {
           "description": "There is only one owner or the business would file a Schedule C (Form 1040)",
-          "type": "boolean",
+          "type": "string",
+          "enum": ["yes", "no", "not_sure"],
           "if": {
             "properties": {
               "corporate_officer_or_stock_ownership": {
@@ -430,8 +449,8 @@
           "if": {
             "properties": {
               "employer_is_sole_proprietorship": {
-                "type": "boolean",
-                "const": false
+                "type": "string",
+                "const": ["yes", "not_sure"]
               }
             }
           },
@@ -533,7 +552,10 @@
             "properties": {
               "separation_circumstance": {
                 "type": "string",
-                "enum": ["fired_discharged_suspended"]
+                "enum": [
+                  "fired_discharged_suspended",
+                  "unsatisfactory_work_performance"
+                ]
               }
             }
           },
@@ -1151,6 +1173,7 @@
     "union_local_number": {
       "description": "Union's local number",
       "type": "string",
+      "pattern": "^[\\d]{1,16}$",
       "maxLength": 16
     },
     "disability_applied_to_or_received": {
@@ -1229,13 +1252,10 @@
       "type": "boolean",
       "description": "Screener question: In the last 18 months, have you had a job (including military service)?"
     },
-    "screener_all_work_nj": {
-      "type": "boolean",
-      "description": "Screener question: Was all of your work (not including military service) performed in New Jersey?"
-    },
-    "screener_any_work_nj": {
-      "type": "boolean",
-      "description": "Screener question: Was any of your work (not including military service) performed in New Jersey?"
+    "screener_work_nj": {
+      "type": "string",
+      "enum": ["nj", "other", "both"],
+      "description": "Screener question: Where did you perform your work (not including federal or military service)?"
     },
     "screener_currently_disabled": {
       "type": "boolean",
@@ -1304,8 +1324,7 @@
     "screener_current_country_us",
     "screener_live_in_canada",
     "screener_job_last_eighteen_months",
-    "screener_all_work_nj",
-    "screener_any_work_nj",
+    "screener_work_nj",
     "screener_currently_disabled",
     "screener_military_service_eighteen_months",
     "screener_maritime_employer_eighteen_months",

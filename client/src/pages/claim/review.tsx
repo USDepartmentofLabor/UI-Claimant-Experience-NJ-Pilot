@@ -9,14 +9,19 @@ import {
 import CheckboxField from 'components/form/fields/CheckboxField/CheckboxField'
 import { Trans } from 'next-i18next'
 import { NextPageWithLayout } from 'pages/_app'
-import { FormEventHandler, ReactNode, useContext, useRef } from 'react'
+import {
+  FormEventHandler,
+  ReactNode,
+  useContext,
+  useRef,
+  useState,
+} from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { ReviewPageDefinition } from 'constants/pages/definitions/reviewPageDefinition'
 import {
   getPreviousPage,
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
-import { ReviewInput } from 'types/claimantInput'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
 import ClaimFormButtons from 'components/form/ClaimFormButtons/ClaimFormButtons'
 import { BackButton } from 'components/form/ClaimFormButtons/BackButton/BackButton'
@@ -29,17 +34,30 @@ import { useRouter } from 'next/router'
 import { PersonalReview } from 'components/review/sections/PersonalReview/PersonalReview'
 import { IdentityReview } from 'components/review/sections/IdentityReview/IdentityReview'
 import { HorizontalRule } from 'components/HorizonalRule/HorizontalRule'
+import { EmployersReview } from 'components/review/sections/EmployersReview/EmployersReview'
+import { OccupationReview } from 'components/review/sections/OccupationReview/OccupationReview'
 import { PrequalReview } from 'components/review/sections/PrequalReview/PrequalReview'
 import { UnionReview } from 'components/review/sections/UnionReview/UnionReview'
 import { EducationAndTrainingReview } from 'components/review/sections/EducationAndTrainingReview/EducationAndTrainingReview'
 import { ContactReview } from 'components/review/sections/ContactReview/ContactReview'
 import { UNTOUCHED_CHECKBOX_VALUE } from 'constants/formOptions'
+import { PaymentReview } from 'components/review/sections/PaymentReview/PaymentReview'
+import { DisabilityReview } from 'components/review/sections/DisabilityReview/DisabilityReview'
+import { DemographicsReview } from 'components/review/sections/DemographicsReview/DemographicsReview'
+import { ScreenerReview } from 'components/review/sections/ScreenerReview/ScreenerReview'
+import { ReviewInput } from 'types/claimantInput'
+import { useGetBetaTestReview } from 'queries/useGetBetaTestReview'
+import { isAxiosError } from 'axios'
 
 const pageDefinition = ReviewPageDefinition
 const previousPage = getPreviousPage(pageDefinition)
 
 const pageInitialValues = {
   certify: UNTOUCHED_CHECKBOX_VALUE,
+}
+type ErrorResponse = {
+  message: string
+  errors: string[] | null | undefined
 }
 
 export const Review: NextPageWithLayout = () => {
@@ -49,26 +67,71 @@ export const Review: NextPageWithLayout = () => {
   const { claimFormValues } = useContext(ClaimFormContext)
   const saveCompleteClaim = useSaveCompleteClaim()
   const submitClaim = useSubmitClaim()
+  const { refetch } = useGetBetaTestReview()
+  const [betaTestError, setBetaTestError] = useState<string | undefined>(
+    undefined
+  )
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0 })
+    }
+  }
 
   const valuesRef = useRef(claimFormValues)
   valuesRef.current = claimFormValues
 
-  const handleCompleteAndSubmit: FormEventHandler<HTMLButtonElement> = () => {
+  const handleCompleteAndSubmit: FormEventHandler<
+    HTMLButtonElement
+  > = async () => {
     // Make sure we're using the updated context value now that the formik form has been saved
     const completeClaimValues = valuesRef.current
     if (completeClaimValues !== undefined) {
+      setIsSubmitting(true)
       saveCompleteClaim.mutate(completeClaimValues, {
         onSuccess: async () => {
-          await submitClaim.mutate(completeClaimValues, {
-            onSuccess: async () =>
-              await router.push({
-                pathname: Routes.HOME,
-                query: { completed: true },
-              }),
-          })
+          // Send HTML review artifact of review page to backend server
+          const betaTestReviewResult = await refetch()
+          if (betaTestReviewResult.data?.status === 200) {
+            submitClaim.mutate(completeClaimValues, {
+              onSuccess: async () => {
+                await router.push({
+                  pathname: Routes.CLAIM.SUCCESS,
+                })
+              },
+              onError: () => {
+                scrollToTop()
+                setIsSubmitting(false)
+              },
+            })
+          } else {
+            const { error } = betaTestReviewResult
+            if (error && isAxiosError(error))
+              setBetaTestError(error.response?.data || error.message)
+            scrollToTop()
+            setIsSubmitting(false)
+          }
+        },
+        onError: () => {
+          scrollToTop()
+          setIsSubmitting(false)
         },
       })
     }
+  }
+
+  const displayCompleteClaimErrors = (data: any) => {
+    const response = data as ErrorResponse
+
+    if (!response?.errors) {
+      return <li key={'error_data'}>{response.message}</li>
+    }
+
+    const regex = /[$.]/g
+    return response.errors.map((element) => (
+      <li key={element}>{element.replaceAll(regex, '')}</li>
+    ))
   }
 
   return (
@@ -81,26 +144,26 @@ export const Review: NextPageWithLayout = () => {
       {() => {
         return (
           <>
-            {(saveCompleteClaim.isError || submitClaim.isError) && (
+            {(saveCompleteClaim.isError ||
+              submitClaim.isError ||
+              betaTestError) && (
               <Alert
                 type="error"
-                headingLevel="h4"
+                headingLevel="h2"
                 className="margin-top-1"
+                heading={tClaimForm('complete_claim_error')}
                 validation
               >
-                <div>{tClaimForm('complete_claim_error')}</div>
-                <ul>
+                <ul className="usa-list">
                   {saveCompleteClaim.isError &&
-                    saveCompleteClaim.error.response && (
-                      <li>
-                        {typeof saveCompleteClaim.error.response.data ===
-                        'object'
-                          ? JSON.stringify(
-                              saveCompleteClaim.error.response.data
-                            )
-                          : saveCompleteClaim.error.response.data}
-                      </li>
+                    saveCompleteClaim.error.response?.data && (
+                      <div data-testid={'error-list'}>
+                        {displayCompleteClaimErrors(
+                          saveCompleteClaim.error.response.data
+                        )}
+                      </div>
                     )}
+
                   {submitClaim.isError && submitClaim.error.response && (
                     <li>
                       {typeof submitClaim.error.response.data === 'object'
@@ -108,6 +171,7 @@ export const Review: NextPageWithLayout = () => {
                         : submitClaim.error.response.data}
                     </li>
                   )}
+                  {betaTestError && <li>{betaTestError}</li>}
                 </ul>
               </Alert>
             )}
@@ -116,7 +180,7 @@ export const Review: NextPageWithLayout = () => {
                 {t('preamble.heading')}
               </SummaryBoxHeading>
               <SummaryBoxContent>
-                <ul>
+                <ul className="usa-list">
                   <li>{t('preamble.line1')}</li>
                   <li>{t('preamble.line2')}</li>
                   <li>{t('preamble.line3')}</li>
@@ -124,17 +188,40 @@ export const Review: NextPageWithLayout = () => {
               </SummaryBoxContent>
             </SummaryBox>
 
+            <ScreenerReview />
+            <HorizontalRule />
+
             <PrequalReview />
             <HorizontalRule />
-            <PersonalReview />
-            <HorizontalRule />
-            <ContactReview />
-            <HorizontalRule />
+
             <IdentityReview />
             <HorizontalRule />
+
+            <PersonalReview />
+            <HorizontalRule />
+
+            <ContactReview />
+            <HorizontalRule />
+
+            <DemographicsReview />
+            <HorizontalRule />
+
+            <EmployersReview />
+            <HorizontalRule />
+
+            <OccupationReview />
+            <HorizontalRule />
+
             <EducationAndTrainingReview />
             <HorizontalRule />
+
             <UnionReview />
+            <HorizontalRule />
+
+            <DisabilityReview />
+            <HorizontalRule />
+
+            <PaymentReview />
             <HorizontalRule />
 
             <CheckboxField
@@ -152,8 +239,14 @@ export const Review: NextPageWithLayout = () => {
               }
             />
             <ClaimFormButtons>
-              <BackButton previousPage={previousPage.path} />
-              <SubmitButton onSubmit={handleCompleteAndSubmit} />
+              <BackButton
+                previousPage={previousPage.path}
+                disabled={isSubmitting}
+              />
+              <SubmitButton
+                onSubmit={handleCompleteAndSubmit}
+                disabled={isSubmitting}
+              />
             </ClaimFormButtons>
           </>
         )

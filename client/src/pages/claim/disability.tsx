@@ -105,7 +105,7 @@ export const Disability: NextPageWithLayout = () => {
                 {t('disability.info_alert.title')}
               </SummaryBoxHeading>
               <SummaryBoxContent>
-                <ul>
+                <ul className="usa-list">
                   <li>{t('disability.info_alert.items.doctor_cert')}</li>
                   <li>{t('disability.info_alert.items.tdi')}</li>
                   <li>{t('disability.info_alert.items.workers_comp')}</li>

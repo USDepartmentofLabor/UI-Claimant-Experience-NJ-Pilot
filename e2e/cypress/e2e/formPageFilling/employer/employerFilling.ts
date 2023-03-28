@@ -3,6 +3,7 @@ import { fillPaymentsReceived } from './PaymentsReceived'
 import fillYourEmployerFields from './yourEmployer'
 import fillChangeInEmployment from './changeInEmployment'
 import fillWorkLocationSection from './workLocation'
+import { STATE_EMPLOYER_PAYROLL_NUMBER_VALUE } from 'constants/formOptions'
 
 export const fillValidEditEmployer = () => {
   fillYourEmployerFields({ is_full_time: true })
@@ -20,7 +21,7 @@ export const fillValidEditEmployer = () => {
     self_employed: false,
     is_owner: false,
     corporate_officer_or_stock_ownership: false,
-    employer_is_sole_proprietorship: false,
+    employer_is_sole_proprietorship: 'yes',
     related_to_owner_or_child_of_owner_under_18: 'child',
   })
 
@@ -52,7 +53,8 @@ export const fillValidEditEmployer = () => {
 export const fillValidAddEmployer1 = () => {
   fillYourEmployerFields({
     employer_name: 'Google',
-    fein: '543211770555581',
+    fein: STATE_EMPLOYER_PAYROLL_NUMBER_VALUE,
+    state_employer_payroll_number: '1234567',
     employer_address: {
       address: '19 Mailman road',
       address2: 'APT #111',
@@ -77,7 +79,7 @@ export const fillValidAddEmployer1 = () => {
     self_employed: false,
     is_owner: false,
     corporate_officer_or_stock_ownership: false,
-    employer_is_sole_proprietorship: false,
+    employer_is_sole_proprietorship: 'yes',
     related_to_owner_or_child_of_owner_under_18: 'parent',
   })
 
@@ -86,6 +88,7 @@ export const fillValidAddEmployer1 = () => {
     separation_circumstance_details: 'unsatisfactory_work_performance',
     employment_start_date: { mo: '04', day: '20', yr: '2014' },
     employment_last_date: { mo: '04', day: '24', yr: '2022' },
+    discharge_date: { mo: '04', day: '24', yr: '2022' },
     expect_to_be_recalled: false,
   })
   fillPaymentsReceived([

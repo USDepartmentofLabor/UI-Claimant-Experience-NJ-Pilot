@@ -3,11 +3,11 @@ import {
   ReviewElementProps,
 } from 'components/review/ReviewElement/ReviewElement'
 import { useTranslation } from 'next-i18next'
-import { YesNoInput } from 'types/claimantInput'
+import { CheckboxInput, YesNoInput } from 'types/claimantInput'
 
 type ReviewYesNoProps = {
   label: ReviewElementProps['label']
-  value: YesNoInput | undefined
+  value: YesNoInput | undefined | CheckboxInput
 }
 
 export const ReviewYesNo = ({ label, value }: ReviewYesNoProps) => {

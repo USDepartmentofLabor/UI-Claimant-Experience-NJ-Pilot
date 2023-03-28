@@ -1,3 +1,6 @@
+export const workOptions = ['nj', 'other', 'both'] as const
+export type WorkOption = typeof workOptions[number]
+
 export const UNTOUCHED_RADIO_VALUE = null
 export type UntouchedRadioValue = typeof UNTOUCHED_RADIO_VALUE
 
@@ -6,6 +9,10 @@ export type UntouchedCheckboxValue = typeof UNTOUCHED_CHECKBOX_VALUE
 
 export const EMPTY_DROPDOWN_OPTION = '' as const
 export type EmptyOption = typeof EMPTY_DROPDOWN_OPTION
+
+export const STATE_EMPLOYER_PAYROLL_NUMBER_VALUE = '022248181800000' as const
+export type StateEmployerPayrollNumberValue =
+  typeof STATE_EMPLOYER_PAYROLL_NUMBER_VALUE
 
 export const interpreterTTYOptions = [
   'interpreter',
@@ -98,6 +105,9 @@ export const suffixOptions = [
   'senior',
 ] as const
 export type SuffixOption = typeof suffixOptions[number]
+
+export const solePropOptions = ['yes', 'no', 'not_sure'] as const
+export type SolePropOption = typeof solePropOptions[number]
 
 export const changeInEmploymentOptions = [
   'laid_off',

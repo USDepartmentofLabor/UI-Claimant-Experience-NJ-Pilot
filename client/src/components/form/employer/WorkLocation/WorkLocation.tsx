@@ -58,7 +58,7 @@ export const WorkLocation = () => {
 
   return (
     <>
-      <Fieldset legend={<b>{t('section_title')} </b>}>
+      <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
         <YesNoQuestion
           question={
             <Trans t={t} i18nKey="worked_at_employer_address.label">
@@ -93,15 +93,17 @@ export const WorkLocation = () => {
           </FormGroup>
         )}
 
-        <YesNoQuestion
-          question={
-            <Trans t={t} i18nKey="is_employer_phone_accurate.label">
-              {formatStoredToDisplayPhone(values.employer_phone?.number)}
-            </Trans>
-          }
-          name={`is_employer_phone_accurate`}
-          onChange={handleEmployerLocationPhoneChange}
-        />
+        {values.employer_phone?.number !== '' && (
+          <YesNoQuestion
+            question={
+              <Trans t={t} i18nKey="is_employer_phone_accurate.label">
+                {formatStoredToDisplayPhone(values.employer_phone?.number)}
+              </Trans>
+            }
+            name={`is_employer_phone_accurate`}
+            onChange={handleEmployerLocationPhoneChange}
+          />
+        )}
         {values.is_employer_phone_accurate === false && (
           <PhoneNumberField
             name={`work_location_phone`}

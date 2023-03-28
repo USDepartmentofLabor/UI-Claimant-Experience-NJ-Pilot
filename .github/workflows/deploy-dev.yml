@@ -6,6 +6,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
+env:
+  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
+
 jobs:
   client-deploy:
     runs-on: ubuntu-latest
@@ -46,3 +49,4 @@ jobs:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}

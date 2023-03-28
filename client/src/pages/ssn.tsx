@@ -15,28 +15,36 @@ import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLay
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { SsnInput } from 'types/claimantInput'
 import { IntakeAppButtons } from 'components/IntakeAppButtons/IntakeAppButtons'
-import { Button } from '@trussworks/react-uswds'
+import { Button, Modal, ModalRef } from '@trussworks/react-uswds'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
 import { Routes } from 'constants/routes'
 import styles from 'styles/pages/screener.module.scss'
 import { i18n_ssn } from 'i18n/i18n'
 import { getFormattedSsn } from 'utils/ssn/format'
 import { useValidateSSN } from 'queries/useValidateSSN'
-import PageLoader from 'components/loaders/PageLoader'
+import { merge } from 'lodash'
 
+const useInitialValues = () => {
+  const { ssnInput } = useContext(IntakeAppContext)
+  const initialValues = { ssn: '' } as SsnInput
+
+  merge(initialValues, ssnInput)
+  return {
+    initialValues,
+  }
+}
 const Ssn: NextPageWithLayout = () => {
   const router = useRouter()
   const { t } = useTranslation('ssn')
-  const { ssnInput, setSsn } = useContext(IntakeAppContext)
+  const { setSsn } = useContext(IntakeAppContext)
   const [showSsn, setShowSsn] = useState<boolean>(false)
   const [disableButtons, setDisableButtons] = useState<boolean>(false)
   const validateSSN = useValidateSSN()
-
   const handleToggleSsn = () => {
     setShowSsn(!showSsn)
   }
+  const { initialValues } = useInitialValues()
 
-  const initialValues = { ssn: ssnInput?.ssn || '' }
   const validationSchema = object().shape({
     ssn: string()
       .matches(/^[0-9]{3}-?[0-9]{2}-?[0-9]{4}$/, t('errors.badFormat'))
@@ -58,7 +66,7 @@ const Ssn: NextPageWithLayout = () => {
     setSsn(values)
     setSubmitting(false)
   }
-
+  const modalRef = useRef<ModalRef>(null)
   return (
     <Formik<SsnInput>
       initialValues={initialValues}
@@ -76,11 +84,22 @@ const Ssn: NextPageWithLayout = () => {
           await router.push(Routes.HOME) // TODO: change to Nava file a claim page when url is available
         }
 
+        const closeModal = () => {
+          if (modalRef.current !== null) {
+            modalRef.current.toggleModal(undefined, false)
+          }
+        }
+        const openModal = () => {
+          if (modalRef.current !== null) {
+            modalRef.current.toggleModal(undefined, true)
+          }
+        }
         const lockButtonsAndVerifySSN = async () => {
           if (values.ssn) {
             setDisableButtons(true)
+            openModal()
             const validateSSNResult = await validateSSN.mutateAsync(values.ssn)
-            setDisableButtons(false)
+
             return validateSSNResult.status === 200
             //TODO - change this to handle error states
           }
@@ -94,7 +113,12 @@ const Ssn: NextPageWithLayout = () => {
             if (validRef.current) {
               const isVerifiedSSN = await lockButtonsAndVerifySSN()
               if (isVerifiedSSN) {
-                await router.push(Routes.SCREENER)
+                router.push(Routes.SCREENER).then(() => {
+                  closeModal()
+                })
+              } else {
+                setDisableButtons(false)
+                closeModal()
               }
             }
           })
@@ -102,9 +126,6 @@ const Ssn: NextPageWithLayout = () => {
 
         const showErrorSummary =
           submitCount > 0 && Object.keys(errors).length > 0
-        if (isLoadingSSN) {
-          return <PageLoader />
-        }
         return (
           <Form className={styles.screenerForm}>
             {showErrorSummary && (
@@ -150,6 +171,11 @@ const Ssn: NextPageWithLayout = () => {
                 {t('pagination.next')}
               </Button>
             </IntakeAppButtons>
+            {isLoadingSSN && (
+              <Modal ref={modalRef} id={'ssn-loading-modal'} isInitiallyOpen>
+                <h3>{t('loading')}</h3>
+              </Modal>
+            )}
           </Form>
         )
       }}

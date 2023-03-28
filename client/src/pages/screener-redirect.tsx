@@ -26,7 +26,7 @@ const ScreenerRedirect: NextPage = () => {
   const {
     screener_current_country_us,
     screener_live_in_canada,
-    screener_any_work_nj,
+    screener_work_nj,
     screener_military_service_eighteen_months,
     screener_currently_disabled,
     screener_federal_work_in_last_eighteen_months,
@@ -54,7 +54,7 @@ const ScreenerRedirect: NextPage = () => {
             {t('info_alert.title')}
           </SummaryBoxHeading>
           <SummaryBoxContent>
-            <ul>
+            <ul className="usa-list">
               {!ipInUS && (
                 <li>
                   {t('info_alert.items.ip_deny')}
@@ -80,7 +80,7 @@ const ScreenerRedirect: NextPage = () => {
                     </Link>
                   </li>
                 )}
-              {screener_any_work_nj === false && (
+              {screener_work_nj === 'other' && (
                 <li>
                   {t('info_alert.items.other_state')}
                   <Link variant="nav" href={'#other_state'}>
@@ -159,7 +159,7 @@ const ScreenerRedirect: NextPage = () => {
             </div>
           )}
 
-        {screener_any_work_nj === false && (
+        {screener_work_nj === 'other' && (
           <div className={borderStyle}>
             <h2 id="other_state">{t('other_state.heading')}</h2>
             <p>{t('other_state.label')}</p>

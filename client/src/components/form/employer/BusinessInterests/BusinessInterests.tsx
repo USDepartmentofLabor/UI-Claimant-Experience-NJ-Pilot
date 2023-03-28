@@ -1,11 +1,12 @@
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
 import { RadioField } from 'components/form/fields/RadioField/RadioField'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { useFormikContext } from 'formik'
 import { useClearFields } from 'hooks/useClearFields'
 import { Employer } from 'types/claimantInput'
 import { ChangeEventHandler } from 'react'
-import { employerRelationOptions } from 'constants/formOptions'
+import { Fieldset } from '@trussworks/react-uswds'
+import { solePropOptions, employerRelationOptions } from 'constants/formOptions'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 export const BusinessInterests = () => {
@@ -43,11 +44,12 @@ export const BusinessInterests = () => {
   const showSoleProprietorship =
     values.corporate_officer_or_stock_ownership === false
   const showRelatedToOwner =
-    showSoleProprietorship && values.employer_is_sole_proprietorship === false
+    (showSoleProprietorship &&
+      values.employer_is_sole_proprietorship === 'yes') ||
+    values.employer_is_sole_proprietorship === 'not_sure'
 
   return (
-    <>
-      <h2 className="font-heading-sm">{t('section_title')}</h2>
+    <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
       <YesNoQuestion
         name={`self_employed`}
         question={t('self_employed.label')}
@@ -59,10 +61,14 @@ export const BusinessInterests = () => {
         onChange={handleCorporateOfficerOrStockOwnershipChange}
       />
       {showSoleProprietorship && (
-        <YesNoQuestion
+        <RadioField
           name={`employer_is_sole_proprietorship`}
-          question={t('employer_is_sole_proprietorship.label')}
-          hint={t('employer_is_sole_proprietorship.hint')}
+          legend={t('employer_is_sole_proprietorship.label')}
+          hint={<Trans t={t} i18nKey="employer_is_sole_proprietorship.hint" />}
+          options={solePropOptions.map((option) => ({
+            label: t(`employer_is_sole_proprietorship.options.${option}`),
+            value: option,
+          }))}
           onChange={handleSoleProprietorshipChange}
         />
       )}
@@ -78,6 +84,6 @@ export const BusinessInterests = () => {
           }))}
         />
       )}
-    </>
+    </Fieldset>
   )
 }

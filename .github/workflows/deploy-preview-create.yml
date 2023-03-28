@@ -7,7 +7,6 @@ on:
     paths:
       - "client/**"
       - "server/**"
-  workflow_dispatch:
 
 # Cancel redundant deployments on same branch
 concurrency:
@@ -16,14 +15,17 @@ concurrency:
 
 env:
   JAVA_VERSION: 17.0.6+10
-  NODE_VERSION: 16.19.0
+  NODE_VERSION: 16.19.1
+  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
 
 jobs:
   should-deploy-preview-run:
     runs-on: ubuntu-latest
     environment: dev
     outputs:
-      run-deployment-preview: ${{ steps.dp-check.outputs.run-deployment-preview }}
+      run-deployment-preview: ${{ steps.preview-check.outputs.run-deployment-preview }}
+      server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+      preview-base-url-wo-https: ${{ steps.server-base-url.outputs.preview-base-url-wo-https }}
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -34,19 +36,37 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Check whether deployment preview should be built
-        id: dp-check
+        id: preview-check
         uses: ./.github/actions/should-deployment-preview-run
 
-      - name: Comment DP will be created
+      - name: Get branch names
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
+      - name: Compose server base url
+        id: server-base-url
+        env:
+          GIT_BRANCH: ${{ steps.branch-name.outputs.current_branch }}
+          DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+        shell: bash
+        run: |
+          SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
+          SAFE_BRANCH="$(echo $GIT_BRANCH | tr -c "[:alnum:]-" "-")"
+          PREVIEW_BASE_URL_WITHOUT_HTTPS="${SAFE_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          SERVER_BASE_URL="https://${PREVIEW_BASE_URL_WITHOUT_HTTPS}"
+          echo "preview-base-url-wo-https=$PREVIEW_BASE_URL_WITHOUT_HTTPS" >> $GITHUB_OUTPUT
+          echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment preview will be created
         uses: peter-evans/create-or-update-comment@v2
-        if: steps.dp-check.outputs.run-deployment-preview == 'true'
+        if: steps.preview-check.outputs.run-deployment-preview == 'true'
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: Deployment Preview will be created for this PR at ${{ github.sha }}
+          body: Deployment Preview will be created for this PR, ${{ github.sha }}, at ${{ steps.server-base-url.outputs.server-base-url }}
 
-      - name: Comment DP will not be created
+      - name: Comment preview will not be created
         uses: peter-evans/create-or-update-comment@v2
-        if: steps.dp-check.outputs.run-deployment-preview == 'false'
+        if: steps.preview-check.outputs.run-deployment-preview == 'false'
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: Deployment Preview will not be created for this PR at ${{ github.sha }}
@@ -71,7 +91,7 @@ jobs:
           JAVA_VERSION: ${{ env.JAVA_VERSION }}
           NODE_VERSION: ${{ env.NODE_VERSION }}
 
-  deploy-preview-create:
+  deploy-preview-auth-and-network:
     needs: [should-deploy-preview-run, build-lint-and-test]
     if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
     runs-on: ubuntu-latest
@@ -85,32 +105,86 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Compose server base url
-        id: server-base-url
-        env:
-          GIT_BRANCH: ${{ github.ref_name }}
-          DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
-        shell: bash
-        run: |
-          SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
-          SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
-          echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
+      - name: Create cognito urls
+        uses: ./.github/actions/create-cognito-urls
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url: ${{ needs.should-deploy-preview-run.outputs.server-base-url }}
+          pr-number: ${{ github.event.pull_request.number }}
+          cognito-client-id: ${{ secrets.COGNITO_CLIENT_ID }}
+          cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
 
-      - name: Build client image
-        id: build-client
-        uses: ./.github/actions/build-client
+      - name: Setup deployment preview networking
+        id: preview-networking
+        uses: ./.github/actions/create-preview-network
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          base-url-wo-https: ${{ needs.should-deploy-preview-run.outputs.preview-base-url-wo-https }}
+          base-url: ${{ needs.should-deploy-preview-run.outputs.server-base-url }}
+          pr-number: ${{ github.event.pull_request.number }}
+
+  deploy-preview-client-service:
+    needs:
+      [
+        should-deploy-preview-run,
+        build-lint-and-test,
+        deploy-preview-auth-and-network,
+      ]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build and deploy client image
+        id: build-deploy-client
+        uses: ./.github/actions/deploy-client
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          server-base-url: ${{ needs.should-deploy-preview-run.outputs.server-base-url }}
           app-env: development
+          pr: ${{ github.event.pull_request.number }}
+          ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}
+          ecs-client-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
 
-      - name: Build server image
-        id: build-server
-        uses: ./.github/actions/build-server
+  deploy-preview-server-service:
+    needs:
+      [
+        should-deploy-preview-run,
+        build-lint-and-test,
+        deploy-preview-auth-and-network,
+      ]
+    if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build and deploy server image
+        id: build-deploy-server
+        uses: ./.github/actions/deploy-server
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
+          pr: ${{ github.event.pull_request.number }}
+          ecs-server-security-group: ${{ secrets.ECS_SERVER_SECURITY_GROUP_DEV }}
+          ecs-server-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
 
   deploy-preview-will-not-create:
     needs: [should-deploy-preview-run]

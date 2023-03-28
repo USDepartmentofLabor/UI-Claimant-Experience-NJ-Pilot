@@ -1,7 +1,8 @@
 import { Formik, Form, FormikHelpers } from 'formik'
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { YesNoQuestion } from 'components/form/YesNoQuestion/YesNoQuestion'
-import { boolean, object } from 'yup'
+import { RadioField } from 'components/form/fields/RadioField/RadioField'
+import { boolean, string, object } from 'yup'
 import { ScreenerInput } from 'types/claimantInput'
 import { i18n_screener } from 'i18n/i18n'
 import {
@@ -16,23 +17,26 @@ import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLay
 import { IntakeAppButtons } from 'components/IntakeAppButtons/IntakeAppButtons'
 import { Button } from '@trussworks/react-uswds'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
+import { workOptions } from 'constants/formOptions'
 import { Routes } from 'constants/routes'
 import { useRouter } from 'next/router'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { getClearFieldsFunctions } from 'hooks/useClearFields'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
-
+import formStyles from 'components/form/form.module.scss'
 import styles from 'styles/pages/screener.module.scss'
 import { useGetPartialClaim } from '../queries/useGetPartialClaim'
 import { UNTOUCHED_RADIO_VALUE } from 'constants/formOptions'
+import { merge } from 'lodash'
+
+import { PartialClaimResponseType } from 'types/ResponseTypes'
 
 export const pageInitialValues = {
   screener_current_country_us: UNTOUCHED_RADIO_VALUE,
   screener_live_in_canada: UNTOUCHED_RADIO_VALUE,
   screener_job_last_eighteen_months: UNTOUCHED_RADIO_VALUE,
   screener_military_service_eighteen_months: UNTOUCHED_RADIO_VALUE,
-  screener_all_work_nj: UNTOUCHED_RADIO_VALUE,
-  screener_any_work_nj: UNTOUCHED_RADIO_VALUE,
+  screener_work_nj: UNTOUCHED_RADIO_VALUE,
   screener_currently_disabled: UNTOUCHED_RADIO_VALUE,
   screener_federal_work_in_last_eighteen_months: UNTOUCHED_RADIO_VALUE,
   screener_maritime_employer_eighteen_months: UNTOUCHED_RADIO_VALUE,
@@ -80,23 +84,14 @@ const Screener: NextPageWithLayout = () => {
             )
           ),
       }),
-    screener_all_work_nj: boolean()
+    screener_work_nj: string()
       .nullable()
       .when('screener_job_last_eighteen_months', {
         is: true,
         then: (schema) =>
-          schema.required(
-            i18n_screener.t('screener_all_work_nj.errors.required')
-          ),
-      }),
-    screener_any_work_nj: boolean()
-      .nullable()
-      .when('screener_all_work_nj', {
-        is: false,
-        then: (schema) =>
-          schema.required(
-            i18n_screener.t('screener_any_work_nj.errors.required')
-          ),
+          schema
+            .oneOf([...workOptions])
+            .required(i18n_screener.t('screener_work_nj.errors.required')),
       }),
     screener_currently_disabled: boolean()
       .nullable()
@@ -116,6 +111,23 @@ const Screener: NextPageWithLayout = () => {
         )
       ),
   })
+  const removeConditionalsFromPartialClaim = (
+    partialClaim: PartialClaimResponseType
+  ) => {
+    if (
+      partialClaim?.screener_job_last_eighteen_months &&
+      partialClaim?.screener_work_nj !== undefined
+    ) {
+      partialClaim.screener_work_nj = undefined
+    }
+    if (
+      partialClaim?.screener_current_country_us &&
+      partialClaim?.screener_live_in_canada !== undefined
+    ) {
+      partialClaim.screener_work_nj = undefined
+    }
+    return partialClaim
+  }
 
   const handleSubmit = (
     values: ScreenerInput,
@@ -143,7 +155,7 @@ const Screener: NextPageWithLayout = () => {
         setFieldValue,
         setFieldTouched,
       }) => {
-        const { clearField, clearFields } = getClearFieldsFunctions(
+        const { clearField } = getClearFieldsFunctions(
           getFieldMeta,
           setFieldValue,
           setFieldTouched
@@ -170,20 +182,9 @@ const Screener: NextPageWithLayout = () => {
           HTMLInputElement
         > = async (e) => {
           if (e.target.value === 'no') {
-            await clearFields({
-              screener_all_work_nj: pageInitialValues.screener_all_work_nj,
-              screener_any_work_nj: pageInitialValues.screener_any_work_nj,
-            })
-          }
-        }
-
-        const handleAllWorkInNJChange: ChangeEventHandler<
-          HTMLInputElement
-        > = async (e) => {
-          if (e.target.value === 'yes') {
             await clearField(
-              'screener_any_work_nj',
-              pageInitialValues.screener_any_work_nj
+              'screener_work_nj',
+              pageInitialValues.screener_work_nj
             )
           }
         }
@@ -197,7 +198,7 @@ const Screener: NextPageWithLayout = () => {
         const getIsRedirect = () => {
           const {
             screener_live_in_canada,
-            screener_any_work_nj,
+            screener_work_nj,
             screener_currently_disabled,
             screener_military_service_eighteen_months,
             screener_federal_work_in_last_eighteen_months,
@@ -205,7 +206,7 @@ const Screener: NextPageWithLayout = () => {
           } = values
           return (
             screener_live_in_canada !== null ||
-            screener_any_work_nj === false ||
+            screener_work_nj === 'other' ||
             screener_currently_disabled === true ||
             screener_military_service_eighteen_months === true ||
             screener_federal_work_in_last_eighteen_months === true ||
@@ -221,12 +222,22 @@ const Screener: NextPageWithLayout = () => {
               if (shouldRedirect) {
                 await router.push(Routes.SCREENER_REDIRECT)
               } else {
-                const intakeAppValues = { ...ssnInput, ...values }
+                const ssnToUse = ssnInput?.ssn
+                  ? ssnInput.ssn
+                  : partialClaim?.ssn
+                  ? partialClaim.ssn
+                  : ''
+
+                const intakeAppValues = { ...{ ssn: ssnToUse }, ...values }
                 if (
                   partialClaim !== undefined &&
                   Object.keys(intakeAppValues).length !== 0
                 ) {
-                  await appendAndSaveClaimFormValues(intakeAppValues)
+                  //set claim form values and merge with get partial claim
+                  const modifiedClaim =
+                    removeConditionalsFromPartialClaim(partialClaim)
+                  merge(modifiedClaim, intakeAppValues)
+                  await appendAndSaveClaimFormValues(partialClaim)
                 }
                 await router.push(Routes.CLAIM.PREQUAL)
               }
@@ -260,16 +271,16 @@ const Screener: NextPageWithLayout = () => {
               name="screener_military_service_eighteen_months"
             />
             {values.screener_job_last_eighteen_months === true && (
-              <YesNoQuestion
-                question={<Trans t={t} i18nKey="screener_all_work_nj.label" />}
-                name="screener_all_work_nj"
-                onChange={handleAllWorkInNJChange}
-              />
-            )}
-            {values.screener_all_work_nj === false && (
-              <YesNoQuestion
-                question={<Trans t={t} i18nKey="screener_any_work_nj.label" />}
-                name="screener_any_work_nj"
+              <RadioField
+                name="screener_work_nj"
+                legend={t('screener_work_nj.label')}
+                className={formStyles.field}
+                options={workOptions.map((option) => {
+                  return {
+                    label: t(`screener_work_nj.options.${option}`),
+                    value: option,
+                  }
+                })}
               />
             )}
             <YesNoQuestion

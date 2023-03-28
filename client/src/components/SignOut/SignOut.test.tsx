@@ -16,7 +16,7 @@ describe('SignOut', () => {
     const user = userEvent.setup()
     render(<SignOut isNavLink={false} />)
 
-    const signOutButton = screen.queryByText('Sign out')
+    const signOutButton = screen.queryByText('signout')
 
     expect(signOutButton).toBeInTheDocument()
     expect(signOutButton).toHaveAttribute('type', 'button')

@@ -30,7 +30,7 @@ export const YesNoQuestion = ({
     <FormGroup error={showError}>
       <Fieldset
         legend={question}
-        className={classnames(styles.fieldset, 'dol-fieldset', {
+        className={classnames(styles.fieldset, 'yesno-fieldset', {
           [styles.errorLegend]: showError,
         })}
         onInvalid={(e) => e.preventDefault()}

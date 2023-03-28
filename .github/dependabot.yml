@@ -8,24 +8,12 @@ updates:
       # The USWDS version should be managed manually
       # and coordinated with the ReactUSWDS version.
       - dependency-name: "uswds"
+  - package-ecosystem: "npm"
+    directory: "/e2e"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "gradle"
     directory: "/server"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/deploy-client"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/deploy-server"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/image-scan"
     schedule:
       interval: "weekly"
   - package-ecosystem: "pip"
@@ -44,9 +32,56 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
+    directory: "/ops/envoy"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
     directory: "/server"
     schedule:
       interval: "daily"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+  # Workflow files stored in the
+  # default location of `.github/workflows`
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  # Folders in `.github/actions` must be enumerated individually
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/build-client"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/build-server"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/create-cognito-urls"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/deploy-client"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/deploy-server"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/image-scan"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/lint-build-and-test"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/preview-network"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/should-deployment-preview-run"
+    schedule:
+      interval: "weekly"

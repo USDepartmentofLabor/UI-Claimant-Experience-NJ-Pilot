@@ -26,6 +26,8 @@ services:
     env_file: client/.env
     environment:
       - NEXTAUTH_URL=https://sandbox-claimant-intake:8443
+      - SERVER_BASE_URL=https://nginx:8443
+      - IGNORE_CERT_FAILURES=true
     ports:
       - "3000:3000"
   server:

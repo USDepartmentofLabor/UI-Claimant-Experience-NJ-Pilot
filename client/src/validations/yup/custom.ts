@@ -7,20 +7,26 @@ import {
 import { CENTS_REGEX } from 'constants/currency/format'
 import { i18n_claimForm, i18n_common } from 'i18n/i18n'
 import { boolean, date, object, string } from 'yup'
-import * as states from 'fixtures/states.json'
 import { suffixOptions } from 'constants/formOptions'
+import { statesAndTerritories } from 'fixtures/states_and_territories'
 
 export const yupAddress = () =>
   object().shape({
     address: string()
-      .max(64, i18n_common.t('address.address.errors.maxLength'))
+      .max(
+        64,
+        i18n_common.t('address.address.errors.maxLength.address_generic_max')
+      )
       .required(i18n_common.t('address.address.errors.required')),
     city: string()
-      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .max(
+        64,
+        i18n_common.t('address.city.errors.maxLength.address_generic_max')
+      )
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
@@ -35,20 +41,20 @@ export const yupEmployerAddress = () =>
   object().shape({
     address: string()
       .trim()
-      .max(40, i18n_common.t('address.address.errors.maxLength'))
+      .max(40, i18n_common.t('address.address.errors.maxLength.employer'))
       .required(i18n_common.t('address.address.errors.required')),
     address2: string()
       .trim()
-      .max(40, i18n_common.t('address.address.errors.maxLength')),
+      .max(40, i18n_common.t('address.address.errors.maxLength.employer')),
     address3: string()
       .trim()
-      .max(40, i18n_common.t('address.address.errors.maxLength')),
+      .max(40, i18n_common.t('address.address.errors.maxLength.employer')),
     city: string()
       .max(40, i18n_common.t('address.city.errors.maxLength'))
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
@@ -62,18 +68,18 @@ export const yupEmployerAddress = () =>
 export const yupAddressWithoutPOBox = () =>
   object().shape({
     address: string()
-      .max(64, i18n_common.t('address.address.errors.maxLength'))
+      .max(30, i18n_common.t('address.address.errors.maxLength.residence'))
       .matches(
         /^(?!.*(?:(.*((p|post)[-.\s]*(o|off|office)[-.\s]*(box|bin)[-.\s]*)|.*((p |post)[-.\s]*(box|bin)[-.\s]*)))).*$/i,
         i18n_common.t('address.address.errors.pobox')
       )
       .required(i18n_common.t('address.address.errors.required')),
     city: string()
-      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .max(19, i18n_common.t('address.city.errors.maxLength.residence'))
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
@@ -87,11 +93,14 @@ export const yupAddressWithoutPOBox = () =>
 export const yupAddressWithoutStreet = () =>
   object().shape({
     city: string()
-      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .max(
+        64,
+        i18n_common.t('address.city.errors.maxLength.address_generic_max')
+      )
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
-      .oneOf(Object.keys(states))
+      .oneOf(Object.keys(statesAndTerritories))
       .required(i18n_common.t('address.state.errors.required')),
     zipcode: string()
       .matches(
@@ -127,7 +136,7 @@ export const yupName = object().shape({
     .nullable()
     .max(36, i18n_claimForm.t('name.first_name.errors.maxLength'))
     .matches(
-      /^[A-Za-z]+$/,
+      /^[A-Za-z \-']+$/,
       i18n_claimForm.t('name.first_name.errors.alphabetical')
     )
     .required(i18n_claimForm.t('name.first_name.errors.required')),
@@ -135,14 +144,14 @@ export const yupName = object().shape({
     .nullable()
     .max(36, i18n_claimForm.t('name.last_name.errors.maxLength'))
     .matches(
-      /^[A-Za-z]+$/,
+      /^[A-Za-z \-']+$/,
       i18n_claimForm.t('name.last_name.errors.alphabetical')
     )
     .required(i18n_claimForm.t('name.last_name.errors.required')),
   middle_initial: string()
     .nullable()
     .matches(
-      /[A-Za-z]/,
+      /[A-Za-z \-']/,
       i18n_claimForm.t('name.middle_initial.errors.alphabetical')
     )
     .max(1, i18n_claimForm.t('name.middle_initial.errors.maxLength')),

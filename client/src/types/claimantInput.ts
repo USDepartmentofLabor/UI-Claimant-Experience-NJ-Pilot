@@ -15,9 +15,12 @@ import {
   CountryOfOriginOption,
   EmptyOption,
   UntouchedCheckboxValue,
+  SolePropOption,
   ChangeInEmploymentOption,
   ReasonStillEmployedOption,
   UntouchedRadioValue,
+  EmployerRelationOption,
+  WorkOption,
 } from 'constants/formOptions'
 
 // Types here represent the possible values of the intake form fields.
@@ -76,6 +79,7 @@ export type Employer = ImportedEmployerFields & {
   employer_phone: PhoneInput
 
   fein: string
+  state_employer_payroll_number: string
   employer_name: string
   is_full_time: YesNoInput
 
@@ -99,8 +103,10 @@ export type Employer = ImportedEmployerFields & {
   self_employed: YesNoInput
   is_owner: YesNoInput
   corporate_officer_or_stock_ownership: YesNoInput
-  employer_is_sole_proprietorship: YesNoInput
-  related_to_owner_or_child_of_owner_under_18: YesNoInput
+  employer_is_sole_proprietorship: SolePropOption | UntouchedRadioValue
+  related_to_owner_or_child_of_owner_under_18:
+    | EmployerRelationOption
+    | UntouchedRadioValue
 
   LOCAL_pay_types: PayTypeOption[]
   payments_received: PaymentsReceivedDetailInput[]
@@ -122,8 +128,7 @@ export type ScreenerInput = {
   screener_current_country_us: YesNoInput
   screener_live_in_canada: YesNoInput
   screener_job_last_eighteen_months: YesNoInput
-  screener_all_work_nj: YesNoInput
-  screener_any_work_nj: YesNoInput
+  screener_work_nj: WorkOption | UntouchedRadioValue
   screener_military_service_eighteen_months: YesNoInput
   screener_currently_disabled: YesNoInput
   screener_federal_work_in_last_eighteen_months: YesNoInput

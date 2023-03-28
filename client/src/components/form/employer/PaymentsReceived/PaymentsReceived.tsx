@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import { Fieldset } from '@trussworks/react-uswds'
 import { CheckboxGroupField } from '../../fields/CheckboxGroupField/CheckboxGroupField'
 import PaymentsReceivedDetail from '../PaymentsReceivedDetail/PaymentsReceivedDetail'
 import { useFormikContext, FieldArray } from 'formik'
@@ -57,8 +57,10 @@ const PaymentsReceived = () => {
   }, [values.payments_received.length])
 
   return (
-    <>
-      <h2 className="font-heading-sm">{t('payments_received.heading')}</h2>
+    <Fieldset
+      className="form-section"
+      legend={<h2>{t('payments_received.heading')}</h2>}
+    >
       <FieldArray
         name={`payments_received`}
         render={(arrayHelpers) => (
@@ -86,16 +88,7 @@ const PaymentsReceived = () => {
                   tile: true,
                   onChange: (e) => {
                     if (e.target.checked) {
-                      if (e.target.value === 'none') {
-                        setFieldValue(`LOCAL_pay_types`, ['none'], true)
-                        setFieldValue(
-                          `payments_received`,
-                          [createEmptyPayType('none')],
-                          true
-                        )
-                      } else {
-                        arrayHelpers.push(createEmptyPayType(option))
-                      }
+                      arrayHelpers.push(createEmptyPayType(option))
                     } else {
                       const indexOfPaymentReceivedToRemove =
                         findIndexOfPaymentReceived(option)
@@ -103,9 +96,6 @@ const PaymentsReceived = () => {
                         arrayHelpers.remove(indexOfPaymentReceivedToRemove)
                     }
                   },
-                  disabled:
-                    values.LOCAL_pay_types?.includes('none') &&
-                    option !== 'none',
                 },
               }))}
             />
@@ -134,7 +124,7 @@ const PaymentsReceived = () => {
           </>
         )}
       />
-    </>
+    </Fieldset>
   )
 }
 
