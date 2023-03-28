@@ -19,6 +19,7 @@ $asset-path: '~@uswds/uswds';
   $theme-root-font-size: 16px,
   $theme-font-path: '#{$asset-path}/fonts',
   $theme-font-type-sans: 'public-sans',
+  $theme-font-weight-heavy: 800,
   $theme-style-body-element: true,
 
   /* SPACING */ $theme-grid-container-max-width: 'desktop',

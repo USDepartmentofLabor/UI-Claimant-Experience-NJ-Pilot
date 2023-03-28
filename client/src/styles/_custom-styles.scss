@@ -88,3 +88,55 @@
     display: none;
   }
 }
+
+/**
+ * NJ typography styles
+ */
+.nj-heading--display {
+  font-size: size('heading', '3xl');
+  font-weight: font-weight('heavy');
+  line-height: line-height('heading', 2);
+}
+
+h1,
+.nj-h1 {
+  font-size: size('heading', '2xl');
+  font-weight: font-weight('bold');
+  line-height: 1.12;
+}
+
+h2,
+.nj-h2 {
+  font-size: size('heading', 'xl');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 2);
+}
+
+h3,
+.nj-h3 {
+  font-size: size('heading', 'lg');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 3);
+}
+
+h4,
+.nj-h4 {
+  font-size: size('heading', 'sm');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 4);
+}
+
+h5,
+.nj-h5 {
+  font-size: size('heading', 'xs');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 5);
+}
+
+h6,
+.nj-h6 {
+  font-size: size('heading', '3xs');
+  font-weight: font-weight('normal');
+  line-height: line-height('heading', 3);
+  text-transform: uppercase;
+}
