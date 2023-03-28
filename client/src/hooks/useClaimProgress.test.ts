@@ -37,7 +37,7 @@ const importedEmployer: Employer = {
     employerAddressLine2: null,
     employerAddressLine3: null,
     employerAddressLine4: null,
-    employerAddressLine5: ' Trenton NJ',
+    employerAddressLine5: 'Trenton NJ',
     employerAddressZip: '11111',
   },
   employer_phone: { number: '555-555-5555', sms: null },
