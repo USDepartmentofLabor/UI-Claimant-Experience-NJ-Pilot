@@ -32,6 +32,7 @@ jobs:
               - .github/actions/lint-build-and-test/**
               - .github/workflows/build-and-test.yml
               - .github/workflows/image-scans.yml
+              - .github/actions/image-scan/**
               - client/**
               - e2e/**
               - nginx/**
