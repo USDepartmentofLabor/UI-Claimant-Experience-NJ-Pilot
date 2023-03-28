@@ -2,7 +2,6 @@ import { useContext } from 'react'
 import { ReviewSection } from 'components/review/ReviewSection/ReviewSection'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useTranslation } from 'next-i18next'
-import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
 import { Employer, PaymentsReceivedDetailInput } from 'types/claimantInput'
 import { formatStoredDateToDisplayDate } from 'utils/date/format'
 import {
@@ -112,13 +111,7 @@ export const EmployerReview = ({
   ) {
     return null
   }
-  const employerCityAndState =
-    employer.is_imported && employer.imported_address
-      ? parseCityAndStateFromImportedAddress(employer.imported_address)
-      : {
-          city: employer?.employer_address?.city,
-          state: employer?.employer_address?.state,
-        }
+
   const formatPaymentsReceivedList = (
     paymentsReceived: PaymentsReceivedDetailInput[]
   ) => {
@@ -187,11 +180,30 @@ export const EmployerReview = ({
               t={t}
               i18nKey="work_location.worked_at_employer_address.label"
             >
-              {employerCityAndState.city}
-              {employerCityAndState.state}
+              {employer?.employer_address?.city}
+              {employer?.employer_address?.state}
             </Trans>
           }
-          value={employer?.worked_at_employer_address}
+          value={
+            employer.is_imported
+              ? undefined
+              : employer?.worked_at_employer_address
+          }
+        />
+        <ReviewYesNo
+          label={
+            <Trans
+              t={t}
+              i18nKey="work_location.worked_at_employer_address.label_imported"
+            >
+              {employer?.imported_address?.employerAddressLine5}
+            </Trans>
+          }
+          value={
+            employer.is_imported
+              ? employer?.worked_at_employer_address
+              : undefined
+          }
         />
         <ReviewElement
           label={t('work_location.section_title')}
