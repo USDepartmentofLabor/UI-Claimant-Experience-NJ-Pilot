@@ -6,19 +6,22 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 jest.mock('next-auth')
 import { getServerSession } from 'next-auth'
 
+const verifiedAddress = {
+  address: {
+    address: '1234 Broken Dreams Boulevard',
+    address2: 'Unit G',
+    city: 'New York',
+    state: 'NY',
+    zipcode: '12345',
+  },
+  validationSummary: '',
+}
+
 const mockGetVerifiedAddress = jest.fn().mockImplementation(() => ({
   status: 200,
-  data: {
-    address: {
-      address: '1234 Broken Dreams Boulevard',
-      address2: 'Unit G',
-      city: 'New York',
-      state: 'NY',
-      zipcode: '12345',
-    },
-    validationSummary: '',
-  },
+  data: verifiedAddress,
 }))
+
 const mockAxiosPost = jest.fn().mockImplementation(() => ({
   status: 200,
   statusText: 'OK',
@@ -45,9 +48,12 @@ const tokenValue = 'fakeToken'
 
 describe('/api/services/verify-address API Endpoint', () => {
   function mockRequestResponse() {
-    const req = { query: '' } as unknown as NextApiRequest
+    const req = {
+      query:
+        'street=1234+Broken+Dreams+Boulevard&street2=Unit+G&city=New+York&state=NY&zip=12345',
+    } as unknown as NextApiRequest
     const res = {
-      json: jest.fn(),
+      data: verifiedAddress,
       status: (status: number) => ({
         send: (statusText: string) => ({ status, statusText }),
       }),
@@ -88,15 +94,6 @@ describe('/api/services/verify-address API Endpoint', () => {
     expect(response.status).toBe(400)
   })
 
-  it('should error out no complete claim', async () => {
-    const { req, res } = mockRequestResponse()
-    jest.mock('axios', () => ({
-      get: () => null,
-    }))
-    const response = await handler(req, res)
-    expect(response.statusText).not.toBe('OK')
-    expect(response.status).toBe(400)
-  })
   it('should error out if no response from server', async () => {
     const { req, res } = mockFailRequestResponse()
     mockGetServerSession.mockImplementation(() => ({

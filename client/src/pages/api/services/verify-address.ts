@@ -4,6 +4,12 @@ import { authOptions } from '../auth/[...nextauth]'
 import axios from 'axios'
 import { AddressInput } from '../../../types/claimantInput'
 import { ADDRESS_SKELETON } from '../../../constants/initialValues'
+import {
+  CORRECTED_ADDRESS,
+  NO_ACCUMAIL_RESPONSE,
+  NO_ADDRESS_MATCH,
+  VALID_ADDRESS,
+} from '../../../constants/api/services/verifyAddress'
 
 export type AccumailResponse = {
   success: boolean
@@ -57,26 +63,29 @@ export default async function handler(
   if (session) {
     // Signed in
     try {
-      const accumailResponse = await axios.get(
-        'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address',
-        {
-          params: req.query,
+      if (req.query) {
+        const accumailResponse = await axios.get(
+          'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address',
+          {
+            params: req.query,
+          }
+        )
+        if (accumailResponse.data && accumailResponse.data.success) {
+          return res
+            .status(200)
+            .send(
+              summarizeValidationAndCreateResponseObject(accumailResponse.data)
+            )
+        } else {
+          return res.status(500).send({
+            address: ADDRESS_SKELETON,
+            validationSummary: NO_ACCUMAIL_RESPONSE,
+          })
         }
-      )
-      if (accumailResponse.data && accumailResponse.data.success) {
-        return res
-          .status(200)
-          .send(
-            summarizeValidationAndCreateResponseObject(accumailResponse.data)
-          )
-      } else {
-        return res.status(500).send({
-          address: ADDRESS_SKELETON,
-          validationSummary: 'No Response from AccuMail',
-        })
       }
+      //no params
+      res.status(400)
     } catch (error) {
-      res.setHeader('Content-Type', 'text/plain')
       if (axios.isAxiosError(error)) {
         return res
           .status(error.response?.status || 500)
@@ -102,19 +111,19 @@ const summarizeValidationAndCreateResponseObject = (
       // one match that required no corrections found
       return {
         address: parseResponseAddress(response),
-        validationSummary: 'Valid address',
+        validationSummary: VALID_ADDRESS,
       }
     }
     // single match found after applying corrections
     return {
       address: parseResponseAddress(response),
-      validationSummary: 'Corrections applied',
+      validationSummary: CORRECTED_ADDRESS,
     }
   }
   // No match or multiple matches
   return {
     address: ADDRESS_SKELETON,
-    validationSummary: 'Could not match address',
+    validationSummary: NO_ADDRESS_MATCH,
   }
 }
 const parseResponseAddress = (response: AccumailResponse): AddressInput => {
