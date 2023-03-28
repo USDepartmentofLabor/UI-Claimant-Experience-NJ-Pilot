@@ -4,8 +4,6 @@ import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 // Loops WGPM returns FEINs with 15 characters, left aligned and right-padded to 15 characters
 const FORMATTED_FEIN_LENGTH = 15
 
-// Loops addresses should have city and state present on the last filled address line in "{CITY} {STATE_CODE}" format
-
 export const findFirstImportedEmployerIndex = (employers: Employer[]) =>
   employers.findIndex(
     (employer) =>
