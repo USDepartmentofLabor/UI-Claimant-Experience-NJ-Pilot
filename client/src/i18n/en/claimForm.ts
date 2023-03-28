@@ -542,6 +542,8 @@ const claimForm = {
       section_title: 'Work location',
       worked_at_employer_address: {
         label: 'Did you work in <0>City</0>, <1>State</1> for this employer?',
+        label_imported: 'Did you work in <0>City State</0> for this employer?',
+
         required:
           "Please say whether you worked at the employer's address shown above",
       },

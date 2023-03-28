@@ -46,7 +46,7 @@ public class RecentEmployersServiceTest {
                 "employerAddressLine1": "DIRECT FUTURE MAIL",
                 "employerAddressLine2": "C/O TALX UC EXPRESS",
                 "employerAddressLine3": "P O BOX 6001",
-                "employerAddressLine4": "PEABODY MA",
+                "employerAddressLine4": "ST LOUIS MA",
                 "employerAddressLine5": null,
                 "employerAddressZip": "01961",
                 "employerTelephoneNumber": "2015265000",
@@ -124,7 +124,7 @@ public class RecentEmployersServiceTest {
         WagePotentialResponseEmployer employer1 =
                 new WagePotentialResponseEmployer(
                         null,
-                        "PEABODY MA",
+                        "ST LOUIS MA",
                         "P O BOX 6001",
                         "C/O TALX UC EXPRESS",
                         "DIRECT FUTURE MAIL",

@@ -34,10 +34,10 @@ const importedEmployer: Employer = {
   employment_start_date: '2021-12-12',
   imported_address: {
     employerAddressLine1: '1 John Fitch Plaza',
-    employerAddressLine2: ' Trenton NJ',
+    employerAddressLine2: null,
     employerAddressLine3: null,
     employerAddressLine4: null,
-    employerAddressLine5: null,
+    employerAddressLine5: ' Trenton NJ',
     employerAddressZip: '11111',
   },
   employer_phone: { number: '555-555-5555', sms: null },
