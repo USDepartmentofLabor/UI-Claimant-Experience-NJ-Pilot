@@ -99,9 +99,7 @@ const PaymentsReceived = () => {
                 },
               }))}
             />
-            <span className="usa-hint" data-testid="payments_hint">
-              {t('payments_received.hint')}
-            </span>
+
             {!!values.payments_received &&
               sortPayDetails(values.payments_received, [...payTypeOptions]).map(
                 (paymentsReceivedDetail) => {

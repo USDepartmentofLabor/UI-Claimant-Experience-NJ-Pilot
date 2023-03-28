@@ -40,6 +40,7 @@ describe('PaymentsReceivedDetail component', () => {
         name: `payments_received.payments_received_detail.other_note.label`,
       })
     ).not.toBeInTheDocument()
+    expect(screen.queryByText('payments_received.hint')).toBeInTheDocument()
   })
 
   it('user can type into fields', async () => {

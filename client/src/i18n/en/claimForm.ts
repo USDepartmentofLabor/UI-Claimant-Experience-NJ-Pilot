@@ -635,7 +635,7 @@ const claimForm = {
     },
     payments_received: {
       heading: 'Payments from this employer',
-      hint: 'Please provide the gross pay you received for the payments below, gross pay is the total amount you received before any taxes or deductions were made.',
+      hint: 'Use the amount given before any taxes or deductions were made',
       payments_received_detail: {
         pay_type: {
           label:

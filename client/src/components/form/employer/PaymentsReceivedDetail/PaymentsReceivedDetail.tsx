@@ -40,8 +40,10 @@ const PaymentsReceivedDetail = (props: {
             characterLimit={1024}
           />
         )}
+
         <CurrencyField
           name={`${name}.total`}
+          hint={t('payments_received.hint')}
           label={t('payments_received.payments_received_detail.total.label', {
             payType: lowerLabel,
           })}
