@@ -317,38 +317,34 @@ export const EmployerReview = ({
 
 export const EmployersReview = () => {
   const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
-  const getFirstEmployer = (employers: Employer[] | undefined) => {
+  const getFirstEmployerIndex = (employers: Employer[] | undefined) => {
     if (employers && employers.length > 0) {
-      return employers.findIndex((employer) => {
-        if (
+      return employers.findIndex(
+        (employer) =>
           (employer?.worked_for_imported_employer_in_last_18mo &&
             employer.is_imported) ||
           !employer?.is_imported
-        ) {
-          return true
-        }
-        return false
-      })
+      )
     }
 
     return -1
   }
 
-  const firstEmployer = getFirstEmployer(claimFormValues?.employers)
+  const firstEmployerIndex = getFirstEmployerIndex(claimFormValues?.employers)
   return (
     <>
       {claimFormValues?.employers &&
-        firstEmployer > -1 &&
+        firstEmployerIndex > -1 &&
         claimFormValues?.employers.map((employer, idx) => (
           <EmployerReview
             employer={employer}
             index={idx}
-            isFirstEmployer={idx == firstEmployer}
+            isFirstEmployer={idx === firstEmployerIndex}
             key={idx}
             hideEditUrl={hideEditUrl || false}
           />
         ))}
-      {firstEmployer > -1 && <HorizontalRule />}
+      {firstEmployerIndex > -1 && <HorizontalRule />}
     </>
   )
 }
