@@ -57,9 +57,11 @@ export default async function handler(
   if (session) {
     // Signed in
     try {
-      const params = req.url && req.url.slice(req.url.indexOf('?'))
       const accumailResponse = await axios.get(
-        'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address' + params
+        'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address',
+        {
+          params: req.query,
+        }
       )
       if (accumailResponse.data && accumailResponse.data.success) {
         return res
