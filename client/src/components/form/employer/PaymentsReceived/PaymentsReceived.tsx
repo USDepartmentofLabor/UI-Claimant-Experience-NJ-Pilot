@@ -99,7 +99,6 @@ const PaymentsReceived = () => {
                 },
               }))}
             />
-
             {!!values.payments_received &&
               sortPayDetails(values.payments_received, [...payTypeOptions]).map(
                 (paymentsReceivedDetail) => {

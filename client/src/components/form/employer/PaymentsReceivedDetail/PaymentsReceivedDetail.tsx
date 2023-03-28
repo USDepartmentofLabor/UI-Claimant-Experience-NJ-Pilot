@@ -40,7 +40,6 @@ const PaymentsReceivedDetail = (props: {
             characterLimit={1024}
           />
         )}
-
         <CurrencyField
           name={`${name}.total`}
           hint={t('payments_received.hint')}
