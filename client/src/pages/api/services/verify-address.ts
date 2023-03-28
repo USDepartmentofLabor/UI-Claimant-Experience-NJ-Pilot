@@ -43,7 +43,7 @@ export type AccumailResponse = {
 
 export type AddressVerificationResponse = {
   address: AddressInput
-  errorSummary: string
+  validationSummary: string
 }
 
 export default async function handler(
@@ -56,14 +56,13 @@ export default async function handler(
       'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address' + params
     )
     if (accumailResponse.data && accumailResponse.data.success) {
-      const responseData: AddressVerificationResponse = createResponse(
-        accumailResponse.data
-      )
-      return res.status(200).send(responseData)
+      return res
+        .status(200)
+        .send(summarizeValidationAndCreateResponseObject(accumailResponse.data))
     } else {
       return res.status(500).send({
         address: ADDRESS_SKELETON,
-        errorSummary: 'No Response from AccuMail',
+        validationSummary: 'No Response from AccuMail',
       })
     }
   } catch (error) {
@@ -77,12 +76,31 @@ export default async function handler(
   }
 }
 
-const createResponse = (
+const summarizeValidationAndCreateResponseObject = (
   response: AccumailResponse
 ): AddressVerificationResponse => {
-  //mrh: Check for errors
-  //mrh: currently returns garbage if given garbage
-  return { address: parseResponseAddress(response), errorSummary: '' }
+  if (
+    response.resultCount === 1 &&
+    '0' === response.result.validationDetails.lookupReturnCode
+  ) {
+    if (response.result.validationDetails.corrections.length === 0) {
+      // one match that required no corrections found
+      return {
+        address: parseResponseAddress(response),
+        validationSummary: 'Valid address',
+      }
+    }
+    // single match found after applying corrections
+    return {
+      address: parseResponseAddress(response),
+      validationSummary: 'Corrections applied',
+    }
+  }
+  // No match or multiple matches
+  return {
+    address: ADDRESS_SKELETON,
+    validationSummary: 'Could not match address',
+  }
 }
 const parseResponseAddress = (response: AccumailResponse): AddressInput => {
   const convertedAddress = ADDRESS_SKELETON
@@ -97,5 +115,3 @@ const parseResponseAddress = (response: AccumailResponse): AddressInput => {
   }
   return convertedAddress
 }
-
-//TODO: create a function to handle error codes

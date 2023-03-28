@@ -44,15 +44,21 @@ const AddressVerification: NextPageWithLayout = () => {
     {
       label: 'You entered:',
       address: input?.claimFormValues?.mailing_address || ADDRESS_SKELETON,
-      value: 'as-entered',
+      value: input?.claimFormValues?.mailing_address || ADDRESS_SKELETON,
     },
     {
-      label: 'U.S. Postal Service recommends:',
+      label:
+        (!isLoadingVerifiedMailingAddress &&
+          verifiedMailingAddress?.data.validationSummary) ||
+        'U.S. Postal Service recommends:',
       address:
         (!isLoadingVerifiedMailingAddress &&
           verifiedMailingAddress?.data.address) ||
         ADDRESS_SKELETON,
-      value: 'as-verified',
+      value:
+        (!isLoadingVerifiedMailingAddress &&
+          verifiedMailingAddress?.data.address) ||
+        ADDRESS_SKELETON,
     },
   ]
 
@@ -63,7 +69,10 @@ const AddressVerification: NextPageWithLayout = () => {
       value: input?.claimFormValues?.residence_address || ADDRESS_SKELETON,
     },
     {
-      label: 'U.S. Postal Service recommends:',
+      label:
+        (!isLoadingVerifiedMailingAddress &&
+          verifiedResidentialAddress?.data.validationSummary) ||
+        'U.S. Postal Service recommends:',
       address:
         (!isLoadingVerifiedResidentialAddress &&
           verifiedResidentialAddress?.data.address) ||
