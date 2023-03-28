@@ -14,6 +14,8 @@ $asset-path: '~@uswds/uswds';
   $theme-type-scale-md: 7,
   $theme-h4-font-size: 'md',
   $theme-layout-grid-use-important: false,
+  // Allow utility classes to always override other styles, even when they're lower in specificity
+  $utilities-use-important: true,
 
   /* TYPOGRAPHY */ $theme-respect-user-font-size: false,
   $theme-root-font-size: 16px,
