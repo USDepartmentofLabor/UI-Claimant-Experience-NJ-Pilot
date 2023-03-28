@@ -190,7 +190,7 @@ describe('WorkLocation component', () => {
     expect(workLocationPhoneReturned).toHaveValue('')
   })
 
-  it('work location text changes with imported employer', async () => {
+  it('work location address text changes with imported employer', () => {
     const importedImployer = {
       imported_address: {
         employerAddressLine1: '1 John Fitch Plaza',
