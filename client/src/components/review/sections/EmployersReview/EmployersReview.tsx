@@ -319,19 +319,16 @@ export const EmployersReview = () => {
   const { claimFormValues, hideEditUrl } = useContext(ClaimFormContext)
   const getFirstEmployer = (employers: Employer[] | undefined) => {
     if (employers && employers.length > 0) {
-      for (const { index, employer } of employers.map((employer, index) => ({
-        index,
-        employer,
-      }))) {
+      return employers.findIndex((employer) => {
         if (
-          employer?.worked_for_imported_employer_in_last_18mo &&
-          employer.is_imported
+          (employer?.worked_for_imported_employer_in_last_18mo &&
+            employer.is_imported) ||
+          !employer?.is_imported
         ) {
-          return index
-        } else if (!employer?.is_imported) {
-          return index
+          return true
         }
-      }
+        return false
+      })
     }
 
     return -1
