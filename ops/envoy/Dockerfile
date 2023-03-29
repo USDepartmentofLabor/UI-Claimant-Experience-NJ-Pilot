@@ -2,7 +2,7 @@ FROM debian:bullseye-slim AS builder
 
 RUN mkdir /certs /tmp/envoy
 
-FROM public.ecr.aws/appmesh/aws-appmesh-envoy:v1.25.1.0-prod
+FROM public.ecr.aws/appmesh/aws-appmesh-envoy:v1.25.3.0-prod
 
 COPY ./entrypoint.sh /bin/entrypoint.sh
 
