@@ -51,7 +51,7 @@ jobs:
         shell: bash
         run: |
           SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
-          SAFE_BRANCH="$(echo $GIT_BRANCH | tr -c "[:alnum:]-" "-")"
+          SAFE_BRANCH="$(echo $GIT_BRANCH | tr "[:punct:]" "-")"
           PREVIEW_BASE_URL_WITHOUT_HTTPS="${SAFE_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
           SERVER_BASE_URL="https://${PREVIEW_BASE_URL_WITHOUT_HTTPS}"
           echo "preview-base-url-wo-https=$PREVIEW_BASE_URL_WITHOUT_HTTPS" >> $GITHUB_OUTPUT
