@@ -1,5 +1,3 @@
-import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
-
 const claimForm = {
   step_progress: 'step {{step}} of {{totalSteps}}',
   pagination: {
@@ -59,7 +57,6 @@ const claimForm = {
   },
   personal: {
     heading: 'Personal information',
-    address_confirmation: 'Address confirmation',
     verified_legal_name: { label: 'Legal name' },
     residence_address: {
       label: 'Residence address',
@@ -522,7 +519,7 @@ const claimForm = {
         zipcode: { label: 'ZIP' },
       },
       employer_phone: {
-        label: 'Employer phone number',
+        label: 'Employer phone number (optional)',
       },
       is_full_time: {
         help_text:
@@ -563,7 +560,7 @@ const claimForm = {
         required: "Please check that the employer's phone number is right",
       },
       work_location_phone: {
-        label: 'Work location phone number',
+        label: 'Work location phone number (optional)',
       },
     },
     hours_reduced_twenty_percent: {
@@ -891,6 +888,7 @@ const claimForm = {
     union_local_number: {
       label: 'Union local number',
       errors: {
+        digitsOnly: 'Union number can only be numbers',
         required: 'You must give your union local number',
         maxLength: 'Union local number must be at most 16 characters',
       },
@@ -1163,10 +1161,23 @@ const claimForm = {
     },
   },
   success: {
-    heading: 'Success!',
+    heading: 'We’re reviewing your application',
+    alert_heading: 'Application submitted',
     success_details:
-      'You have successfully submitted your claim for unemployment insurance. We will be in touch soon to confirm we have received your information.',
-    contact_details: `If you don't hear from us in two weeks, please email us at <0>${EXTERNAL_CONTACT_EMAIL}<0/>`,
+      'We received your application and are reviewing it to make sure you’re eligible for  payments.',
+    id_verification_heading: 'Verify your identity on ID.me',
+    id_verification_instructions:
+      'After submitting your application, go to ID.me and verify your identity. This helps us to make sure payments go to the right person.',
+    id_verification_requirements_lead: 'To verify your identity, you need:',
+    id_verification_requirements_list: [
+      'Your government-issued ID',
+      'A smartphone or computer with a camera to take and upload a photo of your ID Your Social Security Number',
+      'A phone number where you can receive text messages',
+      'An email address',
+    ],
+    id_verification_closing:
+      'When verifying with ID.me, use the same email you used to apply for unemployment ({{email}}).',
+    id_verification_button: 'Verify my identity',
   },
 }
 

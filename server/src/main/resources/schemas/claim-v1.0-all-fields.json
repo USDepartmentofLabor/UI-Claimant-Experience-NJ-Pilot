@@ -63,7 +63,7 @@
       "properties": {
         "address": {
           "type": "string",
-          "maxLength": 64,
+          "maxLength": 30,
           "pattern": "^(?!.*(?:(.*((p|post)[-.\\s]*(o|off|office)[-.\\s]*(box|bin)[-.\\s]*)|.*((p |post)[-.\\s]*(box|bin)[-.\\s]*)))).*$"
         },
         "address2": {
@@ -72,7 +72,7 @@
         },
         "city": {
           "type": "string",
-          "maxLength": 64,
+          "maxLength": 19,
           "pattern": "^([^0-9]*)$"
         },
         "state": {
@@ -560,7 +560,10 @@
             "properties": {
               "separation_circumstance": {
                 "type": "string",
-                "enum": ["fired_discharged_suspended"]
+                "enum": [
+                  "fired_discharged_suspended",
+                  "unsatisfactory_work_performance"
+                ]
               }
             }
           },
@@ -1178,6 +1181,7 @@
     "union_local_number": {
       "description": "Union's local number",
       "type": "string",
+      "pattern": "^[\\d]{1,16}$",
       "maxLength": 16
     },
     "disability_applied_to_or_received": {

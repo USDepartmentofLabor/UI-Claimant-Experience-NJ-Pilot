@@ -1,6 +1,5 @@
 package nj.lwd.ui.claimantintake.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +38,10 @@ public class CompletedClaimController {
             @RequestBody Map<String, Object> completedClaimPayload, Authentication authentication) {
         String claimantIdpId = authentication.getName();
 
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, Object> externalClaim =
                     externalClaimFormatterService.formatClaim(completedClaimPayload, claimantIdpId);
-            List<String> errorList =
-                    claimValidatorService.validateAgainstSchema(
-                            objectMapper.writeValueAsString(externalClaim));
+            List<String> errorList = claimValidatorService.validateClaim(externalClaim);
 
             if (!errorList.isEmpty()) {
                 CompleteClaimResponseBody response =

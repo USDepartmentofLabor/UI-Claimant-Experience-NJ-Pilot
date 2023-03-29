@@ -11,6 +11,12 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  options: {
+    storySort: {
+      method: 'alphabetical',
+      order: ['Core', 'Components', 'Pages'],
+    },
+  },
 }
 
 const PageStoryWrapper = (props) => {

@@ -1,0 +1,46 @@
+@use 'uswds-core' as *;
+
+// Override default USWDS styles to applies the NJ theme and responsive styling.
+// Wrap the entire component in a class to avoid affecting other components.
+.nj-icon-list {
+  .usa-icon-list__icon {
+    @include u-circle(5);
+    background: color('primary-lighter');
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .usa-icon-list__title {
+    font-size: size('heading', 'lg');
+  }
+
+  .usa-icon-list__content {
+    padding-left: units(2);
+    // Fixes an issue where the icon was getting squished, and becoming an oval.
+    flex: 1 1;
+  }
+
+  @include at-media('mobile-lg') {
+    .usa-icon-list__icon {
+      @include u-circle(7);
+
+      .usa-icon {
+        height: units(5);
+        width: units(5);
+      }
+    }
+
+    .usa-icon-list__title {
+      padding-top: 0.75rem; // Optically vertically align with the icon
+    }
+
+    .usa-icon-list__content {
+      padding-left: units(3);
+    }
+
+    .usa-icon-list__item + .usa-icon-list__item {
+      padding-top: units(5);
+    }
+  }
+}

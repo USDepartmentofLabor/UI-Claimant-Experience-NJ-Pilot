@@ -33,6 +33,18 @@ runs:
         --output text )
         echo "client-td-arn=$CLIENT_TD_ARN" >> $GITHUB_OUTPUT
 
+    - name: Get list of client task definition ARNs
+      if: steps.client-service.outputs.client-td-arn != 'None'
+      id: client-td-arn-list
+      env:
+        TD_FAMILY: dol-ui-claimant-intake-client-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        aws ecs list-task-definitions \
+        --family-prefix $TD_FAMILY \
+        --status ACTIVE \
+        --query "taskDefinitionArns" >> client-td-arns.json
+
     # using --force to have aws automagically set task count to 0 and stopping tasks
     - name: Delete preview client service
       if: steps.client-service.outputs.client-td-arn != 'None'
@@ -46,23 +58,23 @@ runs:
         --service $SERVICE \
         --force
 
-    - name: Deregister preview client task definition
+    - name: Deregister preview client task definitions
       if: steps.client-service.outputs.client-td-arn != 'None'
-      env:
-        TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
       shell: bash
       run: |
-        aws ecs deregister-task-definition \
-        --task-definition $TD_ARN
+        jq -cr '.[]' client-td-arns.json | while read TD_ARN; do
+          aws ecs deregister-task-definition \
+          --task-definition $TD_ARN
+        done
 
-    - name: Delete preview client task definition
+    - name: Delete preview client task definitions
       if: steps.client-service.outputs.client-td-arn != 'None'
-      env:
-        TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
       shell: bash
       run: |
-        aws ecs delete-task-definitions \
-        --task-definition $TD_ARN
+        jq -cr '.[]' client-td-arns.json | while read TD_ARN; do
+          aws ecs delete-task-definitions \
+          --task-definition $TD_ARN
+        done
 
     - name: Get server preview service task def ARN
       id: server-service
@@ -78,6 +90,18 @@ runs:
         --output text )
         echo "server-td-arn=$SERVER_TD_ARN" >> $GITHUB_OUTPUT
 
+    - name: Get list of server task definition ARNs
+      if: steps.server-service.outputs.server-td-arn != 'None'
+      id: server-td-arn-list
+      env:
+        TD_FAMILY: dol-ui-claimant-intake-server-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        aws ecs list-task-definitions \
+        --family-prefix $TD_FAMILY \
+        --status ACTIVE \
+        --query "taskDefinitionArns" >> server-td-arns.json
+
     # using --force to have aws automagically set task count to 0 and stopping tasks
     - name: Delete preview server service
       if: steps.server-service.outputs.server-td-arn != 'None'
@@ -91,20 +115,22 @@ runs:
         --service $SERVICE \
         --force
 
-    - name: Deregister preview server task definition
+    - name: Deregister preview server task definitions
       if: steps.server-service.outputs.server-td-arn != 'None'
-      env:
-        TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
       shell: bash
       run: |
-        aws ecs deregister-task-definition \
-        --task-definition $TD_ARN
+        jq -cr '.[]' server-td-arns.json | while read TD_ARN; do
+          aws ecs deregister-task-definition \
+          --task-definition $TD_ARN
+        done
 
-    - name: Delete preview server task definition
+    - name: Delete preview server task definitions
       if: steps.server-service.outputs.server-td-arn != 'None'
       env:
         TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
       shell: bash
       run: |
-        aws ecs delete-task-definitions \
-        --task-definition $TD_ARN
+        jq -cr '.[]' server-td-arns.json | while read TD_ARN; do
+          aws ecs delete-task-definitions \
+          --task-definition $TD_ARN
+        done

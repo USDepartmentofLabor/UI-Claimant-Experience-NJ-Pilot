@@ -4,7 +4,12 @@ import '@testing-library/jest-dom'
 const mockI18next = {
   useTranslation: () => {
     return {
-      t: (str: string) => str,
+      t: (str: string, options?: { returnObjects: boolean }) => {
+        const content = str
+
+        if (options?.returnObjects) return [content]
+        return content
+      },
     }
   },
   initReactI18next: {

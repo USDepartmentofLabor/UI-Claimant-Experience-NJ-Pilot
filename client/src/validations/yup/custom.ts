@@ -13,10 +13,19 @@ import { statesAndTerritories } from 'fixtures/states_and_territories'
 export const yupAddress = () =>
   object().shape({
     address: string()
-      .max(64, i18n_common.t('address.address.errors.maxLength'))
+      .max(
+        64,
+        i18n_common.t('address.address.errors.maxLength.address_generic_max')
+      )
       .required(i18n_common.t('address.address.errors.required')),
+    address2: string()
+      .optional()
+      .max(64, i18n_common.t('address.address.errors.maxLength')),
     city: string()
-      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .max(
+        64,
+        i18n_common.t('address.city.errors.maxLength.address_generic_max')
+      )
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
@@ -35,14 +44,14 @@ export const yupEmployerAddress = () =>
   object().shape({
     address: string()
       .trim()
-      .max(40, i18n_common.t('address.address.errors.maxLength'))
+      .max(40, i18n_common.t('address.address.errors.maxLength.employer'))
       .required(i18n_common.t('address.address.errors.required')),
     address2: string()
       .trim()
-      .max(40, i18n_common.t('address.address.errors.maxLength')),
+      .max(40, i18n_common.t('address.address.errors.maxLength.employer')),
     address3: string()
       .trim()
-      .max(40, i18n_common.t('address.address.errors.maxLength')),
+      .max(40, i18n_common.t('address.address.errors.maxLength.employer')),
     city: string()
       .max(40, i18n_common.t('address.city.errors.maxLength'))
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
@@ -62,14 +71,18 @@ export const yupEmployerAddress = () =>
 export const yupAddressWithoutPOBox = () =>
   object().shape({
     address: string()
-      .max(64, i18n_common.t('address.address.errors.maxLength'))
+      .max(30, i18n_common.t('address.address.errors.maxLength.residence'))
       .matches(
         /^(?!.*(?:(.*((p|post)[-.\s]*(o|off|office)[-.\s]*(box|bin)[-.\s]*)|.*((p |post)[-.\s]*(box|bin)[-.\s]*)))).*$/i,
         i18n_common.t('address.address.errors.pobox')
       )
       .required(i18n_common.t('address.address.errors.required')),
+    address2: string()
+      .nullable()
+      .optional()
+      .max(64, i18n_common.t('address.address.errors.maxLength')),
     city: string()
-      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .max(19, i18n_common.t('address.city.errors.maxLength.residence'))
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()
@@ -87,7 +100,10 @@ export const yupAddressWithoutPOBox = () =>
 export const yupAddressWithoutStreet = () =>
   object().shape({
     city: string()
-      .max(64, i18n_common.t('address.city.errors.maxLength'))
+      .max(
+        64,
+        i18n_common.t('address.city.errors.maxLength.address_generic_max')
+      )
       .matches(/^([^0-9]*)$/, i18n_common.t('address.city.errors.noNumbers'))
       .required(i18n_common.t('address.city.errors.required')),
     state: string()

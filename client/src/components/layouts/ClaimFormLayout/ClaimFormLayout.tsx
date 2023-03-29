@@ -29,6 +29,7 @@ export const ClaimFormLayout = ({
   index,
 }: ClaimFormProps) => {
   const { setClaimFormValues } = useContext(ClaimFormContext)
+
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
   const {

@@ -71,6 +71,7 @@ describe('PersonalReview component', () => {
       ],
       residence_address: {
         address: '123 somewhere',
+        address2: '',
         city: 'someplace',
         state: 'NJ',
         zipcode: '12345',
@@ -78,6 +79,7 @@ describe('PersonalReview component', () => {
       LOCAL_mailing_address_same: false,
       mailing_address: {
         address: '123 somewhere else',
+        address2: '',
         city: 'someplace else',
         state: 'NJ',
         zipcode: '12345',
@@ -137,6 +139,7 @@ describe('PersonalReview component', () => {
     const values: ClaimantInput = {
       residence_address: {
         address: '123 somewhere',
+        address2: '',
         city: 'someplace',
         state: 'NJ',
         zipcode: '12345',
@@ -144,6 +147,7 @@ describe('PersonalReview component', () => {
       LOCAL_mailing_address_same: true,
       mailing_address: {
         address: '123 somewhere',
+        address2: '',
         city: 'someplace',
         state: 'NJ',
         zipcode: '12345',

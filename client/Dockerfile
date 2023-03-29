@@ -18,6 +18,7 @@ COPY .eslintrc.yml .
 COPY tsconfig.json .
 COPY next.config.js .
 COPY next-i18next.config.js .
+COPY *.d.ts .
 COPY public ./public
 COPY src ./src
 

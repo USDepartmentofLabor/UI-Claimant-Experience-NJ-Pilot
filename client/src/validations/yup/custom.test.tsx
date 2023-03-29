@@ -43,6 +43,16 @@ describe('custom yup validations', () => {
       })
       expect(result).toBeTruthy()
     })
+    it('accepts valid values with address2', async () => {
+      const result = await yupAddressWithoutPOBox().isValid({
+        address: '123 main st',
+        address2: 'Unit 2B',
+        city: 'Everytown',
+        state: 'MD',
+        zipcode: '12345',
+      })
+      expect(result).toBeTruthy()
+    })
     it('rejects invalid values missing zipcode', async () => {
       const result = await yupAddress().isValid({
         address: '123 main st',
@@ -65,6 +75,16 @@ describe('custom yup validations', () => {
     it('accepts valid values', async () => {
       const result = await yupAddressWithoutPOBox().isValid({
         address: '123 main st',
+        city: 'Everytown',
+        state: 'MD',
+        zipcode: '12345',
+      })
+      expect(result).toBeTruthy()
+    })
+    it('accepts valid values with address2', async () => {
+      const result = await yupAddressWithoutPOBox().isValid({
+        address: '123 main st',
+        address2: 'Unit 2B',
         city: 'Everytown',
         state: 'MD',
         zipcode: '12345',
