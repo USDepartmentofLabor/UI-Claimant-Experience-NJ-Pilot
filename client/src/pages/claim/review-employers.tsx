@@ -92,7 +92,6 @@ export const ReviewEmployers: NextPageWithLayout = () => {
     setState(REVIEW)
     //setEmployerIndex(0)
   }
-
   return (
     <>
       {state === REVIEW && (
