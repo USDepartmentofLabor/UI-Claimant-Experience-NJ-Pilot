@@ -54,50 +54,47 @@ export type AddressVerificationResponse = {
   validationSummary: string
 }
 
-export default async function handler(
+/**
+ * Check the user-entered address and use service to check if USPS provides potential corrections or a match
+ * Method: GET
+ * @param req.query
+ * @param req.query.address
+ * @param req.query.address2
+ * @param req.query.city
+ * @param req.query.state
+ * @param req.query.zipcode
+ */ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AddressVerificationResponse>
-): Promise<any> {
+) {
   const session = await getServerSession(req, res, authOptions)
+  if (!session) return res.status(401).end()
+  if (!Object.keys(req.query).length) return res.status(400).end()
 
-  if (session) {
-    // Signed in
-    try {
-      if (req.query) {
-        const accumailResponse = await axios.get(
-          'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address',
-          {
-            params: req.query,
-          }
-        )
-        if (accumailResponse.data && accumailResponse.data.success) {
-          return res
-            .status(200)
-            .send(
-              summarizeValidationAndCreateResponseObject(accumailResponse.data)
-            )
-        } else {
-          return res.status(500).send({
-            address: ADDRESS_SKELETON,
-            validationSummary: NO_ACCUMAIL_RESPONSE,
-          })
-        }
-      }
-      //no params
-      res.status(400)
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return res
-          .status(error.response?.status || 500)
-          .send(error.response?.data || error.message)
-      }
-      return res.status(400)
+  try {
+    const accumailResponse = await axios.get<AccumailResponse>(
+      'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address' +
+        '?' +
+        convertJSONAddressToURLParams(req.query as unknown as AddressInput)
+    )
+    if (accumailResponse.data && accumailResponse.data.success) {
+      return res
+        .status(200)
+        .send(summarizeValidationAndCreateResponseObject(accumailResponse.data))
+    } else {
+      return res.status(500).send({
+        address: ADDRESS_SKELETON,
+        validationSummary: NO_ACCUMAIL_RESPONSE,
+      })
     }
-  } else {
-    // Not signed in
-    res.status(401)
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return res
+        .status(error.response?.status || 500)
+        .send(error.response?.data || error.message)
+    }
+    return res.status(400)
   }
-  res.end()
 }
 
 const summarizeValidationAndCreateResponseObject = (
@@ -125,6 +122,16 @@ const summarizeValidationAndCreateResponseObject = (
     address: ADDRESS_SKELETON,
     validationSummary: NO_ADDRESS_MATCH,
   }
+}
+
+const convertJSONAddressToURLParams = (
+  params: AddressInput | undefined
+): string => {
+  let urlParams = new URLSearchParams(params).toString()
+  urlParams = urlParams.replace('address', 'street')
+  urlParams = urlParams.replace('address2', 'street2')
+  urlParams = urlParams.replace('zipcode', 'zip')
+  return urlParams
 }
 const parseResponseAddress = (response: AccumailResponse): AddressInput => {
   const convertedAddress = ADDRESS_SKELETON

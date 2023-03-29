@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import handler from 'pages/api/beta-test-review'
+import handler from 'pages/api/services/verify-address'
 import type { NextApiRequest, NextApiResponse } from 'next'
 jest.mock('next-auth')
 import { getServerSession } from 'next-auth'

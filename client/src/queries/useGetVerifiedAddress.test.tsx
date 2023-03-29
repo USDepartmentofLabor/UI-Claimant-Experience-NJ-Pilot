@@ -5,9 +5,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 const mockAxiosGet = jest
   .fn()
   .mockImplementation(() => ({ data: { status: 200 } }))
-
 jest.mock('axios', () => ({
-  get: jest.fn(),
+  get: mockAxiosGet,
   isAxiosError: () => true,
 }))
 
