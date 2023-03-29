@@ -57,7 +57,7 @@ export type AddressVerificationResponse = {
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AddressVerificationResponse>
-): Promise<any> {
+) {
   const session = await getServerSession(req, res, authOptions)
 
   if (session) {
