@@ -61,10 +61,14 @@ export const WorkLocation = () => {
       <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
         <YesNoQuestion
           question={
-            <Trans t={t} i18nKey="worked_at_employer_address.label">
-              {employerCityAndState.city}
-              {employerCityAndState.state}
-            </Trans>
+            employerCityAndState.city && employerCityAndState.state ? (
+              <Trans t={t} i18nKey="worked_at_employer_address.label">
+                {employerCityAndState.city}
+                {employerCityAndState.state}
+              </Trans>
+            ) : (
+              t('worked_at_employer_address.placeholder')
+            )
           }
           name={`worked_at_employer_address`}
           onChange={handleEmployerWorkLocationChange}
