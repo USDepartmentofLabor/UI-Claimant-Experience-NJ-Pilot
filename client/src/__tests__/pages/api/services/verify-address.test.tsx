@@ -6,6 +6,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 jest.mock('next-auth')
 import { getServerSession } from 'next-auth'
 import { AddressInput } from '../../../../types/claimantInput'
+import { ADDRESS_SKELETON } from '../../../../constants/initialValues'
+import {
+  NO_ACCUMAIL_RESPONSE,
+  NO_ADDRESS_MATCH,
+} from '../../../../constants/api/services/verifyAddress'
 
 const addressInput: AddressInput = {
   address: '1234 Broken Dreams Boulevard',
@@ -14,14 +19,15 @@ const addressInput: AddressInput = {
   state: 'NY',
   zipcode: '12345',
 }
+const invalidAddressInput: AddressInput = {
+  address: 'not a real place',
+  address2: '',
+  city: 'Trenton',
+  state: 'NJ',
+  zipcode: '12345',
+}
 const verifiedAddress = {
-  address: {
-    address: '1234 Broken Dreams Boulevard',
-    address2: 'Unit G',
-    city: 'New York',
-    state: 'NY',
-    zipcode: '12345',
-  },
+  address: addressInput,
   validationSummary: '',
 }
 
@@ -52,6 +58,7 @@ describe('/api/services/verify-address API Endpoint', () => {
   function mockRequestResponse() {
     const req = {
       query: addressInput,
+      setHeader: jest.fn(),
     } as unknown as NextApiRequest
     const res = {
       data: verifiedAddress,
@@ -62,10 +69,32 @@ describe('/api/services/verify-address API Endpoint', () => {
     return { req, res }
   }
   function mockUnverifiableRequestResponse() {
-    const req = {} as NextApiRequest
+    const req = {
+      query: invalidAddressInput,
+      setHeader: jest.fn(),
+    } as unknown as NextApiRequest
     const res = {
-      error: {
-        message: 'An error occurred',
+      data: {
+        address: ADDRESS_SKELETON,
+        verificationSummary: NO_ADDRESS_MATCH,
+      },
+      status: () => ({
+        send: () => 200,
+      }),
+      setHeader: jest.fn(),
+    } as unknown as NextApiResponse
+    return { req, res }
+  }
+
+  function mockFailRequestResponse() {
+    const req = {
+      query: invalidAddressInput,
+      setHeader: jest.fn(),
+    } as unknown as NextApiRequest
+    const res = {
+      data: {
+        address: ADDRESS_SKELETON,
+        verificationSummary: NO_ACCUMAIL_RESPONSE,
       },
       status: () => ({
         send: () => 500,
@@ -75,9 +104,19 @@ describe('/api/services/verify-address API Endpoint', () => {
     return { req, res }
   }
 
-  function mockEndpointErrorRequestResponse() {}
-
-  function mockEmptyParamsRequestResponse() {}
+  function mockEmptyParamsRequestResponse() {
+    const req = {
+      query: [],
+      setHeader: jest.fn(),
+    } as unknown as NextApiRequest
+    const res = {
+      status: () => ({
+        send: () => 400,
+      }),
+      setHeader: jest.fn(),
+    } as unknown as NextApiResponse
+    return { req, res }
+  }
 
   it('should return a successful response', async () => {
     const { req, res } = mockRequestResponse()
@@ -95,17 +134,32 @@ describe('/api/services/verify-address API Endpoint', () => {
     expect(response?.status).toBe(400)
   })
 
-  /*it('should error out if no response from server', async () => {
+  it('should error out if no response from server', async () => {
     const { req, res } = mockFailRequestResponse()
+    mockGetServerSession.mockImplementation(() => ({
+      accessToken: tokenValue,
+    }))
+    const response = await handler(req, res)
+    expect(response).toBe(500)
+  })
+
+  it('should error if no params', async () => {
+    const { req, res } = mockEmptyParamsRequestResponse()
     mockGetServerSession.mockImplementation(() => ({
       accessToken: tokenValue,
     }))
 
     const response = await handler(req, res)
     expect(response).toBe(500)
-  })*/
+  })
 
-  it('should error if no params', async () => {})
-
-  it('should error if given request cannot be verified', async () => {})
+  it('should error if given request cannot be verified', async () => {
+    const { req, res } = mockUnverifiableRequestResponse()
+    mockGetServerSession.mockImplementation(() => ({
+      accessToken: tokenValue,
+    }))
+    const response = await handler(req, res)
+    //expect empty address and NO_ADDRESS_MATCH
+    expect(response).toBe(200)
+  })
 })
