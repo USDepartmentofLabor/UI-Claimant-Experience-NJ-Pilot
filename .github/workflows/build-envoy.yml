@@ -35,11 +35,18 @@ jobs:
 
       - name: Construct image tag
         id: construct-image-tag
-        shell: bash
+        env:
+          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_COMMIT: ${{ github.sha }}
         run: |
+          BRANCH_PREFIX="$GIT_BRANCH"
+          # use a generic prefix for all non-main branches
+          if [[ "$BRANCH_PREFIX" != "main" ]]; then
+            BRANCH_PREFIX="branch"
+          fi
           BUILD_TIME=$(date '+%Y%m%d%H%M%S')
           APP_MESH_ENVOY_VERSION=$(grep 'FROM public.ecr.aws/appmesh/aws-appmesh-envoy' ops/envoy/Dockerfile | cut -d':' -f 2)
-          IMAGE_TAG="${APP_MESH_ENVOY_VERSION}-${BUILD_TIME}"
+          IMAGE_TAG="${BRANCH_PREFIX}-${APP_MESH_ENVOY_VERSION}-${GIT_COMMIT}-${BUILD_TIME}"
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
