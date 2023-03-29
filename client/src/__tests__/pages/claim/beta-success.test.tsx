@@ -20,6 +20,9 @@ describe('success page', () => {
   it('renders link to verify through ID.me', () => {
     render(<BetaSuccess />)
 
-    expect(screen.getByTestId('id.me link')).toBeInTheDocument()
+    expect(screen.getByTestId('id.me link')).toHaveAttribute(
+      'href',
+      'https://hosted-pages.id.me/njdolverify'
+    )
   })
 })

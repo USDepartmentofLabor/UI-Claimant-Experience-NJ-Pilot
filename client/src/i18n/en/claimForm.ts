@@ -1167,14 +1167,16 @@ const claimForm = {
       'We received your application and are reviewing it to make sure you’re eligible for  payments.',
     id_verification_heading: 'Verify your identity on ID.me',
     id_verification_instructions:
-      'After submitting your application, go to ID.me and verify your identity. This helps us to make sure payments go to the right person.',
+      'After submitting your application, go to ID.me and <IdMeProcessLink>verify your identity</IdMeProcessLink>. This helps us to make sure payments go to the right person.',
     id_verification_requirements_lead: 'To verify your identity, you need:',
-    id_verification_requirements_list: [
-      'Your government-issued ID',
-      'A smartphone or computer with a camera to take and upload a photo of your ID Your Social Security Number',
+    id_verification_requirement_gov_id:
+      'Your <IdMeDocTypesLink>government-issued ID</IdMeDocTypesLink>',
+    id_verification_requirement_id_copy:
+      'A smartphone or computer with a camera to take and upload a photo of your ID',
+    id_verification_requirement_ssn: 'Your Social Security Number',
+    id_verification_requirement_sms:
       'A phone number where you can receive text messages',
-      'An email address',
-    ],
+    id_verification_requirement_email: 'An email address',
     id_verification_closing:
       'When verifying with ID.me, use the same email you used to apply for unemployment ({{email}}).',
     id_verification_button: 'Verify my identity',

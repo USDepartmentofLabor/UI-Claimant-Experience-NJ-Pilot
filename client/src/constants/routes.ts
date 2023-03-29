@@ -5,8 +5,17 @@ export const makeClaimFormRoute = (page: string) =>
   `${CLAIM_FORM_BASE_ROUTE}/${page}`
 export const ExternalRoutes = () => {
   const env = process.env.NEXT_PUBLIC_APP_ENV as NextPublicAppEnv
+  const allEnvs = {
+    ID_ME_VERIFY: 'https://hosted-pages.id.me/njdolverify',
+    ID_ME_DOCUMENT_TYPES:
+      'https://help.id.me/hc/en-us/articles/360017833054-Primary-and-secondary-identification-documents',
+    ID_ME_PROCESS:
+      'https://help.id.me/hc/en-us/articles/1500005127662-Verifying-for-New-Jersey-DOL',
+  }
+
   if (env === 'production') {
     return {
+      ...allEnvs,
       UPDATE_PAYMENT_INFO:
         'https://uiclaim.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
       TAX_DOCUMENTS:
@@ -16,6 +25,7 @@ export const ExternalRoutes = () => {
     }
   } else if (env === 'test') {
     return {
+      ...allEnvs,
       UPDATE_PAYMENT_INFO:
         'https://securest.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
       TAX_DOCUMENTS:
@@ -25,6 +35,7 @@ export const ExternalRoutes = () => {
     }
   } else {
     return {
+      ...allEnvs,
       UPDATE_PAYMENT_INFO:
         'https://stclaimproxy.dol.state.nj.us/njsuccess/html/updateDirectDepositHome.htm',
       TAX_DOCUMENTS:
@@ -41,6 +52,10 @@ export const Routes = {
   SCREENER_REDIRECT: '/screener-redirect',
   PRIVACY: '/privacy',
   SSN: '/ssn',
+
+  ID_ME_DOCUMENT_TYPES: ExternalRoutes().ID_ME_DOCUMENT_TYPES,
+  ID_ME_PROCESS: ExternalRoutes().ID_ME_PROCESS,
+  ID_ME_VERIFY: ExternalRoutes().ID_ME_VERIFY,
   UPDATE_PAYMENT_INFO: ExternalRoutes().UPDATE_PAYMENT_INFO,
   TAX_DOCUMENTS: ExternalRoutes().TAX_DOCUMENTS,
   UPDATE_CONTACT_INFO: ExternalRoutes().UPDATE_CONTACT_INFO,
