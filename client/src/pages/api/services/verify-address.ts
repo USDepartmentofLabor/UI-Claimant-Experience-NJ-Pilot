@@ -8,6 +8,8 @@ import {
   CORRECTED_ADDRESS,
   NO_ACCUMAIL_RESPONSE,
   NO_ADDRESS_MATCH,
+  NO_PARAMS_ERROR,
+  NO_SESSION_ERROR,
   VALID_ADDRESS,
 } from '../../../constants/api/services/verifyAddress'
 
@@ -65,11 +67,12 @@ export type AddressVerificationResponse = {
  * @param req.query.zipcode
  */ export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<AddressVerificationResponse>
+  res: NextApiResponse<AddressVerificationResponse | string>
 ) {
   const session = await getServerSession(req, res, authOptions)
-  if (!session) return res.status(401).end()
-  if (!Object.keys(req.query).length) return res.status(400).end()
+  if (!session) return res.status(401).send(NO_SESSION_ERROR)
+  if (!Object.keys(req.query).length)
+    return res.status(400).send(NO_PARAMS_ERROR)
 
   try {
     const accumailResponse = await axios.get<AccumailResponse>(

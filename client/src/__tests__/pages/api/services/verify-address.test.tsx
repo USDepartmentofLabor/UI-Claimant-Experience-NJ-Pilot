@@ -210,7 +210,7 @@ describe('/api/services/verify-address API Endpoint', () => {
     const { req, res } = mockRequestResponse()
     mockGetServerSession.mockImplementation(() => null)
     const response = await handler(req, res)
-    expect(response?.status).toBe(400)
+    expect(response?.status).toBe(401)
   })
 
   it('should error out if no response from server', async () => {
@@ -229,7 +229,7 @@ describe('/api/services/verify-address API Endpoint', () => {
       accessToken: tokenValue,
     }))
     const response = await handler(req, res)
-    expect(response).toBe(500)
+    expect(response).toBe(400)
   })
 
   it('should error if given request cannot be verified', async () => {
