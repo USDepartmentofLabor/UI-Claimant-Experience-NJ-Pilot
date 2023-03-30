@@ -203,6 +203,7 @@ const claimForm = {
     },
     alien_registration_number: {
       label: 'USCIS / Alien registration number',
+      optional_label: 'USCIS / Alien registration number (optional)',
       hint: '<0>Need help finding it?</0> This is a 7-9 digit number, sometimes starting with “A”',
       modal: {
         heading:
@@ -543,6 +544,8 @@ const claimForm = {
       worked_at_employer_address: {
         label: 'Did you work in <0>City</0>, <1>State</1> for this employer?',
         label_imported: 'Did you work in <0>City, State</0> for this employer?',
+        placeholder:
+          'Did you work in the above city and state for this employer?',
         required:
           "Please say whether you worked at the employer's address shown above",
       },

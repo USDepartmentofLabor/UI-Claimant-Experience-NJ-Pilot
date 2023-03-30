@@ -1,5 +1,8 @@
 version: 2
 updates:
+  #
+  # Application dependencices
+  #
   - package-ecosystem: "npm"
     directory: "/client"
     schedule:
@@ -16,10 +19,16 @@ updates:
     directory: "/server"
     schedule:
       interval: "weekly"
+  #
+  # CI script dependencies
+  #
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
+  #
+  # Dockerfile updates
+  #
   - package-ecosystem: "docker"
     directory: "/client"
     schedule:
@@ -36,12 +45,19 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
+    directory: "/ops/otel"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
     directory: "/server"
     schedule:
       interval: "daily"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+  #
+  # GitHub Actions updates
+  #
   # Workflow files stored in the
   # default location of `.github/workflows`
   - package-ecosystem: "github-actions"
@@ -62,6 +78,22 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "github-actions"
+    directory: "/.github/actions/create-preview-network"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/delete-cognito-urls"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/delete-preview-ecs"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/delete-preview-network"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
     directory: "/.github/actions/deploy-client"
     schedule:
       interval: "weekly"
@@ -75,10 +107,6 @@ updates:
       interval: "weekly"
   - package-ecosystem: "github-actions"
     directory: "/.github/actions/lint-build-and-test"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "github-actions"
-    directory: "/.github/actions/preview-network"
     schedule:
       interval: "weekly"
   - package-ecosystem: "github-actions"

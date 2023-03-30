@@ -70,16 +70,20 @@ export const WorkLocation = () => {
         ) : (
           <YesNoQuestion
             question={
-              <Trans t={t} i18nKey="worked_at_employer_address.label">
-                {values?.employer_address?.city}
-                {values?.employer_address?.state}
-              </Trans>
+              values?.employer_address?.state &&
+              values?.employer_address?.city ? (
+                <Trans t={t} i18nKey="worked_at_employer_address.label">
+                  {values?.employer_address?.city}
+                  {values?.employer_address?.state}
+                </Trans>
+              ) : (
+                t('worked_at_employer_address.placeholder')
+              )
             }
             name={`worked_at_employer_address`}
             onChange={handleEmployerWorkLocationChange}
           />
         )}
-
         {values.worked_at_employer_address === false && (
           <FormGroup>
             <TextField
