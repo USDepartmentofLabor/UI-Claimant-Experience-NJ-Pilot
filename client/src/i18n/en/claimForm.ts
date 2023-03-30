@@ -1187,7 +1187,7 @@ const claimForm = {
     expect_comms:
       'If we need more information from you we will email you or send you a letter in the mail. <strong>You must complete the forms or respond in a timely manner to receive payments. If you don’t respond, you may lose benefits.</strong>',
     expect_certifying_heading: 'Certify your eligibility every week',
-    expect_certifying: `<p>You can begin <CertifyLink>certifying online</CertifyLink>. Each week that you’re unemployed you need to <HowToCertifyLink>answer some questions in order to receive your unemployment insurance payments</HowToCertifyLink> for that week.</p>
+    expect_certifying: `<p>Each week that you’re unemployed you need to <HowToCertifyLink>answer some questions in order to receive your unemployment insurance payments</HowToCertifyLink> for that week.</p>
       <p>If your application is approved, you should start getting payments every week that you certify and remain eligible.</p>
       <p><strong>Important: If you try to certify your eligibility and get an error saying your claim has expired, you may still have to complete your ID.me verification.</strong></p>`,
     expect_certifying_button: 'Certify my eligibility',

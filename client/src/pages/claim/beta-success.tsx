@@ -132,15 +132,6 @@ const BetaSuccess: NextPage = () => {
                 t={t}
                 i18nKey="expect_certifying"
                 components={{
-                  CertifyLink: (
-                    // @ts-expect-error - children is i18n value
-                    <Link
-                      href={Routes.CERTIFY}
-                      variant="external"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    />
-                  ),
                   HowToCertifyLink: (
                     // @ts-expect-error - children is i18n value
                     <Link
