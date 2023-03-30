@@ -22,6 +22,7 @@ export const StatesDropdown = ({
   startEmpty,
   stateSlice,
   className,
+  ...remainingProps
 }: StatesDropdownProps) => (
   <DropdownField
     label={label}
@@ -36,5 +37,6 @@ export const StatesDropdown = ({
         : allStates
     }
     className={className}
+    {...remainingProps}
   />
 )

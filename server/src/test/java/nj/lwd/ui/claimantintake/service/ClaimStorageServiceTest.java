@@ -92,7 +92,7 @@ class ClaimStorageServiceTest {
 
         doThrow(AwsServiceException.builder().build())
                 .when(s3Service)
-                .upload(anyString(), anyString(), any(), anyString());
+                .upload(anyString(), anyString(), anyMap(), anyString());
 
         var result = claimStorageService.completeClaim("test-id", validClaim);
 
@@ -135,7 +135,7 @@ class ClaimStorageServiceTest {
 
         doThrow(JsonProcessingException.class)
                 .when(s3Service)
-                .upload(anyString(), anyString(), any(), anyString());
+                .upload(anyString(), anyString(), anyMap(), anyString());
         var result = claimStorageService.completeClaim("test-id", validClaim);
         assertFalse(result);
 
@@ -176,7 +176,7 @@ class ClaimStorageServiceTest {
 
         doThrow(SdkClientException.class)
                 .when(s3Service)
-                .upload(anyString(), anyString(), any(), anyString());
+                .upload(anyString(), anyString(), anyMap(), anyString());
         var result = claimStorageService.completeClaim("test-id", validClaim);
         assertFalse(result);
 
@@ -338,7 +338,7 @@ class ClaimStorageServiceTest {
 
         doThrow(JsonProcessingException.class)
                 .when(s3Service)
-                .upload(anyString(), anyString(), any(), anyString());
+                .upload(anyString(), anyString(), anyMap(), anyString());
 
         // when: saveClaim is called
         var result = claimStorageService.saveClaim("some-id", validClaim);
@@ -589,7 +589,7 @@ class ClaimStorageServiceTest {
         // simulate a json processing error
         doThrow(JsonProcessingException.class)
                 .when(s3Service)
-                .upload(anyString(), anyString(), any(), anyString());
+                .upload(anyString(), anyString(), any(RecentEmployersResponse.class), anyString());
 
         // when: save recent employer is called
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
@@ -630,7 +630,7 @@ class ClaimStorageServiceTest {
         // simulate a AWS Service error
         doThrow(AwsServiceException.class)
                 .when(s3Service)
-                .upload(anyString(), anyString(), any(), anyString());
+                .upload(anyString(), anyString(), any(RecentEmployersResponse.class), anyString());
 
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
 
@@ -669,7 +669,7 @@ class ClaimStorageServiceTest {
         // simulate a SdkClient error
         doThrow(SdkClientException.class)
                 .when(s3Service)
-                .upload(anyString(), anyString(), any(), anyString());
+                .upload(anyString(), anyString(), any(RecentEmployersResponse.class), anyString());
 
         var result = claimStorageService.saveRecentEmployer("some-id", validRecentEmployer);
 
@@ -762,5 +762,109 @@ class ClaimStorageServiceTest {
         assertTrue(retrievedData.isEmpty());
 
         verify(s3Service, times(0)).get(anyString(), anyString());
+    }
+
+    @Test
+    void getCompleteClaimThrowsWhenUserIsNotAClaimant() {
+        var idpId = "fakeId";
+
+        when(claimantStorageService.getClaimant(idpId)).thenReturn(Optional.empty());
+
+        assertThrows(
+                ClaimDataRetrievalException.class,
+                () -> claimStorageService.getCompleteClaim(idpId));
+    }
+
+    @Test
+    void getCompleteClaimReturnsEmptyWhenNoCompletedClaimCanBeFound() throws Exception {
+        var idpId = "fakeId";
+
+        var claimant = mock(Claimant.class);
+        when(claimant.getActiveCompletedClaim()).thenReturn(Optional.empty());
+
+        when(claimantStorageService.getClaimant(idpId)).thenReturn(Optional.of(claimant));
+
+        var existingClaim = claimStorageService.getCompleteClaim(idpId);
+
+        assertTrue(existingClaim.isEmpty());
+    }
+
+    @Test
+    void getCompleteClaimReturnsAClaimWhenFound() throws Exception {
+        Claim claim = mock(Claim.class);
+        UUID claimId = UUID.randomUUID();
+        when(claim.getId()).thenReturn(claimId);
+
+        Claimant claimant = mock(Claimant.class);
+        UUID claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claimant.getActiveCompletedClaim()).thenReturn(Optional.of(claim));
+
+        when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.of(claimant));
+
+        InputStream inputStream =
+                new ByteArrayInputStream(
+                        "{\"ssn\": \"123456789\"}".getBytes(StandardCharsets.UTF_8));
+        when(s3Service.get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId)))
+                .thenReturn(inputStream);
+
+        Optional<Map<String, Object>> existingClaim =
+                claimStorageService.getCompleteClaim("fakeId");
+
+        assertTrue(existingClaim.isPresent());
+        Map<String, Object> claimData = existingClaim.get();
+
+        assertTrue(claimData.containsKey("ssn"));
+        assertEquals("123456789", claimData.get("ssn"));
+
+        verify(s3Service, times(1)).get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId));
+    }
+
+    @Test
+    void getCompleteClaimThrowsWhenAwsServiceException() throws Exception {
+        Claim claim = mock(Claim.class);
+        UUID claimId = UUID.randomUUID();
+        when(claim.getId()).thenReturn(claimId);
+
+        Claimant claimant = mock(Claimant.class);
+        UUID claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claimant.getActiveCompletedClaim()).thenReturn(Optional.of(claim));
+
+        when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.of(claimant));
+        when(s3Service.get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId)))
+                .thenThrow(AwsServiceException.class);
+
+        assertThrows(
+                ClaimDataRetrievalException.class,
+                () -> {
+                    claimStorageService.getCompleteClaim("fakeId");
+                });
+
+        verify(s3Service, times(1)).get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId));
+    }
+
+    @Test
+    void getCompleteClaimThrowsWhenSdkClientException() throws Exception {
+        Claim claim = mock(Claim.class);
+        UUID claimId = UUID.randomUUID();
+        when(claim.getId()).thenReturn(claimId);
+
+        Claimant claimant = mock(Claimant.class);
+        UUID claimantId = UUID.randomUUID();
+        when(claimant.getId()).thenReturn(claimantId);
+        when(claimant.getActiveCompletedClaim()).thenReturn(Optional.of(claim));
+
+        when(claimantStorageService.getClaimant(anyString())).thenReturn(Optional.of(claimant));
+        when(s3Service.get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId)))
+                .thenThrow(SdkClientException.class);
+
+        assertThrows(
+                ClaimDataRetrievalException.class,
+                () -> {
+                    claimStorageService.getCompleteClaim("fakeId");
+                });
+
+        verify(s3Service, times(1)).get(CLAIMS_BUCKET, "%s/%s.json".formatted(claimantId, claimId));
     }
 }

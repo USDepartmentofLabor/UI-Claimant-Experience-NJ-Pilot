@@ -17,9 +17,6 @@ inputs:
     description: Image uri if provided by workflow
   otel-collector-image-uri:
     description: Image uri for otel collector
-  app:
-    description: The application (e.g. server, preview)
-    default: "server"
   pr:
     description: The PR number for the pull request
     default: "0"
@@ -27,8 +24,6 @@ inputs:
     description: The aws security group for ECS server services used in deployment previews
   ecs-server-subnet:
     description: One subnet for ECS services used in deployment previews
-  server-tg-arn:
-    description: ARN for the server alb target group
 outputs:
   image-uri-without-aws-id:
     description: The uri for the server image pushed to AWS ECR without the AWS ID
@@ -71,7 +66,7 @@ runs:
       id: task-def-migrations
       uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
       with:
-        task-definition: ops/ecs/db-migrations-task-definition.json
+        task-definition: ops/ecs-db-migrations-task-definition.json
         container-name: dol-ui-claimant-intake-db-migrate-${{ inputs.deploy-env }}
         image: ${{ inputs.image-uri == '' && steps.build-server.outputs.image-uri || inputs.image-uri }}
         # If not provided image, create it
@@ -107,7 +102,7 @@ runs:
     - name: Set environment name in ECS task definition template (server)
       shell: bash
       run: |
-        make server-task-definition environment=${{ inputs.deploy-env }} app=${{ inputs.app }} pr=${{ inputs.pr }}
+        make server-task-definition environment=${{ inputs.deploy-env }} pr=${{ inputs.pr }}
 
     - name: Create ECS task definition container name
       id: ecs-container-name
@@ -132,7 +127,7 @@ runs:
       id: task-def-collector
       uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
       with:
-        task-definition: ops/ecs/server-task-definition.json
+        task-definition: ops/ecs-server-task-definition.json
         container-name: aws-otel-collector
         image: ${{ inputs.otel-collector-image-uri }}
 
@@ -167,18 +162,31 @@ runs:
       shell: bash
       run: |
         SERVICE_COUNT=$( aws ecs list-services \
-        --cluster "$CLUSTER_NAME" \
-        | grep -c "$SERVICE_NAME" )
+        --cluster $CLUSTER_NAME \
+        --query "length(serviceArns[?contains(@,'$SERVICE_NAME')])" )
+        echo $SERVICE_COUNT
         echo "service-count=$SERVICE_COUNT" >> $GITHUB_OUTPUT
 
     - name: Register task definition for deployment preview
       if: steps.preview-service-exist.outputs.service-count == '0'
       env:
-        TASK_DEF: ${{ steps.task-def.outputs.task-definition }}
+        TASK_DEF: ${{ steps.task-def-server.outputs.task-definition }}
       shell: bash
       run: |
         aws ecs register-task-definition \
         --cli-input-json "file://${TASK_DEF}"
+
+    - name: Get existing server target group ARN
+      id: get-server-tg
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        TG_NAME: ecs-server-dev-${{ inputs.pr }}
+      shell: bash
+      run: |
+        SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
 
     - name: Create ECS service for deployment preview
       if: steps.preview-service-exist.outputs.service-count == '0'
@@ -188,21 +196,21 @@ runs:
         CONTAINER_NAME: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}-${{ inputs.pr }}
         SUBNET: ${{ inputs.ecs-server-subnet }}
         SECURITY_GROUP: ${{ inputs.ecs-server-security-group }}
-        TG_ARN: ${{ inputs.server-tg-arn }}
+        TG_ARN: ${{ steps.get-server-tg.outputs.server-tg-arn }}
       shell: bash
       run: |
         aws ecs create-service \
         --region us-east-1 \
-        --cluster "$CLUSTER_NAME" \
-        --service-name "$SERVICE_NAME" \
-        --task-definition "$CONTAINER_NAME" \
+        --cluster $CLUSTER_NAME \
+        --service-name $SERVICE_NAME \
+        --task-definition $CONTAINER_NAME \
         --desired-count 1 \
         --launch-type "FARGATE" \
         --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
-        --load-balancers "targetGroupArn=$TG_ARN,loadBalancerName=dol-ui-claimant-dev,containerName=$CONTAINER_NAME,containerPort=8080"
+        --load-balancers targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=8080
 
     - name: Deploy Amazon ECS task definition (server)
-      if: steps.preview-service-exist.outputs.service-count >= '1'
+      if: steps.preview-service-exist.outputs.service-count != '0'
       uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
       with:
         task-definition: ${{ steps.task-def-server.outputs.task-definition }}

@@ -132,7 +132,7 @@ const claimForm = {
     options: {
       female: 'Female',
       male: 'Male',
-      unspecified: 'X (unspecified)',
+      unspecified: 'Unspecified (X)',
     },
     errors: {
       required: 'You must select a sex',
@@ -239,7 +239,6 @@ const claimForm = {
       label: 'Expiration date',
       errors: {
         required: 'Expiration date is required',
-        maxDate: "Expiration date can't be in the future",
         minDate: "Expiration date can't be before valid from / issued on date",
       },
     },
@@ -523,7 +522,7 @@ const claimForm = {
         zipcode: { label: 'ZIP' },
       },
       employer_phone: {
-        label: 'Employer phone number',
+        label: 'Employer phone number (optional)',
       },
       is_full_time: {
         help_text:
@@ -544,6 +543,8 @@ const claimForm = {
       section_title: 'Work location',
       worked_at_employer_address: {
         label: 'Did you work in <0>City</0>, <1>State</1> for this employer?',
+        placeholder:
+          'Did you work in the above city and state for this employer?',
         required:
           "Please say whether you worked at the employer's address shown above",
       },
@@ -564,7 +565,7 @@ const claimForm = {
         required: "Please check that the employer's phone number is right",
       },
       work_location_phone: {
-        label: 'Work location phone number',
+        label: 'Work location phone number (optional)',
       },
     },
     hours_reduced_twenty_percent: {
@@ -892,6 +893,7 @@ const claimForm = {
     union_local_number: {
       label: 'Union local number',
       errors: {
+        digitsOnly: 'Union number can only be numbers',
         required: 'You must give your union local number',
         maxLength: 'Union local number must be at most 16 characters',
       },

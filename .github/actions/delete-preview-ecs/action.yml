@@ -11,10 +11,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+    - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
       with:
         role-to-assume: ${{ inputs.aws-role-to-assume }}
         aws-region: us-east-1
@@ -23,22 +23,34 @@ runs:
       id: client-service
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE_NAME: dol-ui-claimant-intake-client-{{ inputs.pr-number }}
+        SERVICE_NAME: dol-ui-claimant-intake-client-${{ inputs.pr-number }}
       shell: bash
       run: |
         CLIENT_TD_ARN=$( aws ecs describe-services \
-        --cluster $CLUSTER
-        --services $SERVICE_NAME
-        --query "services[0].taskDefinition"
+        --cluster $CLUSTER \
+        --services $SERVICE_NAME \
+        --query "services[0].taskDefinition" \
         --output text )
         echo "client-td-arn=$CLIENT_TD_ARN" >> $GITHUB_OUTPUT
 
+    - name: Get list of client task definition ARNs
+      if: steps.client-service.outputs.client-td-arn != 'None'
+      id: client-td-arn-list
+      env:
+        TD_FAMILY: dol-ui-claimant-intake-client-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        aws ecs list-task-definitions \
+        --family-prefix $TD_FAMILY \
+        --status ACTIVE \
+        --query "taskDefinitionArns" >> client-td-arns.json
+
     # using --force to have aws automagically set task count to 0 and stopping tasks
     - name: Delete preview client service
-      if: steps.client-service.outputs.client-td-arn != ''
+      if: steps.client-service.outputs.client-td-arn != 'None'
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE: dol-ui-claimant-intake-client-{{ inputs.pr-number }}
+        SERVICE: dol-ui-claimant-intake-client-${{ inputs.pr-number }}
       shell: bash
       run: |
         aws ecs delete-service \
@@ -46,44 +58,56 @@ runs:
         --service $SERVICE \
         --force
 
-    - name: Deregister preview client task definition
-      if: steps.client-service.outputs.client-td-arn != ''
-      env:
-        TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
+    - name: Deregister preview client task definitions
+      if: steps.client-service.outputs.client-td-arn != 'None'
       shell: bash
       run: |
-        aws ecs deregister-task-definition \
-        --task-definition $TD_ARN
+        jq -cr '.[]' client-td-arns.json | while read TD_ARN; do
+          aws ecs deregister-task-definition \
+          --task-definition $TD_ARN
+        done
 
-    - name: Delete preview client task definition
-      if: steps.client-service.outputs.client-td-arn != ''
-      env:
-        TD_ARN: ${{ steps.client-service.outputs.client-td-arn }}
+    - name: Delete preview client task definitions
+      if: steps.client-service.outputs.client-td-arn != 'None'
       shell: bash
       run: |
-        aws ecs delete-task-definitions \
-        --task-definition $TD_ARN
+        jq -cr '.[]' client-td-arns.json | while read TD_ARN; do
+          aws ecs delete-task-definitions \
+          --task-definition $TD_ARN
+        done
 
     - name: Get server preview service task def ARN
       id: server-service
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE_NAME: dol-ui-claimant-intake-server-{{ inputs.pr-number }}
+        SERVICE_NAME: dol-ui-claimant-intake-server-${{ inputs.pr-number }}
       shell: bash
       run: |
         SERVER_TD_ARN=$( aws ecs describe-services \
-        --cluster $CLUSTER
-        --services $SERVICE_NAME
-        --query "services[0].taskDefinition"
+        --cluster $CLUSTER \
+        --services $SERVICE_NAME \
+        --query "services[0].taskDefinition" \
         --output text )
         echo "server-td-arn=$SERVER_TD_ARN" >> $GITHUB_OUTPUT
 
+    - name: Get list of server task definition ARNs
+      if: steps.server-service.outputs.server-td-arn != 'None'
+      id: server-td-arn-list
+      env:
+        TD_FAMILY: dol-ui-claimant-intake-server-dev-${{ inputs.pr-number }}
+      shell: bash
+      run: |
+        aws ecs list-task-definitions \
+        --family-prefix $TD_FAMILY \
+        --status ACTIVE \
+        --query "taskDefinitionArns" >> server-td-arns.json
+
     # using --force to have aws automagically set task count to 0 and stopping tasks
     - name: Delete preview server service
-      if: steps.server-service.outputs.server-td-arn != ''
+      if: steps.server-service.outputs.server-td-arn != 'None'
       env:
         CLUSTER: dol-ui-claimant-intake-dev
-        SERVICE: dol-ui-claimant-intake-server-{{ inputs.pr-number }}
+        SERVICE: dol-ui-claimant-intake-server-${{ inputs.pr-number }}
       shell: bash
       run: |
         aws ecs delete-service \
@@ -91,20 +115,22 @@ runs:
         --service $SERVICE \
         --force
 
-    - name: Deregister preview server task definition
-      if: steps.server-service.outputs.server-td-arn != ''
-      env:
-        TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
+    - name: Deregister preview server task definitions
+      if: steps.server-service.outputs.server-td-arn != 'None'
       shell: bash
       run: |
-        aws ecs deregister-task-definition \
-        --task-definition $TD_ARN
+        jq -cr '.[]' server-td-arns.json | while read TD_ARN; do
+          aws ecs deregister-task-definition \
+          --task-definition $TD_ARN
+        done
 
-    - name: Delete preview server task definition
-      if: steps.server-service.outputs.server-td-arn != ''
+    - name: Delete preview server task definitions
+      if: steps.server-service.outputs.server-td-arn != 'None'
       env:
         TD_ARN: ${{ steps.server-service.outputs.server-td-arn }}
       shell: bash
       run: |
-        aws ecs delete-task-definitions \
-        --task-definition $TD_ARN
+        jq -cr '.[]' server-td-arns.json | while read TD_ARN; do
+          aws ecs delete-task-definitions \
+          --task-definition $TD_ARN
+        done

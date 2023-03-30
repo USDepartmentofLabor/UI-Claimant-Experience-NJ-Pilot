@@ -71,8 +71,8 @@ describe('PaymentReview component', () => {
 
     expect(paymentMethod[0]).toHaveTextContent('deposit')
     expect(accountType[0]).toHaveTextContent('savings')
-    expect(routingNumber[0]).toHaveTextContent(values.routing_number)
-    expect(accountNumber[0]).toHaveTextContent(values.account_number)
+    expect(routingNumber[0]).toHaveTextContent('•••••••••')
+    expect(accountNumber[0]).toHaveTextContent('•••••••••')
     expect(acknowledgeDirectDeposit[0]).toHaveTextContent('yes')
     expect(fedTaxWithheld[0]).toHaveTextContent('yes')
     expect(paymentForDependents[0]).toHaveTextContent('yes')

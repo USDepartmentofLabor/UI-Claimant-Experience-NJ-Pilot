@@ -39,19 +39,25 @@ e2e-deps: ## installs dependencies for client
 	cd e2e && yarn install --frozen-lockfile
 
 e2e-test-gui-local: ## Runs Cypress tests in browser running the app on localhost
-	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
+	cd e2e && yarn cypress open --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
 e2e-test-gui-local-fast: ## Runs Cypress tests without lighthouse or a11y
-	cd e2e && yarn run cypress open --config "baseUrl=http://localhost:3000" --env "SKIP_CHECKS=enabled,SERVER_BASE_URL=http://localhost:8080"
+	cd e2e && yarn cypress open --config "baseUrl=http://localhost:3000" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=http://localhost:8080"
 
 e2e-test-gui-docker: ## Runs Cypress tests in browser running the app dockerized
-	cd e2e && yarn run cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
+	cd e2e && yarn cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
+
+e2e-test-gui-docker-fast: ## Runs Cypress tests in browser running the app dockerized without lighthouse or a11y
+	cd e2e && yarn cypress open --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
 
 e2e-test-headless-local: ## Runs Cypress tests on the command line running the app on localhost
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
-e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized
-	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
+e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized TODO: Don't skip lighthouse
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
+
+e2e-test-headless-docker-fast: ## Runs Cypress tests on the command line running the app dockerized without lighthouse or a11y
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
 
 e2e-compile-check: ## check e2e for typescript compilation
 	cd e2e && yarn tsc --noEmit
@@ -89,8 +95,8 @@ client-compile-check: ## check client for typescript compilation
 client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
 
-client-task-definition: ## Update the environment placeholders in the client ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/client-task-definition.json.tmpl --environment $(environment) --app $(app) --pr $(pr) > ops/ecs/client-task-definition.json
+client-task-definition: ## Create the client ECS task definition
+	./scripts/create-task-definition.py --app client --environment $(environment) --pr $(pr) > ops/ecs-client-task-definition.json
 
 server-gradle-tasks: ## list the gradle tasks that can be run when invoking ./gradlew from the /server directory
 	cd server && ./gradlew tasks
@@ -146,11 +152,11 @@ server-migration-starter-file: ## Create a starter file for raw SQL migration
 server-clean: ## cleans the build output and incremental build "Up-to-date" checks
 	cd server && ./gradlew clean
 
-server-task-definition: ## Update the environment placeholders in the server ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/server-task-definition.json.tmpl --environment $(environment) --app $(app) --pr $(pr) > ops/ecs/server-task-definition.json
+server-task-definition: ## Create the server ECS task definition
+	./scripts/create-task-definition.py --app server --environment $(environment) --pr $(pr) --otel > ops/ecs-server-task-definition.json
 
-db-migrations-task-definition: ## Update the environment placeholders in the db migration ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/db-migrations-task-definition.json.tmpl --environment $(environment) > ops/ecs/db-migrations-task-definition.json
+db-migrations-task-definition: ## Create the db migration ECS task definition
+	./scripts/create-task-definition.py --app db-migrate  --environment $(environment) > ops/ecs-db-migrations-task-definition.json
 
 wait-for-server: ## Wait for the server health check to return 200
 	./scripts/wait-for-url.py --url http://localhost:8080/intake-api/actuator/health

@@ -67,6 +67,7 @@ export const Union: NextPageWithLayout = () => {
                 <TextField
                   label={t('union_local_number.label')}
                   type="text"
+                  inputMode="numeric"
                   name="union_local_number"
                 />
               </>

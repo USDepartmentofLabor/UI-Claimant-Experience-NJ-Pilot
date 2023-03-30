@@ -118,12 +118,6 @@ const pageSchema = object().shape({
         'work_authorization.employment_authorization_end_date.label'
       )
     )
-      .max(
-        dayjs(new Date()).format('YYYY-MM-DD'),
-        i18n_claimForm.t(
-          'work_authorization.employment_authorization_end_date.errors.maxDate'
-        )
-      )
       .when('employment_authorization_start_date', {
         is: (dateValue: string | undefined) => {
           return !!dateValue

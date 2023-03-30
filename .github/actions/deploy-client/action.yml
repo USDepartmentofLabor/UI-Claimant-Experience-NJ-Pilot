@@ -13,9 +13,6 @@ inputs:
   app-env:
     description: The application environment (e.g., development, test, production)
     required: true
-  app:
-    description: The application (e.g. client, preview)
-    default: "client"
   pr:
     description: The PR number for the pull request
     default: "0"
@@ -23,8 +20,6 @@ inputs:
     description: The aws security group for ECS client services used in deployment previews
   ecs-client-subnet:
     description: One subnet for ECS services used in deployment previews
-  client-tg-arn:
-    description: ARN for the client alb target group
 
 runs:
   using: "composite"
@@ -51,7 +46,7 @@ runs:
     - name: Set environment name in ECS task definition template
       shell: bash
       run: |
-        make client-task-definition environment=${{ inputs.deploy-env }} app=${{ inputs.app }} pr=${{ inputs.pr }}
+        make client-task-definition environment=${{ inputs.deploy-env }} pr=${{ inputs.pr }}
 
     - name: Create ECS task definition container name
       id: ecs-container-name
@@ -71,7 +66,7 @@ runs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
       with:
-        task-definition: ops/ecs/client-task-definition.json
+        task-definition: ops/ecs-client-task-definition.json
         container-name: ${{ steps.ecs-container-name.outputs.container-name }}
         image: ${{ steps.build-client.outputs.image-uri }}
 
@@ -97,7 +92,8 @@ runs:
       run: |
         SERVICE_COUNT=$( aws ecs list-services \
         --cluster "$CLUSTER_NAME" \
-        | grep -c "$SERVICE_NAME" )
+        --query "length(serviceArns[?contains(@,'$SERVICE_NAME')])" )
+        echo $SERVICE_COUNT
         echo "service-count=$SERVICE_COUNT" >> $GITHUB_OUTPUT
 
     - name: Register task definition for deployment preview
@@ -109,6 +105,18 @@ runs:
         aws ecs register-task-definition \
         --cli-input-json "file://${TASK_DEF}"
 
+    - name: Get existing client target group ARN
+      id: get-client-tg
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        TG_NAME: ecs-client-dev-${{ inputs.pr }}
+      shell: bash
+      run: |
+        CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
     - name: Create ECS service for deployment preview
       if: steps.preview-service-exist.outputs.service-count == '0'
       env:
@@ -117,21 +125,21 @@ runs:
         CONTAINER_NAME: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}-${{ inputs.pr }}
         SUBNET: ${{ inputs.ecs-client-subnet }}
         SECURITY_GROUP: ${{ inputs.ecs-client-security-group }}
-        TG_ARN: ${{ inputs.client-tg-arn }}
+        TG_ARN: ${{ steps.get-client-tg.outputs.client-tg-arn }}
       shell: bash
       run: |
         aws ecs create-service \
         --region us-east-1 \
-        --cluster "$CLUSTER_NAME" \
-        --service-name "$SERVICE_NAME" \
-        --task-definition "$CONTAINER_NAME" \
+        --cluster $CLUSTER_NAME \
+        --service-name $SERVICE_NAME \
+        --task-definition $CONTAINER_NAME \
         --desired-count 1 \
         --launch-type "FARGATE" \
         --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
-        --load-balancers "targetGroupArn=$TG_ARN,loadBalancerName=dol-ui-claimant-dev,containerName=$CONTAINER_NAME,containerPort=3000"
+        --load-balancers targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=3000
 
     - name: Deploy Amazon ECS task definition
-      if: steps.preview-service-exist.outputs.service-count >= '1'
+      if: steps.preview-service-exist.outputs.service-count != '0'
       uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}

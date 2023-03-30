@@ -16,6 +16,31 @@ jest.mock('hooks/useInitialValues')
 jest.mock('hooks/useSaveClaimFormValues')
 jest.mock('queries/useGetPartialClaim')
 
+const mockUseGetBetaTestReview = jest.fn().mockImplementation(() => {
+  return {
+    refetch: jest.fn().mockImplementation(() => {
+      return {
+        data: {
+          status: 200,
+        },
+      }
+    }),
+  }
+})
+
+jest.mock('queries/useGetBetaTestReview', () => ({
+  useGetBetaTestReview: () => mockUseGetBetaTestReview(),
+}))
+
+const mockAxiosGet = jest.fn().mockImplementation(() => ({ status: 200 }))
+
+jest.mock('axios', () => ({
+  isAxiosError: () => true,
+}))
+
+const mockScrollTo = jest.fn()
+global.scrollTo = mockScrollTo
+
 const mockSubmitForm = jest.fn(() => Promise.resolve())
 const mockUseFormikContext = jest.fn().mockImplementation(() => ({
   submitCount: 0,
@@ -220,6 +245,7 @@ describe('Review page', () => {
       claimFormContext.claimFormValues,
       expect.objectContaining({ onSuccess: expect.any(Function) })
     )
+    expect(mockScrollTo).not.toHaveBeenCalled()
     expect(mockPush).toHaveBeenCalledTimes(1)
     expect(mockPush).toHaveBeenCalledWith({
       pathname: Routes.CLAIM.SUCCESS,
@@ -253,6 +279,7 @@ describe('Review page', () => {
     expect(mockSaveCompleteClaimMutate).not.toHaveBeenCalled()
     expect(mockSubmitClaimMutate).not.toHaveBeenCalled()
     expect(mockPush).not.toHaveBeenCalled()
+    expect(mockScrollTo).not.toHaveBeenCalled()
   })
 
   it('does not submit the claim if the claim is not successfully completed', async () => {
@@ -326,11 +353,153 @@ describe('Review page', () => {
       expect.objectContaining({ onSuccess: expect.any(Function) })
     )
     expect(mockSubmitClaimMutate).toHaveBeenCalledTimes(1)
-    expect(mockSaveCompleteClaimMutate).toHaveBeenCalledWith(
+    expect(mockSubmitClaimMutate).toHaveBeenCalledWith(
       claimFormContext.claimFormValues,
       expect.objectContaining({ onSuccess: expect.any(Function) })
     )
     expect(mockPush).not.toHaveBeenCalled()
+  })
+
+  describe('beta test functionality', () => {
+    it('renders (and scrolls to) an error when the beta test submission fails', async () => {
+      const user = userEvent.setup()
+
+      mockUseFormikContext.mockReturnValue({
+        isValid: true,
+        isSubmitting: false,
+        setSubmitting: jest.fn(),
+        submitForm: mockSubmitForm,
+      })
+
+      const mockSaveCompleteClaimMutate = jest.fn((values, options) => {
+        options.onSuccess()
+      })
+      mockUseSaveCompleteClaim.mockImplementation(() => ({
+        mutate: (values: ClaimantInput, options: any) =>
+          mockSaveCompleteClaimMutate(values, options),
+      }))
+
+      const serverErrorMessage =
+        'A message from the server about what went wrong'
+
+      mockAxiosGet.mockImplementation(() => {
+        return {
+          status: 500,
+          response: {
+            data: serverErrorMessage,
+          },
+        }
+      })
+
+      mockUseGetBetaTestReview.mockImplementation(() => {
+        return {
+          refetch: () => {
+            return {
+              error: {
+                response: {
+                  status: 500,
+                  data: serverErrorMessage,
+                },
+              },
+            }
+          },
+        }
+      })
+
+      const mockSubmitClaimMutate = jest.fn()
+      mockUseSubmitClaim.mockImplementation(() => ({
+        mutate: mockSubmitClaimMutate,
+      }))
+
+      const { submitButton, queryForErrorMessage } = renderReview()
+
+      await user.click(submitButton)
+
+      expect(mockSubmitForm).toHaveBeenCalledTimes(1)
+      expect(mockSaveCompleteClaimMutate).toHaveBeenCalledTimes(1)
+      expect(mockSaveCompleteClaimMutate).toHaveBeenCalledWith(
+        claimFormContext.claimFormValues,
+        expect.objectContaining({ onSuccess: expect.any(Function) })
+      )
+      expect(mockSubmitClaimMutate).toHaveBeenCalledTimes(0)
+      expect(mockPush).not.toHaveBeenCalled()
+      expect(mockScrollTo).toHaveBeenCalledTimes(1)
+      expect(queryForErrorMessage()).toBeInTheDocument()
+      expect(screen.queryByText(serverErrorMessage)).toBeInTheDocument()
+    })
+
+    it('renders (and scrolls to) save complete claim error', async () => {
+      const user = userEvent.setup()
+
+      mockUseFormikContext.mockReturnValue({
+        isValid: true,
+        isSubmitting: false,
+        setSubmitting: jest.fn(),
+        submitForm: mockSubmitForm,
+      })
+
+      const mockSaveCompleteClaimMutate = jest.fn((values, options) => {
+        options.onError()
+      })
+      mockUseSaveCompleteClaim.mockImplementation(() => ({
+        mutate: (values: ClaimantInput, options: any) =>
+          mockSaveCompleteClaimMutate(values, options),
+      }))
+
+      const { submitButton } = renderReview()
+
+      await user.click(submitButton)
+
+      expect(mockScrollTo).toHaveBeenCalledTimes(1)
+    })
+
+    it('renders (and scrolls to) error on submit claim error', async () => {
+      const user = userEvent.setup()
+
+      mockUseFormikContext.mockReturnValue({
+        isValid: true,
+        isSubmitting: false,
+        setSubmitting: jest.fn(),
+        submitForm: mockSubmitForm,
+      })
+
+      const mockSaveCompleteClaimMutate = jest.fn((values, options) =>
+        options.onSuccess()
+      )
+      mockUseSaveCompleteClaim.mockImplementation(() => ({
+        mutate: (values: ClaimantInput, options: any) =>
+          mockSaveCompleteClaimMutate(values, options),
+      }))
+
+      mockUseGetBetaTestReview.mockImplementation(() => {
+        return {
+          refetch: () => {
+            return {
+              data: {
+                status: 200,
+              },
+            }
+          },
+        }
+      })
+
+      const mockSubmitClaimMutate = jest.fn((values, options) => {
+        return options.onError()
+      })
+      mockUseSubmitClaim.mockImplementation(() => ({
+        mutate: (values: ClaimantInput, options: any) =>
+          mockSubmitClaimMutate(values, options),
+      }))
+
+      const { submitButton } = renderReview()
+
+      await user.click(submitButton)
+
+      expect(mockSubmitForm).toHaveBeenCalledTimes(1)
+      expect(mockSaveCompleteClaimMutate).toHaveBeenCalledTimes(1)
+      expect(mockSubmitClaimMutate).toHaveBeenCalledTimes(1)
+      expect(mockScrollTo).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('page layout', () => {
