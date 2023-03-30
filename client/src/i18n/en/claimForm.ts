@@ -203,6 +203,7 @@ const claimForm = {
     },
     alien_registration_number: {
       label: 'USCIS / Alien registration number',
+      optional_label: 'USCIS / Alien registration number (optional)',
       hint: '<0>Need help finding it?</0> This is a 7-9 digit number, sometimes starting with “A”',
       modal: {
         heading:

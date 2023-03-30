@@ -47,31 +47,39 @@ const pageSchema = object().shape({
           /^[\d]{7,9}$/,
           t('work_authorization.alien_registration_number.errors.format')
         )
-        .required(
-          t('work_authorization.alien_registration_number.errors.required')
-        ),
+        .when('authorization_type', {
+          is: (alienRegistrationType: string) =>
+            alienRegistrationType &&
+            alienRegistrationType !== 'not_legally_allowed_to_work_in_US',
+          then: (schema) =>
+            schema.required(
+              t('work_authorization.alien_registration_number.errors.required')
+            ),
+        }),
   }),
-  LOCAL_re_enter_alien_registration_number: string().when(
-    'authorization_type',
-    {
-      is: (alienRegistrationType: string) =>
+  LOCAL_re_enter_alien_registration_number: string()
+    .oneOf(
+      [ref('alien_registration_number'), null],
+      i18n_claimForm.t(
+        'work_authorization.re_enter_alien_registration_number.errors.mustMatch'
+      )
+    )
+    .when(['authorization_type', 'alien_registration_number'], {
+      is: (alienRegistrationType: string, alien_registration_number: string) =>
         alienRegistrationType &&
-        alienRegistrationType !== 'US_citizen_or_national',
+        (![
+          'US_citizen_or_national',
+          'not_legally_allowed_to_work_in_US',
+        ].includes(alienRegistrationType) ||
+          (alien_registration_number &&
+            alienRegistrationType === 'not_legally_allowed_to_work_in_US')),
       then: (schema) =>
-        schema
-          .oneOf(
-            [ref('alien_registration_number'), null],
-            i18n_claimForm.t(
-              'work_authorization.re_enter_alien_registration_number.errors.mustMatch'
-            )
+        schema.required(
+          i18n_claimForm.t(
+            'work_authorization.re_enter_alien_registration_number.errors.required'
           )
-          .required(
-            i18n_claimForm.t(
-              'work_authorization.re_enter_alien_registration_number.errors.required'
-            )
-          ),
-    }
-  ),
+        ),
+    }),
   country_of_origin: string()
     .oneOf([...countryOfOriginOptions])
     .when('authorization_type', {
