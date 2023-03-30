@@ -86,6 +86,9 @@ export const Identity: NextPageWithLayout = () => {
         const showAlienRegistrationNumber =
           values.authorization_type &&
           values.authorization_type !== 'US_citizen_or_national'
+        const showOptionalAlienRegistrationNumber =
+          values.authorization_type &&
+          values.authorization_type === 'not_legally_allowed_to_work_in_US'
 
         const handleImmigrationHelpLinkClick: MouseEventHandler<
           HTMLButtonElement
@@ -228,9 +231,13 @@ export const Identity: NextPageWithLayout = () => {
               >
                 <Name name={'employment_authorization_document_name'} />
                 <AlienRegistrationNumberField
-                  label={t(
-                    'work_authorization.alien_registration_number.label'
-                  )}
+                  label={
+                    showOptionalAlienRegistrationNumber
+                      ? t(
+                          'work_authorization.alien_registration_number.optional_label'
+                        )
+                      : t('work_authorization.alien_registration_number.label')
+                  }
                   name="alien_registration_number"
                   hint={
                     <Trans
