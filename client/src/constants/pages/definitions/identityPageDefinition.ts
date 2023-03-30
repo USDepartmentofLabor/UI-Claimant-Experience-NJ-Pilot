@@ -72,8 +72,7 @@ const pageSchema = object().shape({
           'not_legally_allowed_to_work_in_US',
         ].includes(alienRegistrationType) ||
           (alien_registration_number &&
-            'not_legally_allowed_to_work_in_US' === alienRegistrationType &&
-            alien_registration_number !== '')),
+            alienRegistrationType === 'not_legally_allowed_to_work_in_US')),
       then: (schema) =>
         schema.required(
           i18n_claimForm.t(
