@@ -1,11 +1,11 @@
-name: Build Envoy image
+name: Build cert generator image
 
 on:
   push:
     branches:
       - main
     paths:
-      - "ops/envoy/**"
+      - "ops/aws-pca-cert-generator/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -45,8 +45,8 @@ jobs:
             BRANCH_PREFIX="branch"
           fi
           BUILD_TIME=$(date '+%Y%m%d%H%M%S')
-          APP_MESH_ENVOY_VERSION=$(grep 'FROM public.ecr.aws/appmesh/aws-appmesh-envoy' ops/envoy/Dockerfile | cut -d':' -f 2)
-          IMAGE_TAG="${BRANCH_PREFIX}-${APP_MESH_ENVOY_VERSION}-${GIT_COMMIT}-${BUILD_TIME}"
+          PYTHON_LAMBDA_VERSION=$(grep 'FROM public.ecr.aws/lambda/python' ops/aws-pca-cert-generator/Dockerfile | cut -d':' -f 2)
+          IMAGE_TAG="${BRANCH_PREFIX}-${PYTHON_LAMBDA_VERSION}-${GIT_COMMIT}-${BUILD_TIME}"
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
@@ -55,10 +55,10 @@ jobs:
           version: v0.10.2
           driver-opts: image=moby/buildkit:v0.11.2
 
-      - name: Build & Push Envoy image
+      - name: Build & Push cert generator image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           push: true
           provenance: false
-          context: ops/envoy
-          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-envoy:${{ steps.construct-image-tag.outputs.image-tag }}
+          context: ops/aws-pca-cert-generator
+          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-acm-pca-cert-generator:${{ steps.construct-image-tag.outputs.image-tag }}
