@@ -9,6 +9,7 @@ import {
   IconListIcon,
   IconListItem,
   IconListTitle,
+  Link,
 } from '@trussworks/react-uswds'
 import { useWhoAmI } from 'hooks/useWhoAmI'
 import { Routes } from 'constants/routes'
@@ -23,14 +24,22 @@ const BetaSuccess: NextPage = () => {
       <Head>
         <title>{t('heading')}</title>
       </Head>
-      <main id="main-content" className="margin-y-5">
+      <main
+        id="main-content"
+        className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-8"
+      >
         <h1 className="nj-h2">{t('heading')}</h1>
-        <Alert type="success" headingLevel="h2" heading={t('alert_heading')}>
+        <Alert
+          className="measure-6"
+          type="success"
+          headingLevel="h2"
+          heading={t('alert_heading')}
+        >
           {t('success_details')}
         </Alert>
-        <IconList className="nj-icon-list margin-top-5">
+        <IconList className="nj-icon-list margin-y-5 measure-6">
           <IconListItem>
-            <IconListIcon>
+            <IconListIcon aria-hidden>
               <Icon.VerifiedUser />
             </IconListIcon>
             <IconListContent>
@@ -43,9 +52,10 @@ const BetaSuccess: NextPage = () => {
                   i18nKey="id_verification_instructions"
                   components={{
                     IdMeProcessLink: (
-                      // eslint-disable-next-line jsx-a11y/anchor-has-content
-                      <a
+                      // @ts-expect-error - children is i18n value
+                      <Link
                         href={Routes.ID_ME_PROCESS}
+                        variant="external"
                         target="_blank"
                         rel="noreferrer noopener"
                       />
@@ -62,9 +72,10 @@ const BetaSuccess: NextPage = () => {
                     i18nKey="id_verification_requirement_gov_id"
                     components={{
                       IdMeDocTypesLink: (
-                        // eslint-disable-next-line jsx-a11y/anchor-has-content
-                        <a
+                        // @ts-expect-error - children is i18n value
+                        <Link
                           href={Routes.ID_ME_DOCUMENT_TYPES}
+                          variant="external"
                           target="_blank"
                           rel="noreferrer noopener"
                         />
@@ -85,13 +96,83 @@ const BetaSuccess: NextPage = () => {
                 className="usa-button"
                 target="_blank"
                 rel="noreferrer noopener"
-                data-testid="id.me link"
+                data-testid="id-me-link"
               >
                 {t('id_verification_button')}
               </a>
             </IconListContent>
           </IconListItem>
         </IconList>
+
+        <h2>{t('expectations_heading')}</h2>
+
+        <IconList className="nj-icon-list margin-bottom-5 measure-6">
+          <IconListItem>
+            <IconListIcon aria-hidden>
+              <Icon.MailOutline />
+            </IconListIcon>
+            <IconListContent>
+              <IconListTitle type="h3">
+                {t('expect_comms_heading')}
+              </IconListTitle>
+              <p>
+                <Trans t={t} i18nKey="expect_comms" />
+              </p>
+            </IconListContent>
+          </IconListItem>
+          <IconListItem>
+            <IconListIcon aria-hidden>
+              <Icon.Update />
+            </IconListIcon>
+            <IconListContent>
+              <IconListTitle type="h3">
+                {t('expect_certifying_heading')}
+              </IconListTitle>
+              <Trans
+                t={t}
+                i18nKey="expect_certifying"
+                components={{
+                  CertifyLink: (
+                    // @ts-expect-error - children is i18n value
+                    <Link
+                      href={Routes.CERTIFY}
+                      variant="external"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                  HowToCertifyLink: (
+                    // @ts-expect-error - children is i18n value
+                    <Link
+                      href={Routes.HOW_TO_CERTIFY}
+                      variant="external"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="display-inline"
+                    />
+                  ),
+                }}
+              />
+              <a
+                href={Routes.CERTIFY}
+                className="usa-button"
+                data-testid="certify-link"
+              >
+                {t('expect_certifying_button')}
+              </a>
+            </IconListContent>
+          </IconListItem>
+        </IconList>
+        <h2 className="nj-h5 text-normal">{t('privacy_heading')}</h2>
+        <div className="font-body-3xs">
+          <Trans
+            t={t}
+            i18nKey="privacy_statement"
+            components={{
+              p: <p className="maxw-tablet" />,
+            }}
+          />
+        </div>
       </main>
     </>
   )

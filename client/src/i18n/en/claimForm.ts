@@ -1182,6 +1182,18 @@ const claimForm = {
     id_verification_closing:
       'When verifying with ID.me, use the same email you used to apply for unemployment ({{email}}).',
     id_verification_button: 'Verify my identity',
+    expectations_heading: 'What to expect',
+    expect_comms_heading: 'Follow-up communication',
+    expect_comms:
+      'If we need more information from you we will email you or send you a letter in the mail. <strong>You must complete the forms or respond in a timely manner to receive payments. If you don’t respond, you may lose benefits.</strong>',
+    expect_certifying_heading: 'Certify your eligibility every week',
+    expect_certifying: `<p>You can begin <CertifyLink>certifying online</CertifyLink>. Each week that you’re unemployed you need to <HowToCertifyLink>answer some questions in order to receive your unemployment insurance payments</HowToCertifyLink> for that week.</p>
+      <p>If your application is approved, you should start getting payments every week that you certify and remain eligible.</p>
+      <p><strong>Important: If you try to certify your eligibility and get an error saying your claim has expired, you may still have to complete your ID.me verification.</strong></p>`,
+    expect_certifying_button: 'Certify my eligibility',
+    privacy_heading: 'Data privacy and security',
+    privacy_statement: `<p>The information collected from your application for unemployment compensation is private data and cannot be released except when authorized by state or federal law, by a court order, or with your permission. The information you and/or your employer(s) provide may be used for New Jersey Department of Labor and Workforce Development purposes and may be used to provide income and eligibility verification between State Agencies administering programs under a plan approved under Title I, X, XIV, XVI as contained in Section 1137 (a)(6) of the Social Security Act. It may be shared with other state and/or federal agencies that determine eligibility for Medicaid, Food Stamps, Social Security, or other state and/or federal benefits and programs. Your Social Security Number will be validated with the Social Security Administration. If you are not a citizen of the United States, your work authorization in the United States will be verified with the Department of Homeland Security.</p>
+      <p>Precautions have been taken to ensure that the information provided by you in this application are kept private and secure. This online application uses a secure connection. Data submitted using this application is encrypted. You should be aware that by using a shared computer, others may be able to view your personal information.</p>`,
   },
 }
 

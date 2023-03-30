@@ -6,6 +6,9 @@ export const makeClaimFormRoute = (page: string) =>
 export const ExternalRoutes = () => {
   const env = process.env.NEXT_PUBLIC_APP_ENV as NextPublicAppEnv
   const allEnvs = {
+    CERTIFY: 'https://lwdlba.state.nj.us/CertQueueMini/employerVerifyForm.htm',
+    HOW_TO_CERTIFY:
+      'https://nj.gov/labor/myunemployment/before/about/howtoapply/howtocertify.shtml',
     ID_ME_VERIFY: 'https://hosted-pages.id.me/njdolverify',
     ID_ME_DOCUMENT_TYPES:
       'https://help.id.me/hc/en-us/articles/360017833054-Primary-and-secondary-identification-documents',
@@ -53,6 +56,8 @@ export const Routes = {
   PRIVACY: '/privacy',
   SSN: '/ssn',
 
+  CERTIFY: ExternalRoutes().CERTIFY,
+  HOW_TO_CERTIFY: ExternalRoutes().HOW_TO_CERTIFY,
   ID_ME_DOCUMENT_TYPES: ExternalRoutes().ID_ME_DOCUMENT_TYPES,
   ID_ME_PROCESS: ExternalRoutes().ID_ME_PROCESS,
   ID_ME_VERIFY: ExternalRoutes().ID_ME_VERIFY,
