@@ -48,6 +48,12 @@ export const WorkLocation = () => {
   }
 
   const hasImportedAddress = values.is_imported && values.imported_address
+  const importedAddrLastFilledLine =
+    values?.imported_address?.employerAddressLine5 ||
+    values?.imported_address?.employerAddressLine4 ||
+    values?.imported_address?.employerAddressLine3 ||
+    values?.imported_address?.employerAddressLine2 ||
+    values?.imported_address?.employerAddressLine1
   return (
     <>
       <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
@@ -55,7 +61,7 @@ export const WorkLocation = () => {
           <YesNoQuestion
             question={
               <Trans t={t} i18nKey="worked_at_employer_address.label_imported">
-                {values?.imported_address?.employerAddressLine5}
+                {importedAddrLastFilledLine}
               </Trans>
             }
             name={`worked_at_employer_address`}

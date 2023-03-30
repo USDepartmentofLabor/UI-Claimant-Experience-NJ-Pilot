@@ -194,10 +194,10 @@ describe('WorkLocation component', () => {
     const importedImployer = {
       imported_address: {
         employerAddressLine1: '1 John Fitch Plaza',
-        employerAddressLine2: null,
+        employerAddressLine2: 'Trenton NJ',
         employerAddressLine3: null,
         employerAddressLine4: null,
-        employerAddressLine5: ' Trenton NJ',
+        employerAddressLine5: null,
         employerAddressZip: '11111',
       },
       is_imported: true,
