@@ -60,11 +60,6 @@ describe('PaymentsReceived', () => {
   }
   it('renders properly', async () => {
     const { payTypeGroup } = await renderPaymentsReceived()
-    expect(
-      screen.getByRole('group', {
-        name: 'payments_received.payments_received_detail.pay_type.label',
-      })
-    ).toBeInTheDocument()
     expect(payTypeGroup).toBeInTheDocument()
   })
 
