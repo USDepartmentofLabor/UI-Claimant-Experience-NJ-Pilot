@@ -43,12 +43,11 @@
     "@cypress-audit/shared" "^1.3.1"
     lighthouse "^9.5.0"
 
-"@cypress-audit/pa11y@^1.3.0":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@cypress-audit/pa11y/-/pa11y-1.3.1.tgz#bb62a15fea4e3b888029cb8519c451e9c49fb6d6"
-  integrity sha512-VdyCekQoHWrxQBO9nXYULuMfGsp980V9wmve9cKgh2uQv64xhTH9GyBPOpnEICJcc02vtglclrBqG/DrqjbL7w==
+"@cypress-audit/pa11y@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@cypress-audit/pa11y/-/pa11y-1.4.2.tgz#dd459245f6ee3ae2d8c091b713c7bd845f44cde2"
+  integrity sha512-XTHMR8MnUGtyEajeSRkrzw0rikDX/0iSW0o4Ft18WGZ4EcfQi+rzXncEPfMrLEiU91HI9WT2ojE4Q2Xh6AuQ6Q==
   dependencies:
-    "@cypress-audit/shared" "^1.3.1"
     pa11y "^6.2.3"
 
 "@cypress-audit/shared@^1.3.1":
