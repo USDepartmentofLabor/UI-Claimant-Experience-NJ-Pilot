@@ -144,7 +144,12 @@ export const EmployerReview = ({
         : t('your_employer.is_full_time.options.part_time')
       : null
   }
-
+  const importedAddrLastFilledLine =
+    employer.imported_address?.employerAddressLine5 ||
+    employer.imported_address?.employerAddressLine4 ||
+    employer.imported_address?.employerAddressLine3 ||
+    employer.imported_address?.employerAddressLine2 ||
+    employer.imported_address?.employerAddressLine1
   return (
     <>
       {!isFirstEmployer && <HorizontalRule />}
@@ -176,37 +181,32 @@ export const EmployerReview = ({
           label={t('your_employer.is_full_time.label')}
           value={buildFullTimeReviewAnswer(employer?.is_full_time)}
         />
-        <ReviewYesNo
-          label={
-            <Trans
-              t={t}
-              i18nKey="work_location.worked_at_employer_address.label"
-            >
-              {employer?.employer_address?.city}
-              {employer?.employer_address?.state}
-            </Trans>
-          }
-          value={
-            employer.is_imported
-              ? undefined
-              : employer?.worked_at_employer_address
-          }
-        />
-        <ReviewYesNo
-          label={
-            <Trans
-              t={t}
-              i18nKey="work_location.worked_at_employer_address.label_imported"
-            >
-              {employer?.imported_address?.employerAddressLine5}
-            </Trans>
-          }
-          value={
-            employer.is_imported
-              ? employer?.worked_at_employer_address
-              : undefined
-          }
-        />
+        {employer?.imported_address ? (
+          <ReviewYesNo
+            label={
+              <Trans
+                t={t}
+                i18nKey="work_location.worked_at_employer_address.label_imported"
+              >
+                {importedAddrLastFilledLine}
+              </Trans>
+            }
+            value={employer?.worked_at_employer_address}
+          />
+        ) : (
+          <ReviewYesNo
+            label={
+              <Trans
+                t={t}
+                i18nKey="work_location.worked_at_employer_address.label"
+              >
+                {employer?.employer_address?.city}
+                {employer?.employer_address?.state}
+              </Trans>
+            }
+            value={employer?.worked_at_employer_address}
+          />
+        )}
         <ReviewElement
           label={t('work_location.section_title')}
           value={buildAlternateEmployerAddress(
