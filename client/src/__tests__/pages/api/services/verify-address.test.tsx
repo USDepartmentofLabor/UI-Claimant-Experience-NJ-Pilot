@@ -3,7 +3,6 @@
  */
 import handler, { AccumailResponse } from 'pages/api/services/verify-address'
 import type { NextApiRequest, NextApiResponse } from 'next'
-jest.mock('next-auth/next')
 import { getServerSession } from 'next-auth/next'
 import { AddressInput } from '../../../../types/claimantInput'
 import { NO_ADDRESS_MATCH } from '../../../../constants/api/services/verifyAddress'
@@ -134,6 +133,7 @@ const mockGetNoAddressMatch = jest.fn().mockImplementation(() => ({
 
 const mockGetServerSession = getServerSession as jest.Mock
 const tokenValue = 'fakeToken'
+jest.mock('next-auth/next')
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
 describe('/api/services/verify-address API Endpoint', () => {
