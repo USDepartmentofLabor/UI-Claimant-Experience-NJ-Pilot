@@ -201,6 +201,7 @@ const claimForm = {
     },
     alien_registration_number: {
       label: 'USCIS / Alien registration number',
+      optional_label: 'USCIS / Alien registration number (optional)',
       hint: '<0>Need help finding it?</0> This is a 7-9 digit number, sometimes starting with “A”',
       modal: {
         heading:
@@ -540,6 +541,8 @@ const claimForm = {
       section_title: 'Work location',
       worked_at_employer_address: {
         label: 'Did you work in <0>City</0>, <1>State</1> for this employer?',
+        placeholder:
+          'Did you work in the above city and state for this employer?',
         required:
           "Please say whether you worked at the employer's address shown above",
       },
@@ -1167,17 +1170,31 @@ const claimForm = {
       'We received your application and are reviewing it to make sure you’re eligible for  payments.',
     id_verification_heading: 'Verify your identity on ID.me',
     id_verification_instructions:
-      'After submitting your application, go to ID.me and verify your identity. This helps us to make sure payments go to the right person.',
+      'After submitting your application, go to ID.me and <IdMeProcessLink>verify your identity</IdMeProcessLink>. This helps us to make sure payments go to the right person.',
     id_verification_requirements_lead: 'To verify your identity, you need:',
-    id_verification_requirements_list: [
-      'Your government-issued ID',
-      'A smartphone or computer with a camera to take and upload a photo of your ID Your Social Security Number',
+    id_verification_requirement_gov_id:
+      'Your <IdMeDocTypesLink>government-issued ID</IdMeDocTypesLink>',
+    id_verification_requirement_id_copy:
+      'A smartphone or computer with a camera to take and upload a photo of your ID',
+    id_verification_requirement_ssn: 'Your Social Security Number',
+    id_verification_requirement_sms:
       'A phone number where you can receive text messages',
-      'An email address',
-    ],
+    id_verification_requirement_email: 'An email address',
     id_verification_closing:
       'When verifying with ID.me, use the same email you used to apply for unemployment ({{email}}).',
     id_verification_button: 'Verify my identity',
+    expectations_heading: 'What to expect',
+    expect_comms_heading: 'Follow-up communication',
+    expect_comms:
+      'If we need more information from you we will email you or send you a letter in the mail. <strong>You must complete the forms or respond in a timely manner to receive payments. If you don’t respond, you may lose benefits.</strong>',
+    expect_certifying_heading: 'Certify your eligibility every week',
+    expect_certifying: `<p>Each week that you’re unemployed you need to <HowToCertifyLink>answer some questions in order to receive your unemployment insurance payments</HowToCertifyLink> for that week.</p>
+      <p>If your application is approved, you should start getting payments every week that you certify and remain eligible.</p>
+      <p><strong>Important: If you try to certify your eligibility and get an error saying your claim has expired, you may still have to complete your ID.me verification.</strong></p>`,
+    expect_certifying_button: 'Certify my eligibility',
+    privacy_heading: 'Data privacy and security',
+    privacy_statement: `<p>The information collected from your application for unemployment compensation is private data and cannot be released except when authorized by state or federal law, by a court order, or with your permission. The information you and/or your employer(s) provide may be used for New Jersey Department of Labor and Workforce Development purposes and may be used to provide income and eligibility verification between State Agencies administering programs under a plan approved under Title I, X, XIV, XVI as contained in Section 1137 (a)(6) of the Social Security Act. It may be shared with other state and/or federal agencies that determine eligibility for Medicaid, Food Stamps, Social Security, or other state and/or federal benefits and programs. Your Social Security Number will be validated with the Social Security Administration. If you are not a citizen of the United States, your work authorization in the United States will be verified with the Department of Homeland Security.</p>
+      <p>Precautions have been taken to ensure that the information provided by you in this application are kept private and secure. This online application uses a secure connection. Data submitted using this application is encrypted. You should be aware that by using a shared computer, others may be able to view your personal information.</p>`,
   },
 }
 

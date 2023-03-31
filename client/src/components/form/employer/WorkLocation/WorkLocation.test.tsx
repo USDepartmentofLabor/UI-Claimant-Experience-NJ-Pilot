@@ -17,7 +17,7 @@ describe('WorkLocation component', () => {
     const sectionTitle = screen.getByText('section_title')
 
     const workedAtEmployerAddressQuestion = screen.getByRole('group', {
-      name: 'worked_at_employer_address.label',
+      name: 'worked_at_employer_address.placeholder',
     })
     const workedAtEmployerAddressYesAnswer = within(
       workedAtEmployerAddressQuestion
