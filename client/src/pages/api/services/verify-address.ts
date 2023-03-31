@@ -59,12 +59,12 @@ export type AddressVerificationResponse = {
 /**
  * Check the user-entered address and use service to check if USPS provides potential corrections or a match
  * Method: GET
- * @param req.query
- * @param req.query.address
- * @param req.query.address2
- * @param req.query.city
- * @param req.query.state
- * @param req.query.zipcode
+ * @param req.query.AddressInput
+ * @field req.query.AddressInput.address
+ * @field req.query.AddressInput.address2
+ * @field req.query.AddressInput.city
+ * @field req.query.AddressInput.state
+ * @field req.query.AddressInput.zipcode
  */ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<AddressVerificationResponse | string>
@@ -74,9 +74,11 @@ export type AddressVerificationResponse = {
   if (!Object.keys(req.query).length)
     return res.status(400).send(NO_PARAMS_ERROR)
 
+  const accumailBaseURL = process.env.ACCUMAIL_URL || ''
+
   try {
     const accumailResponse = await axios.get<AccumailResponse>(
-      'http://la-clmusps-ha-s.njdol.ad.dol/AccumailRest/api/Address' +
+      accumailBaseURL +
         '?' +
         convertJSONAddressToURLParams(req.query as unknown as AddressInput)
     )
@@ -85,10 +87,7 @@ export type AddressVerificationResponse = {
         .status(200)
         .send(summarizeValidationAndCreateResponseObject(accumailResponse.data))
     } else {
-      return res.status(500).send({
-        address: ADDRESS_SKELETON,
-        validationSummary: NO_ACCUMAIL_RESPONSE,
-      })
+      return res.status(500).send(NO_ACCUMAIL_RESPONSE)
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -102,7 +101,7 @@ export type AddressVerificationResponse = {
 
 const summarizeValidationAndCreateResponseObject = (
   response: AccumailResponse
-): AddressVerificationResponse => {
+): AddressVerificationResponse | string => {
   if (
     response.resultCount === 1 &&
     '0' === response.result.validationDetails.lookupReturnCode
@@ -121,10 +120,7 @@ const summarizeValidationAndCreateResponseObject = (
     }
   }
   // No match or multiple matches
-  return {
-    address: ADDRESS_SKELETON,
-    validationSummary: NO_ADDRESS_MATCH,
-  }
+  return NO_ADDRESS_MATCH
 }
 
 const convertJSONAddressToURLParams = (

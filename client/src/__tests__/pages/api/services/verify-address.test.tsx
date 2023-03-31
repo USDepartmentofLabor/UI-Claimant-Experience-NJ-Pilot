@@ -11,6 +11,7 @@ import {
   NO_ACCUMAIL_RESPONSE,
   NO_ADDRESS_MATCH,
 } from '../../../../constants/api/services/verifyAddress'
+import axios from 'axios'
 
 const addressInput: AddressInput = {
   address: '1445 New York Ave',
@@ -122,9 +123,9 @@ const mockGetNoAddressMatch = jest.fn().mockImplementation(() => ({
 }))
 
 const mockGetServerSession = getServerSession as jest.Mock
-
 const tokenValue = 'fakeToken'
-
+jest.mock('axios')
+const mockedAxios = axios as jest.Mocked<typeof axios>
 describe('/api/services/verify-address API Endpoint', () => {
   function mockRequestResponse() {
     const req = {
@@ -153,7 +154,6 @@ describe('/api/services/verify-address API Endpoint', () => {
     } as unknown as NextApiResponse
     return { req, res }
   }
-
   function mockFailRequestResponse() {
     const req = {
       query: invalidAddressInput,
@@ -171,7 +171,6 @@ describe('/api/services/verify-address API Endpoint', () => {
     } as unknown as NextApiResponse
     return { req, res }
   }
-
   function mockEmptyParamsRequestResponse() {
     const req = {
       query: [],
@@ -191,17 +190,7 @@ describe('/api/services/verify-address API Endpoint', () => {
     mockGetServerSession.mockImplementation(() => ({
       accessToken: tokenValue,
     }))
-    jest.mock('axios', () => ({
-      ...jest.requireActual('axios'),
-      get: (url: string) => mockGetVerifiedAddress(url),
-      isAxiosError: () => {
-        return {
-          error: {
-            message: 'Error',
-          },
-        }
-      },
-    }))
+    mockedAxios.get.mockResolvedValueOnce(mockGetVerifiedAddress())
     const response = await handler(req, res)
     expect(response?.status).toBe(200)
   })
@@ -218,7 +207,8 @@ describe('/api/services/verify-address API Endpoint', () => {
     mockGetServerSession.mockImplementation(() => ({
       accessToken: tokenValue,
     }))
-    // intentionally skipping axios response mock to simulate no response from service
+    //axios response is intentionally empty to mock no response from service
+    mockedAxios.get.mockResolvedValueOnce('')
     const response = await handler(req, res)
     expect(response).toBe(500)
   })
@@ -238,30 +228,11 @@ describe('/api/services/verify-address API Endpoint', () => {
     mockGetServerSession.mockImplementation(() => ({
       accessToken: tokenValue,
     }))
-    jest.mock('axios', () => ({
-      ...jest.requireActual('axios'),
-      get: (url: string) => mockGetNoAddressMatch(url),
-      isAxiosError: () => {
-        return {
-          error: {
-            message: 'Error',
-          },
-        }
-      },
-    }))
+    mockedAxios.get.mockResolvedValueOnce(mockGetNoAddressMatch())
     const response = await handler(req, res)
     //expect empty address and NO_ADDRESS_MATCH
     expect(response).toStrictEqual({
-      response: {
-        address: {
-          address: '',
-          address2: '',
-          city: '',
-          state: '',
-          zipcode: '',
-        },
-        validationSummary: 'Could not match address',
-      },
+      response: NO_ADDRESS_MATCH,
       status: 200,
     })
   })
