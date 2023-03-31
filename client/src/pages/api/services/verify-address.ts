@@ -6,7 +6,6 @@ import { AddressInput } from '../../../types/claimantInput'
 import { ADDRESS_SKELETON } from '../../../constants/initialValues'
 import {
   CORRECTED_ADDRESS,
-  NO_ACCUMAIL_RESPONSE,
   NO_ADDRESS_MATCH,
   NO_PARAMS_ERROR,
   NO_SESSION_ERROR,
@@ -82,13 +81,9 @@ export type AddressVerificationResponse = {
         '?' +
         convertJSONAddressToURLParams(req.query as unknown as AddressInput)
     )
-    if (accumailResponse.data && accumailResponse.data.success) {
-      return res
-        .status(200)
-        .send(summarizeValidationAndCreateResponseObject(accumailResponse.data))
-    } else {
-      return res.status(500).send(NO_ACCUMAIL_RESPONSE)
-    }
+    return res
+      .status(200)
+      .send(summarizeValidationAndCreateResponseObject(accumailResponse.data))
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return res

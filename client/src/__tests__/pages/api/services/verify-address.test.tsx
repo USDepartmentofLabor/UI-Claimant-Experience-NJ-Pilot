@@ -6,11 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 jest.mock('next-auth/next')
 import { getServerSession } from 'next-auth/next'
 import { AddressInput } from '../../../../types/claimantInput'
-import { ADDRESS_SKELETON } from '../../../../constants/initialValues'
-import {
-  NO_ACCUMAIL_RESPONSE,
-  NO_ADDRESS_MATCH,
-} from '../../../../constants/api/services/verifyAddress'
+import { NO_ADDRESS_MATCH } from '../../../../constants/api/services/verifyAddress'
 import axios from 'axios'
 
 const addressInput: AddressInput = {
@@ -174,15 +170,9 @@ describe('/api/services/verify-address API Endpoint', () => {
       setHeader: jest.fn(),
     } as unknown as NextApiRequest
     const res = {
-      data: {
-        address: ADDRESS_SKELETON,
-        verificationSummary: NO_ACCUMAIL_RESPONSE,
-      },
-      status: () => ({
-        send: () => 500,
-      }),
+      status: () => 500,
       setHeader: jest.fn(),
-    } as unknown as NextApiResponse
+    }
     return { req, res }
   }
   function mockEmptyParamsRequestResponse() {
@@ -217,12 +207,12 @@ describe('/api/services/verify-address API Endpoint', () => {
     expect(response?.status).toBe(401)
   })
 
-  it('should error out if no response from server', async () => {
+  it('should error out if response is empty', async () => {
     const { req, res } = mockFailRequestResponse()
     mockGetServerSession.mockImplementation(() => ({
       accessToken: tokenValue,
     }))
-    //axios response is intentionally empty to mock no response from service
+    //axios response is intentionally empty to mock empty response from service
     mockedAxios.get.mockResolvedValueOnce('')
     const response = await handler(req, res)
     expect(response).toBe(500)
