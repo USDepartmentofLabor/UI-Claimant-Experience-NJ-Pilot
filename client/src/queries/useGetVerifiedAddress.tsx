@@ -1,7 +1,6 @@
 import { useQuery } from 'react-query'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { AddressInput } from '../types/claimantInput'
-import { add } from 'unload'
 
 const getVerifiedAddress = async (address: AddressInput | undefined) => {
   return await axios.get('/api/services/verify-address?' + address)

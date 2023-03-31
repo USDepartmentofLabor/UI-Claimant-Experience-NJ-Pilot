@@ -27,9 +27,23 @@ const invalidAddressInput: AddressInput = {
   state: 'DC',
   zipcode: '20500',
 }
-const verifiedAddress = {
+const verifiableAddress = {
   address: addressInput,
   validationSummary: '',
+}
+
+const correctedVerifiableAddress = {
+  status: 200,
+  response: {
+    address: {
+      address: '1445 NEW YORK AVE NW',
+      address2: '',
+      city: 'WASHINGTON',
+      state: 'DC',
+      zipcode: '20005-2134',
+    },
+    validationSummary: 'Corrections applied',
+  },
 }
 
 const accumailResponse = {
@@ -133,7 +147,7 @@ describe('/api/services/verify-address API Endpoint', () => {
       setHeader: jest.fn(),
     } as unknown as NextApiRequest
     const res = {
-      json: verifiedAddress,
+      json: verifiableAddress,
       status: (status: number) => ({
         send: (response: AccumailResponse) => ({ status, response }),
       }),
@@ -193,6 +207,7 @@ describe('/api/services/verify-address API Endpoint', () => {
     mockedAxios.get.mockResolvedValueOnce(mockGetVerifiedAddress())
     const response = await handler(req, res)
     expect(response?.status).toBe(200)
+    expect(response).toStrictEqual(correctedVerifiableAddress)
   })
 
   it('should error out without a user session', async () => {
