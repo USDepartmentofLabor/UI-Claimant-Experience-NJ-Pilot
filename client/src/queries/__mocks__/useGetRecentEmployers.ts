@@ -47,7 +47,7 @@ const wgpmEmployerData: WgpmEmployer[] = [
     employerAddressLine1: 'DIRECT FUTURE MAIL',
     employerAddressLine2: 'C/O TALX UC EXPRESS',
     employerAddressLine3: 'P O BOX 6001',
-    employerAddressLine4: 'PEABODY MA',
+    employerAddressLine4: 'ST LOUIS MA',
     employerAddressLine5: null,
     employerAddressZip: '01961',
     employerTelephoneNumber: '6144151035',

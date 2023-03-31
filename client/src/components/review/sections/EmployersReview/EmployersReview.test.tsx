@@ -48,6 +48,9 @@ describe('EmployerReview component', () => {
     const workedAtAddress = screen.queryAllByRole('group', {
       name: 'work_location.worked_at_employer_address.label',
     })
+    const workedAtImportedAddress = screen.queryAllByRole('group', {
+      name: 'work_location.worked_at_employer_address.label_imported',
+    })
     const altAddress = screen.queryAllByRole('group', {
       name: 'work_location.section_title',
     })
@@ -137,6 +140,7 @@ describe('EmployerReview component', () => {
       fein,
       isFullTimePartTime,
       workedAtAddress,
+      workedAtImportedAddress,
       altAddress,
       accuratePhoneNumber,
       altPhone,
@@ -208,7 +212,7 @@ describe('EmployerReview component', () => {
       phoneNumber,
       fein,
       isFullTimePartTime,
-      workedAtAddress,
+      workedAtImportedAddress,
       altAddress,
       accuratePhoneNumber,
       altPhone,
@@ -243,7 +247,7 @@ describe('EmployerReview component', () => {
       'your_employer.is_full_time.options.full_time'
     )
     //work location
-    expect(workedAtAddress[0]).toHaveTextContent('yes')
+    expect(workedAtImportedAddress[0]).toHaveTextContent('yes')
     expect(altAddress.length).toBe(0)
     expect(accuratePhoneNumber[0]).toHaveTextContent('yes')
     expect(altPhone.length).toBe(0)
@@ -290,8 +294,8 @@ describe('EmployerReview component', () => {
             employerAddressLine1: 'Building 1',
             employerAddressLine2: ' Really long name',
             employerAddressLine3: '123 main street',
-            employerAddressLine4: null,
-            employerAddressLine5: 'Smallville, KS',
+            employerAddressLine4: 'Smallville, KS',
+            employerAddressLine5: null,
             employerAddressZip: '12345',
           } as ImportedEmployerAddress,
           worked_for_imported_employer_in_last_18mo: true,
@@ -318,10 +322,14 @@ describe('EmployerReview component', () => {
       ],
     }
 
-    const { workedAtAddress, altAddress, accuratePhoneNumber, altPhone } =
-      renderEmployerReview(values)
+    const {
+      workedAtImportedAddress,
+      altAddress,
+      accuratePhoneNumber,
+      altPhone,
+    } = renderEmployerReview(values)
     //work location
-    expect(workedAtAddress[0]).toHaveTextContent('no')
+    expect(workedAtImportedAddress[0]).toHaveTextContent('no')
     expect(altAddress[0]).toHaveTextContent(
       `${values.employers[0].alternate_physical_work_address.city}, ${values.employers[0].alternate_physical_work_address.state} ${values.employers[0].alternate_physical_work_address.zipcode}`
     )
