@@ -170,14 +170,16 @@ describe('Recent employers page', () => {
     expect(screen.getByTestId('page-loading')).toBeInTheDocument()
   })
 
-  it('shows error when api call fails', async () => {
+  it('shows wgpm warning box when api call fails with generic server error', async () => {
     renderRecentEmployers({
       isLoading: false,
       isError: true,
       error: { response: { status: 500 } },
       data: [],
     })
-    expect(screen.getByText('errorStatus.500.')).toBeInTheDocument()
+    expect(
+      screen.queryByText('recent_employers.employer_retrieval_warning.heading')
+    ).toBeInTheDocument()
   })
 
   it('redirects to ssn on 400 error', async () => {
