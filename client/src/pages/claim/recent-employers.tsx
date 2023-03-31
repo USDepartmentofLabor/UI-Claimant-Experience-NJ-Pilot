@@ -39,6 +39,7 @@ import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
 import { Employer } from 'types/claimantInput'
 import { useRouter } from 'next/router'
+import { ErrorScroller } from 'hooks/useScrollToFirstError/useScrollToFirstError'
 const pageDefinition = RecentEmployersPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
@@ -168,7 +169,10 @@ export const RecentEmployers: NextPageWithLayout = () => {
             return (
               <Form className={styles.claimForm}>
                 {showErrorSummary && (
-                  <FormErrorSummary key={submitCount} errors={errors} />
+                  <>
+                    <ErrorScroller />
+                    <FormErrorSummary key={submitCount} errors={errors} />
+                  </>
                 )}
                 {isRecentEmployerServerError && (
                   <Alert
@@ -198,7 +202,7 @@ export const RecentEmployers: NextPageWithLayout = () => {
                       return (
                         <div key={index}>
                           <YesNoQuestion
-                            name={`recent_employers[${index}].worked_for_imported_employer_in_last_18mo`}
+                            name={`recent_employers.${index}.worked_for_imported_employer_in_last_18mo`}
                             question={
                               <>
                                 <span className="screen-reader-only">
