@@ -42,7 +42,6 @@ describe('use get verified address', () => {
       wrapper,
     })
     await waitFor(() => expect(result.current.isSuccess).toEqual(true))
-    expect(result.current.isSuccess).toBeTruthy()
     expect(mockAxiosGet).toHaveBeenCalledTimes(0)
     expect(result.current.data).not.toEqual(getData)
     const refetchResult = await result.current.refetch()
