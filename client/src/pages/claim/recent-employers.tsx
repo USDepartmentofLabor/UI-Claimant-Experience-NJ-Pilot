@@ -38,7 +38,6 @@ import { ClaimFormContext } from 'contexts/ClaimFormContext'
 import { useSaveClaimFormValues } from 'hooks/useSaveClaimFormValues'
 import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
 import { Employer } from 'types/claimantInput'
-import Error from 'next/error'
 import { useRouter } from 'next/router'
 const pageDefinition = RecentEmployersPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -53,7 +52,6 @@ type RecentEmployerValues = {
 // TODO: Prevent claimant from using the same FEIN on multiple employers
 export const RecentEmployers: NextPageWithLayout = () => {
   const { t } = useTranslation('claimForm')
-  const { t: tCommon } = useTranslation('common')
   const router = useRouter()
   const headingRef = useRef<HTMLHeadingElement>(null)
   const { claimFormValues } = useContext(ClaimFormContext)
@@ -103,11 +101,6 @@ export const RecentEmployers: NextPageWithLayout = () => {
   ) {
     router.push(Routes.SSN)
     return null
-  } else if (
-    isRecentEmployersError &&
-    recentEmployerError?.response?.status !== 503
-  ) {
-    return <Error title={tCommon('errorStatus.500')} statusCode={500} />
   } else {
     const calculateInitialValues = (): RecentEmployerValues => {
       const transformedWgpmEmployers =
@@ -166,16 +159,18 @@ export const RecentEmployers: NextPageWithLayout = () => {
               submitCount > 0 && Object.keys(errors).length > 0
 
             const hasRecentEmployers = values.recent_employers.length !== 0
-            const showWarning = isRecentEmployersError
-              ? recentEmployerError?.response?.status === 503
-              : false
+            const isRecentEmployerServerError =
+              isRecentEmployersError &&
+              recentEmployerError?.response?.status &&
+              recentEmployerError?.response?.status >= 500 &&
+              recentEmployerError?.response?.status < 600
 
             return (
               <Form className={styles.claimForm}>
                 {showErrorSummary && (
                   <FormErrorSummary key={submitCount} errors={errors} />
                 )}
-                {showWarning && (
+                {isRecentEmployerServerError && (
                   <Alert
                     type="warning"
                     heading={t(
