@@ -34,7 +34,7 @@ const importedEmployer: Employer = {
   employment_start_date: '2021-12-12',
   imported_address: {
     employerAddressLine1: '1 John Fitch Plaza',
-    employerAddressLine2: ' Trenton NJ',
+    employerAddressLine2: 'Trenton NJ',
     employerAddressLine3: null,
     employerAddressLine4: null,
     employerAddressLine5: null,

@@ -4,7 +4,6 @@ import {
   findFirstImportedEmployerIndex,
   formatFein,
   mergeEmployers,
-  parseCityAndStateFromImportedAddress,
   transformWgpmEmployer,
 } from 'utils/employer/employerUtils'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
@@ -193,110 +192,6 @@ describe('employerUtils', () => {
       const result = transformWgpmEmployer(wgpmEmployer)
       expect(result).toEqual(expectedResult)
     })
-  })
-
-  describe('parseCityAndStateFromImportedAddress', () => {
-    it.each([
-      {
-        employerAddressLine1: 'line1',
-        employerAddressLine2: 'line2',
-        employerAddressLine3: 'line3',
-        employerAddressLine4: 'line4',
-        employerAddressLine5: 'CITY ST',
-        employerAddressZip: '12345',
-      },
-      {
-        employerAddressLine1: 'line1',
-        employerAddressLine2: 'line2',
-        employerAddressLine3: 'line3',
-        employerAddressLine5: 'CITY ST',
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      },
-      {
-        employerAddressLine1: 'line1',
-        employerAddressLine2: 'line2',
-        employerAddressLine3: 'CITY ST',
-        employerAddressLine5: null,
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      },
-      {
-        employerAddressLine1: 'line1',
-        employerAddressLine2: 'CITY ST',
-        employerAddressLine3: null,
-        employerAddressLine5: null,
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      },
-      {
-        employerAddressLine1: 'CITY ST',
-        employerAddressLine2: null,
-        employerAddressLine3: null,
-        employerAddressLine5: null,
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      },
-    ])(
-      'parses the city and state from the last filled line',
-      (importedAddress) => {
-        const { city, state } =
-          parseCityAndStateFromImportedAddress(importedAddress)
-
-        expect(city).toEqual('CITY')
-        expect(state).toEqual('ST')
-      }
-    )
-
-    it('parses the city and state with a comma', () => {
-      const { city, state } = parseCityAndStateFromImportedAddress({
-        employerAddressLine1: 'line1',
-        employerAddressLine2: 'CITY, ST',
-        employerAddressLine3: null,
-        employerAddressLine5: null,
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      })
-
-      expect(city).toEqual('CITY')
-      expect(state).toEqual('ST')
-    })
-
-    it.each([
-      {
-        employerAddressLine1: 'line1',
-        employerAddressLine2: 'line2',
-        employerAddressLine3: null,
-        employerAddressLine5: null,
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      },
-      {
-        employerAddressLine1: 'line1',
-        employerAddressLine2: 'CityST',
-        employerAddressLine3: null,
-        employerAddressLine5: null,
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      },
-      {
-        employerAddressLine1: null,
-        employerAddressLine2: null,
-        employerAddressLine3: null,
-        employerAddressLine5: null,
-        employerAddressLine4: null,
-        employerAddressZip: '12345',
-      },
-    ])(
-      'returns undefined values when city and state are not defined in the imported address and/or cannot be parsed',
-      (importedAddress) => {
-        const { city, state } =
-          parseCityAndStateFromImportedAddress(importedAddress)
-
-        expect(city).toBeUndefined()
-        expect(state).toBeUndefined()
-      }
-    )
   })
 
   describe('findEmployerByFein', () => {

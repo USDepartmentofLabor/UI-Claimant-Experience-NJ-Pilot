@@ -189,4 +189,29 @@ describe('WorkLocation component', () => {
     expect(workLocationPhoneReturned).toBeInTheDocument()
     expect(workLocationPhoneReturned).toHaveValue('')
   })
+
+  it('work location address text changes with imported employer', () => {
+    const importedImployer = {
+      imported_address: {
+        employerAddressLine1: '1 John Fitch Plaza',
+        employerAddressLine2: 'Trenton NJ',
+        employerAddressLine3: null,
+        employerAddressLine4: null,
+        employerAddressLine5: null,
+        employerAddressZip: '11111',
+      },
+      is_imported: true,
+    }
+    render(
+      <Formik initialValues={importedImployer} onSubmit={noop}>
+        <WorkLocation />
+      </Formik>
+    )
+
+    expect(
+      screen.getByRole('group', {
+        name: 'worked_at_employer_address.label_imported',
+      })
+    ).toBeInTheDocument()
+  })
 })

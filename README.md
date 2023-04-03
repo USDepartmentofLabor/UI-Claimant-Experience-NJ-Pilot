@@ -257,6 +257,11 @@ To use the swagger user interface `/intake-api/swagger-ui.html`
 
 To view the JSON-formatted api documentation, navigate to `/intake-api/v3/api-docs`
 
+## Makefile
+
+Run `make` or `make help` to see the available `make` commands we use with this
+repository.
+
 ## Docker setup
 
 To run the application locally in docker, use:
@@ -375,15 +380,22 @@ make docker-up
 
 You can now visit the application at https://sandbox-claimant-intake:8443.
 
+### Wiremock
+
+Locally, some API endpoints are not available, or it is not desired to make external requests for certain endpoints (e.g. Wage record).
+For those instances, [Wiremock](https://wiremock.org/) is available for stubbing external API endpoints.
+
+This project [runs Wiremock in a docker container](https://wiremock.org/docs/docker/) when invoking `make docker-services-up`.
+
+API requests made by the application running locally are intercepted by Wiremock, and (provided a matching [JSON stub](https://wiremock.org/docs/stubbing/)),
+specific responses can be returned.
+
+See [wiremock/mappings](./wiremock/mappings/) for the JSON mappings stored and shared in version control.
+
 ## CI/CD
 
 See [CI/CD Configurations](./docs/cicd-deployments.md) for an overview of the
 application's approach to CI/CD.
-
-## Makefile
-
-Run `make` or `make help` to see the available `make` commands we use with this
-repository.
 
 ## Testing
 
