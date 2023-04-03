@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form, Formik } from 'formik'
 import { FormErrorSummary } from 'components/form/FormErrorSummary/FormErrorSummary'
@@ -39,6 +39,10 @@ describe('useScrollToFirstError', () => {
       </Formik>
     )
 
+  afterEach(() => {
+    scrollIntoViewMock.mockClear()
+  })
+
   it('Does not scroll if there are no errors', () => {
     renderScrollToFirstError('firstName')
     expect(scrollIntoViewMock).not.toBeCalled()
@@ -52,11 +56,10 @@ describe('useScrollToFirstError', () => {
     const errorSummary = await screen.findByTestId('form-error-summary')
 
     expect(errorSummary).toHaveTextContent('validation_alert')
-    expect(scrollIntoViewMock).toHaveBeenCalled()
+    await waitFor(() => expect(scrollIntoViewMock).toHaveBeenCalled())
   })
 
   it('Does not scroll if there is no element found', async () => {
-    scrollIntoViewMock.mockReset()
     const user = userEvent.setup()
     renderScrollToFirstError('wrongFieldName')
     const submitButton = screen.getByRole('button', { name: 'Submit' })
