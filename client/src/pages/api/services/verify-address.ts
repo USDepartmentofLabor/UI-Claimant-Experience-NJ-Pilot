@@ -11,49 +11,11 @@ import {
   NO_SESSION_ERROR,
   VALID_ADDRESS,
 } from '../../../constants/api/services/verifyAddress'
-
-export type AccumailResponse = {
-  success: boolean
-  message: string
-  errorCount: number
-  errors: string
-  failCount: number
-  resultCount: number
-  result: {
-    destinationAddress: {
-      company: string
-      street: string
-      street2: string
-      street3: string
-      suite: string
-      urbanization: string
-      city: string
-      state: string
-      zip: string
-      zipPlusFour: string
-      zip9: string
-    }
-    validationDetails: {
-      lookupReturnCode: string
-      lookupReturnDescription: string
-      dpv: string
-      dpvDescription: string
-      dpvFootNotes: string
-      lacs: string
-      corrections: string
-      correctionsText: string
-      leftOvers: string
-      recordType: string
-      isRuralRouteDefault: string
-      isHighriseDefault: string
-    }
-  }
-}
-
-export type AddressVerificationResponse = {
-  address: AddressInput
-  validationSummary: string
-}
+import {
+  Accumail,
+  AccumailResponse,
+  AddressVerificationResponse,
+} from '../../../services/Accumail'
 
 /**
  * Check the user-entered address and use service to check if USPS provides potential corrections or a match
@@ -73,17 +35,15 @@ export type AddressVerificationResponse = {
   if (!Object.keys(req.query).length)
     return res.status(400).send(NO_PARAMS_ERROR)
 
-  const accumailBaseURL = process.env.ACCUMAIL_URL || ''
+  const accumail = new Accumail({
+    baseUrl: process.env.ACCUMAIL_URL as string,
+  })
 
   try {
-    const accumailResponse = await axios.get<AccumailResponse>(
-      accumailBaseURL +
-        '?' +
-        convertJSONAddressToURLParams(req.query as unknown as AddressInput)
+    const verifiedAddressResponse = await accumail.getVerifiedAddress(
+      req.query as unknown as AddressInput
     )
-    return res
-      .status(200)
-      .send(summarizeValidationAndCreateResponseObject(accumailResponse.data))
+    res.status(200).json(verifiedAddressResponse)
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return res
@@ -92,51 +52,4 @@ export type AddressVerificationResponse = {
     }
     return res.status(400)
   }
-}
-
-const summarizeValidationAndCreateResponseObject = (
-  response: AccumailResponse
-): AddressVerificationResponse | string => {
-  if (
-    response.resultCount === 1 &&
-    '0' === response.result.validationDetails.lookupReturnCode
-  ) {
-    if (response.result.validationDetails.corrections.length === 0) {
-      // one match that required no corrections found
-      return {
-        address: parseResponseAddress(response),
-        validationSummary: VALID_ADDRESS,
-      }
-    }
-    // single match found after applying corrections
-    return {
-      address: parseResponseAddress(response),
-      validationSummary: CORRECTED_ADDRESS,
-    }
-  }
-  // No match or multiple matches
-  return NO_ADDRESS_MATCH
-}
-
-const convertJSONAddressToURLParams = (
-  params: AddressInput | undefined
-): string => {
-  let urlParams = new URLSearchParams(params).toString()
-  urlParams = urlParams.replace('address', 'street')
-  urlParams = urlParams.replace('address2', 'street2')
-  urlParams = urlParams.replace('zipcode', 'zip')
-  return urlParams
-}
-const parseResponseAddress = (response: AccumailResponse): AddressInput => {
-  const convertedAddress = ADDRESS_SKELETON
-  convertedAddress.address = response.result.destinationAddress.street
-  convertedAddress.address2 = response.result.destinationAddress.street2
-  convertedAddress.city = response.result.destinationAddress.city
-  convertedAddress.state = response.result.destinationAddress.state
-  if (response.result.destinationAddress.zipPlusFour) {
-    convertedAddress.zipcode = response.result.destinationAddress.zip9
-  } else {
-    convertedAddress.zipcode = response.result.destinationAddress.zip
-  }
-  return convertedAddress
 }
