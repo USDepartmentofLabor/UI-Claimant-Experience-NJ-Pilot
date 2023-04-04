@@ -13,6 +13,7 @@ import {
   Accumail,
   AddressVerificationResponse,
 } from '../../../../services/Accumail'
+import { AxiosError, AxiosResponse } from 'axios'
 
 const addressInput: AddressInput = {
   address: '1445 New York Ave',
@@ -97,7 +98,26 @@ describe('/api/services/verify-address API Endpoint', () => {
       .spyOn(Accumail.prototype, 'getVerifiedAddress')
       .mockRejectedValue(new Error('error'))
     await handler(req, res)
-    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.status).toHaveBeenCalledWith(500)
+  })
+
+  it('responds with the Accumail error response status and message', async () => {
+    const req = mockRequest(addressInput)
+    const res = mockResponse()
+
+    mockLoggedInSession()
+
+    jest.spyOn(Accumail.prototype, 'getVerifiedAddress').mockRejectedValue(
+      new AxiosError('Mocked error', '400', undefined, undefined, {
+        status: 400,
+        data: 'Mocked error response body',
+      } as AxiosResponse)
+    )
+
+    await handler(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(500)
+    expect(res.send).toHaveBeenCalledWith('Internal Server Error')
   })
 
   it('should error if no params', async () => {
@@ -111,7 +131,7 @@ describe('/api/services/verify-address API Endpoint', () => {
     expect(res.status).toHaveBeenCalledWith(400)
   })
 
-  it('should error if given request cannot be verified', async () => {
+  it('should return NO_ADDRESS_MATCH if given request cannot be verified', async () => {
     const req = mockRequest(invalidAddressInput)
     const res = mockResponse()
     mockLoggedInSession()
@@ -119,7 +139,7 @@ describe('/api/services/verify-address API Endpoint', () => {
       .spyOn(Accumail.prototype, 'getVerifiedAddress')
       .mockResolvedValue(NO_ADDRESS_MATCH)
     await handler(req, res)
-    //expect empty address and NO_ADDRESS_MATCH
     expect(res.status).toHaveBeenCalledWith(200)
+    expect(res.json).toHaveBeenCalledWith(NO_ADDRESS_MATCH)
   })
 })

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
-import axios from 'axios'
+import { isAxiosError } from 'axios'
 import { AddressInput } from '../../../types/claimantInput'
 import {
   NO_PARAMS_ERROR,
@@ -40,11 +40,11 @@ import {
     )
     res.status(200).json(verifiedAddressResponse)
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      return res
-        .status(error.response?.status || 500)
-        .send(error.response?.data || error.message)
-    }
-    return res.status(400)
+    const status = isAxiosError(error) ? error.response?.status : undefined
+    const message = isAxiosError(error)
+      ? error.response?.data
+      : 'Internal Server Error'
+
+    return res.status(status ?? 500).send(message)
   }
 }

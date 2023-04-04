@@ -25,6 +25,13 @@ const validAddressInput: AddressInput = {
   state: 'DC',
   zipcode: '20005-2134',
 }
+const validFiveDigitZipAddressInput: AddressInput = {
+  address: '123 SESAME ST W',
+  address2: '',
+  city: 'NEW YORK',
+  state: 'NY',
+  zipcode: '12345',
+}
 const unmatchableAddress: AddressInput = {
   address: 'nowhere',
   address2: '',
@@ -153,6 +160,45 @@ const unmatchableAddressAccumailResponse = {
     },
   },
 }
+const validFiveDigitZipAddressAccumailResponse = {
+  data: {
+    success: true,
+    message: 'Succeeded',
+    errorCount: 0,
+    errors: '',
+    failCount: 0,
+    resultCount: 1,
+    result: {
+      destinationAddress: {
+        company: '',
+        street: '123 SESAME ST W',
+        street2: '',
+        street3: '',
+        suite: '',
+        urbanization: '',
+        city: 'NEW YORK',
+        state: 'NY',
+        zip: '12345',
+        zipPlusFour: '',
+        zip9: '',
+      },
+      validationDetails: {
+        lookupReturnCode: '0',
+        lookupReturnDescription: 'The address has been successfully coded.',
+        dpv: '',
+        dpvDescription: '',
+        dpvFootNotes: '',
+        lacs: '',
+        corrections: '',
+        correctionsText: '',
+        leftOvers: '',
+        recordType: 'H',
+        isRuralRouteDefault: 'N',
+        isHighriseDefault: 'Y',
+      },
+    },
+  },
+}
 describe('Accumail', () => {
   it('receives a valid address response from Accumail', async () => {
     const accumail = new Accumail({
@@ -198,5 +244,23 @@ describe('Accumail', () => {
     )
 
     expect(responseFromAccumail).toContain(NO_ADDRESS_MATCH)
+  })
+
+  it('a valid address with a zip code with containing only five digits is parsed correctly', async () => {
+    const accumail = new Accumail({
+      baseUrl: 'https://mock.example.com/',
+    })
+
+    mockedAxios.get.mockResolvedValueOnce(
+      validFiveDigitZipAddressAccumailResponse
+    )
+
+    const responseFromAccumail = await accumail.getVerifiedAddress(
+      validFiveDigitZipAddressInput
+    )
+    expect(responseFromAccumail).toEqual({
+      address: validFiveDigitZipAddressInput,
+      validationSummary: VALID_ADDRESS,
+    })
   })
 })
