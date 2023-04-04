@@ -13,52 +13,66 @@ import { useShowErrors } from 'hooks/useShowErrors'
 import { useFocusFirstError } from 'hooks/useFocusFirstError'
 
 import styles from './AddressVerificationField.module.scss'
-
-interface IAddressOption {
-  label: ReactNode
-  value: string
-  address: AddressInput
-}
+import { useGetVerifiedAddress } from 'queries/useGetVerifiedAddress'
+import { ADDRESS_SKELETON } from 'constants/initialValues'
+import { useTranslation } from 'next-i18next'
 
 type RadioInputProps = Optional<
   Omit<ComponentProps<typeof Radio>, 'label' | 'value'>,
   'id'
 >
 
+type ChangeAddressfunction = (address: AddressInput) => AddressInput
+
 interface IAddressVerificationFieldProps extends RadioInputProps {
-  options: IAddressOption[]
+  address: AddressInput
   errorMessage?: string
   showsErrors?: boolean
   legend?: ReactNode
   fieldsetClassName?: string
   hint?: ReactNode
+  changeAddress: ChangeAddressfunction
 }
 
 export const AddressVerificationField = ({
-  id: idProp,
-  options,
-  onChange,
+  address,
+  changeAddress,
   legend,
   fieldsetClassName,
   errorMessage,
   showsErrors = true,
   hint,
+  name,
   ...inputProps
 }: IAddressVerificationFieldProps & JSX.IntrinsicElements['input']) => {
-  const [fieldProps, metaProps] = useField(inputProps.name)
-  const showError = showsErrors && useShowErrors(inputProps.name)
+  const { t } = useTranslation('claimForm')
+  const [fieldProps, metaProps] = useField(name)
+  const showError = showsErrors && useShowErrors(name)
   const radioRef = useRef<HTMLInputElement>(null)
+  const verifiedAddressData = useGetVerifiedAddress(address)
 
   useFocusFirstError(metaProps.error, radioRef)
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    fieldProps.onChange(e)
-    if (onChange) {
-      onChange(e)
-    }
-  }
+  const options = [
+    {
+      label: 'address_verification.entered',
+      address,
+      value: 'AS_ENTERED',
+    },
+    {
+      label: 'address_verification.verified',
+      address: verifiedAddressData?.data?.data?.address ?? ADDRESS_SKELETON,
+      value: 'AS_VERIFIED',
+    },
+  ]
 
-  const id = idProp || inputProps.name
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value
+    const addressValue = value === 'AS_VERIFIED' ? options[1] : options[0]
+
+    fieldProps.onChange(e)
+    changeAddress?.(addressValue.address)
+  }
 
   return (
     <FormGroup error={showError}>
@@ -70,22 +84,19 @@ export const AddressVerificationField = ({
         onInvalid={(e) => e.preventDefault()}
       >
         {hint && (
-          <span className="usa-hint" id={`${inputProps.name}.hint`}>
+          <span className="usa-hint" id={`${name}.hint`}>
             {hint}
           </span>
         )}
         {showError && (
           <ErrorMessage>{errorMessage || metaProps.error}</ErrorMessage>
         )}
+
         {options.map((option, index) => {
           const label = (
-            <div className={`address-verification-label`}>
-              <div
-                className={`address-verification-description margin-bottom-1`}
-              >
-                {option.label}
-              </div>
-              <div className={`address-verification-address`}>
+            <div>
+              <div className={`margin-bottom-1`}>{t(option.label)}</div>
+              <div>
                 <div>{option.address.address}</div>
                 <div>
                   {option.address.city}, {option.address.state}{' '}
@@ -95,29 +106,21 @@ export const AddressVerificationField = ({
             </div>
           )
 
-          const containerClass =
-            fieldProps?.value === option.value
-              ? `border-primary bg-primary-lighter`
-              : ``
-
           return (
-            <div
-              className={`address-verification-option border-width-2px border margin-top-1 radius-sm ${containerClass}`}
-              key={`${id}.${index}.${option.value}`}
-            >
-              <Radio
-                {...fieldProps}
-                id={`${id}.${option.value}`}
-                data-testid={`${id}.${option.value}`}
-                label={label}
-                value={option.value}
-                checked={metaProps.value === option.value}
-                onChange={handleChange}
-                className={`padding-1 padding-top-0`}
-                {...inputProps}
-                inputRef={index === 0 ? radioRef : undefined}
-              />
-            </div>
+            <Radio
+              {...fieldProps}
+              name={name}
+              id={`${name}.${option.value}`}
+              data-testid={`${name}.${option.value}`}
+              key={`${option.value}.${index}`}
+              label={label}
+              value={option.value}
+              checked={metaProps.value === option.value}
+              onChange={handleChange}
+              inputRef={index === 0 ? radioRef : undefined}
+              tile={true}
+              {...inputProps}
+            />
           )
         })}
       </Fieldset>

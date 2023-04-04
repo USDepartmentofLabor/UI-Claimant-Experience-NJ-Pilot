@@ -66,6 +66,14 @@ const claimForm = {
       label: 'Mailing address',
     },
   },
+  address_verification: {
+    entered: 'You entered',
+    verified: 'U.S. Postal recommends',
+    legend: {
+      mailing: 'Which address do you want to use for your mailing address?',
+      residence: 'Which address do you want to use for your residence address?',
+    },
+  },
   demographics: {
     heading: 'Demographics',
     preamble:

@@ -1,6 +1,6 @@
-import { AddressVerificationInput } from 'types/claimantInput'
+import { AddressInput, AddressVerificationInput } from 'types/claimantInput'
 import { NextPageWithLayout } from 'pages/_app'
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { AddressVerificationPageDefinition } from 'constants/pages/definitions/addressVerificationPageDefinition'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
@@ -14,6 +14,8 @@ import {
 } from 'constants/pages/pageDefinitions'
 import { ADDRESS_SKELETON } from 'constants/initialValues'
 import { AddressVerificationField } from 'components/form/fields/AddressVerificationField/AddressVerificationField'
+import { ClaimFormContext } from 'contexts/ClaimFormContext'
+import { useTranslation } from 'next-i18next'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -25,31 +27,49 @@ export const pageInitialValues = {
   mailing_address: { ...ADDRESS_SKELETON },
 }
 
-const MAILING_ADDRESS_OPTIONS = [
-  {
-    label: 'You entered:',
-    address: {
-      address: '123 Test St',
-      city: 'Hoboken',
-      state: 'NJ',
-      zipcode: '01833',
-    },
-    value: 'as-entered',
-  },
-  {
-    label: 'U.S. Postal Service recommends:',
-    address: {
-      address: '1234 Test St',
-      city: 'Hoboken',
-      state: 'NJ',
-      zipcode: '01833',
-    },
-    value: 'as-verified',
-  },
-]
-
 const AddressVerification: NextPageWithLayout = () => {
-  // const { t } = useTranslation('claimForm')
+  const { t } = useTranslation('claimForm')
+  const { claimFormValues, setClaimFormValues } = useContext(ClaimFormContext)
+  const [enteredMailingAddress, setEnteredMailingAddress] =
+    useState<AddressInput | null>(null)
+  const [enteredResidenceAddress, setEnteredResidenceAddress] =
+    useState<AddressInput | null>(null)
+  const isMailingSame = claimFormValues?.LOCAL_mailing_address_same
+
+  useEffect(() => {
+    if (!enteredMailingAddress && claimFormValues?.mailing_address) {
+      setEnteredMailingAddress({ ...claimFormValues.mailing_address })
+    }
+    if (!enteredResidenceAddress && claimFormValues?.residence_address) {
+      setEnteredResidenceAddress({ ...claimFormValues.residence_address })
+    }
+  }, [
+    enteredMailingAddress,
+    enteredResidenceAddress,
+    claimFormValues?.mailing_address,
+    claimFormValues?.residence_address,
+  ])
+
+  const handleResidenceAddressChange = useCallback(
+    (address: AddressInput) => {
+      setClaimFormValues({
+        ...claimFormValues,
+        residence_address: address,
+      })
+    },
+    [setClaimFormValues]
+  )
+
+  const handleMailingAddressChange = useCallback(
+    (address: AddressInput) => {
+      setClaimFormValues({
+        ...claimFormValues,
+        mailing_address: address,
+      })
+    },
+    [setClaimFormValues]
+  )
+
   return (
     <ClaimFormik<AddressVerificationInput>
       initialValues={pageInitialValues}
@@ -60,11 +80,22 @@ const AddressVerification: NextPageWithLayout = () => {
       {() => {
         return (
           <>
-            <AddressVerificationField
-              name="mailing_address"
-              options={MAILING_ADDRESS_OPTIONS}
-              legend={`Which address do you want to use for your mailing address?`}
-            />
+            {enteredResidenceAddress && (
+              <AddressVerificationField
+                name="mailing_address"
+                address={enteredResidenceAddress}
+                legend={t(`address_verification.legend.residence`)}
+                changeAddress={handleResidenceAddressChange}
+              />
+            )}
+            {!isMailingSame && enteredMailingAddress && (
+              <AddressVerificationField
+                name="residence_address"
+                address={enteredMailingAddress}
+                legend={t(`address_verification.legend.mailing`)}
+                changeAddress={handleMailingAddressChange}
+              />
+            )}
             <ClaimFormButtons nextStep={nextPage.heading}>
               <BackButton previousPage={previousPage.path} />
               <NextButton nextPage={nextPage.path} />

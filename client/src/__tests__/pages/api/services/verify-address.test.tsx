@@ -7,10 +7,7 @@ jest.mock('next-auth/next')
 import { getServerSession } from 'next-auth/next'
 import { AddressInput } from '../../../../types/claimantInput'
 import { ADDRESS_SKELETON } from '../../../../constants/initialValues'
-import {
-  NO_ACCUMAIL_RESPONSE,
-  NO_ADDRESS_MATCH,
-} from '../../../../constants/api/services/verifyAddress'
+import { NO_ACCUMAIL_RESPONSE } from '../../../../constants/api/services/verifyAddress'
 
 const addressInput: AddressInput = {
   address: '1445 New York Ave',
