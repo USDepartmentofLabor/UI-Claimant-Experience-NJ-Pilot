@@ -62,7 +62,7 @@ export class Accumail {
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
     }
-    let accumailResponse = await axios.get<AccumailResponse>(
+    const accumailResponse = await axios.get<AccumailResponse>(
       this.baseUrl +
         '?' +
         this.convertJSONAddressToURLParams(query as unknown as AddressInput),

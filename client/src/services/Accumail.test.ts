@@ -1,9 +1,5 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
-import {
-  Accumail,
-  AccumailResponse,
-  AddressVerificationResponse,
-} from './Accumail'
+import { Accumail } from './Accumail'
 import axios from 'axios'
 import { AddressInput } from '../types/claimantInput'
 import {
@@ -168,8 +164,10 @@ describe('Accumail', () => {
     const responseFromAccumail = await accumail.getVerifiedAddress(
       validAddressInput
     )
-    expect(responseFromAccumail.address).toEqual(validAddressInput)
-    expect(responseFromAccumail.validationSummary).toContain(VALID_ADDRESS)
+    expect(responseFromAccumail).toEqual({
+      address: validAddressInput,
+      validationSummary: VALID_ADDRESS,
+    })
   })
 
   it('receives a corrected address response from Accumail', async () => {
@@ -182,8 +180,10 @@ describe('Accumail', () => {
     const responseFromAccumail = await accumail.getVerifiedAddress(
       correctableAddressInput
     )
-    expect(responseFromAccumail.address).toEqual(validAddressInput)
-    expect(responseFromAccumail.validationSummary).toContain(CORRECTED_ADDRESS)
+    expect(responseFromAccumail).toEqual({
+      address: validAddressInput,
+      validationSummary: CORRECTED_ADDRESS,
+    })
   })
 
   it('receives a no match response from Accumail', async () => {

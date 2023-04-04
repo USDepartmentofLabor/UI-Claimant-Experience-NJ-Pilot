@@ -9,7 +9,6 @@ import {
   CORRECTED_ADDRESS,
   NO_ADDRESS_MATCH,
 } from '../../../../constants/api/services/verifyAddress'
-import axios from 'axios'
 import {
   Accumail,
   AddressVerificationResponse,
@@ -37,7 +36,6 @@ const verifiedResponse: AddressVerificationResponse = {
 jest.mock('next-auth/next')
 jest.mock('services/Accumail')
 jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
 
 const mockGetServerSession = getServerSession as jest.MockedFunction<
   typeof getServerSession

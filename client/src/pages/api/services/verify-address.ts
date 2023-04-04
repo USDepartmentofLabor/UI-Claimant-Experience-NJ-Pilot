@@ -3,17 +3,12 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
 import axios from 'axios'
 import { AddressInput } from '../../../types/claimantInput'
-import { ADDRESS_SKELETON } from '../../../constants/initialValues'
 import {
-  CORRECTED_ADDRESS,
-  NO_ADDRESS_MATCH,
   NO_PARAMS_ERROR,
   NO_SESSION_ERROR,
-  VALID_ADDRESS,
 } from '../../../constants/api/services/verifyAddress'
 import {
   Accumail,
-  AccumailResponse,
   AddressVerificationResponse,
 } from '../../../services/Accumail'
 
