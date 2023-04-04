@@ -41,6 +41,9 @@ jest.mock('next/router', () => ({
   }),
 }))
 
+const scrollIntoViewMock = jest.fn()
+window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
+
 const importedNonEmployer = (index: number) => ({
   ...EMPLOYER_SKELETON,
   ...{

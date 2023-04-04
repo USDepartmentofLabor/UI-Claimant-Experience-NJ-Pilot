@@ -29,6 +29,9 @@ jest.mock('next/router', () => ({
   useRouter: () => mockUseRouter(),
 }))
 
+const scrollIntoViewMock = jest.fn()
+window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
+
 describe('the Edit Employer page', () => {
   const fullTimeEmployer = {
     ...validImportedEditEmployer,
