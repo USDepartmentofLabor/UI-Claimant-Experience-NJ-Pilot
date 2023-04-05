@@ -62,8 +62,6 @@ export class Accumail {
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
     }
-    console.log('accumail ', query) // TODO MRH remove
-    console.log('accumail ', this.baseUrl) // TODO MRH remove
     const accumailResponse = await axios.get<AccumailResponse>(this.baseUrl, {
       headers,
       params: {
