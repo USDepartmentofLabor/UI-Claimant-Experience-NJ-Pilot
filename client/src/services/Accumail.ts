@@ -77,7 +77,6 @@ export class Accumail {
   private summarizeValidationAndCreateResponseObject = (
     response: AccumailResponse
   ): AddressVerificationResponse | string => {
-    console.log(response) //TODO MRH remove
     if (
       response.resultCount === 1 &&
       '0' === response.result.validationDetails.lookupReturnCode
