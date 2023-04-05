@@ -2,19 +2,16 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
 import { isAxiosError } from 'axios'
-import { AddressInput } from '../../../types/claimantInput'
+import { AddressInput } from 'types/claimantInput'
 import {
   NO_PARAMS_ERROR,
   NO_SESSION_ERROR,
-} from '../../../constants/api/services/verifyAddress'
-import {
-  Accumail,
-  AddressVerificationResponse,
-} from '../../../services/Accumail'
+} from 'constants/api/services/verifyAddress'
+import { Accumail, AddressVerificationResponse } from 'services/Accumail'
 
 /**
  * Check the user-entered address and use service to check if USPS provides potential corrections or a match
- * Method: GET
+ * Method: POST
  * @param req.query.AddressInput
  * @field req.query.AddressInput.address
  * @field req.query.AddressInput.address2
@@ -33,7 +30,7 @@ import {
   const accumail = new Accumail({
     baseUrl: process.env.ACCUMAIL_URL as string,
   })
-
+  console.log('verify-address', req.query) // TODO MRH remove
   try {
     const verifiedAddressResponse = await accumail.getVerifiedAddress(
       req.query as unknown as AddressInput

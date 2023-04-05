@@ -1,12 +1,11 @@
-/* eslint-disable security/detect-non-literal-fs-filename */
 import { Accumail } from './Accumail'
 import axios from 'axios'
-import { AddressInput } from '../types/claimantInput'
+import { AddressInput } from 'types/claimantInput'
 import {
   CORRECTED_ADDRESS,
   NO_ADDRESS_MATCH,
   VALID_ADDRESS,
-} from '../constants/api/services/verifyAddress'
+} from 'constants/api/services/verifyAddress'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>

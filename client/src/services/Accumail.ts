@@ -1,10 +1,10 @@
-import { AddressInput } from '../types/claimantInput'
+import { AddressInput } from 'types/claimantInput'
 import {
   CORRECTED_ADDRESS,
   NO_ADDRESS_MATCH,
   VALID_ADDRESS,
-} from '../constants/api/services/verifyAddress'
-import { ADDRESS_SKELETON } from '../constants/initialValues'
+} from 'constants/api/services/verifyAddress'
+import { ADDRESS_SKELETON } from 'constants/initialValues'
 import axios from 'axios'
 
 export interface AccumailResponse {
@@ -62,12 +62,17 @@ export class Accumail {
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
     }
-    const accumailResponse = await axios.get<AccumailResponse>(
-      this.baseUrl +
-        '?' +
-        this.convertJSONAddressToURLParams(query as unknown as AddressInput),
-      { headers }
-    )
+    console.log('accumail ', query) // TODO MRH remove
+    console.log('accumail ', this.baseUrl) // TODO MRH remove
+    const accumailResponse = await axios.get<AccumailResponse>(this.baseUrl, {
+      headers,
+      params: {
+        street: query.address,
+        street2: query.address2,
+        city: query.city,
+        zip: query.zipcode,
+      },
+    })
     return this.summarizeValidationAndCreateResponseObject(
       accumailResponse.data
     )
@@ -75,6 +80,7 @@ export class Accumail {
   private summarizeValidationAndCreateResponseObject = (
     response: AccumailResponse
   ): AddressVerificationResponse | string => {
+    console.log(response) //TODO MRH remove
     if (
       response.resultCount === 1 &&
       '0' === response.result.validationDetails.lookupReturnCode
@@ -96,15 +102,6 @@ export class Accumail {
     return NO_ADDRESS_MATCH
   }
 
-  private convertJSONAddressToURLParams = (
-    params: AddressInput | undefined
-  ): string => {
-    let urlParams = new URLSearchParams(params).toString()
-    urlParams = urlParams.replace('address', 'street')
-    urlParams = urlParams.replace('address2', 'street2')
-    urlParams = urlParams.replace('zipcode', 'zip')
-    return urlParams
-  }
   private parseResponseAddress = (response: AccumailResponse): AddressInput => {
     const convertedAddress = ADDRESS_SKELETON
     convertedAddress.address = response.result.destinationAddress.street

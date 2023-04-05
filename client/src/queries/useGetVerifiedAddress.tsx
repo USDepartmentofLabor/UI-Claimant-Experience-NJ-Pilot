@@ -1,15 +1,14 @@
 import { useQuery } from 'react-query'
-import axios, { AxiosError, AxiosResponse } from 'axios'
-import { AddressInput } from '../types/claimantInput'
+import axios from 'axios'
+import { AddressInput } from 'types/claimantInput'
 
 const getVerifiedAddress = async (address: AddressInput | undefined) => {
-  return await axios.get('/api/services/verify-address?' + address)
+  //TODO MRH discuss if better ot use POST and send object to service or do the conversion of params here or sooner
+  return await axios.post('/api/services/verify-address', address)
 }
 
 export const useGetVerifiedAddress = (address: AddressInput | undefined) => {
-  //using the first line of the address as a key to differentiate requests and responses
-  return useQuery<AxiosResponse<any, any> | undefined, AxiosError<any>>(
-    address?.address || 'getVerifiedAddress',
-    () => getVerifiedAddress(address)
+  return useQuery(['getVerifiedAddress', address], () =>
+    getVerifiedAddress(address)
   )
 }

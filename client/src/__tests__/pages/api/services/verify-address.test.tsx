@@ -4,15 +4,12 @@
 import handler from 'pages/api/services/verify-address'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
-import { AddressInput } from '../../../../types/claimantInput'
+import { AddressInput } from 'types/claimantInput'
 import {
   CORRECTED_ADDRESS,
   NO_ADDRESS_MATCH,
-} from '../../../../constants/api/services/verifyAddress'
-import {
-  Accumail,
-  AddressVerificationResponse,
-} from '../../../../services/Accumail'
+} from 'constants/api/services/verifyAddress'
+import { Accumail, AddressVerificationResponse } from 'services/Accumail'
 import { AxiosError, AxiosResponse } from 'axios'
 
 const addressInput: AddressInput = {
@@ -115,7 +112,7 @@ describe('/api/services/verify-address API Endpoint', () => {
     )
 
     await handler(req, res)
-
+    // TODO MRH discuss why this is not catching the axios error
     expect(res.status).toHaveBeenCalledWith(500)
     expect(res.send).toHaveBeenCalledWith('Internal Server Error')
   })
