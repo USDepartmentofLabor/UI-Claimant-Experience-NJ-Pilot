@@ -4,7 +4,6 @@ import {
   NO_ADDRESS_MATCH,
   VALID_ADDRESS,
 } from 'constants/api/services/verifyAddress'
-import { ADDRESS_SKELETON } from 'constants/initialValues'
 import axios from 'axios'
 
 export interface AccumailResponse {
@@ -83,34 +82,36 @@ export class Accumail {
       response.resultCount === 1 &&
       '0' === response.result.validationDetails.lookupReturnCode
     ) {
+      const destinationAddress = response.result.destinationAddress
+      const zipcode = destinationAddress.zipPlusFour
+        ? destinationAddress.zip9
+        : destinationAddress.zip
       if (response.result.validationDetails.corrections.length === 0) {
         // one match that required no corrections found
         return {
-          address: this.parseResponseAddress(response),
+          address: {
+            address: destinationAddress.street,
+            address2: destinationAddress.street2,
+            city: destinationAddress.city,
+            state: destinationAddress.state,
+            zipcode,
+          },
           validationSummary: VALID_ADDRESS,
         }
       }
       // single match found after applying corrections
       return {
-        address: this.parseResponseAddress(response),
+        address: {
+          address: destinationAddress.street,
+          address2: destinationAddress.street2,
+          city: destinationAddress.city,
+          state: destinationAddress.state,
+          zipcode,
+        },
         validationSummary: CORRECTED_ADDRESS,
       }
     }
     // No match or multiple matches
     return NO_ADDRESS_MATCH
-  }
-
-  private parseResponseAddress = (response: AccumailResponse): AddressInput => {
-    const convertedAddress = ADDRESS_SKELETON
-    convertedAddress.address = response.result.destinationAddress.street
-    convertedAddress.address2 = response.result.destinationAddress.street2
-    convertedAddress.city = response.result.destinationAddress.city
-    convertedAddress.state = response.result.destinationAddress.state
-    if (response.result.destinationAddress.zipPlusFour) {
-      convertedAddress.zipcode = response.result.destinationAddress.zip9
-    } else {
-      convertedAddress.zipcode = response.result.destinationAddress.zip
-    }
-    return convertedAddress
   }
 }
