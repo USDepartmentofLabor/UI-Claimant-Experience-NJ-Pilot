@@ -24,14 +24,12 @@ import { Accumail, AddressVerificationResponse } from 'services/Accumail'
 ) {
   const session = await getServerSession(req, res, authOptions)
   if (!session) return res.status(401).send(NO_SESSION_ERROR)
-  console.log('verify-address', req) // TODO MRH remove
   if (!Object.keys(req.body).length)
     return res.status(400).send(NO_PARAMS_ERROR)
 
   const accumail = new Accumail({
     baseUrl: process.env.ACCUMAIL_URL as string,
   })
-  console.log('verify-address', req.body) // TODO MRH remove
   try {
     const verifiedAddressResponse = await accumail.getVerifiedAddress(
       req.body as unknown as AddressInput
