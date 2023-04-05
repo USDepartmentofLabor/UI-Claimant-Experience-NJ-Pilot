@@ -46,7 +46,7 @@ const emptyParamsResponse = {
 }
 describe('use get verified address hook works as expected', () => {
   it('calls the query and gets back data', async () => {
-    mockedAxios.get.mockResolvedValueOnce(successResponse)
+    mockedAxios.post.mockResolvedValueOnce(successResponse)
 
     const { result } = renderHook(() => useGetVerifiedAddress(requestParams), {
       wrapper,
@@ -55,7 +55,7 @@ describe('use get verified address hook works as expected', () => {
     expect(result.current.data).toEqual(successResponse)
   })
   it('calls the query without params and gets back the expected error', async () => {
-    mockedAxios.get.mockResolvedValueOnce(emptyParamsResponse)
+    mockedAxios.post.mockResolvedValueOnce(emptyParamsResponse)
 
     const { result } = renderHook(() => useGetVerifiedAddress(undefined), {
       wrapper,

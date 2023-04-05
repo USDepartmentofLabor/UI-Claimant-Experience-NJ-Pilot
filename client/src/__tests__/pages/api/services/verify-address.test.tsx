@@ -45,14 +45,14 @@ function mockLoggedInSession() {
 describe('/api/services/verify-address API Endpoint', () => {
   function mockRequest(input: AddressInput) {
     return {
-      query: input,
+      body: input,
       setHeader: jest.fn(),
     } as unknown as NextApiRequest
   }
 
   function mockEmptyRequest() {
     return {
-      query: [],
+      body: [],
       setHeader: jest.fn(),
     } as unknown as NextApiRequest
   }
