@@ -11,6 +11,7 @@ import { useSaveCompleteClaim } from 'queries/useSaveCompleteClaim'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
 import { useTranslation } from 'react-i18next'
+import { ErrorScroller } from 'hooks/useScrollToFirstError/useScrollToFirstError'
 
 type ClaimFormikProps = {
   children: ReactNode
@@ -78,7 +79,10 @@ export const EmployerFormik = ({
             <Form className={styles.claimForm}>
               <>
                 {showErrorSummary && (
-                  <FormErrorSummary key={submitCount} errors={errors} />
+                  <>
+                    <ErrorScroller />
+                    <FormErrorSummary key={submitCount} errors={errors} />
+                  </>
                 )}
                 {children}
                 <div className="margin-top-1 text-center">

@@ -327,6 +327,28 @@ describe('Identity Information Page', () => {
     expect(authorizationCardValidMonthFieldReturned).toHaveValue('')
     expect(authorizationCardValidYearFieldReturned).toHaveValue('')
   })
+
+  it('shows alien registration as optional if not elligible to work in US', async () => {
+    const user = userEvent.setup()
+    render(<Identity />)
+    const authorizationType = screen.getByRole('group', {
+      name: 'work_authorization.authorization_type.label',
+    })
+    const notAllowedToWorkInUs = within(authorizationType).getByRole('radio', {
+      name: 'work_authorization.authorization_type.options.not_legally_allowed_to_work_in_US',
+    })
+
+    // Select 'No; I am not legally allowed to work in the United States'
+    await user.click(notAllowedToWorkInUs)
+    const alienRegistrationNumberOptional = screen.getByLabelText(
+      'work_authorization.alien_registration_number.optional_label',
+      {
+        exact: false,
+      }
+    )
+    expect(alienRegistrationNumberOptional).toBeInTheDocument()
+  })
+
   describe('verified fields', () => {
     it('does not show ssn', () => {
       render(<Identity />)

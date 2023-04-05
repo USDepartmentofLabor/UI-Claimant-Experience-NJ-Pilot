@@ -51,6 +51,8 @@ def app_secrets():
         secrets.append(ssm_param("nextauth-secret", "NEXTAUTH_SECRET"))
         secrets.append(ssm_param("nextauth-url" + pr_info("/"), "NEXTAUTH_URL"))
         secrets.append(ssm_param("server-base-url", "SERVER_BASE_URL"))
+        secrets.append(ssm_param("accumail-verify-url", "ACCUMAIL_VERIFY_URL"))
+        secrets.append(ssm_param("occucoder-url", "OCCUCODER_URL"))
     elif app == "server":
         secrets.append(ssm_param("database-host", "DB_HOST"))
         secrets.append(ssm_param("database-port", "DB_PORT"))

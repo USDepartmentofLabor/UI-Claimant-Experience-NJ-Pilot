@@ -9,7 +9,3 @@ CVE-2022-1471
 # to include the patched version.
 # https://github.com/newjersey/dol-ui-claimant-intake/issues/1911
 CVE-2023-1370
-# Ignore the following spring-core finding until the application has been updated
-# to include the patched version.
-# https://github.com/newjersey/dol-ui-claimant-intake/issues/1911
-CVE-2023-20861
