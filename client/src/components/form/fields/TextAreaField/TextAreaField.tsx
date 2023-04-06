@@ -60,6 +60,7 @@ export const TextAreaField = ({
           value={fieldProps.value || ''} // https://github.com/trussworks/react-uswds/issues/2241
           defaultValue={fieldProps.value || ''}
           id={textareaProps.id || textareaProps.name}
+          data-testid={textareaProps.id}
           inputRef={textareaRef}
           error={showError}
           maxLength={characterLimit}
@@ -71,6 +72,7 @@ export const TextAreaField = ({
           {...fieldProps}
           value={fieldProps.value || ''}
           id={textareaProps.id || textareaProps.name}
+          data-testid={textareaProps.id}
           {...textareaProps}
           inputRef={textareaRef}
           error={showError}
