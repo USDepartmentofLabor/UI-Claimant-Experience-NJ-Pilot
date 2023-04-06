@@ -242,7 +242,10 @@ describe('Accumail', () => {
       unmatchableAddress
     )
 
-    expect(responseFromAccumail).toContain(NO_ADDRESS_MATCH)
+    expect(responseFromAccumail).toEqual({
+      address: undefined,
+      validationSummary: NO_ADDRESS_MATCH,
+    })
   })
 
   it('a valid address with a zip code with containing only five digits is parsed correctly', async () => {

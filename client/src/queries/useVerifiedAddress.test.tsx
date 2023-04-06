@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import { useGetVerifiedAddress } from './useGetVerifiedAddress'
+import { useVerifiedAddress } from './useVerifiedAddress'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { AddressInput } from '../types/claimantInput'
 import {
@@ -44,11 +44,11 @@ const emptyParamsResponse = {
   },
   status: 200,
 }
-describe('use get verified address hook works as expected', () => {
+describe('use verified address query works as expected', () => {
   it('calls the query and gets back data', async () => {
     mockedAxios.post.mockResolvedValueOnce(successResponse)
 
-    const { result } = renderHook(() => useGetVerifiedAddress(requestParams), {
+    const { result } = renderHook(() => useVerifiedAddress(requestParams), {
       wrapper,
     })
     await waitFor(() => expect(result.current.isSuccess).toEqual(true))
@@ -57,7 +57,7 @@ describe('use get verified address hook works as expected', () => {
   it('calls the query without params and gets back the expected error', async () => {
     mockedAxios.post.mockResolvedValueOnce(emptyParamsResponse)
 
-    const { result } = renderHook(() => useGetVerifiedAddress(undefined), {
+    const { result } = renderHook(() => useVerifiedAddress(undefined), {
       wrapper,
     })
     await waitFor(() => expect(result.current.isSuccess).toEqual(true))

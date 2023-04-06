@@ -6,7 +6,7 @@ const getVerifiedAddress = async (address: AddressInput | undefined) => {
   return await axios.post('/api/services/verify-address', address)
 }
 
-export const useGetVerifiedAddress = (address: AddressInput | undefined) => {
+export const useVerifiedAddress = (address: AddressInput | undefined) => {
   return useQuery(['getVerifiedAddress', address], () =>
     getVerifiedAddress(address)
   )
