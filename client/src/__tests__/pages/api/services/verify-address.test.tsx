@@ -131,11 +131,15 @@ describe('/api/services/verify-address API Endpoint', () => {
     const req = mockRequest(invalidAddressInput)
     const res = mockResponse()
     mockLoggedInSession()
-    jest
-      .spyOn(Accumail.prototype, 'getVerifiedAddress')
-      .mockResolvedValue(NO_ADDRESS_MATCH)
+    jest.spyOn(Accumail.prototype, 'getVerifiedAddress').mockResolvedValue({
+      address: undefined,
+      validationSummary: NO_ADDRESS_MATCH,
+    })
     await handler(req, res)
     expect(res.status).toHaveBeenCalledWith(200)
-    expect(res.json).toHaveBeenCalledWith(NO_ADDRESS_MATCH)
+    expect(res.json).toHaveBeenCalledWith({
+      address: undefined,
+      validationSummary: NO_ADDRESS_MATCH,
+    })
   })
 })
