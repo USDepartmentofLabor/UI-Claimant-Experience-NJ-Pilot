@@ -12,28 +12,28 @@ import { Accumail, AddressVerificationResponse } from 'services/Accumail'
 /**
  * Check the user-entered address and use service to check if USPS provides potential corrections or a match
  * Method: POST
- * @param req.query.AddressInput
- * @field req.query.AddressInput.address
- * @field req.query.AddressInput.address2
- * @field req.query.AddressInput.city
- * @field req.query.AddressInput.state
- * @field req.query.AddressInput.zipcode
+ * @param req.body.AddressInput
+ * @field req.body.AddressInput.address
+ * @field req.body.AddressInput.address2
+ * @field req.body.AddressInput.city
+ * @field req.body.AddressInput.state
+ * @field req.body.AddressInput.zipcode
  */ export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<AddressVerificationResponse | string>
+  res: NextApiResponse<AddressVerificationResponse>
 ) {
   const session = await getServerSession(req, res, authOptions)
-  if (!session) return res.status(401).send(NO_SESSION_ERROR)
+  if (!session)
+    return res.status(401).send({ validationSummary: NO_SESSION_ERROR })
   if (!Object.keys(req.body).length)
-    return res.status(400).send(NO_PARAMS_ERROR)
+    return res.status(400).send({ validationSummary: NO_PARAMS_ERROR })
 
   const accumail = new Accumail({
     baseUrl: process.env.ACCUMAIL_URL as string,
   })
   try {
-    const verifiedAddressResponse = await accumail.getVerifiedAddress(
-      req.body as unknown as AddressInput
-    )
+    const verifiedAddressResponse: AddressVerificationResponse =
+      await accumail.getVerifiedAddress(req.body as unknown as AddressInput)
     res.status(200).json(verifiedAddressResponse)
   } catch (error) {
     const status = isAxiosError(error) ? error.response?.status : undefined

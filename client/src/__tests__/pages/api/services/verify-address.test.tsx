@@ -33,7 +33,6 @@ const verifiedResponse: AddressVerificationResponse = {
 
 jest.mock('next-auth/next')
 jest.mock('services/Accumail')
-jest.mock('axios')
 
 const mockGetServerSession = getServerSession as jest.MockedFunction<
   typeof getServerSession
@@ -112,9 +111,9 @@ describe('/api/services/verify-address API Endpoint', () => {
     )
 
     await handler(req, res)
-    // TODO MRH discuss why this is not catching the axios error
-    expect(res.status).toHaveBeenCalledWith(500)
-    expect(res.send).toHaveBeenCalledWith('Internal Server Error')
+
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.send).toHaveBeenCalledWith('Mocked error response body')
   })
 
   it('should error if no params', async () => {
@@ -132,11 +131,13 @@ describe('/api/services/verify-address API Endpoint', () => {
     const req = mockRequest(invalidAddressInput)
     const res = mockResponse()
     mockLoggedInSession()
-    jest
-      .spyOn(Accumail.prototype, 'getVerifiedAddress')
-      .mockResolvedValue(NO_ADDRESS_MATCH)
+    jest.spyOn(Accumail.prototype, 'getVerifiedAddress').mockResolvedValue({
+      validationSummary: NO_ADDRESS_MATCH,
+    })
     await handler(req, res)
     expect(res.status).toHaveBeenCalledWith(200)
-    expect(res.json).toHaveBeenCalledWith(NO_ADDRESS_MATCH)
+    expect(res.json).toHaveBeenCalledWith({
+      validationSummary: NO_ADDRESS_MATCH,
+    })
   })
 })

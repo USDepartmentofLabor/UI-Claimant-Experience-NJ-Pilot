@@ -45,7 +45,7 @@ export interface AccumailResponse {
 }
 
 export interface AddressVerificationResponse {
-  address: AddressInput
+  address?: AddressInput
   validationSummary: string
 }
 
@@ -67,6 +67,7 @@ export class Accumail {
         street: query.address,
         street2: query.address2,
         city: query.city,
+        state: query.state,
         zip: query.zipcode,
       },
     })
@@ -76,8 +77,7 @@ export class Accumail {
   }
   private summarizeValidationAndCreateResponseObject = (
     response: AccumailResponse
-  ): AddressVerificationResponse | string => {
-    console.log(response) //TODO MRH remove
+  ): AddressVerificationResponse => {
     if (
       response.resultCount === 1 &&
       '0' === response.result.validationDetails.lookupReturnCode
@@ -86,20 +86,11 @@ export class Accumail {
       const zipcode = destinationAddress.zipPlusFour
         ? destinationAddress.zip9
         : destinationAddress.zip
-      if (response.result.validationDetails.corrections.length === 0) {
-        // one match that required no corrections found
-        return {
-          address: {
-            address: destinationAddress.street,
-            address2: destinationAddress.street2,
-            city: destinationAddress.city,
-            state: destinationAddress.state,
-            zipcode,
-          },
-          validationSummary: VALID_ADDRESS,
-        }
-      }
-      // single match found after applying corrections
+
+      const validationSummary =
+        response.result.validationDetails.corrections.length === 0
+          ? VALID_ADDRESS // one match that required no corrections found
+          : CORRECTED_ADDRESS // single match found after applying corrections
       return {
         address: {
           address: destinationAddress.street,
@@ -108,10 +99,10 @@ export class Accumail {
           state: destinationAddress.state,
           zipcode,
         },
-        validationSummary: CORRECTED_ADDRESS,
+        validationSummary,
       }
     }
     // No match or multiple matches
-    return NO_ADDRESS_MATCH
+    return { validationSummary: NO_ADDRESS_MATCH }
   }
 }
