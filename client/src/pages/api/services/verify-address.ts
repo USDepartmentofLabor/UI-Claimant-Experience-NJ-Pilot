@@ -24,13 +24,9 @@ import { Accumail, AddressVerificationResponse } from 'services/Accumail'
 ) {
   const session = await getServerSession(req, res, authOptions)
   if (!session)
-    return res
-      .status(401)
-      .send({ validationSummary: NO_SESSION_ERROR })
+    return res.status(401).send({ validationSummary: NO_SESSION_ERROR })
   if (!Object.keys(req.body).length)
-    return res
-      .status(400)
-      .send({ validationSummary: NO_PARAMS_ERROR })
+    return res.status(400).send({ validationSummary: NO_PARAMS_ERROR })
 
   const accumail = new Accumail({
     baseUrl: process.env.ACCUMAIL_URL as string,
