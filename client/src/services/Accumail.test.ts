@@ -243,7 +243,6 @@ describe('Accumail', () => {
     )
 
     expect(responseFromAccumail).toEqual({
-      address: undefined,
       validationSummary: NO_ADDRESS_MATCH,
     })
   })

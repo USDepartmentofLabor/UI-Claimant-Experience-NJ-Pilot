@@ -103,6 +103,6 @@ export class Accumail {
       }
     }
     // No match or multiple matches
-    return { address: undefined, validationSummary: NO_ADDRESS_MATCH }
+    return { validationSummary: NO_ADDRESS_MATCH }
   }
 }
