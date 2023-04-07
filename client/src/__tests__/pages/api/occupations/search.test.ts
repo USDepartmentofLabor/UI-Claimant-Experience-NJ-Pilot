@@ -54,7 +54,7 @@ describe('POST /api/occupations/search', () => {
     await handler(req, res)
 
     expect(res.status).toHaveBeenCalledWith(200)
-    expect(res.json).toHaveBeenCalledWith(mockOccupations)
+    expect(res.json).toHaveBeenCalledWith({ occupations: mockOccupations })
   })
 
   it('responds with 401 when not authenticated', async () => {
@@ -68,7 +68,7 @@ describe('POST /api/occupations/search', () => {
     expect(res.status).toHaveBeenCalledWith(401)
   })
 
-  it('responds with 401 when job title is blank space', async () => {
+  it('responds with 400 when job title is blank space', async () => {
     const req = getMockRequest({ job_title: ' ' })
     const res = getMockResponse()
 
@@ -76,7 +76,7 @@ describe('POST /api/occupations/search', () => {
 
     await handler(req, res)
 
-    expect(res.status).toHaveBeenCalledWith(401)
+    expect(res.status).toHaveBeenCalledWith(400)
   })
 
   it('responds with 500 when Occucoder service throw a generic error', async () => {
@@ -111,6 +111,8 @@ describe('POST /api/occupations/search', () => {
     await handler(req, res)
 
     expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.send).toHaveBeenCalledWith('Mocked error response body')
+    expect(res.send).toHaveBeenCalledWith({
+      error: 'Mocked error response body',
+    })
   })
 })

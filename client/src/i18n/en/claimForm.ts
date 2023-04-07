@@ -762,7 +762,6 @@ const claimForm = {
   },
   occupation: {
     heading: 'Occupation information',
-    search: 'Search',
     choose_the_occupation:
       'If you have multiple occupations, choose your main one or the one you’re most comfortable with. We use your answer for your <0>reemployment profile</0> and for statistical purposes.',
     reemployment_profile_link:
@@ -771,11 +770,9 @@ const claimForm = {
       label: 'What is your main occupation?',
       errors: {
         required: 'Occupation is required',
+        minLength: 'Occupation must be at least three characters',
       },
-      min_length: 'Occupation must be at least three characters',
     },
-    hint: "If you're not sure, see our",
-    list_of_occupations: 'list of occupations',
     job_description: {
       label: 'Give a short description of your main occupation:',
       errors: {
@@ -784,10 +781,15 @@ const claimForm = {
           'Please shorten your occupation description to 255 characters or less (including spaces).',
       },
     },
-    bls_code: {
-      required: 'Please select the occupation that best matches your selection',
+    occucoder_code: {
+      label:
+        'Choose the occupation that best matches what you entered above. If nothing matches, please try another search.',
     },
-    no_results: 'No results. Try another search.',
+    search_loading: 'Searching for matches',
+    search_results_count:
+      '{{count}} matches found for {{job_title}}. Search results appear below.',
+    search_no_matches_error: 'No results. Try another search.',
+    sr_search_help: 'Search results will appear below.',
   },
   disability: {
     heading: 'Disability',

@@ -1144,7 +1144,7 @@
     "occucoder_description": {
       "description": "Description returned from Occucoder service",
       "type": "string",
-      "maxLength": 255
+      "maxLength": 1000
     },
     "occucoder_code": {
       "description": "Code returned from Occucoder service",
@@ -1153,6 +1153,15 @@
     },
     "occucoder_job_title": {
       "description": "Job title returned from Occucoder service",
+      "type": "string",
+      "maxLength": 255
+    },
+    "occucoder_score": {
+      "description": "Match score returned from Occucoder service (0-100)",
+      "type": "integer"
+    },
+    "job_title": {
+      "description": "Job title entered by claimant",
       "type": "string",
       "maxLength": 255
     },
