@@ -6,13 +6,16 @@ import {
   CLAIMS_AGENT_NUMBER_3,
 } from 'constants/phoneNumbers'
 const redirect = {
+  title_call_us: 'Call our contact center',
+  warning_canada: 'Canadian residents need to apply over the phone.',
+  instructions_canada: `<p>Apply for unemployment insurance by calling <OUTSIDE_US_AGENT_NUMBER_LINK>${OUTSIDE_US_AGENT_NUMBER}</OUTSIDE_US_AGENT_NUMBER_LINK>. Canadian residents need to apply over the phone.</p>`,
+  call_center_schedule:
+    'Our contact center is open from 8:30 AM to 3 PM, Monday through Friday, excluding holidays. We recommend calling as close to 8 AM as possible.',
   page_title: 'Let’s try another way',
   info_alert: {
     title: 'You cannot use our new form due to the following reasons:',
     items: {
       ip_deny: 'You must be in the U.S. to file. ',
-      canada:
-        'Because you reside in Canada, you must file with a Claim Agent. ',
       non_resident: 'You do not reside in the U.S. or Canada. ',
       other_state:
         'You have not worked in New Jersey within the last 18 months. ',
@@ -32,14 +35,6 @@ const redirect = {
     heading: 'You must be in the U.S. to file',
     label:
       'Your access to the New Jersey Unemployment Insurance System is denied since it originated from a location outside of the United States.',
-  },
-  canada: {
-    heading: 'Please call to file from Canada',
-    label: {
-      line1: `Since you reside in Canada, please contact a Claims Agent at <0>${OUTSIDE_US_AGENT_NUMBER}</0>.`,
-      line2:
-        'Claims Agents should be contacted during our normal business hours from 8:30 AM to 4:30 PM, Monday through Friday, excluding holidays.',
-    },
   },
   non_resident: {
     heading: 'You must reside in the U.S. or Canada to file',

@@ -27,25 +27,15 @@ describe('Screener-redirect page', () => {
     assignMock.mockClear()
   })
 
-  it('renders properly', () => {
-    render(
-      <IntakeAppContext.Provider value={mockAppContext}>
-        <ScreenerRedirect />
-      </IntakeAppContext.Provider>
-    )
-
-    expect(
-      screen.getByRole('heading', { name: 'page_title' })
-    ).toBeInTheDocument()
-
-    expect(
-      screen.getByRole('heading', { name: 'info_alert.title' })
-    ).toBeInTheDocument()
-  })
-
-  describe('shows the correct content based on querystring values', () => {
-    it('when resident of Canada', () => {
+  describe('shows the correct content', () => {
+    it.each([
+      // Simulate overlapping scenarios to ensure Canada overrules them
+      {},
+      { screener_maritime_employer_eighteen_months: true },
+      { screener_military_service_eighteen_months: true },
+    ])('when resident of Canada', (screenerInputOverrides) => {
       const screenerInput = {
+        ...screenerInputOverrides,
         ...pageInitialValues,
         screener_current_country_us: false,
         screener_live_in_canada: true,
@@ -62,15 +52,9 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('canada.heading')).toBeInTheDocument()
-      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
+      expect(screen.getByText('title_call_us')).toBeInTheDocument()
+      expect(screen.getByText('warning_canada')).toBeInTheDocument()
+      expect(screen.getByText('instructions_canada')).toBeInTheDocument()
     })
 
     it('when not a resident of US or Canada', () => {
