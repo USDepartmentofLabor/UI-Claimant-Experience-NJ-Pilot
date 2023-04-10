@@ -12,7 +12,6 @@ import { ChangeEvent, ComponentProps, ReactNode, useRef } from 'react'
 import { useShowErrors } from 'hooks/useShowErrors'
 import { useFocusFirstError } from 'hooks/useFocusFirstError'
 
-import styles from './AddressVerificationField.module.scss'
 import { useVerifiedAddress } from 'queries/useVerifiedAddress'
 import { ADDRESS_SKELETON } from 'constants/initialValues'
 import { useTranslation } from 'next-i18next'
