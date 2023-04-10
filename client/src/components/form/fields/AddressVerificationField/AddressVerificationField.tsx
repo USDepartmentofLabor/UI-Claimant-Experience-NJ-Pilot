@@ -77,9 +77,7 @@ export const AddressVerificationField = ({
     <FormGroup error={showError}>
       <Fieldset
         legend={legend}
-        className={`${fieldsetClassName} ${styles.fieldsetLegend} ${
-          showError && styles.errorLegend
-        }`}
+        className={fieldsetClassName}
         onInvalid={(e) => e.preventDefault()}
       >
         {hint && (
