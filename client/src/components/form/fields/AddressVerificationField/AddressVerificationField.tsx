@@ -13,7 +13,7 @@ import { useShowErrors } from 'hooks/useShowErrors'
 import { useFocusFirstError } from 'hooks/useFocusFirstError'
 
 import styles from './AddressVerificationField.module.scss'
-import { useGetVerifiedAddress } from 'queries/useGetVerifiedAddress'
+import { useVerifiedAddress } from 'queries/useVerifiedAddress'
 import { ADDRESS_SKELETON } from 'constants/initialValues'
 import { useTranslation } from 'next-i18next'
 
@@ -49,7 +49,7 @@ export const AddressVerificationField = ({
   const [fieldProps, metaProps] = useField(name)
   const showError = showsErrors && useShowErrors(name)
   const radioRef = useRef<HTMLInputElement>(null)
-  const verifiedAddressData = useGetVerifiedAddress(address)
+  const verifiedAddressData = useVerifiedAddress(address)
 
   useFocusFirstError(metaProps.error, radioRef)
 
