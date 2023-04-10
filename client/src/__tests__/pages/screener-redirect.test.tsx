@@ -77,14 +77,12 @@ describe('Screener-redirect page', () => {
 
       expect(screen.getByText('non_resident.heading')).toBeInTheDocument()
 
-      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
     })
 
     it('when needing to file in another state', async () => {
@@ -107,14 +105,12 @@ describe('Screener-redirect page', () => {
 
       expect(screen.getByText('other_state.heading')).toBeInTheDocument()
 
-      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
 
       const otherStateButton = screen.getByText('other_state.button')
 
@@ -146,14 +142,12 @@ describe('Screener-redirect page', () => {
 
       expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
 
-      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
 
       const militaryMvpButton = screen.getByText('military_mvp.label.button')
 
@@ -185,14 +179,12 @@ describe('Screener-redirect page', () => {
 
       expect(screen.getByText('disability.heading')).toBeInTheDocument()
 
-      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
 
       const disabilityButton = screen.getByText('disability.label.button')
 
@@ -223,14 +215,12 @@ describe('Screener-redirect page', () => {
 
       expect(screen.getByText('federal.heading')).toBeInTheDocument()
 
-      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('maritime.heading')).not.toBeInTheDocument()
 
       const federalButton = screen.getByText('federal.label.button')
 
@@ -259,16 +249,11 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('maritime.heading')).toBeInTheDocument()
-
-      expect(screen.queryByText('canada.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.getByText('title_apply_via_phone')).toBeInTheDocument()
+      expect(screen.getByText('warning_maritime')).toBeInTheDocument()
+      expect(
+        screen.getByText('instructions_call_within_us')
+      ).toBeInTheDocument()
     })
   })
 })

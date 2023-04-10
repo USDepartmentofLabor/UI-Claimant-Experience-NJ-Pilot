@@ -100,6 +100,39 @@ const ScreenerRedirect: NextPage = () => {
     )
   }
 
+  if (screener_maritime_employer_eighteen_months) {
+    return (
+      <DirectionalTemplate
+        title={t('title_apply_via_phone')}
+        warning={t('warning_maritime')}
+      >
+        <Trans
+          t={t}
+          i18nKey="instructions_call_within_us"
+          components={{
+            OUTSIDE_US_AGENT_NUMBER_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_1_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_1}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_2_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_2}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_3_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_3}`} />
+            ),
+          }}
+        />
+        <p>{t('call_center_schedule')}</p>
+      </DirectionalTemplate>
+    )
+  }
+
   // TODO: As we update this page to use the new design, the following should be removed in
   // favor of using <DirectionalTemplate>. Make sure to also remove any obsolete content strings.
   const borderStyle = 'border-bottom-1px border-base-lighter padding-bottom-4'
@@ -174,14 +207,6 @@ const ScreenerRedirect: NextPage = () => {
                 <li>
                   {t('info_alert.items.federal')}
                   <Link variant="nav" href={'#federal'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-              {screener_maritime_employer_eighteen_months && (
-                <li>
-                  {t('info_alert.items.maritime')}
-                  <Link variant="nav" href={'#maritime'}>
                     {t('read_more')}
                   </Link>
                 </li>
@@ -314,30 +339,6 @@ const ScreenerRedirect: NextPage = () => {
                 {t('federal.label.button')}
               </Button>
             </p>
-          </div>
-        )}
-
-        {screener_maritime_employer_eighteen_months && (
-          <div>
-            <h2 id="maritime">{t('maritime.heading')}</h2>
-            <p>{t('maritime.label.line1')}</p>
-            <div>
-              <Trans t={t} i18nKey="maritime.label.line2">
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_1}`}>
-                  {CLAIMS_AGENT_NUMBER_1}
-                </a>
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_2}`}>
-                  {CLAIMS_AGENT_NUMBER_2}
-                </a>
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_3}`}>
-                  {CLAIMS_AGENT_NUMBER_3}
-                </a>
-                <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`}>
-                  {OUTSIDE_US_AGENT_NUMBER}
-                </a>
-              </Trans>
-            </div>
-            <p>{t('agent_contact.label.line1')}</p>
           </div>
         )}
       </main>

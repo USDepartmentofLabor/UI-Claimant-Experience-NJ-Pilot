@@ -7,8 +7,12 @@ import {
 } from 'constants/phoneNumbers'
 const redirect = {
   title_call_us: 'Call our contact center',
+  title_apply_via_phone: 'Apply over the phone',
   warning_canada: 'Canadian residents need to apply over the phone.',
+  warning_maritime:
+    'People who had maritime employment in the last 18 months need to apply over the phone',
   instructions_canada: `<p>Apply for unemployment insurance by calling <OUTSIDE_US_AGENT_NUMBER_LINK>${OUTSIDE_US_AGENT_NUMBER}</OUTSIDE_US_AGENT_NUMBER_LINK>. Canadian residents need to apply over the phone.</p>`,
+  instructions_call_within_us: `<p>Apply for unemployment insurance by calling <CLAIMS_AGENT_NUMBER_1_LINK>${CLAIMS_AGENT_NUMBER_1}</CLAIMS_AGENT_NUMBER_1_LINK>, <CLAIMS_AGENT_NUMBER_2_LINK>${CLAIMS_AGENT_NUMBER_2}</CLAIMS_AGENT_NUMBER_2_LINK>, or <CLAIMS_AGENT_NUMBER_3_LINK>${CLAIMS_AGENT_NUMBER_3}</CLAIMS_AGENT_NUMBER_3_LINK>. If you have a non-New Jersey area code call <OUTSIDE_US_AGENT_NUMBER_LINK>${OUTSIDE_US_AGENT_NUMBER}</OUTSIDE_US_AGENT_NUMBER_LINK>.</p>`,
   call_center_schedule:
     'Our contact center is open from 8:30 AM to 3 PM, Monday through Friday, excluding holidays. We recommend calling as close to 8 AM as possible.',
   page_title: 'Let’s try another way',
@@ -26,8 +30,6 @@ const redirect = {
       disability: 'You might need to file for disability instead. ',
       federal:
         'Because you said you had federal employment, you’ll need to use our standard form. ',
-      maritime:
-        "Because you said you had maritime employment, you'll need to apply with an agent. ",
     },
   },
   read_more: 'Read more.',
@@ -81,14 +83,6 @@ const redirect = {
       line1:
         'We are continuously improving our new form experience, but it does not yet support federal workers. Please use our standard web form to continue your application.',
       button: 'Continue',
-    },
-  },
-  maritime: {
-    heading: 'Apply with an agent (maritime)',
-    label: {
-      line1:
-        'Your application could not be processed online because you were a Maritime Employee in the last 18 months.',
-      line2: `In order to continue filing your current application, please contact a Claims Agent at <0>${CLAIMS_AGENT_NUMBER_1}</0>, <1>${CLAIMS_AGENT_NUMBER_2}</1>, or <2>${CLAIMS_AGENT_NUMBER_3}</2>. If you reside out of state, please contact a Claims Agent at <3>${OUTSIDE_US_AGENT_NUMBER}</3>.`,
     },
   },
   agent_contact: {
