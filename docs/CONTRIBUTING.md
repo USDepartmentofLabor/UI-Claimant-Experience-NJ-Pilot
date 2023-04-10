@@ -121,4 +121,14 @@ Congratulations :tada::tada:
 Once your changes are merged to `main`, they will be eligible to be picked up by [CI/CD pipelines](./cicd-deployments.md) for deployment in lower
 environments on the path to production.
 
-<!-- TODO: Dependencies + Dependabot -->
+## Dependabot
+
+This project uses [Dependabot](https://docs.github.com/en/code-security/dependabot) to keep dependencies up-to-date.
+Dependabot configuration for this project can be found [here](../.github/dependabot.yml).
+The team reviews and approves dependabot Pull Requests as they come in, based on availability, severity, and compatibility (i.e. less breaking changes are more likely to be merged faster).
+No one particular person is responsible for, but the entire engineering team is accountable for, shepherding dependabot updates through.
+
+For dependencies following [Semver](https://semver.org/), minor and patch version updates are low-risk and require minimal to no manual testing.
+Major version updates may not introduce breaking changes, but are deserving of additional scrutiny.
+
+The most efficient way to enable dependabot PRs to be merged is to leave an approving PR review with the comment `@dependabot squash and merge`.

@@ -1,3 +1,21 @@
+# Configuration file for the Grype vulnerability scanner.
+# https://github.com/anchore/grype
+#
+# Vulnerabilities can be added to the Grype ignore list here.
+#
+# When adding a vulnerability to the ignore list, please first create a github
+# issue in the claimant intake application's issue tracker with as much detail
+# and context about the vulnerability as possible: the reason for ignoring the
+# finding, links to documentation and/or discussions about the finding, etc.
+# This will help with tracking eventual remediation of the finding and provide
+# context for other team  members.
+#
+# Format for adding a vulnerability to the ignore list:
+#
+#   # (Link to github issue) https://github.com/newjersey/dol-ui-claimant-intake/issues/123
+#   - vulnerability: The-CVE-or-vuln-id
+#     package:
+#       name: package-name
 output: table
 ignore:
   - fix-state: not-fixed
@@ -6,6 +24,7 @@ ignore:
   # Ignore the following SnakeYAML vulnerabilities. The claimant intake
   # application does not use SnakeYAML to parse untrusted input.
   # See the discussion at https://github.com/spring-projects/spring-boot/issues/32221
+  # https://github.com/newjersey/dol-ui-claimant-intake/issues/1708
   - vulnerability: GHSA-mjmj-j48q-9wg2
     package:
       name: snakeyaml

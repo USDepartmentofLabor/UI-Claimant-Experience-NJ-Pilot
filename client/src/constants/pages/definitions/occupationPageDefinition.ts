@@ -7,9 +7,10 @@ export const OccupationPageDefinition: PageDefinition = {
   heading: i18n_claimForm.t('occupation.heading'),
   path: Routes.CLAIM.OCCUPATION,
   validationSchema: object().shape({
-    job_title: string().required(
-      i18n_claimForm.t('occupation.job_title.errors.required')
-    ),
+    job_title: string()
+      .trim()
+      .required(i18n_claimForm.t('occupation.job_title.errors.required'))
+      .min(3, i18n_claimForm.t('occupation.job_title.errors.minLength')),
     job_description: string()
       .max(255, i18n_claimForm.t('occupation.job_description.errors.maxLength'))
       .required(i18n_claimForm.t('occupation.job_description.errors.required')),

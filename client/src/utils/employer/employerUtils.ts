@@ -1,11 +1,8 @@
-import { Employer, ImportedEmployerAddress } from 'types/claimantInput'
+import { Employer } from 'types/claimantInput'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
 // Loops WGPM returns FEINs with 15 characters, left aligned and right-padded to 15 characters
 const FORMATTED_FEIN_LENGTH = 15
-
-// Loops addresses should have city and state present on the last filled address line in "{CITY} {STATE_CODE}" format
-const CITY_STATE_PATTERN = /([A-z]*[,]?[ ][A-Z]{2})$/
 
 export const findFirstImportedEmployerIndex = (employers: Employer[]) =>
   employers.findIndex(
@@ -64,50 +61,6 @@ export const transformWgpmEmployer = (
   payments_received: [],
   LOCAL_pay_types: [],
 })
-
-/**
- * In theory, the city and state can be found on the last filled line of
- * the employer address. Returns an object with the best attempt at parsing city
- * and state out of the input
- * @param importedAddress the address in LOOPS format
- */
-export const parseCityAndStateFromImportedAddress = (
-  importedAddress: ImportedEmployerAddress
-): { city: string | undefined; state: string | undefined } => {
-  const {
-    employerAddressLine1,
-    employerAddressLine2,
-    employerAddressLine3,
-    employerAddressLine4,
-    employerAddressLine5,
-  } = importedAddress
-
-  const lastFilledLine =
-    employerAddressLine5 ||
-    employerAddressLine4 ||
-    employerAddressLine3 ||
-    employerAddressLine2 ||
-    employerAddressLine1
-
-  const parseable =
-    lastFilledLine !== null && lastFilledLine.match(CITY_STATE_PATTERN)
-
-  if (parseable) {
-    const parts = lastFilledLine?.split(/[,]?[ ]/)
-    const city = parts[0]
-    const state = parts[1]
-
-    return {
-      city: city,
-      state: state,
-    }
-  } else {
-    return {
-      city: undefined,
-      state: undefined,
-    }
-  }
-}
 
 export const findEmployerByFein = (employers: Employer[], fein: string) =>
   employers.find(

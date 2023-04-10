@@ -27,6 +27,8 @@ and other development commands.
 
 - [Python (with PIP)](https://www.python.org/downloads/)
   - PIP is used to install [pre-commit](https://pre-commit.com/)
+- Zscaler - Installed as part of onboarding when you get a `.dol.nj.gov` email.
+  - This project integrates with services (e.g. Address Verification) that is only accessible when on the NJ state network. When running the app locally, Zscaler must be running and authorized. If not, you will see a 500 error.
 
 #### Client and Cypress (e2e)
 
@@ -209,6 +211,18 @@ To run the client server locally:
 make client-dev
 ```
 
+### Troubleshooting Local Web Client
+
+When running the above commands, you may encounter one of the following:
+
+#### 500 server error from `/partial-claim`
+
+Run `make docker-clean`
+
+#### Failed network requests for Address Verification or Occupations API
+
+These downstream services require running on the NJ network. Make sure Zscaler is running and your session still is active.
+
 ## Web server
 
 To run the api server locally:
@@ -246,6 +260,11 @@ The web server exposes several API endpoints, and uses swagger as a self-documen
 To use the swagger user interface `/intake-api/swagger-ui.html`
 
 To view the JSON-formatted api documentation, navigate to `/intake-api/v3/api-docs`
+
+## Makefile
+
+Run `make` or `make help` to see the available `make` commands we use with this
+repository.
 
 ## Docker setup
 
@@ -365,15 +384,22 @@ make docker-up
 
 You can now visit the application at https://sandbox-claimant-intake:8443.
 
+### Wiremock
+
+Locally, some API endpoints are not available, or it is not desired to make external requests for certain endpoints (e.g. Wage record).
+For those instances, [Wiremock](https://wiremock.org/) is available for stubbing external API endpoints.
+
+This project [runs Wiremock in a docker container](https://wiremock.org/docs/docker/) when invoking `make docker-services-up`.
+
+API requests made by the application running locally are intercepted by Wiremock, and (provided a matching [JSON stub](https://wiremock.org/docs/stubbing/)),
+specific responses can be returned.
+
+See [wiremock/mappings](./wiremock/mappings/) for the JSON mappings stored and shared in version control.
+
 ## CI/CD
 
 See [CI/CD Configurations](./docs/cicd-deployments.md) for an overview of the
 application's approach to CI/CD.
-
-## Makefile
-
-Run `make` or `make help` to see the available `make` commands we use with this
-repository.
 
 ## Testing
 

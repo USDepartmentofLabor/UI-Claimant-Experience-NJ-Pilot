@@ -40,7 +40,6 @@ export type ClaimantInput = Partial<
     PrequalInput &
     IdentityInput &
     PersonalInput &
-    AddressVerificationInput &
     ContactInput &
     DemographicsInput &
     EmployerInput &
@@ -207,12 +206,6 @@ export type PersonNameInput = {
   suffix: SuffixOption | EmptyOption
 }
 
-export type AddressOption = {
-  label: string
-  value: string
-  address: AddressInput
-}
-
 export type AddressInput = {
   address: string
   address2: string
@@ -265,6 +258,10 @@ export type IdentityInput = {
 export type OccupationInput = {
   job_title: string
   job_description: string
+  occucoder_code: string | null
+  occucoder_job_title: string | null
+  occucoder_description: string | null
+  occucoder_score: number | null
 }
 
 export type EducationAndTrainingInput = {

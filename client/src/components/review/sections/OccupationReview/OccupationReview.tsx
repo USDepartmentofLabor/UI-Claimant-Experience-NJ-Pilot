@@ -19,6 +19,12 @@ export const OccupationReview = () => {
         label={t('occupation.job_description.label')}
         value={claimFormValues?.job_description}
       />
+      {claimFormValues?.occucoder_code ? (
+        <ReviewElement
+          label={t('occupation.occucoder_code.label')}
+          value={claimFormValues?.occucoder_job_title}
+        />
+      ) : null}
     </ReviewSection>
   )
 }

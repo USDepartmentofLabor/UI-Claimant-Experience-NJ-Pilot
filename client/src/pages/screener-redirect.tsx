@@ -8,6 +8,7 @@ import {
   SummaryBox,
   SummaryBoxContent,
   Link,
+  Alert,
 } from '@trussworks/react-uswds'
 import {
   OUTSIDE_US_AGENT_NUMBER,
@@ -19,6 +20,47 @@ import {
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 
+function DirectionalTemplate(props: {
+  children: React.ReactNode
+  title: string
+  warning?: React.ReactNode
+  action?: React.ReactNode
+}) {
+  return (
+    <>
+      <Head>
+        <title>{props.title}</title>
+      </Head>
+      <main
+        id="main-content"
+        className="maxw-tablet margin-x-auto desktop:margin-x-0 margin-bottom-3 desktop:grid-col-8"
+      >
+        <h1>{props.title}</h1>
+        {props.warning && (
+          <Alert type="warning" headingLevel="h2" role="alert" slim>
+            {props.warning}
+          </Alert>
+        )}
+        {props.children}
+        {props.action && <div className="margin-top-4">{props.action}</div>}
+      </main>
+    </>
+  )
+}
+
+/**
+ * Based on the claimant's screener answers, this page directs them to the
+ * appropriate next step.
+ *
+ * - Some scenarios require a phone call.
+ * - Some scenarios indicate that the claimant is likely not eligible for
+ *  benefits, however we don't want to prevent someone from applying — a claims
+ *  agent ultimately should be the one making that determination.
+ * - Some scenarios may overlap, in which case any scenario that requires applying
+ *  via phone should overrule any scenario that allows filing online. If multiple
+ *  scenarios require a phone call, the scenario with the more specific phone number
+ *  should be used.
+ */
 const ScreenerRedirect: NextPage = () => {
   const { t } = useTranslation('redirect')
   const { screenerInput } = useContext(IntakeAppContext)
@@ -36,6 +78,30 @@ const ScreenerRedirect: NextPage = () => {
   const ipInUS = true // temporary until we pull IP addresses
   const ipInNJ = true // temporary until we pull IP addresses
 
+  // Canada claims have one phone number, so this takes precedence over other scenarios that also require calling
+  if (screener_live_in_canada) {
+    return (
+      <DirectionalTemplate
+        title={t('title_call_us')}
+        warning={t('warning_canada')}
+      >
+        <Trans
+          t={t}
+          i18nKey="instructions_canada"
+          components={{
+            OUTSIDE_US_AGENT_NUMBER_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`} />
+            ),
+          }}
+        />
+        <p>{t('call_center_schedule')}</p>
+      </DirectionalTemplate>
+    )
+  }
+
+  // TODO: As we update this page to use the new design, the following should be removed in
+  // favor of using <DirectionalTemplate>. Make sure to also remove any obsolete content strings.
   const borderStyle = 'border-bottom-1px border-base-lighter padding-bottom-4'
   return (
     <>
@@ -59,14 +125,6 @@ const ScreenerRedirect: NextPage = () => {
                 <li>
                   {t('info_alert.items.ip_deny')}
                   <Link variant="nav" href={'#ip_deny'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-              {screener_live_in_canada && (
-                <li>
-                  {t('info_alert.items.canada')}
-                  <Link variant="nav" href={'#canada'}>
                     {t('read_more')}
                   </Link>
                 </li>
@@ -136,18 +194,6 @@ const ScreenerRedirect: NextPage = () => {
           <div className={borderStyle}>
             <h2 id="ip_deny">{t('ip_deny.heading')}</h2>
             <p>{t('ip_deny.label')}</p>
-          </div>
-        )}
-
-        {screener_live_in_canada && (
-          <div className={borderStyle}>
-            <h2 id="canada">{t('canada.heading')}</h2>
-            <Trans t={t} i18nKey="canada.label.line1">
-              <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`}>
-                {OUTSIDE_US_AGENT_NUMBER}
-              </a>
-            </Trans>
-            <p>{t('canada.label.line2')}</p>
           </div>
         )}
 
