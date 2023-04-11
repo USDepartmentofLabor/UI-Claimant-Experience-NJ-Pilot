@@ -1,12 +1,5 @@
 import { object } from 'yup'
 import { i18n_claimForm } from 'i18n/i18n'
-/*
-import {
-  yupAddress,
-  yupAddressWithoutPOBox,
-  yupName,
-} from 'validations/yup/custom'
-*/
 import { PageDefinition } from 'constants/pages/pageDefinitions'
 import { Routes } from 'constants/routes'
 

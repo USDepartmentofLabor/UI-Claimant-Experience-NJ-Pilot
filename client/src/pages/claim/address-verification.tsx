@@ -82,7 +82,7 @@ const AddressVerification: NextPageWithLayout = () => {
           <>
             {enteredResidenceAddress && (
               <AddressVerificationField
-                name="mailing_address"
+                name="residence_address"
                 address={enteredResidenceAddress}
                 legend={t(`address_verification.legend.residence`)}
                 changeAddress={handleResidenceAddressChange}
@@ -90,7 +90,7 @@ const AddressVerification: NextPageWithLayout = () => {
             )}
             {!isMailingSame && enteredMailingAddress && (
               <AddressVerificationField
-                name="residence_address"
+                name="mailing_address"
                 address={enteredMailingAddress}
                 legend={t(`address_verification.legend.mailing`)}
                 changeAddress={handleMailingAddressChange}
