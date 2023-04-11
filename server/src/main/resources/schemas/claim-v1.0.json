@@ -829,7 +829,8 @@
     },
     "preferred_language_other": {
       "type": "string",
-      "maxLength": 64
+      "maxLength": 50,
+      "pattern": "^[a-zA-Z ]{50}$"
     },
     "sex": {
       "type": "string",

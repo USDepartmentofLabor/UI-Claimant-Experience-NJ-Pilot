@@ -34,8 +34,12 @@ export const ContactPageDefinition: PageDefinition = {
       is: 'other',
       then: string()
         .max(
-          32,
+          50,
           i18n_claimForm.t('contact.preferred_language.errors.maxLength')
+        )
+        .matches(
+          /^[A-Za-z ]+$/,
+          i18n_claimForm.t('contact.other_language.errors.alphabetical')
         )
         .required(
           i18n_claimForm.t('contact.preferred_language.errors.required')

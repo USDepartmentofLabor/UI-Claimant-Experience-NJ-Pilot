@@ -955,10 +955,15 @@ const claimForm = {
       },
       errors: {
         required: 'Please specify the language you speak',
-        maxLength: 'Preferred language must be at most 32 characters',
+        maxLength: 'Preferred language must be at most 50 characters',
       },
     },
-    other_language: 'Enter the language you speak',
+    other_language: {
+      label: 'Enter the language you speak',
+      errors: {
+        alphabetical: `Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your preferred contact language with only the letters A-Z`,
+      },
+    },
   },
   name: {
     legal_name: 'What is your legal name?',
