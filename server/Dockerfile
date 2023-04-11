@@ -8,8 +8,8 @@ RUN mkdir -p /tmp/app /app/certs \
 
 # Download the AWS Distro for OpenTelemetry (ADOT) Java Auto-Instrumentation Agent.
 # Update these arguments when upgrading to newer versions of the agent.
-ARG ADOT_VERSION=1.21.1
-ARG ADOT_SHA256SUM=e064b0e176b314ede5141e67f948850acc5d5fbd464e478086903e4170dd8a2a
+ARG ADOT_VERSION=1.23.0
+ARG ADOT_SHA256SUM=d105926895f9b8f0bab2ce958565af41676838be208d8d17065bfa884d41e309
 
 # hadolint ignore=DL4006
 RUN curl -sSLO https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/v"${ADOT_VERSION}"/aws-opentelemetry-agent.jar \
