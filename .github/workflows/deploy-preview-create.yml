@@ -15,7 +15,7 @@ concurrency:
 
 env:
   JAVA_VERSION: 17.0.6+10
-  NODE_VERSION: 16.19.1
+  NODE_VERSION: 16.20.0
   OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
 
 jobs:
@@ -57,19 +57,22 @@ jobs:
           echo "preview-base-url-wo-https=$PREVIEW_BASE_URL_WITHOUT_HTTPS" >> $GITHUB_OUTPUT
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
-      - name: Comment preview will be created
-        uses: peter-evans/create-or-update-comment@v2
+      - name: Find comment
+        uses: peter-evans/find-comment@v2
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: Deployment Preview
+
+      - name: Comment preview will be created/updated
+        uses: peter-evans/create-or-update-comment@v3
         if: steps.preview-check.outputs.run-deployment-preview == 'true'
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: Deployment Preview will be created for this PR, ${{ github.sha }}, at ${{ steps.server-base-url.outputs.server-base-url }}
-
-      - name: Comment preview will not be created
-        uses: peter-evans/create-or-update-comment@v2
-        if: steps.preview-check.outputs.run-deployment-preview == 'false'
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: Deployment Preview will not be created for this PR at ${{ github.sha }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          body: "Deployment Preview URL: ${{ steps.server-base-url.outputs.server-base-url }}"
+          edit-mode: replace
 
   build-lint-and-test:
     needs: [should-deploy-preview-run]

@@ -215,6 +215,10 @@ make client-dev
 
 When running the above commands, you may encounter one of the following:
 
+#### 500 server error from `/partial-claim`
+
+Run `make docker-clean`
+
 #### Failed network requests for Address Verification or Occupations API
 
 These downstream services require running on the NJ network. Make sure Zscaler is running and your session still is active.

@@ -75,6 +75,8 @@
     "start": "next start",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "test:update": "jest --updateSnapshot",
+    "test:watch": "jest --watch",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
