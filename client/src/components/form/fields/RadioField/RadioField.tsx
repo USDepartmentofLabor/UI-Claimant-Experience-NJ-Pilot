@@ -15,7 +15,7 @@ import styles from './RadioField.module.scss'
 interface IRadioOption {
   label: ReactNode
   value: string
-  labelDescription?: string
+  labelDescription?: string | ReactNode
 }
 
 type RadioInputProps = Optional<
