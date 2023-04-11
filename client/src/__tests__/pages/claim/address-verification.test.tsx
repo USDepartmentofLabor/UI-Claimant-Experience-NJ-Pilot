@@ -43,6 +43,7 @@ describe('Address verifications component', () => {
 
   const MAILING_ADDRESS = {
     address: '123 Test St',
+    address2: '',
     city: 'Hoboken',
     state: 'NJ',
     zipcode: '07030',
@@ -50,6 +51,7 @@ describe('Address verifications component', () => {
 
   const RESIDENTIAL_ADDRESS = {
     address: '456 Test St',
+    address2: '',
     city: 'Woodbridge',
     state: 'NJ',
     zipcode: '07001',

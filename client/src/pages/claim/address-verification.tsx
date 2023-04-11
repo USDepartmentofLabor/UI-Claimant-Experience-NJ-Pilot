@@ -1,6 +1,6 @@
 import { AddressVerificationInput } from 'types/claimantInput'
 import { NextPageWithLayout } from 'pages/_app'
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
 import { AddressVerificationPageDefinition } from 'constants/pages/definitions/addressVerificationPageDefinition'
 import { ClaimFormik } from 'components/form/ClaimFormik/ClaimFormik'
@@ -32,8 +32,8 @@ function AddressSelector() {
   const { t } = useTranslation('claimForm')
   const { values, setFieldValue } = useFormikContext<AddressVerificationInput>()
   //kept as an explicit constant as the handleAddressChange updates formik and overwrites the value
-  const ENTERED_RESIDENTIAL_ADDRESS = values.residence_address
-  const ENTERED_MAILING_ADDRESS = values.mailing_address
+  const [ENTERED_RESIDENTIAL_ADDRESS] = useState(values.residence_address)
+  const [ENTERED_MAILING_ADDRESS] = useState(values.mailing_address)
 
   const handleResidenceAddressChange = async (
     evt: React.ChangeEvent<HTMLInputElement>
@@ -43,7 +43,7 @@ function AddressSelector() {
     if (optionToSave) {
       await setFieldValue('residence_address', optionToSave.address)
       // keep mailing address the same as the residence
-      if (!values.LOCAL_mailing_address_same) {
+      if (values.LOCAL_mailing_address_same) {
         await setFieldValue('mailing_address', optionToSave.address)
       }
     } // otherwise make no changes to preserve input from previous screen despite error here
@@ -53,7 +53,10 @@ function AddressSelector() {
     evt: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { value } = evt.target
-    await setFieldValue('mailing_address', value)
+    const optionToSave = mailingAddressOptions?.find((o) => o.value === value)
+    if (optionToSave) {
+      await setFieldValue('mailing_address', optionToSave.address)
+    } // otherwise make no changes to preserve input from previous screen despite error here
   }
 
   const verifiedResidenceAddressData = useVerifiedAddress(
@@ -61,12 +64,12 @@ function AddressSelector() {
   )
   const residenceAddressOptions = [
     {
-      value: 'AS_ENTERED',
+      value: 'RESIDENCE_AS_ENTERED',
       label: t('address_verification.entered'),
       address: ENTERED_RESIDENTIAL_ADDRESS,
     },
     {
-      value: 'AS_VERIFIED',
+      value: 'RESIDENCE_AS_VERIFIED',
       label: t('address_verification.verified'),
       address: verifiedResidenceAddressData?.data?.data?.address,
     },
@@ -75,12 +78,12 @@ function AddressSelector() {
   const verifiedMailingAddressData = useVerifiedAddress(values.mailing_address)
   const mailingAddressOptions = [
     {
-      value: 'AS_ENTERED',
+      value: 'MAILING_AS_ENTERED',
       label: t('address_verification.entered'),
       address: ENTERED_MAILING_ADDRESS,
     },
     {
-      value: 'AS_VERIFIED',
+      value: 'MAILING_AS_VERIFIED',
       label: t('address_verification.verified'),
       address: verifiedMailingAddressData?.data?.data?.address,
     },
@@ -99,9 +102,9 @@ function AddressSelector() {
             labelDescription: (
               <>
                 {verifiedResidenceAddressData.isLoading &&
-                  residenceAddressOption.value === 'AS_VERIFIED' && (
+                  residenceAddressOption.value === 'RESIDENCE_AS_VERIFIED' && (
                     <Spinner
-                      data-testid="address-verification-spinner"
+                      data-testid="residence-address-verification-spinner"
                       className="margin-top-2, padding-left-05"
                     />
                   )}
@@ -122,6 +125,7 @@ function AddressSelector() {
       />
       {!values.LOCAL_mailing_address_same && (
         <RadioField
+          tile
           name="mailing_address"
           legend={t('address_verification.legend.mailing')}
           onChange={handleMailingAddressChange}
@@ -131,14 +135,23 @@ function AddressSelector() {
               label: mailingAddressOption.label,
               labelDescription: (
                 <>
-                  <div>
-                    <div>{mailingAddressOption.address?.address}</div>
+                  {verifiedMailingAddressData.isLoading &&
+                    mailingAddressOption.value === 'MAILING_AS_VERIFIED' && (
+                      <Spinner
+                        data-testid="mailing-address-verification-spinner"
+                        className="margin-top-2, padding-left-05"
+                      />
+                    )}
+                  {mailingAddressOption.address && (
                     <div>
-                      {mailingAddressOption.address?.city},{' '}
-                      {mailingAddressOption.address?.state}{' '}
-                      {mailingAddressOption.address?.zipcode}
+                      <div>{mailingAddressOption.address?.address}</div>
+                      <div>
+                        {mailingAddressOption.address?.city},{' '}
+                        {mailingAddressOption.address?.state}{' '}
+                        {mailingAddressOption.address?.zipcode}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </>
               ),
             }
