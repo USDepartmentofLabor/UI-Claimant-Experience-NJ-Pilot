@@ -53,8 +53,8 @@ e2e-test-gui-docker-fast: ## Runs Cypress tests in browser running the app docke
 e2e-test-headless-local: ## Runs Cypress tests on the command line running the app on localhost
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
-e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized TODO: Don't skip lighthouse
-	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
+e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
 
 e2e-test-headless-docker-fast: ## Runs Cypress tests on the command line running the app dockerized without lighthouse or a11y
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
