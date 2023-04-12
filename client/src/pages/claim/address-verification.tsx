@@ -17,18 +17,28 @@ import { useTranslation } from 'next-i18next'
 import { RadioField } from '../../components/form/fields/RadioField/RadioField'
 import { useFormikContext } from 'formik'
 import { useVerifiedAddress } from '../../queries/useVerifiedAddress'
-import Spinner from '../../components/Spinner/Spinner'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
+const AS_ENTERED = 'AS_ENTERED'
+const AS_VERIFIED = 'AS_VERIFIED'
 export const pageInitialValues: AddressVerificationInput = {
   residence_address: { ...ADDRESS_SKELETON },
   LOCAL_mailing_address_same: false,
   mailing_address: { ...ADDRESS_SKELETON },
+  LOCAL_residence_address_verification_selection: AS_ENTERED,
+  LOCAL_mailing_address_verification_selection: AS_ENTERED,
 }
 
-function AddressSelector() {
+interface AddressSelectorInputProps {
+  handleChangeAddress: any
+  name: string
+  legend: string
+  options: any
+}
+
+function AddressVerificationFeedback() {
   const { t } = useTranslation('claimForm')
   const { values, setFieldValue } = useFormikContext<AddressVerificationInput>()
   //kept as an explicit constant as the handleAddressChange updates formik and overwrites the value
@@ -62,100 +72,47 @@ function AddressSelector() {
   const verifiedResidenceAddressData = useVerifiedAddress(
     values.residence_address
   )
+  const verifiedMailingAddressData = useVerifiedAddress(values.mailing_address)
+
   const residenceAddressOptions = [
     {
-      value: 'RESIDENCE_AS_ENTERED',
+      value: AS_ENTERED,
       label: t('address_verification.entered'),
       address: ENTERED_RESIDENTIAL_ADDRESS,
     },
     {
-      value: 'RESIDENCE_AS_VERIFIED',
+      value: AS_VERIFIED,
       label: t('address_verification.verified'),
       address: verifiedResidenceAddressData?.data?.data?.address,
     },
   ] as const
-
-  const verifiedMailingAddressData = useVerifiedAddress(values.mailing_address)
   const mailingAddressOptions = [
     {
-      value: 'MAILING_AS_ENTERED',
+      value: AS_ENTERED,
       label: t('address_verification.entered'),
       address: ENTERED_MAILING_ADDRESS,
     },
     {
-      value: 'MAILING_AS_VERIFIED',
+      value: AS_VERIFIED,
       label: t('address_verification.verified'),
       address: verifiedMailingAddressData?.data?.data?.address,
     },
   ] as const
+
   return (
     <>
-      <RadioField
-        tile
-        name="residence_address"
+      <AddressSelector
+        handleChangeAddress={handleResidenceAddressChange}
+        name={'LOCAL_residence_address_verification_selection'}
         legend={t('address_verification.legend.residence')}
-        onChange={handleResidenceAddressChange}
-        options={residenceAddressOptions.map((residenceAddressOption) => {
-          return {
-            value: residenceAddressOption.value,
-            label: residenceAddressOption.label,
-            labelDescription: (
-              <>
-                {verifiedResidenceAddressData.isLoading &&
-                  residenceAddressOption.value === 'RESIDENCE_AS_VERIFIED' && (
-                    <Spinner
-                      data-testid="residence-address-verification-spinner"
-                      className="margin-top-2, padding-left-05"
-                    />
-                  )}
-                {residenceAddressOption.address && (
-                  <div>
-                    <div>{residenceAddressOption.address.address}</div>
-                    <div>
-                      {residenceAddressOption.address.city},{' '}
-                      {residenceAddressOption.address.state}{' '}
-                      {residenceAddressOption.address.zipcode}
-                    </div>
-                  </div>
-                )}
-              </>
-            ),
-          }
-        })}
+        options={residenceAddressOptions}
       />
       {!values.LOCAL_mailing_address_same && (
-        <RadioField
-          tile
-          name="mailing_address"
+        <AddressSelector
+          handleChangeAddress={handleMailingAddressChange}
+          name={'LOCAL_mailing_address_verification_selection'}
           legend={t('address_verification.legend.mailing')}
-          onChange={handleMailingAddressChange}
-          options={mailingAddressOptions.map((mailingAddressOption) => {
-            return {
-              value: mailingAddressOption.value,
-              label: mailingAddressOption.label,
-              labelDescription: (
-                <>
-                  {verifiedMailingAddressData.isLoading &&
-                    mailingAddressOption.value === 'MAILING_AS_VERIFIED' && (
-                      <Spinner
-                        data-testid="mailing-address-verification-spinner"
-                        className="margin-top-2, padding-left-05"
-                      />
-                    )}
-                  {mailingAddressOption.address && (
-                    <div>
-                      <div>{mailingAddressOption.address?.address}</div>
-                      <div>
-                        {mailingAddressOption.address?.city},{' '}
-                        {mailingAddressOption.address?.state}{' '}
-                        {mailingAddressOption.address?.zipcode}
-                      </div>
-                    </div>
-                  )}
-                </>
-              ),
-            }
-          })}
+          options={mailingAddressOptions}
         />
       )}
       <ClaimFormButtons nextStep={nextPage.heading}>
@@ -163,6 +120,40 @@ function AddressSelector() {
         <NextButton nextPage={nextPage.path} />
       </ClaimFormButtons>
     </>
+  )
+}
+
+const AddressSelector = ({
+  handleChangeAddress,
+  name,
+  legend,
+  options,
+}: AddressSelectorInputProps) => {
+  return (
+    <RadioField
+      tile
+      name={name}
+      legend={legend}
+      onChange={handleChangeAddress}
+      options={options.map((mailingAddressOption: any) => {
+        return {
+          value: mailingAddressOption.value,
+          label: mailingAddressOption.label,
+          labelDescription: (
+            <>
+              <div>
+                <div>{mailingAddressOption.address?.address}</div>
+                <div>
+                  {mailingAddressOption.address?.city},{' '}
+                  {mailingAddressOption.address?.state}{' '}
+                  {mailingAddressOption.address?.zipcode}
+                </div>
+              </div>
+            </>
+          ),
+        }
+      })}
+    />
   )
 }
 
@@ -174,7 +165,7 @@ const AddressVerification: NextPageWithLayout = () => {
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
     >
-      <AddressSelector />
+      <AddressVerificationFeedback />
     </ClaimFormik>
   )
 }

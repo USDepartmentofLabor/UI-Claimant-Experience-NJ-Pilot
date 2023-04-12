@@ -195,7 +195,7 @@ export type PaymentInput = {
   apply_for_increased_payment_for_dependents: YesNoInput
 }
 
-export type AddressVerificationInput = ClaimantAddressInput
+export type AddressVerificationInput = ClaimantAddressVerificationInput
 
 export type PersonalInput = ClaimantNameInput & ClaimantAddressInput
 
@@ -233,6 +233,14 @@ type ClaimantAddressInput = {
   residence_address: AddressInput
   mailing_address: AddressInput
   LOCAL_mailing_address_same: boolean // NOT CheckboxInput, because it starts false (is never null)
+}
+
+type ClaimantAddressVerificationInput = {
+  residence_address: AddressInput
+  mailing_address: AddressInput
+  LOCAL_mailing_address_same: boolean // NOT CheckboxInput, because it starts false (is never null)
+  LOCAL_residence_address_verification_selection: string
+  LOCAL_mailing_address_verification_selection: string
 }
 
 export type ClaimantNameInput = {
