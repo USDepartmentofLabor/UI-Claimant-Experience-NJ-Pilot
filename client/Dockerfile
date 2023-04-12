@@ -14,8 +14,9 @@ RUN yarn install --frozen-lockfile
 
 FROM dev-deps AS builder
 
-COPY .eslintrc.yml .
+COPY .eslintrc.js .
 COPY tsconfig.json .
+COPY tsconfig.eslint.json .
 COPY next.config.js .
 COPY next-i18next.config.js .
 COPY public ./public

@@ -16,6 +16,14 @@
     "target": "es5",
     "baseUrl": "src/"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "*.js",
+    ".storybook/**/*.js",
+    ".eslintrc.js"
+  ],
   "exclude": ["node_modules"]
 }

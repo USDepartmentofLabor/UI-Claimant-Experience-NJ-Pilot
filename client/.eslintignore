@@ -1,0 +1,4 @@
+# These don't technically get checked-in, but useful to ignore for when linting locally
+coverage/
+.next/
+.swc/
