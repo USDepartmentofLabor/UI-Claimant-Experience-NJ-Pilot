@@ -235,6 +235,7 @@ describe('Screener-redirect page', () => {
     it('when had maritime employment', () => {
       const screenerInput = {
         ...pageInitialValues,
+        screener_current_country_us: true,
         screener_maritime_employer_eighteen_months: true,
       }
 

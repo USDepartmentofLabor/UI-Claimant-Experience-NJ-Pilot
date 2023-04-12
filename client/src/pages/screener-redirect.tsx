@@ -19,6 +19,7 @@ import {
 } from 'constants/phoneNumbers'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
+import { getScreenerScenario } from 'utils/screenerScenario/getScreenerScenario'
 
 function DirectionalTemplate(props: {
   children: React.ReactNode
@@ -72,14 +73,15 @@ const ScreenerRedirect: NextPage = () => {
     screener_military_service_eighteen_months,
     screener_currently_disabled,
     screener_federal_work_in_last_eighteen_months,
-    screener_maritime_employer_eighteen_months,
   } = screenerInput || {}
 
   const ipInUS = true // temporary until we pull IP addresses
   const ipInNJ = true // temporary until we pull IP addresses
 
   // Canada claims have one phone number, so this takes precedence over other scenarios that also require calling
-  if (screener_live_in_canada) {
+  const screenerScenario = getScreenerScenario(screenerInput)
+
+  if (screenerScenario === 'CANADA_CALL') {
     return (
       <DirectionalTemplate
         title={t('title_call_us')}
@@ -100,7 +102,7 @@ const ScreenerRedirect: NextPage = () => {
     )
   }
 
-  if (screener_maritime_employer_eighteen_months) {
+  if (screenerScenario === 'MARITIME_CALL') {
     return (
       <DirectionalTemplate
         title={t('title_apply_via_phone')}
