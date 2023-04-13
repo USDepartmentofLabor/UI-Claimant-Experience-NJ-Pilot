@@ -25,3 +25,5 @@ e2e/cypress/screenshots
 
 ops/ecs/*-task-definition*.json
 ops/ecs*-task-definition*.json
+
+*.zip

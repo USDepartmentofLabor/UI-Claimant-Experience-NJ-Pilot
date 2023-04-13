@@ -1,0 +1,60 @@
+name: Deploy Smoke Test Canary
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ops/synthetics/smoke-test/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  deploy-canary:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435
+        with:
+          python-version: "3.10"
+
+      - name: Install python dependencies
+        run: pip install -r requirements-ci.txt
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          aws-region: us-east-1
+
+      - name: Construct version tag
+        id: construct-version-tag
+        env:
+          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_COMMIT: ${{ github.sha }}
+        run: |
+          BRANCH_PREFIX="$GIT_BRANCH"
+          # use a generic prefix for all non-main branches
+          if [[ "$BRANCH_PREFIX" != "main" ]]; then
+            BRANCH_PREFIX="branch"
+          fi
+          BUILD_TIME=$(date '+%Y%m%d%H%M%S')
+          VERSION_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
+          echo "version-tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+
+      - name: Build and push deployment artifact
+        env:
+          S3_BUCKET: ${{ secrets.AWS_SYNTHETICS_SOURCE_BUCKET }}
+        run: |
+          make smoke-test-build
+          make smoke-test-push AWS_SYNTHETICS_SOURCE_BUCKET=${{ env.S3_BUCKET }} SMOKE_TEST_VERSION=${{ steps.construct-version-tag.outputs.version-tag }}
+          make smoke-test-deploy AWS_SYNTHETICS_SOURCE_BUCKET=${{ env.S3_BUCKET }} SMOKE_TEST_VERSION=${{ steps.construct-version-tag.outputs.version-tag }}

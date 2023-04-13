@@ -1,0 +1,25 @@
+name: Smoke test
+description: Run a smoke test against the application in a deployed environment
+inputs:
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435
+      with:
+        python-version: "3.10"
+
+    - name: Install python dependencies
+      shell: bash
+      run: pip install -r requirements-ci.txt
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Run smoke test
+      run: python scripts/run-smoke-test-canary.py

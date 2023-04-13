@@ -158,6 +158,15 @@ server-task-definition: ## Create the server ECS task definition
 db-migrations-task-definition: ## Create the db migration ECS task definition
 	./scripts/create-task-definition.py --app db-migrate  --environment $(environment) > ops/ecs-db-migrations-task-definition.json
 
+smoke-test-build: ## Create the smoke test deployment artifact
+	cd ./ops/synthetics/smoke-test && zip smoke-test.zip nodejs/node_modules/smoke-test.js
+
+smoke-test-push: ## Push the smoke test deployment artifact to S3
+	aws s3 cp ./ops/synthetics/smoke-test/smoke-test.zip s3://$(AWS_SYNTHETICS_SOURCE_BUCKET)/synthetics/smoke-test-$(SMOKE_TEST_VERSION).zip
+
+smoke-test-deploy: ## Update the smoke test canary with the new deployment artifact
+	python ./scripts/update-smoke-test-canary.py --bucket $(AWS_SYNTHETICS_SOURCE_BUCKET) --key synthetics/smoke-test-$(SMOKE_TEST_VERSION).zip
+
 wait-for-server: ## Wait for the server health check to return 200
 	./scripts/wait-for-url.py --url http://localhost:8080/intake-api/actuator/health
 
