@@ -57,8 +57,14 @@ describe('Screener-redirect page', () => {
       expect(screen.getByText('instructions_canada')).toBeInTheDocument()
     })
 
-    it('when not a resident of US or Canada', () => {
+    it.each([
+      // Simulate overlapping scenarios to ensure non resident of US and Canada overrules them
+      {},
+      { screener_maritime_employer_eighteen_months: true },
+      { screener_military_service_eighteen_months: true },
+    ])('when not a resident of US or Canada', (screenerInputOverrides) => {
       const screenerInput = {
+        ...screenerInputOverrides,
         ...pageInitialValues,
         screener_current_country_us: false,
         screener_live_in_canada: false,
@@ -75,20 +81,16 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('non_resident.heading')).toBeInTheDocument()
-
-      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
+      expect(screen.getByText('title_not_qualified')).toBeInTheDocument()
+      expect(screen.getByText('non_resident.warning')).toBeInTheDocument()
+      expect(screen.getByText('non_resident.instructions')).toBeInTheDocument()
     })
 
     it('when needing to file in another state', async () => {
       const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
+        screener_current_country_us: true,
         screener_work_nj: 'other' as WorkOption,
       }
 
@@ -126,6 +128,7 @@ describe('Screener-redirect page', () => {
       const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
+        screener_current_country_us: true,
         screener_military_service_eighteen_months: true,
       }
 
@@ -143,7 +146,6 @@ describe('Screener-redirect page', () => {
       expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
 
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
@@ -163,6 +165,7 @@ describe('Screener-redirect page', () => {
       const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
+        screener_current_country_us: true,
         screener_currently_disabled: true,
       }
 
@@ -180,7 +183,6 @@ describe('Screener-redirect page', () => {
       expect(screen.getByText('disability.heading')).toBeInTheDocument()
 
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
@@ -199,6 +201,7 @@ describe('Screener-redirect page', () => {
       const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
+        screener_current_country_us: true,
         screener_federal_work_in_last_eighteen_months: true,
       }
 
@@ -216,7 +219,6 @@ describe('Screener-redirect page', () => {
       expect(screen.getByText('federal.heading')).toBeInTheDocument()
 
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()

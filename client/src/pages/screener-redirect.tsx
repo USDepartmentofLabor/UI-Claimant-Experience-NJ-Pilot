@@ -67,8 +67,6 @@ const ScreenerRedirect: NextPage = () => {
   const { screenerInput } = useContext(IntakeAppContext)
 
   const {
-    screener_current_country_us,
-    screener_live_in_canada,
     screener_work_nj,
     screener_military_service_eighteen_months,
     screener_currently_disabled,
@@ -80,6 +78,17 @@ const ScreenerRedirect: NextPage = () => {
 
   // Canada claims have one phone number, so this takes precedence over other scenarios that also require calling
   const screenerScenario = getScreenerScenario(screenerInput)
+
+  if (screenerScenario === 'INELIGIBLE_OUTSIDE_US_CANADA') {
+    return (
+      <DirectionalTemplate
+        title={t('title_not_qualified')}
+        warning={t('non_resident.warning')}
+      >
+        <p>{t('non_resident.instructions')}</p>
+      </DirectionalTemplate>
+    )
+  }
 
   if (screenerScenario === 'CANADA_CALL') {
     return (
@@ -164,15 +173,6 @@ const ScreenerRedirect: NextPage = () => {
                   </Link>
                 </li>
               )}
-              {screener_current_country_us === false &&
-                screener_live_in_canada === false && (
-                  <li>
-                    {t('info_alert.items.non_resident')}
-                    <Link variant="nav" href={'#non_resident'}>
-                      {t('read_more')}
-                    </Link>
-                  </li>
-                )}
               {screener_work_nj === 'other' && (
                 <li>
                   {t('info_alert.items.other_state')}
@@ -223,14 +223,6 @@ const ScreenerRedirect: NextPage = () => {
             <p>{t('ip_deny.label')}</p>
           </div>
         )}
-
-        {screener_current_country_us === false &&
-          screener_live_in_canada === false && (
-            <div className={borderStyle}>
-              <h2 id="non_resident">{t('non_resident.heading')}</h2>
-              <p>{t('non_resident.label')}</p>
-            </div>
-          )}
 
         {screener_work_nj === 'other' && (
           <div className={borderStyle}>

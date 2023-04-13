@@ -8,6 +8,8 @@ import {
 const redirect = {
   title_call_us: 'Call our contact center',
   title_apply_via_phone: 'Apply over the phone',
+  title_not_qualified:
+    'You don’t qualify for unemployment insurance in New Jersey',
   warning_canada: 'Canadian residents need to apply over the phone.',
   warning_maritime:
     'People who had maritime employment in the last 18 months need to apply over the phone',
@@ -20,7 +22,6 @@ const redirect = {
     title: 'You cannot use our new form due to the following reasons:',
     items: {
       ip_deny: 'You must be in the U.S. to file. ',
-      non_resident: 'You do not reside in the U.S. or Canada. ',
       other_state:
         'You have not worked in New Jersey within the last 18 months. ',
       military_mvp:
@@ -39,9 +40,10 @@ const redirect = {
       'Your access to the New Jersey Unemployment Insurance System is denied since it originated from a location outside of the United States.',
   },
   non_resident: {
-    heading: 'You must reside in the U.S. or Canada to file',
-    label:
-      'Your application could not be processed because you do not currently reside within the United States (including Puerto Rico and the US Virgin Islands) or Canada.',
+    warning:
+      'You must live in the U.S. or Canada to apply for unemployment insurance from New Jersey.',
+    instructions:
+      'You cannot apply for unemployment insurance from New Jersey if you outside the United States (including Puerto Rico and the U.S. Virgin Islands) or Canada.',
   },
   other_state: {
     heading: 'File in another state',
