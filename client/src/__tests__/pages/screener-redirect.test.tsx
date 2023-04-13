@@ -7,6 +7,7 @@ import {
 import userEvent from '@testing-library/user-event'
 import { pageInitialValues } from 'pages/screener'
 import { WorkOption } from 'constants/formOptions'
+import { Routes } from 'constants/routes'
 
 describe('Screener-redirect page', () => {
   const mockAppContext: IntakeAppContextType = {
@@ -112,7 +113,6 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
 
       const otherStateButton = screen.getByText('other_state.button')
 
@@ -149,7 +149,6 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
 
       const militaryMvpButton = screen.getByText('military_mvp.label.button')
 
@@ -186,7 +185,6 @@ describe('Screener-redirect page', () => {
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('federal.heading')).not.toBeInTheDocument()
 
       const disabilityButton = screen.getByText('disability.label.button')
 
@@ -198,7 +196,6 @@ describe('Screener-redirect page', () => {
     })
 
     it('when had federal employment', async () => {
-      const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
         screener_current_country_us: true,
@@ -216,21 +213,10 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('federal.heading')).toBeInTheDocument()
-
-      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-
-      const federalButton = screen.getByText('federal.label.button')
-
-      await user.click(federalButton)
-
-      expect(assignMock).toHaveBeenCalledTimes(1)
-      expect(assignMock).toHaveBeenCalledWith(
-        'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
+      expect(screen.getByText('title_apply_online')).toBeInTheDocument()
+      expect(screen.getByText('legacy.apply_button')).toHaveAttribute(
+        'href',
+        Routes.LEGACY_APPLICATION
       )
     })
 

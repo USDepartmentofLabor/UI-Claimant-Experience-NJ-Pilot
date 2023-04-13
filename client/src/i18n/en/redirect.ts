@@ -6,6 +6,7 @@ import {
   CLAIMS_AGENT_NUMBER_3,
 } from 'constants/phoneNumbers'
 const redirect = {
+  title_apply_online: 'Apply for unemployment online',
   title_call_us: 'Call our contact center',
   title_apply_via_phone: 'Apply over the phone',
   title_not_qualified:
@@ -18,6 +19,33 @@ const redirect = {
   call_center_schedule:
     'Our contact center is open from 8:30 AM to 3 PM, Monday through Friday, excluding holidays. We recommend calling as close to 8 AM as possible.',
   page_title: 'Let’s try another way',
+  legacy: {
+    apply_button: 'Go to application',
+    plan_time_heading: 'Plan to spend 45 minutes filling out the application',
+    plan_time:
+      'Plan to complete everything in one sitting so you don’t lose your work.  The standard application doesn’t save your progress as you go.',
+    required_info_heading: 'Gather the required information',
+    required_info: `To complete your unemployment insurance application, you'll need the following:
+    <subhead>Personal information</subhead>
+    <ul><li>NJ drivers license, or another government-issued ID</li>
+    <li>Social Security Number</li>
+    <li>Birthdate</li>
+    <li>Contact information</li>
+    <li>Citizenship information or Alien Registration Number</li></ul>
+    <subhead>Work history for the last 18 months</subhead>
+    <ul><li>Employer name(s)</li>
+    <li>Employer address(es)</li>
+    <li>Employer phone number(s)</li>
+    <li>Start and end dates for each job</li>
+    <li>A reason why each job ended, or why your hours changed</li>
+    <li>Details about other types of payments you receive(d)</li></ul>
+    <subhead>Military</subhead>
+    <ul><li>If you were in the military in the last 18 months, Form DD-214 Member 4</li></ul>
+    <subhead>Federal workers</subhead>
+    <ul><li>If you were a federal employee during the last 18 months, Form SF-8 or SF-50</li></ul>
+    <subhead>Banking</subhead>
+    <ul><li>If you'd like to get your payments by direct deposit, your bank’s routing number and your account number</li></ul>`,
+  },
   info_alert: {
     title: 'You cannot use our new form due to the following reasons:',
     items: {
@@ -29,8 +57,6 @@ const redirect = {
       military_ip:
         "Because you said you had military employment, you'll need to apply with an agent. ",
       disability: 'You might need to file for disability instead. ',
-      federal:
-        'Because you said you had federal employment, you’ll need to use our standard form. ',
     },
   },
   read_more: 'Read more.',
@@ -77,14 +103,6 @@ const redirect = {
         "You answered 'Yes' to the question 'Are you currently disabled and unable to work?' By law, unemployment benefits are only payable if you are able to work. Instead, please file a claim for Temporary Disability Benefits.",
       line2: `Click the button below or call <0>${DISABILITY_BENEFITS_AGENT_NUMBER}</0> during our normal business hours from 8:30 AM to 4:30 PM for more information.`,
       button: 'File a claim',
-    },
-  },
-  federal: {
-    heading: 'Use our standard web form',
-    label: {
-      line1:
-        'We are continuously improving our new form experience, but it does not yet support federal workers. Please use our standard web form to continue your application.',
-      button: 'Continue',
     },
   },
   agent_contact: {

@@ -9,6 +9,12 @@ import {
   SummaryBoxContent,
   Link,
   Alert,
+  IconList,
+  IconListItem,
+  IconListIcon,
+  IconListContent,
+  IconListTitle,
+  Icon,
 } from '@trussworks/react-uswds'
 import {
   OUTSIDE_US_AGENT_NUMBER,
@@ -19,7 +25,19 @@ import {
 } from 'constants/phoneNumbers'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
+import { Routes } from 'constants/routes'
 import { getScreenerScenario } from 'utils/screenerScenario/getScreenerScenario'
+
+function PageWrapper(props: { children: React.ReactNode }) {
+  return (
+    <main
+      id="main-content"
+      className="maxw-tablet margin-x-auto desktop:margin-x-0 margin-bottom-3 desktop:grid-col-8"
+    >
+      {props.children}
+    </main>
+  )
+}
 
 function DirectionalTemplate(props: {
   children: React.ReactNode
@@ -32,10 +50,7 @@ function DirectionalTemplate(props: {
       <Head>
         <title>{props.title}</title>
       </Head>
-      <main
-        id="main-content"
-        className="maxw-tablet margin-x-auto desktop:margin-x-0 margin-bottom-3 desktop:grid-col-8"
-      >
+      <PageWrapper>
         <h1>{props.title}</h1>
         {props.warning && (
           <Alert type="warning" headingLevel="h2" role="alert" slim>
@@ -44,7 +59,68 @@ function DirectionalTemplate(props: {
         )}
         {props.children}
         {props.action && <div className="margin-top-4">{props.action}</div>}
-      </main>
+      </PageWrapper>
+    </>
+  )
+}
+
+function ApplyOnLegacyApp() {
+  const { t } = useTranslation('redirect')
+
+  return (
+    <>
+      <Head>
+        <title>{t('title_apply_online')}</title>
+      </Head>
+      <PageWrapper>
+        <h1>{t('title_apply_online')}</h1>
+        <IconList className="nj-icon-list">
+          <IconListItem>
+            <IconListIcon>
+              <Icon.Schedule />
+            </IconListIcon>
+            <IconListContent>
+              <IconListTitle type="h2">
+                {t('legacy.plan_time_heading')}
+              </IconListTitle>
+              <p>{t('legacy.plan_time')}</p>
+            </IconListContent>
+          </IconListItem>
+          <IconListItem>
+            <IconListIcon>
+              <Icon.FolderOpen />
+            </IconListIcon>
+            <IconListContent>
+              <IconListTitle type="h2">
+                {t('legacy.required_info_heading')}
+              </IconListTitle>
+              <Trans
+                t={t}
+                i18nKey="legacy.required_info"
+                components={{
+                  // eslint-disable-next-line jsx-a11y/heading-has-content
+                  subhead: <h3 className="nj-h5 margin-bottom-1" />,
+                  ul: <ul className="usa-list margin-top-0" />,
+                  li: <li />,
+                }}
+              />
+            </IconListContent>
+          </IconListItem>
+        </IconList>
+        <a
+          href={Routes.LEGACY_APPLICATION}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="usa-button line-height-ui-3 margin-top-4"
+        >
+          {t('legacy.apply_button')}
+          <Icon.Launch
+            size={3}
+            className="text-middle margin-top-neg-05 margin-left-2"
+            aria-hidden="true"
+          />
+        </a>
+      </PageWrapper>
     </>
   )
 }
@@ -70,7 +146,6 @@ const ScreenerRedirect: NextPage = () => {
     screener_work_nj,
     screener_military_service_eighteen_months,
     screener_currently_disabled,
-    screener_federal_work_in_last_eighteen_months,
   } = screenerInput || {}
 
   const ipInUS = true // temporary until we pull IP addresses
@@ -144,6 +219,10 @@ const ScreenerRedirect: NextPage = () => {
     )
   }
 
+  if (screenerScenario === 'FEDERAL_STANDARD_FORM') {
+    return <ApplyOnLegacyApp />
+  }
+
   // TODO: As we update this page to use the new design, the following should be removed in
   // favor of using <DirectionalTemplate>. Make sure to also remove any obsolete content strings.
   const borderStyle = 'border-bottom-1px border-base-lighter padding-bottom-4'
@@ -153,10 +232,7 @@ const ScreenerRedirect: NextPage = () => {
         <title>{t('page_title')}</title>
       </Head>
 
-      <main
-        id="main-content"
-        className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
-      >
+      <PageWrapper>
         <h1>{t('page_title')}</h1>
 
         <SummaryBox>
@@ -201,14 +277,6 @@ const ScreenerRedirect: NextPage = () => {
                 <li>
                   {t('info_alert.items.disability')}
                   <Link variant="nav" href={'#disability'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-              {screener_federal_work_in_last_eighteen_months && (
-                <li>
-                  {t('info_alert.items.federal')}
-                  <Link variant="nav" href={'#federal'}>
                     {t('read_more')}
                   </Link>
                 </li>
@@ -315,27 +383,7 @@ const ScreenerRedirect: NextPage = () => {
             </p>
           </div>
         )}
-
-        {screener_federal_work_in_last_eighteen_months && (
-          <div className={borderStyle}>
-            <h2 id="federal">{t('federal.heading')}</h2>
-            <p>{t('federal.label.line1')}</p>
-            <p>
-              <Button
-                type="button"
-                onClick={
-                  () =>
-                    window.location.assign(
-                      'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
-                    ) //TODO change this link
-                }
-              >
-                {t('federal.label.button')}
-              </Button>
-            </p>
-          </div>
-        )}
-      </main>
+      </PageWrapper>
     </>
   )
 }

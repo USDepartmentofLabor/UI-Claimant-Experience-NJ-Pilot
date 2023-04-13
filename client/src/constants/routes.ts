@@ -25,6 +25,8 @@ export const ExternalRoutes = () => {
         'https://uiclaim.dol.state.nj.us/njsuccess/html/web1099Home.htm',
       UPDATE_CONTACT_INFO:
         'https://uiclaim.dol.state.nj.us/njsuccess/html/updateAddressHome.htm',
+      LEGACY_APPLICATION:
+        'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess',
     }
   } else if (env === 'test') {
     return {
@@ -35,6 +37,7 @@ export const ExternalRoutes = () => {
         'https://securest.dol.state.nj.us/njsuccess/html/web1099Home.htm',
       UPDATE_CONTACT_INFO:
         'https://securest.dol.state.nj.us/njsuccess/html/updateAddressHome.htm',
+      LEGACY_APPLICATION: 'https://securest.dol.state.nj.us/njsuccess',
     }
   } else {
     return {
@@ -45,6 +48,7 @@ export const ExternalRoutes = () => {
         'https://stclaimproxy.dol.state.nj.us/njsuccess/html/web1099Home.htm',
       UPDATE_CONTACT_INFO:
         'https://stclaimproxy.dol.state.nj.us/njsuccess/html/updateAddressHome.htm',
+      LEGACY_APPLICATION: 'https://stclaimproxy.dol.state.nj.us/njsuccess',
     }
   }
 }
@@ -61,6 +65,7 @@ export const Routes = {
   ID_ME_DOCUMENT_TYPES: ExternalRoutes().ID_ME_DOCUMENT_TYPES,
   ID_ME_PROCESS: ExternalRoutes().ID_ME_PROCESS,
   ID_ME_VERIFY: ExternalRoutes().ID_ME_VERIFY,
+  LEGACY_APPLICATION: ExternalRoutes().LEGACY_APPLICATION,
   UPDATE_PAYMENT_INFO: ExternalRoutes().UPDATE_PAYMENT_INFO,
   TAX_DOCUMENTS: ExternalRoutes().TAX_DOCUMENTS,
   UPDATE_CONTACT_INFO: ExternalRoutes().UPDATE_CONTACT_INFO,
