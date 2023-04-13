@@ -22,4 +22,5 @@ runs:
         aws-region: us-east-1
 
     - name: Run smoke test
+      shell: bash
       run: python scripts/run-smoke-test-canary.py
