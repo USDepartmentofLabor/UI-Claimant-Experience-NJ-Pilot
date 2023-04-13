@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import { RadioField } from '../../components/form/fields/RadioField/RadioField'
 import { useFormikContext } from 'formik'
 import { useVerifiedAddress } from '../../queries/useVerifiedAddress'
+import Spinner from 'components/Spinner/Spinner'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -49,7 +50,7 @@ function AddressVerificationFeedback() {
     evt: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { value } = evt.target
-    const optionToSave = residenceAddressOptions?.find((o) => o.value === value)
+    const optionToSave = residenceAddressOptions.find((o) => o.value === value)
     if (optionToSave) {
       await setFieldValue('residence_address', optionToSave.address)
       // keep mailing address the same as the residence
@@ -63,16 +64,22 @@ function AddressVerificationFeedback() {
     evt: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { value } = evt.target
-    const optionToSave = mailingAddressOptions?.find((o) => o.value === value)
+    const optionToSave = mailingAddressOptions.find((o) => o.value === value)
     if (optionToSave) {
       await setFieldValue('mailing_address', optionToSave.address)
     } // otherwise make no changes to preserve input from previous screen despite error here
   }
 
   const verifiedResidenceAddressData = useVerifiedAddress(
-    values.residence_address
+    values.residence_address,
+    { enabled: true }
+    //query should always execute in order to check the user input
   )
-  const verifiedMailingAddressData = useVerifiedAddress(values.mailing_address)
+  const verifiedMailingAddressData = useVerifiedAddress(
+    values.mailing_address,
+    { enabled: !values.LOCAL_mailing_address_same }
+    //query only executes is the mailing and residence are different
+  )
 
   const residenceAddressOptions = [
     {
@@ -99,6 +106,12 @@ function AddressVerificationFeedback() {
     },
   ] as const
 
+  if (
+    verifiedResidenceAddressData.isLoading ||
+    verifiedMailingAddressData.isLoading
+  ) {
+    return <Spinner data-testid={'address-verification-spinner'} />
+  }
   return (
     <>
       <AddressSelector

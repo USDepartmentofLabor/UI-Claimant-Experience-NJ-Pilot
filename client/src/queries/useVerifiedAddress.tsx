@@ -2,12 +2,17 @@ import { useQuery } from 'react-query'
 import axios from 'axios'
 import { AddressInput } from 'types/claimantInput'
 
-const getVerifiedAddress = async (address: AddressInput | undefined) => {
+async function getVerifiedAddress(address: AddressInput) {
   return await axios.post('/api/services/verify-address', address)
 }
 
-export const useVerifiedAddress = (address: AddressInput | undefined) => {
-  return useQuery(['getVerifiedAddress', address], () =>
-    getVerifiedAddress(address)
+export function useVerifiedAddress(
+  address: AddressInput,
+  options: { enabled: boolean }
+) {
+  return useQuery(
+    ['getVerifiedAddress', address],
+    () => getVerifiedAddress(address),
+    options
   )
 }

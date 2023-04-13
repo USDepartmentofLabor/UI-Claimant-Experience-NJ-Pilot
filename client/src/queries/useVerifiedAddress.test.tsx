@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { AddressInput } from '../types/claimantInput'
 import {
   CORRECTED_ADDRESS,
-  NO_PARAMS_ERROR,
+  NO_ADDRESS_MATCH,
 } from '../constants/api/services/verifyAddress'
 import axios from 'axios'
 
@@ -34,13 +34,13 @@ const successResponse = {
       state: 'PA',
       zipcode: '18510-1234',
     },
-    errorSummary: CORRECTED_ADDRESS,
+    validationSummary: CORRECTED_ADDRESS,
   },
   status: 200,
 }
-const emptyParamsResponse = {
+const noMatchResponse = {
   response: {
-    NO_PARAMS_ERROR,
+    validationSummary: NO_ADDRESS_MATCH,
   },
   status: 200,
 }
@@ -48,19 +48,26 @@ describe('use verified address query works as expected', () => {
   it('calls the query and gets back data', async () => {
     mockedAxios.post.mockResolvedValueOnce(successResponse)
 
-    const { result } = renderHook(() => useVerifiedAddress(requestParams), {
-      wrapper,
-    })
+    const { result } = renderHook(
+      () => useVerifiedAddress(requestParams, { enabled: true }),
+      {
+        wrapper,
+      }
+    )
     await waitFor(() => expect(result.current.isSuccess).toEqual(true))
     expect(result.current.data).toEqual(successResponse)
   })
-  it('calls the query without params and gets back the expected error', async () => {
-    mockedAxios.post.mockResolvedValueOnce(emptyParamsResponse)
 
-    const { result } = renderHook(() => useVerifiedAddress(undefined), {
-      wrapper,
-    })
+  it('calls the query and gets back the expected NO MATCH error', async () => {
+    mockedAxios.post.mockResolvedValueOnce(noMatchResponse)
+
+    const { result } = renderHook(
+      () => useVerifiedAddress(requestParams, { enabled: true }),
+      {
+        wrapper,
+      }
+    )
     await waitFor(() => expect(result.current.isSuccess).toEqual(true))
-    expect(result.current.data).toEqual(emptyParamsResponse)
+    expect(result.current.data).toEqual(noMatchResponse)
   })
 })
