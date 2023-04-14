@@ -9,10 +9,19 @@ export const OccupationPageDefinition: PageDefinition = {
   validationSchema: object().shape({
     job_title: string()
       .trim()
-      .required(i18n_claimForm.t('occupation.job_title.errors.required'))
-      .min(3, i18n_claimForm.t('occupation.job_title.errors.minLength')),
+      .required(i18n_claimForm.t('occupation.job_title.errors.required')),
     job_description: string()
       .max(255, i18n_claimForm.t('occupation.job_description.errors.maxLength'))
       .required(i18n_claimForm.t('occupation.job_description.errors.required')),
+    occucoder_code: string()
+      .nullable()
+      .when('LOCAL_is_occucoder_down', {
+        is: false,
+        then: string()
+          .nullable()
+          .required(
+            i18n_claimForm.t('occupation.occucoder_code.errors.required')
+          ),
+      }),
   }),
 }

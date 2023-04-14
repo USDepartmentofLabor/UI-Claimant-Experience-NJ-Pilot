@@ -761,7 +761,6 @@ const claimForm = {
       label: 'What is your main occupation?',
       errors: {
         required: 'Occupation is required',
-        minLength: 'Occupation must be at least three characters',
       },
     },
     job_description: {
@@ -775,6 +774,9 @@ const claimForm = {
     occucoder_code: {
       label:
         'Choose the occupation that best matches what you entered above. If nothing matches, please try another search.',
+      errors: {
+        required: 'Choose an occupation that best matches what you entered.',
+      },
     },
     search_loading: 'Searching for matches',
     search_results_count:

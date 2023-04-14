@@ -41,16 +41,14 @@ const pageInitialValues: OccupationInput = {
   occucoder_job_title: null,
   occucoder_description: null,
   occucoder_score: null,
+  LOCAL_is_occucoder_down: false,
 }
 
 /**
  * Component solely responsible for searching for standardized occupations,
  * rendering the options, and managing the occucoder_* field state.
  */
-function OccupationsSearchResults(props: {
-  onError: () => void
-  onSearch: () => void
-}) {
+function OccupationsSearchResults() {
   const { setFieldValue, values } = useFormikContext<OccupationInput>()
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'occupation',
@@ -122,10 +120,12 @@ function OccupationsSearchResults(props: {
     }
   }, [occupations, setFieldValue])
 
+  /**
+   * Allow the user to proceed if the occupation search service is down.
+   */
   useEffect(() => {
-    if (isError) props.onError()
-    if (isLoading) props.onSearch()
-  }, [isError, isLoading, props.onError, props.onSearch])
+    setFieldValue('LOCAL_is_occucoder_down', isError)
+  }, [isError, setFieldValue])
 
   if (isLoading) {
     return (
@@ -197,13 +197,9 @@ function OccupationsSearchResults(props: {
 }
 
 function OccupationFields() {
-  const [searchHasError, setSearchHasError] = useState(false)
-  const { values } = useFormikContext<OccupationInput>()
   const { t } = useTranslation('claimForm', {
     keyPrefix: 'occupation',
   })
-
-  const isSubmitDisabled = !values.occucoder_code && !searchHasError
 
   return (
     <>
@@ -236,14 +232,11 @@ function OccupationFields() {
         {t('sr_search_help')}
       </div>
 
-      <OccupationsSearchResults
-        onError={() => setSearchHasError(true)}
-        onSearch={() => setSearchHasError(false)}
-      />
+      <OccupationsSearchResults />
 
       <ClaimFormButtons nextStep={nextPage.heading}>
         <BackButton previousPage={previousPage.path} />
-        <NextButton nextPage={nextPage.path} disabled={isSubmitDisabled} />
+        <NextButton nextPage={nextPage.path} />
       </ClaimFormButtons>
     </>
   )

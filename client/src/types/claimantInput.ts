@@ -260,6 +260,7 @@ export type OccupationInput = {
   occucoder_job_title: string | null
   occucoder_description: string | null
   occucoder_score: number | null
+  LOCAL_is_occucoder_down: boolean
 }
 
 export type EducationAndTrainingInput = {
