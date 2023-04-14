@@ -3,7 +3,8 @@ import axios from 'axios'
 import { AddressInput } from 'types/claimantInput'
 
 async function getVerifiedAddress(address: AddressInput) {
-  return await axios.post('/api/services/verify-address', address)
+  const responseData = await axios.post('/api/services/verify-address', address)
+  return responseData.data
 }
 
 export function useVerifiedAddress(

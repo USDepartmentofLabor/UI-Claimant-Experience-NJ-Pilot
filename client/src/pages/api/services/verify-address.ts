@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../auth/[...nextauth]'
 import { isAxiosError } from 'axios'
-import { AddressInput } from 'types/claimantInput'
 import {
   NO_PARAMS_ERROR,
   NO_SESSION_ERROR,
@@ -32,8 +31,7 @@ import { Accumail, AddressVerificationResponse } from 'services/Accumail'
     baseUrl: process.env.ACCUMAIL_URL as string,
   })
   try {
-    const verifiedAddressResponse: AddressVerificationResponse =
-      await accumail.getVerifiedAddress(req.body as unknown as AddressInput)
+    const verifiedAddressResponse = await accumail.getVerifiedAddress(req.body)
     res.status(200).json(verifiedAddressResponse)
   } catch (error) {
     const status = isAxiosError(error) ? error.response?.status : undefined

@@ -70,15 +70,23 @@ function AddressVerificationFeedback() {
     } // otherwise make no changes to preserve input from previous screen despite error here
   }
 
-  const verifiedResidenceAddressData = useVerifiedAddress(
-    values.residence_address,
+  const {
+    isLoading: isVerifiedResidenceAddressLoading,
+    isError: isVerifiedResidenceAddressError,
+    data: verifiedResidenceAddressData,
+  } = useVerifiedAddress(
+    ENTERED_RESIDENTIAL_ADDRESS,
     { enabled: true }
     //query should always execute in order to check the user input
   )
-  const verifiedMailingAddressData = useVerifiedAddress(
-    values.mailing_address,
+  const {
+    isLoading: isVerifiedMailingAddressLoading,
+    isError: isVerifiedMailingAddressError,
+    data: verifiedMailingAddressData,
+  } = useVerifiedAddress(
+    ENTERED_MAILING_ADDRESS,
     { enabled: !values.LOCAL_mailing_address_same }
-    //query only executes is the mailing and residence are different
+    //query only executes if the mailing and residence are different
   )
 
   const residenceAddressOptions = [
@@ -90,7 +98,7 @@ function AddressVerificationFeedback() {
     {
       value: AS_VERIFIED,
       label: t('address_verification.verified'),
-      address: verifiedResidenceAddressData?.data?.data?.address,
+      address: verifiedResidenceAddressData?.address,
     },
   ] as const
   const mailingAddressOptions = [
@@ -102,14 +110,11 @@ function AddressVerificationFeedback() {
     {
       value: AS_VERIFIED,
       label: t('address_verification.verified'),
-      address: verifiedMailingAddressData?.data?.data?.address,
+      address: verifiedMailingAddressData?.address,
     },
   ] as const
 
-  if (
-    verifiedResidenceAddressData.isLoading ||
-    verifiedMailingAddressData.isLoading
-  ) {
+  if (isVerifiedResidenceAddressLoading || isVerifiedMailingAddressLoading) {
     return <Spinner data-testid={'address-verification-spinner'} />
   }
   return (
@@ -148,18 +153,17 @@ const AddressSelector = ({
       name={name}
       legend={legend}
       onChange={handleChangeAddress}
-      options={options.map((mailingAddressOption: any) => {
+      options={options.map((option: any) => {
         return {
-          value: mailingAddressOption.value,
-          label: mailingAddressOption.label,
+          value: option.value,
+          label: option.label,
           labelDescription: (
             <>
               <div>
-                <div>{mailingAddressOption.address?.address}</div>
+                <div>{option.address?.address}</div>
                 <div>
-                  {mailingAddressOption.address?.city},{' '}
-                  {mailingAddressOption.address?.state}{' '}
-                  {mailingAddressOption.address?.zipcode}
+                  {option.address?.city}, {option.address?.state}{' '}
+                  {option.address?.zipcode}
                 </div>
               </div>
             </>

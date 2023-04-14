@@ -25,26 +25,31 @@ const requestParams: AddressInput = {
   state: 'PA',
   zipcode: '18510',
 }
-const successResponse = {
-  response: {
-    address: {
-      address: '1234 E MICHAEL SCOTT ST',
-      address2: 'DUNDER MIFFLIN STE',
-      city: 'SCRANTON',
-      state: 'PA',
-      zipcode: '18510-1234',
-    },
-    validationSummary: CORRECTED_ADDRESS,
+const successResponseContent = {
+  address: {
+    address: '1234 E MICHAEL SCOTT ST',
+    address2: 'DUNDER MIFFLIN STE',
+    city: 'SCRANTON',
+    state: 'PA',
+    zipcode: '18510-1234',
   },
+  validationSummary: CORRECTED_ADDRESS,
+}
+
+const successResponse = {
+  data: successResponseContent,
   status: 200,
 }
 const noMatchResponse = {
-  response: {
+  data: {
     validationSummary: NO_ADDRESS_MATCH,
   },
   status: 200,
 }
 describe('use verified address query works as expected', () => {
+  beforeEach(() => {
+    mockedAxios.post.mockReset()
+  })
   it('calls the query and gets back data', async () => {
     mockedAxios.post.mockResolvedValueOnce(successResponse)
 
@@ -54,8 +59,11 @@ describe('use verified address query works as expected', () => {
         wrapper,
       }
     )
-    await waitFor(() => expect(result.current.isSuccess).toEqual(true))
-    expect(result.current.data).toEqual(successResponse)
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toEqual(true)
+      expect(result.current.data).toEqual(successResponseContent)
+    })
   })
 
   it('calls the query and gets back the expected NO MATCH error', async () => {
@@ -67,7 +75,11 @@ describe('use verified address query works as expected', () => {
         wrapper,
       }
     )
-    await waitFor(() => expect(result.current.isSuccess).toEqual(true))
-    expect(result.current.data).toEqual(noMatchResponse)
+    await waitFor(() => {
+      expect(result.current.isSuccess).toEqual(true)
+      expect(result.current.data).toEqual({
+        validationSummary: NO_ADDRESS_MATCH,
+      })
+    })
   })
 })

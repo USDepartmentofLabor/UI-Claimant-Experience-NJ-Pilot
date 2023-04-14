@@ -22,9 +22,7 @@ jest.mock('queries/useVerifiedAddress')
 const makeInitialValues = (
   residence_address: AddressInput,
   LOCAL_mailing_address_same: boolean,
-  mailing_address: AddressInput,
-  LOCAL_residence_address_verification_selection: string,
-  LOCAL_mailing_address_verification_selection: string
+  mailing_address: AddressInput
 ) => {
   return {
     ...pageInitialValues,
@@ -52,24 +50,20 @@ const RESIDENTIAL_ADDRESS = {
 const validResidenceVerificationResponse = {
   address: RESIDENTIAL_ADDRESS,
   validationSummary: CORRECTED_ADDRESS,
-} as AddressVerificationResponse
+}
 const validMailingVerificationResponse = {
   address: MAILING_ADDRESS,
   validationSummary: CORRECTED_ADDRESS,
-} as AddressVerificationResponse
+}
 const mockClaimantInput = (
   residence_address: AddressInput,
   LOCAL_mailing_address_same: boolean,
-  mailing_address: AddressInput,
-  LOCAL_residence_address_verification_selection: string,
-  LOCAL_mailing_address_verification_selection: string
+  mailing_address: AddressInput
 ) => {
   const initialValues = makeInitialValues(
     residence_address,
     LOCAL_mailing_address_same,
-    mailing_address,
-    LOCAL_residence_address_verification_selection,
-    LOCAL_mailing_address_verification_selection
+    mailing_address
   )
   ;(useInitialValues as jest.Mock).mockImplementation(
     (values: AddressVerificationInput) => ({
@@ -115,17 +109,11 @@ describe('Address Confirmation Page', () => {
   }
 
   it('renders properly without error and should only render residential address selector', () => {
-    mockClaimantInput(
-      RESIDENTIAL_ADDRESS,
-      true,
-      RESIDENTIAL_ADDRESS,
-      'AS_ENTERED',
-      'AS_ENTERED'
-    )
+    mockClaimantInput(RESIDENTIAL_ADDRESS, true, RESIDENTIAL_ADDRESS)
     mockVerifiedAddressQuery({
       isError: false,
       isLoading: false,
-      data: { data: validResidenceVerificationResponse } as any,
+      data: validResidenceVerificationResponse,
     })
     renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
@@ -138,17 +126,11 @@ describe('Address Confirmation Page', () => {
   })
 
   it('clicking on the AS_VERIFIED option for residence changes both the mailing and residence addresses', async () => {
-    mockClaimantInput(
-      RESIDENTIAL_ADDRESS,
-      true,
-      RESIDENTIAL_ADDRESS,
-      'AS_ENTERED',
-      'AS_ENTERED'
-    )
+    mockClaimantInput(RESIDENTIAL_ADDRESS, true, RESIDENTIAL_ADDRESS)
     mockVerifiedAddressQuery({
       isError: false,
       isLoading: false,
-      data: { data: validResidenceVerificationResponse } as any,
+      data: validResidenceVerificationResponse,
     }) // TODO MRH look into why data is nested
     renderAddressVerification()
     await userEvent.click(
@@ -168,13 +150,7 @@ describe('Address Confirmation Page', () => {
 
   it('shows user who needs verification with different address should see two address selectors', () => {
     //note different residential and mailing addresses
-    mockClaimantInput(
-      RESIDENTIAL_ADDRESS,
-      false,
-      MAILING_ADDRESS,
-      'AS_ENTERED',
-      'AS_ENTERED'
-    )
+    mockClaimantInput(RESIDENTIAL_ADDRESS, false, MAILING_ADDRESS)
     renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
     expect(
@@ -187,17 +163,11 @@ describe('Address Confirmation Page', () => {
 
   it('clicking on the AS_VERIFIED option for mailing changes only the mailing address', async () => {
     //note different residential and mailing addresses
-    mockClaimantInput(
-      RESIDENTIAL_ADDRESS,
-      false,
-      MAILING_ADDRESS,
-      'AS_ENTERED',
-      'AS_ENTERED'
-    )
+    mockClaimantInput(RESIDENTIAL_ADDRESS, false, MAILING_ADDRESS)
     mockVerifiedAddressQuery({
       isError: false,
       isLoading: false,
-      data: { data: validMailingVerificationResponse } as any,
+      data: validMailingVerificationResponse,
     })
     renderAddressVerification()
     userEvent.click(
@@ -221,13 +191,7 @@ describe('Address Confirmation Page', () => {
 
   //spinner
   it('renders spinner when loading', async () => {
-    mockClaimantInput(
-      RESIDENTIAL_ADDRESS,
-      true,
-      RESIDENTIAL_ADDRESS,
-      'AS_ENTERED',
-      'AS_ENTERED'
-    )
+    mockClaimantInput(RESIDENTIAL_ADDRESS, true, RESIDENTIAL_ADDRESS)
     mockVerifiedAddressQuery({
       isError: false,
       isLoading: true,

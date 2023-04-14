@@ -99,7 +99,7 @@ export class Accumail {
           state: destinationAddress.state,
           zipcode,
         },
-        validationSummary,
+        validationSummary: validationSummary,
       }
     }
     // No match or multiple matches
