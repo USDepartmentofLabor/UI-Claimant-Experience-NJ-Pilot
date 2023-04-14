@@ -1,4 +1,4 @@
-import { AddressVerificationInput } from 'types/claimantInput'
+import { AddressInput, AddressVerificationInput } from 'types/claimantInput'
 import { NextPageWithLayout } from 'pages/_app'
 import { ReactNode, useState } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
@@ -18,6 +18,8 @@ import { RadioField } from '../../components/form/fields/RadioField/RadioField'
 import { useFormikContext } from 'formik'
 import { useVerifiedAddress } from '../../queries/useVerifiedAddress'
 import Spinner from 'components/Spinner/Spinner'
+import { CORRECTED_ADDRESS } from '../../constants/api/services/verifyAddress'
+import { Alert } from '@trussworks/react-uswds'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -70,9 +72,9 @@ function AddressVerificationFeedback() {
     } // otherwise make no changes to preserve input from previous screen despite error here
   }
 
+  //not checking for error on either response as the default case is to use the entered address
   const {
     isLoading: isVerifiedResidenceAddressLoading,
-    isError: isVerifiedResidenceAddressError,
     data: verifiedResidenceAddressData,
   } = useVerifiedAddress(
     ENTERED_RESIDENTIAL_ADDRESS,
@@ -81,7 +83,6 @@ function AddressVerificationFeedback() {
   )
   const {
     isLoading: isVerifiedMailingAddressLoading,
-    isError: isVerifiedMailingAddressError,
     data: verifiedMailingAddressData,
   } = useVerifiedAddress(
     ENTERED_MAILING_ADDRESS,
@@ -117,26 +118,53 @@ function AddressVerificationFeedback() {
   if (isVerifiedResidenceAddressLoading || isVerifiedMailingAddressLoading) {
     return <Spinner data-testid={'address-verification-spinner'} />
   }
+  if (
+    verifiedResidenceAddressData?.validationSummary === CORRECTED_ADDRESS ||
+    verifiedMailingAddressData?.validationSummary === CORRECTED_ADDRESS
+  ) {
+    return (
+      <>
+        <AddressSelector
+          handleChangeAddress={handleResidenceAddressChange}
+          name={'LOCAL_residence_address_verification_selection'}
+          legend={t('address_verification.legend.residence')}
+          options={residenceAddressOptions}
+        />
+        {!values.LOCAL_mailing_address_same && (
+          <AddressSelector
+            handleChangeAddress={handleMailingAddressChange}
+            name={'LOCAL_mailing_address_verification_selection'}
+            legend={t('address_verification.legend.mailing')}
+            options={mailingAddressOptions}
+          />
+        )}
+      </>
+    )
+  }
+  //default state, covers if there is an error in either verification response, or if there were no matches from the verification check
   return (
     <>
-      <AddressSelector
-        handleChangeAddress={handleResidenceAddressChange}
-        name={'LOCAL_residence_address_verification_selection'}
-        legend={t('address_verification.legend.residence')}
-        options={residenceAddressOptions}
-      />
-      {!values.LOCAL_mailing_address_same && (
-        <AddressSelector
-          handleChangeAddress={handleMailingAddressChange}
-          name={'LOCAL_mailing_address_verification_selection'}
-          legend={t('address_verification.legend.mailing')}
-          options={mailingAddressOptions}
-        />
-      )}
-      <ClaimFormButtons nextStep={nextPage.heading}>
-        <BackButton previousPage={previousPage.path} />
-        <NextButton nextPage={nextPage.path} />
-      </ClaimFormButtons>
+      <Alert type={'warning'} headingLevel="h2" role="alert" slim>
+        {values.LOCAL_mailing_address_same &&
+          t('address_verification.same_address.no_match')}
+        {!values.LOCAL_mailing_address_same &&
+          t('address_verification.distinct_addresses.no_match')}
+      </Alert>
+      <p>
+        {values.LOCAL_mailing_address_same &&
+          t('address_verification.same_address.entered')}
+        {!values.LOCAL_mailing_address_same &&
+          t('address_verification.distinct_addresses.entered')}
+      </p>
+      {formattedAddress(ENTERED_RESIDENTIAL_ADDRESS)}
+      {!values.LOCAL_mailing_address_same &&
+        formattedAddress(ENTERED_MAILING_ADDRESS)}
+      <p>
+        {values.LOCAL_mailing_address_same &&
+          t('address_verification.same_address.proceed')}
+        {!values.LOCAL_mailing_address_same &&
+          t('address_verification.distinct_addresses.proceed')}
+      </p>
     </>
   )
 }
@@ -157,20 +185,23 @@ const AddressSelector = ({
         return {
           value: option.value,
           label: option.label,
-          labelDescription: (
-            <>
-              <div>
-                <div>{option.address?.address}</div>
-                <div>
-                  {option.address?.city}, {option.address?.state}{' '}
-                  {option.address?.zipcode}
-                </div>
-              </div>
-            </>
-          ),
+          labelDescription: formattedAddress(option.address),
         }
       })}
     />
+  )
+}
+
+const formattedAddress = (address: AddressInput) => {
+  return (
+    <>
+      <div>
+        <div>{address.address}</div>
+        <div>
+          {address.city}, {address.state} {address.zipcode}
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -183,6 +214,10 @@ const AddressVerification: NextPageWithLayout = () => {
       index={pageDefinitions.indexOf(pageDefinition)}
     >
       <AddressVerificationFeedback />
+      <ClaimFormButtons nextStep={nextPage.heading}>
+        <BackButton previousPage={previousPage.path} />
+        <NextButton nextPage={nextPage.path} />
+      </ClaimFormButtons>
     </ClaimFormik>
   )
 }

@@ -73,6 +73,20 @@ const claimForm = {
       mailing: 'Which address do you want to use for your mailing address?',
       residence: 'Which address do you want to use for your residence address?',
     },
+    same_address: {
+      no_match:
+        'We can’t match your [residential/mailing] address in the USPS database.',
+      entered: 'You entered the following [mailing/residential] address:',
+      proceed:
+        'If this is incorrect, go back to the previous step and update your address. If this is correct, proceed to the next step.',
+    },
+    distinct_addresses: {
+      no_match:
+        'We can’t match your residential or mailing addresses in the USPS database.',
+      entered: 'You entered the following addresses:',
+      proceed:
+        'If either of these are incorrect, go back to the previous step and update your address. If this is correct, proceed to the next step.',
+    },
   },
   demographics: {
     heading: 'Demographics',
