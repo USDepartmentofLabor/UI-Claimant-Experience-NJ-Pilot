@@ -72,7 +72,6 @@ function AddressVerificationFeedback() {
 
   const {
     isLoading: isVerifiedResidenceAddressLoading,
-    isError: isVerifiedResidenceAddressError,
     data: verifiedResidenceAddressData,
   } = useVerifiedAddress(
     ENTERED_RESIDENTIAL_ADDRESS,
@@ -81,7 +80,6 @@ function AddressVerificationFeedback() {
   )
   const {
     isLoading: isVerifiedMailingAddressLoading,
-    isError: isVerifiedMailingAddressError,
     data: verifiedMailingAddressData,
   } = useVerifiedAddress(
     ENTERED_MAILING_ADDRESS,
