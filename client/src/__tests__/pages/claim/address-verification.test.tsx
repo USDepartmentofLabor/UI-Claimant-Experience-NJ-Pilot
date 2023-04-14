@@ -9,6 +9,8 @@ import { useVerifiedAddress } from '../../../queries/useVerifiedAddress'
 import { CORRECTED_ADDRESS } from '../../../constants/api/services/verifyAddress'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import userEvent from '@testing-library/user-event'
+import { Formik } from 'formik'
+import { noop } from '../../../helpers/noop/noop'
 
 jest.mock('queries/useSaveCompleteClaim')
 jest.mock('hooks/useInitialValues')
@@ -29,8 +31,8 @@ const makeInitialValues = (
     residence_address: residence_address,
     LOCAL_mailing_address_same: LOCAL_mailing_address_same,
     mailing_address: mailing_address,
-    LOCAL_mailing_address_verification_selection: 'AS_ENTERED',
     LOCAL_residence_address_verification_selection: 'AS_ENTERED',
+    LOCAL_mailing_address_verification_selection: 'AS_ENTERED',
   }
 }
 const MAILING_ADDRESS = {
@@ -40,7 +42,6 @@ const MAILING_ADDRESS = {
   state: 'NJ',
   zipcode: '07030',
 }
-
 const RESIDENTIAL_ADDRESS = {
   address: '456 Test St',
   address2: '',
@@ -48,12 +49,14 @@ const RESIDENTIAL_ADDRESS = {
   state: 'NJ',
   zipcode: '07001',
 }
-
-const validVerificationResponse = {
+const validResidenceVerificationResponse = {
   address: RESIDENTIAL_ADDRESS,
   validationSummary: CORRECTED_ADDRESS,
 } as AddressVerificationResponse
-
+const validMailingVerificationResponse = {
+  address: MAILING_ADDRESS,
+  validationSummary: CORRECTED_ADDRESS,
+} as AddressVerificationResponse
 const mockClaimantInput = (
   residence_address: AddressInput,
   LOCAL_mailing_address_same: boolean,
@@ -75,23 +78,39 @@ const mockClaimantInput = (
     })
   )
 }
-
-const mockUseVerifiedAddress = useVerifiedAddress as jest.Mock
+const mockAppendAndSaveClaimFormValues = jest.fn(async () => Promise.resolve())
+jest.mock('hooks/useSaveClaimFormValues', () => ({
+  useSaveClaimFormValues: () => ({
+    appendAndSaveClaimFormValues: mockAppendAndSaveClaimFormValues,
+  }),
+}))
+const mockUseVerifiedAddress = useVerifiedAddress as jest.MockedFunction<
+  typeof useVerifiedAddress
+>
+function mockVerifiedAddressQuery(returnValues?: {
+  isLoading?: boolean
+  isError?: boolean
+  data?: AddressVerificationResponse
+}) {
+  const mockReturnValue = returnValues ?? {
+    isLoading: false,
+    isError: false,
+    data: undefined,
+  }
+  mockUseVerifiedAddress.mockReturnValue(
+    mockReturnValue as ReturnType<typeof useVerifiedAddress>
+  )
+}
 
 describe('Address Confirmation Page', () => {
-  const renderAddressVerification = (hookReturn?: {
-    isLoading: boolean
-    isError: boolean
-    data: AddressVerificationResponse
-  }) => {
-    if (hookReturn) {
-      mockUseVerifiedAddress.mockReturnValue(hookReturn)
-    }
-
+  const initialValues = pageInitialValues
+  const renderAddressVerification = () => {
     render(
-      <QueryClientProvider client={new QueryClient()}>
-        <AddressVerification />
-      </QueryClientProvider>
+      <Formik initialValues={initialValues} onSubmit={noop}>
+        <QueryClientProvider client={new QueryClient()}>
+          <AddressVerification />
+        </QueryClientProvider>
+      </Formik>
     )
   }
 
@@ -103,11 +122,12 @@ describe('Address Confirmation Page', () => {
       'AS_ENTERED',
       'AS_ENTERED'
     )
-    renderAddressVerification({
+    mockVerifiedAddressQuery({
       isError: false,
       isLoading: false,
-      data: validVerificationResponse,
+      data: { data: validResidenceVerificationResponse } as any,
     })
+    renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
     expect(
       screen.getByText('address_verification.legend.residence')
@@ -117,7 +137,7 @@ describe('Address Confirmation Page', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('clicking on the AS_VERIFIED option for residence changes both the mailing and residence addresses', () => {
+  it('clicking on the AS_VERIFIED option for residence changes both the mailing and residence addresses', async () => {
     mockClaimantInput(
       RESIDENTIAL_ADDRESS,
       true,
@@ -125,18 +145,25 @@ describe('Address Confirmation Page', () => {
       'AS_ENTERED',
       'AS_ENTERED'
     )
-    renderAddressVerification({
+    mockVerifiedAddressQuery({
       isError: false,
       isLoading: false,
-      data: validVerificationResponse,
-    })
-    userEvent.click(
+      data: { data: validResidenceVerificationResponse } as any,
+    }) // TODO MRH look into why data is nested
+    renderAddressVerification()
+    await userEvent.click(
       screen.getByTestId(
         'LOCAL_residence_address_verification_selection.AS_VERIFIED'
       )
     )
-    //TODO MRH determine how to tell if the value changed
-    screen.debug()
+    await userEvent.click(screen.getByRole('button', { name: /next/i }))
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
+      expect.objectContaining({ residence_address: RESIDENTIAL_ADDRESS })
+    )
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
+      expect.objectContaining({ mailing_address: RESIDENTIAL_ADDRESS })
+    )
   })
 
   it('shows user who needs verification with different address should see two address selectors', () => {
@@ -148,11 +175,7 @@ describe('Address Confirmation Page', () => {
       'AS_ENTERED',
       'AS_ENTERED'
     )
-    renderAddressVerification({
-      isError: false,
-      isLoading: false,
-      data: validVerificationResponse,
-    })
+    renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
     expect(
       screen.getByText('address_verification.legend.residence')
@@ -160,10 +183,9 @@ describe('Address Confirmation Page', () => {
     expect(
       screen.getByText('address_verification.legend.mailing')
     ).toBeInTheDocument()
-    screen.debug()
   })
 
-  it('clicking on the AS_VERIFIED option for mailing changes only the mailing address', () => {
+  it('clicking on the AS_VERIFIED option for mailing changes only the mailing address', async () => {
     //note different residential and mailing addresses
     mockClaimantInput(
       RESIDENTIAL_ADDRESS,
@@ -172,20 +194,29 @@ describe('Address Confirmation Page', () => {
       'AS_ENTERED',
       'AS_ENTERED'
     )
-    renderAddressVerification({
+    mockVerifiedAddressQuery({
       isError: false,
       isLoading: false,
-      data: validVerificationResponse,
+      data: { data: validMailingVerificationResponse } as any,
     })
+    renderAddressVerification()
     userEvent.click(
       screen.getByTestId(
         'LOCAL_mailing_address_verification_selection.AS_VERIFIED'
       )
     )
-    //TODO MRH determine how to tell if the value changed
-    //resi same
-    //mailing changed
-    screen.debug()
+    userEvent.click(
+      screen.getByTestId(
+        'LOCAL_residence_address_verification_selection.AS_ENTERED'
+      )
+    )
+    await userEvent.click(screen.getByRole('button', { name: /next/i }))
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
+      expect.objectContaining({ residence_address: RESIDENTIAL_ADDRESS })
+    )
+    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
+      expect.objectContaining({ mailing_address: MAILING_ADDRESS })
+    )
   })
 
   //spinner
@@ -197,11 +228,12 @@ describe('Address Confirmation Page', () => {
       'AS_ENTERED',
       'AS_ENTERED'
     )
-    renderAddressVerification({
+    mockVerifiedAddressQuery({
       isError: false,
       isLoading: true,
-      data: validVerificationResponse,
+      data: { data: validResidenceVerificationResponse } as any,
     })
+    renderAddressVerification()
     expect(
       await screen.findByTestId('address-verification-spinner')
     ).toBeInTheDocument()
