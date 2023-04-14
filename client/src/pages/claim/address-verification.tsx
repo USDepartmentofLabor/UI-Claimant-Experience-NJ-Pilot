@@ -13,13 +13,13 @@ import {
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
 import { ADDRESS_SKELETON } from 'constants/initialValues'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { RadioField } from '../../components/form/fields/RadioField/RadioField'
 import { useFormikContext } from 'formik'
 import { useVerifiedAddress } from '../../queries/useVerifiedAddress'
 import Spinner from 'components/Spinner/Spinner'
 import { CORRECTED_ADDRESS } from '../../constants/api/services/verifyAddress'
-import { Alert } from '@trussworks/react-uswds'
+import { Alert, Card, CardGroup } from '@trussworks/react-uswds'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -118,9 +118,13 @@ function AddressVerificationFeedback() {
   if (isVerifiedResidenceAddressLoading || isVerifiedMailingAddressLoading) {
     return <Spinner data-testid={'address-verification-spinner'} />
   }
+  //only allow selecting an address if the residence and mailing are the same or both addresses have proposed corrections
+  // this directs the claimant to the default case below where one, the other, or both addresses need revision
   if (
-    verifiedResidenceAddressData?.validationSummary === CORRECTED_ADDRESS ||
-    verifiedMailingAddressData?.validationSummary === CORRECTED_ADDRESS
+    (verifiedResidenceAddressData?.validationSummary === CORRECTED_ADDRESS &&
+      values.LOCAL_mailing_address_same) ||
+    (verifiedResidenceAddressData?.validationSummary === CORRECTED_ADDRESS &&
+      verifiedMailingAddressData?.validationSummary === CORRECTED_ADDRESS)
   ) {
     return (
       <>
@@ -156,14 +160,33 @@ function AddressVerificationFeedback() {
         {!values.LOCAL_mailing_address_same &&
           t('address_verification.distinct_addresses.entered')}
       </p>
-      {formattedAddress(ENTERED_RESIDENTIAL_ADDRESS)}
-      {!values.LOCAL_mailing_address_same &&
-        formattedAddress(ENTERED_MAILING_ADDRESS)}
+      <CardGroup
+        className="flex-column margin-top-105 margin-bottom-1"
+        data-testid="entered_addresses_card_group"
+      >
+        <Card className="margin-bottom-105">
+          {formattedAddress(ENTERED_RESIDENTIAL_ADDRESS, true)}
+        </Card>
+        {!values.LOCAL_mailing_address_same && (
+          <Card className="margin-bottom-0">
+            {formattedAddress(ENTERED_MAILING_ADDRESS, true)}
+          </Card>
+        )}
+      </CardGroup>
       <p>
-        {values.LOCAL_mailing_address_same &&
-          t('address_verification.same_address.proceed')}
-        {!values.LOCAL_mailing_address_same &&
-          t('address_verification.distinct_addresses.proceed')}
+        {values.LOCAL_mailing_address_same && (
+          <Trans t={t} i18nKey={'address_verification.same_address.proceed'}>
+            <u>{''}</u>
+          </Trans>
+        )}
+        {!values.LOCAL_mailing_address_same && (
+          <Trans
+            t={t}
+            i18nKey={'address_verification.distinct_addresses.proceed'}
+          >
+            <u>{''}</u>
+          </Trans>
+        )}
       </p>
     </>
   )
@@ -192,16 +215,19 @@ const AddressSelector = ({
   )
 }
 
-const formattedAddress = (address: AddressInput) => {
+const formattedAddress = (address: AddressInput, isCardContent?: boolean) => {
   return (
-    <>
+    <div
+      className={`${
+        isCardContent ? 'padding-bottom-105 padding-top-105 padding-left-3' : ''
+      }`}
+    >
+      <div>{address.address}</div>
+      {address.address2 && <div>{address.address2}</div>}
       <div>
-        <div>{address.address}</div>
-        <div>
-          {address.city}, {address.state} {address.zipcode}
-        </div>
+        {address.city}, {address.state} {address.zipcode}
       </div>
-    </>
+    </div>
   )
 }
 

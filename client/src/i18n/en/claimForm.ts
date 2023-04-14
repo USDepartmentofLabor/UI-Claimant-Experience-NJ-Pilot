@@ -78,14 +78,14 @@ const claimForm = {
         'We can’t match your [residential/mailing] address in the USPS database.',
       entered: 'You entered the following [mailing/residential] address:',
       proceed:
-        'If this is incorrect, go back to the previous step and update your address. If this is correct, proceed to the next step.',
+        'If this is incorrect, <0>go back to the previous step</0> and update your address. If this is correct, proceed to the next step.',
     },
     distinct_addresses: {
       no_match:
         'We can’t match your residential or mailing addresses in the USPS database.',
       entered: 'You entered the following addresses:',
       proceed:
-        'If either of these are incorrect, go back to the previous step and update your address. If this is correct, proceed to the next step.',
+        'If either of these are incorrect, <0>go back to the previous step</0> and update your address. If these are correct, proceed to the next step.',
     },
   },
   demographics: {
