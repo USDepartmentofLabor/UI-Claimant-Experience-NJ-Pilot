@@ -131,7 +131,7 @@ describe('Address Confirmation Page', () => {
       isError: false,
       isLoading: false,
       data: validResidenceVerificationResponse,
-    }) // TODO MRH look into why data is nested
+    })
     renderAddressVerification()
     await userEvent.click(
       screen.getByTestId(
@@ -195,7 +195,7 @@ describe('Address Confirmation Page', () => {
     mockVerifiedAddressQuery({
       isError: false,
       isLoading: true,
-      data: { data: validResidenceVerificationResponse } as any,
+      data: validResidenceVerificationResponse,
     })
     renderAddressVerification()
     expect(
