@@ -6,7 +6,10 @@ import { AddressInput, AddressVerificationInput } from 'types/claimantInput'
 import { useInitialValues } from 'hooks/useInitialValues'
 import { AddressVerificationResponse } from '../../../services/Accumail'
 import { useVerifiedAddress } from '../../../queries/useVerifiedAddress'
-import { CORRECTED_ADDRESS } from '../../../constants/api/services/verifyAddress'
+import {
+  CORRECTED_ADDRESS,
+  NO_ADDRESS_MATCH,
+} from '../../../constants/api/services/verifyAddress'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import userEvent from '@testing-library/user-event'
 import { Formik } from 'formik'
@@ -35,7 +38,7 @@ const makeInitialValues = (
 }
 const MAILING_ADDRESS = {
   address: '123 Test St',
-  address2: '',
+  address2: 'Unit 2B',
   city: 'Hoboken',
   state: 'NJ',
   zipcode: '07030',
@@ -151,6 +154,11 @@ describe('Address Confirmation Page', () => {
   it('shows user who needs verification with different address should see two address selectors', () => {
     //note different residential and mailing addresses
     mockClaimantInput(RESIDENTIAL_ADDRESS, false, MAILING_ADDRESS)
+    mockVerifiedAddressQuery({
+      isError: false,
+      isLoading: false,
+      data: validResidenceVerificationResponse,
+    })
     renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
     expect(
@@ -159,6 +167,8 @@ describe('Address Confirmation Page', () => {
     expect(
       screen.getByText('address_verification.legend.mailing')
     ).toBeInTheDocument()
+    //confirm address2 renders
+    expect(screen.getByText('Unit 2B')).toBeInTheDocument()
   })
 
   it('clicking on the AS_VERIFIED option for mailing changes only the mailing address', async () => {
@@ -203,7 +213,56 @@ describe('Address Confirmation Page', () => {
     ).toBeInTheDocument()
   })
 
-  //no match - test case for when error states are implemented
+  it('renders error page for same mailing and residence addresses properly without response from the accumail service', () => {
+    mockClaimantInput(RESIDENTIAL_ADDRESS, true, RESIDENTIAL_ADDRESS)
+    mockVerifiedAddressQuery({
+      isError: true,
+      isLoading: false,
+      data: { validationSummary: '' },
+    })
+    renderAddressVerification()
+    expect(screen.getByText('Address confirmation')).toBeInTheDocument()
+    expect(
+      screen.getByText('address_verification.same_address.no_match')
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('address_verification.same_address.proceed')
+    ).toBeInTheDocument()
+  })
 
-  //no match for either - test case for when error states are implemented
+  it('renders error page for same mailing and residence addresses properly when NO_ADDRESS_MATCH response is returned', () => {
+    mockClaimantInput(RESIDENTIAL_ADDRESS, true, RESIDENTIAL_ADDRESS)
+    mockVerifiedAddressQuery({
+      isError: false,
+      isLoading: false,
+      data: { validationSummary: NO_ADDRESS_MATCH },
+    })
+    renderAddressVerification()
+    expect(screen.getByText('Address confirmation')).toBeInTheDocument()
+    expect(
+      screen.getByText('address_verification.same_address.no_match')
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('address_verification.same_address.proceed')
+    ).toBeInTheDocument()
+  })
+
+  it('renders error page for different mailing and residence addresses properly when NO_ADDRESS_MATCH response is returned', () => {
+    mockClaimantInput(RESIDENTIAL_ADDRESS, false, MAILING_ADDRESS)
+    mockVerifiedAddressQuery({
+      isError: false,
+      isLoading: false,
+      data: { validationSummary: NO_ADDRESS_MATCH },
+    })
+    renderAddressVerification()
+    expect(screen.getByText('Address confirmation')).toBeInTheDocument()
+    expect(
+      screen.getByText('address_verification.distinct_addresses.no_match')
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('address_verification.distinct_addresses.proceed')
+    ).toBeInTheDocument()
+    //confirm address2 renders
+    expect(screen.getByText('Unit 2B')).toBeInTheDocument()
+  })
 })
