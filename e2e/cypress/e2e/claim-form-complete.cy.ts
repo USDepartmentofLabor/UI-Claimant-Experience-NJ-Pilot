@@ -20,6 +20,7 @@ import fillRecentEmployersFields from './formPageFilling/recent-employers'
 import { generateWhoAmI } from './utils/generateWhoAmI'
 import { fillEditEmployerFields } from './formPageFilling/edit-employer'
 import fillReviewEmployersFields from './formPageFilling/review-employers'
+import fillAddressVerificationFields from './formPageFilling/address-verification'
 
 context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -101,13 +102,14 @@ context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     // Personal page
+    const address = '1 Street'
     fillPersonalFields(
       {
         alternate_names: [{ first_name: 'Tasha', last_name: 'McGee' }],
       },
       {
         residence_address: {
-          address: '1 Street',
+          address,
           city: 'City',
           state: 'CA',
           zipcode: '00000',
@@ -122,6 +124,11 @@ context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
       pwa: 20,
       performance: 0,
     })
+    cy.clickNext()
+
+    //Address Confirmation page
+    fillAddressVerificationFields(address)
+    cy.checkA11y()
     cy.clickNext()
 
     // Contact page
