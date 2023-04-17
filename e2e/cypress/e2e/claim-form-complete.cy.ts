@@ -124,6 +124,12 @@ context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
     })
     cy.clickNext()
 
+    //Address Confirmation page
+    cy.checkA11y()
+    cy.clickNext()
+    // TODO implement coverage for when the API returns a response
+    // in order to unblock current PRs we're allowing the default address to go through
+
     // Contact page
     fillContactFields()
     cy.checkA11y()
