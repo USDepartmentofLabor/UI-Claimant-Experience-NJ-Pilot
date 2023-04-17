@@ -65,12 +65,10 @@ const mockClaimantInput = (
     LOCAL_mailing_address_same,
     mailing_address
   )
-  ;(useInitialValues as jest.Mock).mockImplementation(
-    (values: AddressVerificationInput) => ({
-      initialValues: { ...values, ...initialValues },
-      isLoading: false,
-    })
-  )
+  ;(useInitialValues as jest.Mock).mockImplementation(() => ({
+    initialValues,
+    isLoading: false,
+  }))
 }
 const mockAppendAndSaveClaimFormValues = jest.fn(async () => Promise.resolve())
 jest.mock('hooks/useSaveClaimFormValues', () => ({
