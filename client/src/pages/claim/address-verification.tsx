@@ -151,7 +151,7 @@ const AddressSelector = ({
       name={name}
       legend={legend}
       onChange={handleChangeAddress}
-      options={options.map((option: any) => {
+      options={options.map((option) => {
         return {
           value: option.value,
           label: option.label,
