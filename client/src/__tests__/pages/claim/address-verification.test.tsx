@@ -95,10 +95,9 @@ function mockVerifiedAddressQuery(returnValues?: {
 }
 
 describe('Address Confirmation Page', () => {
-  const initialValues = pageInitialValues
   const renderAddressVerification = () => {
     render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
+      <Formik initialValues={pageInitialValues} onSubmit={noop}>
         <QueryClientProvider client={new QueryClient()}>
           <AddressVerification />
         </QueryClientProvider>
