@@ -11,6 +11,8 @@ const redirect = {
   title_apply_via_phone: 'Apply over the phone',
   title_not_qualified:
     'You don’t qualify for unemployment insurance in New Jersey',
+  title_predict_denial:
+    'Are you sure you want to apply? Your application will probably be denied.',
   warning_canada: 'Canadian residents need to apply over the phone.',
   warning_maritime:
     'People who had maritime employment in the last 18 months need to apply over the phone',
@@ -50,8 +52,6 @@ const redirect = {
     title: 'You cannot use our new form due to the following reasons:',
     items: {
       ip_deny: 'You must be in the U.S. to file. ',
-      other_state:
-        'You have not worked in New Jersey within the last 18 months. ',
       military_mvp:
         "Because you said you had military employment, you'll need to apply with our standard form. ",
       military_ip:
@@ -72,10 +72,10 @@ const redirect = {
       'You cannot apply for unemployment insurance from New Jersey if you outside the United States (including Puerto Rico and the U.S. Virgin Islands) or Canada.',
   },
   other_state: {
-    heading: 'File in another state',
-    label:
-      'In order to file an Unemployment Insurance claim in New Jersey you must have worked in New Jersey within the last 18 months. You may be eligible to receive Unemployment Insurance benefits from another state in which you worked.',
-    button: 'File in your state',
+    warning:
+      'You must have worked in New Jersey within the last 18 months to file an unemployment insurance claim in New Jersey.',
+    instructions:
+      '<p>You may be eligible to receive unemployment insurance benefits from another state. Learn how to file in your state at <DOL_LINK>dol.gov</DOL_LINK>.</p>',
   },
   military_mvp: {
     heading: 'Use our standard web form',

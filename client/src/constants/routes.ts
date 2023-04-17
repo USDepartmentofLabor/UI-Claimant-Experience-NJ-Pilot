@@ -14,6 +14,8 @@ export const ExternalRoutes = () => {
       'https://help.id.me/hc/en-us/articles/360017833054-Primary-and-secondary-identification-documents',
     ID_ME_PROCESS:
       'https://help.id.me/hc/en-us/articles/1500005127662-Verifying-for-New-Jersey-DOL',
+    DOL_UNEMPLOYMENT_INFO:
+      'https://www.dol.gov/general/topic/unemployment-insurance/',
   }
 
   if (env === 'production') {
@@ -69,6 +71,7 @@ export const Routes = {
   UPDATE_PAYMENT_INFO: ExternalRoutes().UPDATE_PAYMENT_INFO,
   TAX_DOCUMENTS: ExternalRoutes().TAX_DOCUMENTS,
   UPDATE_CONTACT_INFO: ExternalRoutes().UPDATE_CONTACT_INFO,
+  DOL_UNEMPLOYMENT_INFO: ExternalRoutes().DOL_UNEMPLOYMENT_INFO,
 
   // Claim Form
   CLAIM: {

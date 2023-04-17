@@ -143,7 +143,6 @@ const ScreenerRedirect: NextPage = () => {
   const { screenerInput } = useContext(IntakeAppContext)
 
   const {
-    screener_work_nj,
     screener_military_service_eighteen_months,
     screener_currently_disabled,
   } = screenerInput || {}
@@ -219,6 +218,30 @@ const ScreenerRedirect: NextPage = () => {
     )
   }
 
+  if (screenerScenario === 'INELIGIBLE_WORK_OUTSIDE_NJ') {
+    return (
+      <DirectionalTemplate
+        title={t('title_predict_denial')}
+        warning={t('other_state.warning')}
+      >
+        <Trans
+          t={t}
+          i18nKey="other_state.instructions"
+          components={{
+            DOL_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={Routes.DOL_UNEMPLOYMENT_INFO}
+              ></a>
+            ),
+          }}
+        />
+      </DirectionalTemplate>
+    )
+  }
+
   if (screenerScenario === 'FEDERAL_STANDARD_FORM') {
     return <ApplyOnLegacyApp />
   }
@@ -245,14 +268,6 @@ const ScreenerRedirect: NextPage = () => {
                 <li>
                   {t('info_alert.items.ip_deny')}
                   <Link variant="nav" href={'#ip_deny'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-              {screener_work_nj === 'other' && (
-                <li>
-                  {t('info_alert.items.other_state')}
-                  <Link variant="nav" href={'#other_state'}>
                     {t('read_more')}
                   </Link>
                 </li>
@@ -289,25 +304,6 @@ const ScreenerRedirect: NextPage = () => {
           <div className={borderStyle}>
             <h2 id="ip_deny">{t('ip_deny.heading')}</h2>
             <p>{t('ip_deny.label')}</p>
-          </div>
-        )}
-
-        {screener_work_nj === 'other' && (
-          <div className={borderStyle}>
-            <h2 id="other_state">{t('other_state.heading')}</h2>
-            <p>{t('other_state.label')}</p>
-            <p>
-              <Button
-                type="button"
-                onClick={() =>
-                  window.location.assign(
-                    'https://www.dol.gov/general/topic/unemployment-insurance/'
-                  )
-                }
-              >
-                {t('other_state.button')}
-              </Button>
-            </p>
           </div>
         )}
 

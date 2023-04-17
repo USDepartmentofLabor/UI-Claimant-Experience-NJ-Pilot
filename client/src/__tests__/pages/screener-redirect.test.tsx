@@ -6,8 +6,8 @@ import {
 } from 'contexts/IntakeAppContext'
 import userEvent from '@testing-library/user-event'
 import { pageInitialValues } from 'pages/screener'
-import { WorkOption } from 'constants/formOptions'
 import { Routes } from 'constants/routes'
+import { ScreenerInput } from 'types/claimantInput'
 
 describe('Screener-redirect page', () => {
   const mockAppContext: IntakeAppContextType = {
@@ -88,40 +88,26 @@ describe('Screener-redirect page', () => {
     })
 
     it('when needing to file in another state', async () => {
-      const user = userEvent.setup()
-      const screenerInput = {
+      const screenerInput: ScreenerInput = {
         ...pageInitialValues,
         screener_current_country_us: true,
-        screener_work_nj: 'other' as WorkOption,
+        screener_work_nj: 'other',
       }
 
       render(
         <IntakeAppContext.Provider
           value={{
             ...mockAppContext,
-            screenerInput: screenerInput,
+            screenerInput,
           }}
         >
           <ScreenerRedirect />
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('other_state.heading')).toBeInTheDocument()
-
-      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('non_resident.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-
-      const otherStateButton = screen.getByText('other_state.button')
-
-      await user.click(otherStateButton)
-
-      expect(assignMock).toHaveBeenCalledTimes(1)
-      expect(assignMock).toHaveBeenCalledWith(
-        'https://www.dol.gov/general/topic/unemployment-insurance/'
-      )
+      expect(screen.queryByText('title_predict_denial')).toBeInTheDocument()
+      expect(screen.queryByText('other_state.warning')).toBeInTheDocument()
+      expect(screen.queryByText('other_state.instructions')).toBeInTheDocument()
     })
 
     it('when worked in the military', async () => {
