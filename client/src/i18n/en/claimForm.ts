@@ -784,7 +784,6 @@ const claimForm = {
       label: 'What is your main occupation?',
       errors: {
         required: 'Occupation is required',
-        minLength: 'Occupation must be at least three characters',
       },
     },
     job_description: {
@@ -798,6 +797,9 @@ const claimForm = {
     occucoder_code: {
       label:
         'Choose the occupation that best matches what you entered above. If nothing matches, please try another search.',
+      errors: {
+        required: 'Choose an occupation that best matches what you entered.',
+      },
     },
     search_loading: 'Searching for matches',
     search_results_count:
@@ -978,10 +980,15 @@ const claimForm = {
       },
       errors: {
         required: 'Please specify the language you speak',
-        maxLength: 'Preferred language must be at most 32 characters',
+        maxLength: 'Preferred language must be at most 50 characters',
       },
     },
-    other_language: 'Enter the language you speak',
+    other_language: {
+      label: 'Enter the language you speak',
+      errors: {
+        alphabetical: `Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your preferred contact language with only the letters A-Z`,
+      },
+    },
   },
   name: {
     legal_name: 'What is your legal name?',

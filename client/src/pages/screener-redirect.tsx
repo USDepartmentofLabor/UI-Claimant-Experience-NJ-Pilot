@@ -9,6 +9,12 @@ import {
   SummaryBoxContent,
   Link,
   Alert,
+  IconList,
+  IconListItem,
+  IconListIcon,
+  IconListContent,
+  IconListTitle,
+  Icon,
 } from '@trussworks/react-uswds'
 import {
   OUTSIDE_US_AGENT_NUMBER,
@@ -19,6 +25,19 @@ import {
 } from 'constants/phoneNumbers'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
+import { Routes } from 'constants/routes'
+import { getScreenerScenario } from 'utils/screenerScenario/getScreenerScenario'
+
+function PageWrapper(props: { children: React.ReactNode }) {
+  return (
+    <main
+      id="main-content"
+      className="maxw-tablet margin-x-auto desktop:margin-x-0 margin-bottom-3 desktop:grid-col-8"
+    >
+      {props.children}
+    </main>
+  )
+}
 
 function DirectionalTemplate(props: {
   children: React.ReactNode
@@ -31,10 +50,7 @@ function DirectionalTemplate(props: {
       <Head>
         <title>{props.title}</title>
       </Head>
-      <main
-        id="main-content"
-        className="maxw-tablet margin-x-auto desktop:margin-x-0 margin-bottom-3 desktop:grid-col-8"
-      >
+      <PageWrapper>
         <h1>{props.title}</h1>
         {props.warning && (
           <Alert type="warning" headingLevel="h2" role="alert" slim>
@@ -43,7 +59,68 @@ function DirectionalTemplate(props: {
         )}
         {props.children}
         {props.action && <div className="margin-top-4">{props.action}</div>}
-      </main>
+      </PageWrapper>
+    </>
+  )
+}
+
+function ApplyOnLegacyApp() {
+  const { t } = useTranslation('redirect')
+
+  return (
+    <>
+      <Head>
+        <title>{t('title_apply_online')}</title>
+      </Head>
+      <PageWrapper>
+        <h1>{t('title_apply_online')}</h1>
+        <IconList className="nj-icon-list">
+          <IconListItem>
+            <IconListIcon>
+              <Icon.Schedule />
+            </IconListIcon>
+            <IconListContent>
+              <IconListTitle type="h2">
+                {t('legacy.plan_time_heading')}
+              </IconListTitle>
+              <p>{t('legacy.plan_time')}</p>
+            </IconListContent>
+          </IconListItem>
+          <IconListItem>
+            <IconListIcon>
+              <Icon.FolderOpen />
+            </IconListIcon>
+            <IconListContent>
+              <IconListTitle type="h2">
+                {t('legacy.required_info_heading')}
+              </IconListTitle>
+              <Trans
+                t={t}
+                i18nKey="legacy.required_info"
+                components={{
+                  // eslint-disable-next-line jsx-a11y/heading-has-content
+                  subhead: <h3 className="nj-h5 margin-bottom-1" />,
+                  ul: <ul className="usa-list margin-top-0" />,
+                  li: <li />,
+                }}
+              />
+            </IconListContent>
+          </IconListItem>
+        </IconList>
+        <a
+          href={Routes.LEGACY_APPLICATION}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="usa-button line-height-ui-3 margin-top-4"
+        >
+          {t('legacy.apply_button')}
+          <Icon.Launch
+            size={3}
+            className="text-middle margin-top-neg-05 margin-left-2"
+            aria-hidden="true"
+          />
+        </a>
+      </PageWrapper>
     </>
   )
 }
@@ -66,20 +143,28 @@ const ScreenerRedirect: NextPage = () => {
   const { screenerInput } = useContext(IntakeAppContext)
 
   const {
-    screener_current_country_us,
-    screener_live_in_canada,
-    screener_work_nj,
     screener_military_service_eighteen_months,
     screener_currently_disabled,
-    screener_federal_work_in_last_eighteen_months,
-    screener_maritime_employer_eighteen_months,
   } = screenerInput || {}
 
   const ipInUS = true // temporary until we pull IP addresses
   const ipInNJ = true // temporary until we pull IP addresses
 
   // Canada claims have one phone number, so this takes precedence over other scenarios that also require calling
-  if (screener_live_in_canada) {
+  const screenerScenario = getScreenerScenario(screenerInput)
+
+  if (screenerScenario === 'INELIGIBLE_OUTSIDE_US_CANADA') {
+    return (
+      <DirectionalTemplate
+        title={t('title_not_qualified')}
+        warning={t('non_resident.warning')}
+      >
+        <p>{t('non_resident.instructions')}</p>
+      </DirectionalTemplate>
+    )
+  }
+
+  if (screenerScenario === 'CANADA_CALL') {
     return (
       <DirectionalTemplate
         title={t('title_call_us')}
@@ -100,6 +185,67 @@ const ScreenerRedirect: NextPage = () => {
     )
   }
 
+  if (screenerScenario === 'MARITIME_CALL') {
+    return (
+      <DirectionalTemplate
+        title={t('title_apply_via_phone')}
+        warning={t('warning_maritime')}
+      >
+        <Trans
+          t={t}
+          i18nKey="instructions_call_within_us"
+          components={{
+            OUTSIDE_US_AGENT_NUMBER_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_1_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_1}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_2_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_2}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_3_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_3}`} />
+            ),
+          }}
+        />
+        <p>{t('call_center_schedule')}</p>
+      </DirectionalTemplate>
+    )
+  }
+
+  if (screenerScenario === 'INELIGIBLE_WORK_OUTSIDE_NJ') {
+    return (
+      <DirectionalTemplate
+        title={t('title_predict_denial')}
+        warning={t('other_state.warning')}
+      >
+        <Trans
+          t={t}
+          i18nKey="other_state.instructions"
+          components={{
+            DOL_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={Routes.DOL_UNEMPLOYMENT_INFO}
+              ></a>
+            ),
+          }}
+        />
+      </DirectionalTemplate>
+    )
+  }
+
+  if (screenerScenario === 'FEDERAL_STANDARD_FORM') {
+    return <ApplyOnLegacyApp />
+  }
+
   // TODO: As we update this page to use the new design, the following should be removed in
   // favor of using <DirectionalTemplate>. Make sure to also remove any obsolete content strings.
   const borderStyle = 'border-bottom-1px border-base-lighter padding-bottom-4'
@@ -109,10 +255,7 @@ const ScreenerRedirect: NextPage = () => {
         <title>{t('page_title')}</title>
       </Head>
 
-      <main
-        id="main-content"
-        className="maxw-tablet margin-x-auto desktop:margin-0 desktop:grid-col-6"
-      >
+      <PageWrapper>
         <h1>{t('page_title')}</h1>
 
         <SummaryBox>
@@ -125,23 +268,6 @@ const ScreenerRedirect: NextPage = () => {
                 <li>
                   {t('info_alert.items.ip_deny')}
                   <Link variant="nav" href={'#ip_deny'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-              {screener_current_country_us === false &&
-                screener_live_in_canada === false && (
-                  <li>
-                    {t('info_alert.items.non_resident')}
-                    <Link variant="nav" href={'#non_resident'}>
-                      {t('read_more')}
-                    </Link>
-                  </li>
-                )}
-              {screener_work_nj === 'other' && (
-                <li>
-                  {t('info_alert.items.other_state')}
-                  <Link variant="nav" href={'#other_state'}>
                     {t('read_more')}
                   </Link>
                 </li>
@@ -170,22 +296,6 @@ const ScreenerRedirect: NextPage = () => {
                   </Link>
                 </li>
               )}
-              {screener_federal_work_in_last_eighteen_months && (
-                <li>
-                  {t('info_alert.items.federal')}
-                  <Link variant="nav" href={'#federal'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-              {screener_maritime_employer_eighteen_months && (
-                <li>
-                  {t('info_alert.items.maritime')}
-                  <Link variant="nav" href={'#maritime'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
             </ul>
           </SummaryBoxContent>
         </SummaryBox>
@@ -194,33 +304,6 @@ const ScreenerRedirect: NextPage = () => {
           <div className={borderStyle}>
             <h2 id="ip_deny">{t('ip_deny.heading')}</h2>
             <p>{t('ip_deny.label')}</p>
-          </div>
-        )}
-
-        {screener_current_country_us === false &&
-          screener_live_in_canada === false && (
-            <div className={borderStyle}>
-              <h2 id="non_resident">{t('non_resident.heading')}</h2>
-              <p>{t('non_resident.label')}</p>
-            </div>
-          )}
-
-        {screener_work_nj === 'other' && (
-          <div className={borderStyle}>
-            <h2 id="other_state">{t('other_state.heading')}</h2>
-            <p>{t('other_state.label')}</p>
-            <p>
-              <Button
-                type="button"
-                onClick={() =>
-                  window.location.assign(
-                    'https://www.dol.gov/general/topic/unemployment-insurance/'
-                  )
-                }
-              >
-                {t('other_state.button')}
-              </Button>
-            </p>
           </div>
         )}
 
@@ -296,51 +379,7 @@ const ScreenerRedirect: NextPage = () => {
             </p>
           </div>
         )}
-
-        {screener_federal_work_in_last_eighteen_months && (
-          <div className={borderStyle}>
-            <h2 id="federal">{t('federal.heading')}</h2>
-            <p>{t('federal.label.line1')}</p>
-            <p>
-              <Button
-                type="button"
-                onClick={
-                  () =>
-                    window.location.assign(
-                      'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
-                    ) //TODO change this link
-                }
-              >
-                {t('federal.label.button')}
-              </Button>
-            </p>
-          </div>
-        )}
-
-        {screener_maritime_employer_eighteen_months && (
-          <div>
-            <h2 id="maritime">{t('maritime.heading')}</h2>
-            <p>{t('maritime.label.line1')}</p>
-            <div>
-              <Trans t={t} i18nKey="maritime.label.line2">
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_1}`}>
-                  {CLAIMS_AGENT_NUMBER_1}
-                </a>
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_2}`}>
-                  {CLAIMS_AGENT_NUMBER_2}
-                </a>
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_3}`}>
-                  {CLAIMS_AGENT_NUMBER_3}
-                </a>
-                <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`}>
-                  {OUTSIDE_US_AGENT_NUMBER}
-                </a>
-              </Trans>
-            </div>
-            <p>{t('agent_contact.label.line1')}</p>
-          </div>
-        )}
-      </main>
+      </PageWrapper>
     </>
   )
 }

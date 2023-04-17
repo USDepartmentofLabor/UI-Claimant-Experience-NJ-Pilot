@@ -53,8 +53,8 @@ e2e-test-gui-docker-fast: ## Runs Cypress tests in browser running the app docke
 e2e-test-headless-local: ## Runs Cypress tests on the command line running the app on localhost
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
-e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized TODO: Don't skip lighthouse
-	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
+e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
 
 e2e-test-headless-docker-fast: ## Runs Cypress tests on the command line running the app dockerized without lighthouse or a11y
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
@@ -157,6 +157,15 @@ server-task-definition: ## Create the server ECS task definition
 
 db-migrations-task-definition: ## Create the db migration ECS task definition
 	./scripts/create-task-definition.py --app db-migrate  --environment $(environment) > ops/ecs-db-migrations-task-definition.json
+
+smoke-test-build: ## Create the smoke test deployment artifact
+	cd ./ops/synthetics/smoke-test && zip smoke-test.zip nodejs/node_modules/smoke-test.js
+
+smoke-test-push: ## Push the smoke test deployment artifact to S3
+	aws s3 cp ./ops/synthetics/smoke-test/smoke-test.zip s3://$(AWS_SYNTHETICS_SOURCE_BUCKET)/synthetics/smoke-test-$(SMOKE_TEST_VERSION).zip
+
+smoke-test-deploy: ## Update the smoke test canary with the new deployment artifact
+	python ./scripts/update-smoke-test-canary.py --bucket $(AWS_SYNTHETICS_SOURCE_BUCKET) --key synthetics/smoke-test-$(SMOKE_TEST_VERSION).zip
 
 wait-for-server: ## Wait for the server health check to return 200
 	./scripts/wait-for-url.py --url http://localhost:8080/intake-api/actuator/health

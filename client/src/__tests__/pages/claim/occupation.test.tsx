@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import { OccupationPageDefinition } from 'constants/pages/definitions/occupationPageDefinition'
 import Occupation from 'pages/claim/occupation'
 import { WrappingProviders } from 'utils/testUtils'
@@ -40,15 +40,25 @@ function mockOccupationsSearchQuery(returnValues?: {
   )
 }
 
+/**
+ * Resolves `not wrapped in act(...)` warnings due to the LOCAL_is_occucoder_down
+ * being set in an effect when the page renders.
+ */
+async function waitForEffects() {
+  return act(async () => Promise.resolve())
+}
+
 describe('Occupation page', () => {
   it('renders', async () => {
     mockOccupationsSearchQuery()
 
     render(<Occupation />)
 
-    expect(screen.queryByText('choose_the_occupation')).toBeInTheDocument()
-    expect(screen.queryByText('job_title.label')).toBeInTheDocument()
-    expect(screen.queryByText('job_description.label')).toBeInTheDocument()
+    expect(screen.getByText('choose_the_occupation')).toBeInTheDocument()
+    expect(screen.getByText('job_title.label')).toBeInTheDocument()
+    expect(screen.getByText('job_description.label')).toBeInTheDocument()
+
+    await waitForEffects()
   })
 
   it('searches for occupations when the user enters a job title & description', async () => {
@@ -85,6 +95,8 @@ describe('Occupation page', () => {
     expect(occupationRadio).toBeInTheDocument()
     expect(occupationRadio).toHaveAttribute('value', MOCK_OCCUPATION.job_code)
     expect(screen.queryByLabelText(/feed world/)).toBeInTheDocument()
+
+    await waitForEffects()
   })
 
   it('renders a spinner when a search request is loading', async () => {
@@ -99,6 +111,8 @@ describe('Occupation page', () => {
     expect(
       await screen.findByTestId('occupations-search-spinner')
     ).toBeInTheDocument()
+
+    await waitForEffects()
   })
 
   it('sets all occucoder fields when an occupation is selected', async () => {
@@ -161,7 +175,7 @@ describe('Occupation page', () => {
     })
   })
 
-  it('disables the submit button until an occupation is selected', async () => {
+  it('requires an occupation to be selected', async () => {
     mockOccupationsSearchQuery({
       isLoading: false,
       isError: false,
@@ -169,14 +183,15 @@ describe('Occupation page', () => {
     })
 
     render(<Occupation />)
-    const submitButton = screen.getByRole('button', { name: /next/i })
 
-    expect(submitButton).toBeDisabled()
-
-    userEvent.click(screen.getByLabelText(/farmer/))
+    await userEvent.type(screen.getByTestId('job_title'), 'farmer')
+    await userEvent.type(screen.getByTestId('job_description'), 'test')
+    await userEvent.click(screen.getByTestId('next-button'))
 
     await waitFor(() => {
-      expect(submitButton).not.toBeDisabled()
+      expect(screen.getByTestId('errorMessage')).toHaveTextContent(
+        /Choose an occupation/
+      )
     })
   })
 
@@ -189,7 +204,14 @@ describe('Occupation page', () => {
 
     render(<Occupation />)
 
-    expect(screen.getByRole('button', { name: /next/i })).not.toBeDisabled()
+    await userEvent.type(screen.getByTestId('job_title'), 'test')
+    await userEvent.click(screen.getByTestId('next-button'))
+
+    // Roundabout way to confirm we don't have an error related to selecting an occupation.
+    // This test will fail if there's multiple errors on the page.
+    expect(screen.getByTestId('errorMessage')).toHaveTextContent(
+      /Job description is required/
+    )
   })
 
   describe('Validation Schema', () => {
@@ -299,6 +321,50 @@ describe('Occupation page', () => {
             schemaSlice
           )
         ).rejects.toBeTruthy()
+      })
+    })
+
+    describe('occucoder_code', () => {
+      it('validates with a valid value when LOCAL_is_occucoder_down is false', async () => {
+        const schemaSlice = {
+          LOCAL_is_occucoder_down: false,
+          occucoder_code: '1234',
+        }
+
+        await expect(
+          OccupationPageDefinition.validationSchema.validateAt(
+            `occucoder_code`,
+            schemaSlice
+          )
+        ).resolves.toBeTruthy()
+      })
+
+      it('fails validation with an invalid value when LOCAL_is_occucoder_down is false', async () => {
+        const schemaSlice = {
+          LOCAL_is_occucoder_down: false,
+          occucoder_code: undefined,
+        }
+
+        await expect(
+          OccupationPageDefinition.validationSchema.validateAt(
+            `occucoder_code`,
+            schemaSlice
+          )
+        ).rejects.toBeTruthy()
+      })
+
+      it('skips validation when LOCAL_is_occucoder_down is true', async () => {
+        const schemaSlice = {
+          LOCAL_is_occucoder_down: true,
+          occucoder_code: undefined,
+        }
+
+        await expect(
+          OccupationPageDefinition.validationSchema.validateAt(
+            `occucoder_code`,
+            schemaSlice
+          )
+        ).resolves.toBeUndefined()
       })
     })
   })

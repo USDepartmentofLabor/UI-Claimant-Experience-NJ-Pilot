@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react'
 import AddressVerification, {
-  AddressVerificationInput,
   pageInitialValues,
 } from 'pages/claim/address-verification'
 import { AddressInput } from 'types/claimantInput'
@@ -69,12 +68,10 @@ const mockClaimantInput = (
     LOCAL_mailing_address_same,
     mailing_address
   )
-  ;(useInitialValues as jest.Mock).mockImplementation(
-    (values: AddressVerificationInput) => ({
-      initialValues: { ...values, ...initialValues },
-      isLoading: false,
-    })
-  )
+  ;(useInitialValues as jest.Mock).mockImplementation(() => ({
+    initialValues,
+    isLoading: false,
+  }))
 }
 const mockAppendAndSaveClaimFormValues = jest.fn(async () => Promise.resolve())
 jest.mock('hooks/useSaveClaimFormValues', () => ({
@@ -101,10 +98,9 @@ function mockVerifiedAddressQuery(returnValues?: {
 }
 
 describe('Address Confirmation Page', () => {
-  const initialValues = pageInitialValues
   const renderAddressVerification = () => {
     render(
-      <Formik initialValues={initialValues} onSubmit={noop}>
+      <Formik initialValues={pageInitialValues} onSubmit={noop}>
         <QueryClientProvider client={new QueryClient()}>
           <AddressVerification />
         </QueryClientProvider>
@@ -145,10 +141,10 @@ describe('Address Confirmation Page', () => {
     await userEvent.click(screen.getByRole('button', { name: /next/i }))
     expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledTimes(1)
     expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
-      expect.objectContaining({ residence_address: RESIDENTIAL_ADDRESS })
-    )
-    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
-      expect.objectContaining({ mailing_address: RESIDENTIAL_ADDRESS })
+      expect.objectContaining({
+        residence_address: RESIDENTIAL_ADDRESS,
+        mailing_address: RESIDENTIAL_ADDRESS,
+      })
     )
   })
 
@@ -193,10 +189,10 @@ describe('Address Confirmation Page', () => {
     )
     await userEvent.click(screen.getByRole('button', { name: /next/i }))
     expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
-      expect.objectContaining({ residence_address: RESIDENTIAL_ADDRESS })
-    )
-    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
-      expect.objectContaining({ mailing_address: MAILING_ADDRESS })
+      expect.objectContaining({
+        residence_address: RESIDENTIAL_ADDRESS,
+        mailing_address: MAILING_ADDRESS,
+      })
     )
   })
 

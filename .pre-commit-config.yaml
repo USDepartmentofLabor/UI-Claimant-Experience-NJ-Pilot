@@ -45,6 +45,7 @@ repos:
         exclude: >
           (?x)^(
             .github/ISSUE_TEMPLATE/.*.md|
+            ops/synthetics/smoke-test/nodejs/node_modules/.*.js
           )$
 
   - repo: local
