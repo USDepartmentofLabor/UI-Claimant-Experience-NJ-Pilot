@@ -179,10 +179,10 @@ describe('Address Confirmation Page', () => {
     )
     await userEvent.click(screen.getByRole('button', { name: /next/i }))
     expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
-      expect.objectContaining({ residence_address: RESIDENTIAL_ADDRESS })
-    )
-    expect(mockAppendAndSaveClaimFormValues).toHaveBeenCalledWith(
-      expect.objectContaining({ mailing_address: MAILING_ADDRESS })
+      expect.objectContaining({
+        residence_address: RESIDENTIAL_ADDRESS,
+        mailing_address: MAILING_ADDRESS,
+      })
     )
   })
 
