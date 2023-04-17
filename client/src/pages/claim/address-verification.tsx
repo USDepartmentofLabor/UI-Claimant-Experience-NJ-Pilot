@@ -1,4 +1,4 @@
-import { AddressVerificationInput } from 'types/claimantInput'
+import { AddressInput } from 'types/claimantInput'
 import { NextPageWithLayout } from 'pages/_app'
 import { ReactNode, useState } from 'react'
 import { ClaimFormLayout } from 'components/layouts/ClaimFormLayout/ClaimFormLayout'
@@ -24,6 +24,17 @@ const nextPage = getNextPage(pageDefinition)
 const previousPage = getPreviousPage(pageDefinition)
 const AS_ENTERED = 'AS_ENTERED'
 const AS_VERIFIED = 'AS_VERIFIED'
+
+type AddressVerificationInput = {
+  residence_address: AddressInput
+  mailing_address: AddressInput
+  LOCAL_mailing_address_same: boolean // NOT CheckboxInput, because it starts false (is never null)
+  LOCAL_residence_address_verification_selection: 'AS_ENTERED' | 'AS_VERIFIED'
+  LOCAL_mailing_address_verification_selection: 'AS_ENTERED' | 'AS_VERIFIED'
+}
+
+type handleChangeAddress = (evt: React.ChangeEvent<HTMLInputElement>) => void
+
 export const pageInitialValues: AddressVerificationInput = {
   residence_address: { ...ADDRESS_SKELETON },
   LOCAL_mailing_address_same: false,
@@ -33,7 +44,7 @@ export const pageInitialValues: AddressVerificationInput = {
 }
 
 interface AddressSelectorInputProps {
-  handleChangeAddress: handleChangeAddress: (evt: React.ChangeEvent<HTMLInputElement>) => void
+  handleChangeAddress: handleChangeAddress
   name: string
   legend: string
   options: readonly { address: AddressInput; label: string; value: string }[]

@@ -195,8 +195,6 @@ export type PaymentInput = {
   apply_for_increased_payment_for_dependents: YesNoInput
 }
 
-export type AddressVerificationInput = ClaimantAddressVerificationInput
-
 export type PersonalInput = ClaimantNameInput & ClaimantAddressInput
 
 export type PersonNameInput = {
@@ -235,14 +233,6 @@ type ClaimantAddressInput = {
   LOCAL_mailing_address_same: boolean // NOT CheckboxInput, because it starts false (is never null)
 }
 
-type ClaimantAddressVerificationInput = {
-  residence_address: AddressInput
-  mailing_address: AddressInput
-  LOCAL_mailing_address_same: boolean // NOT CheckboxInput, because it starts false (is never null)
-  LOCAL_residence_address_verification_selection: 'AS_ENTERED' | 'AS_VERIFIED'
-  LOCAL_mailing_address_verification_selection: 'AS_ENTERED' | 'AS_VERIFIED'
-}
-
 export type ClaimantNameInput = {
   claimant_name: PersonNameInput
   LOCAL_claimant_has_alternate_names: YesNoInput
@@ -250,7 +240,6 @@ export type ClaimantNameInput = {
 }
 
 export type IdentityInput = {
-  ssn: string
   birthdate: string
   has_nj_issued_id: YesNoInput
   drivers_license_or_state_id_number: string

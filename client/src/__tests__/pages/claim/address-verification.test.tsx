@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import AddressVerification, {
   pageInitialValues,
 } from 'pages/claim/address-verification'
-import { AddressInput, AddressVerificationInput } from 'types/claimantInput'
+import { AddressInput } from 'types/claimantInput'
 import { useInitialValues } from 'hooks/useInitialValues'
 import { AddressVerificationResponse } from '../../../services/Accumail'
 import { useVerifiedAddress } from '../../../queries/useVerifiedAddress'
