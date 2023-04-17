@@ -57,12 +57,21 @@ const claimForm = {
   },
   personal: {
     heading: 'Personal information',
+    address_confirmation: 'Address confirmation',
     verified_legal_name: { label: 'Legal name' },
     residence_address: {
       label: 'Residence address',
     },
     mailing_address: {
       label: 'Mailing address',
+    },
+  },
+  address_verification: {
+    entered: 'You entered',
+    verified: 'U.S. Postal recommends',
+    legend: {
+      mailing: 'Which address do you want to use for your mailing address?',
+      residence: 'Which address do you want to use for your residence address?',
     },
   },
   demographics: {

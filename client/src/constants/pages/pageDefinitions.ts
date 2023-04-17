@@ -2,6 +2,7 @@ import { AnySchema } from 'yup'
 
 import { PrequalPageDefinition } from 'constants/pages/definitions/prequalPageDefinition'
 import { PersonalPageDefinition } from 'constants/pages/definitions/personalPageDefinition'
+import { AddressVerificationPageDefinition } from 'constants/pages/definitions/addressVerificationPageDefinition'
 import { ContactPageDefinition } from 'constants/pages/definitions/contactPageDefinition'
 import { DemographicsPageDefinition } from 'constants/pages/definitions/demographicsPageDefinition'
 import { IdentityPageDefinition } from 'constants/pages/definitions/identityPageDefinition'
@@ -24,6 +25,7 @@ export const pageDefinitions: PageDefinition[] = [
   PrequalPageDefinition,
   IdentityPageDefinition,
   PersonalPageDefinition,
+  AddressVerificationPageDefinition,
   ContactPageDefinition,
   DemographicsPageDefinition,
   RecentEmployersPageDefinition,
