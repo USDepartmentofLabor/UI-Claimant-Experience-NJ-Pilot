@@ -33,10 +33,10 @@ export const pageInitialValues: AddressVerificationInput = {
 }
 
 interface AddressSelectorInputProps {
-  handleChangeAddress: any
+  handleChangeAddress: handleChangeAddress: (evt: React.ChangeEvent<HTMLInputElement>) => void
   name: string
   legend: string
-  options: any
+  options: readonly { address: AddressInput; label: string; value: string }[]
 }
 
 function AddressVerificationFeedback() {
