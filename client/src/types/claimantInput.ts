@@ -240,6 +240,7 @@ export type ClaimantNameInput = {
 }
 
 export type IdentityInput = {
+  ssn: string
   birthdate: string
   has_nj_issued_id: YesNoInput
   drivers_license_or_state_id_number: string
