@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   Button,
@@ -27,6 +27,7 @@ import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { IntakeAppContext } from 'contexts/IntakeAppContext'
 import { Routes } from 'constants/routes'
 import { getScreenerScenario } from 'utils/screenerScenario/getScreenerScenario'
+import { useRouter } from 'next/router'
 
 function PageWrapper(props: { children: React.ReactNode }) {
   return (
@@ -53,7 +54,15 @@ function DirectionalTemplate(props: {
       <PageWrapper>
         <h1>{props.title}</h1>
         {props.warning && (
-          <Alert type="warning" headingLevel="h2" role="alert" slim>
+          /* Include aria-live for scenario where user decides to apply anyways, but another scenario applies to them,
+            so they see an update to the existing page's content instead of being routed to another page */
+          <Alert
+            aria-live="polite"
+            type="warning"
+            headingLevel="h2"
+            role="alert"
+            slim
+          >
             {props.warning}
           </Alert>
         )}
@@ -140,15 +149,78 @@ function ApplyOnLegacyApp() {
  */
 const ScreenerRedirect: NextPage = () => {
   const { t } = useTranslation('redirect')
+  const router = useRouter()
   const { screenerInput } = useContext(IntakeAppContext)
-
-  const { screener_currently_disabled } = screenerInput || {}
+  const [skipDisabilityScenario, setSkipDisabilityScenario] = useState(false)
 
   const ipInUS = true // temporary until we pull IP addresses
   const ipInNJ = true // temporary until we pull IP addresses
 
   // Canada claims have one phone number, so this takes precedence over other scenarios that also require calling
-  const screenerScenario = getScreenerScenario(screenerInput)
+  const screenerScenario = getScreenerScenario(screenerInput, {
+    skipDisabilityScenario,
+  })
+
+  useEffect(() => {
+    /**
+     * If skipDisabilityScenario results in a NEW_FORM scenario,
+     * we want to redirect the user to the intake app.
+     */
+    if (screenerScenario === 'NEW_FORM') {
+      router.push(pageDefinitions[0].path)
+    }
+
+    /**
+     * If the user refreshes their page, we lose the screener form state
+     */
+    if (!screenerInput) {
+      router.push(Routes.SCREENER)
+    }
+  }, [router, screenerScenario, screenerInput])
+
+  if (screenerScenario === 'NEW_FORM') {
+    /**
+     * The effect above should prevent this from ever happening, but there may be
+     * a brief moment when the page re-renders while the user is redirected.
+     */
+    return <Link href={pageDefinitions[0].path}>{t('apply_now')}</Link>
+  }
+
+  if (screenerScenario === 'DISABILITY') {
+    return (
+      <DirectionalTemplate
+        title={t('title_predict_denial')}
+        warning={t('warning_disabled')}
+      >
+        <Trans
+          t={t}
+          i18nKey="instructions_disabled"
+          components={{
+            APPLY_BUTTON: (
+              // @ts-expect-error `children` will be set in i18n string
+              <Button
+                type="button"
+                unstyled
+                onClick={() => setSkipDisabilityScenario(true)}
+              />
+            ),
+            TEMPORARY_DISABILITY_INSURANCE_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a
+                href={Routes.TEMPORARY_DISABILITY_INSURANCE}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            ),
+            DISABILITY_BENEFITS_AGENT_NUMBER_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${DISABILITY_BENEFITS_AGENT_NUMBER}`} />
+            ),
+          }}
+        />
+      </DirectionalTemplate>
+    )
+  }
 
   if (screenerScenario === 'INELIGIBLE_OUTSIDE_US_CANADA') {
     return (
@@ -314,14 +386,6 @@ const ScreenerRedirect: NextPage = () => {
                   </Link>
                 </li>
               )}
-              {screener_currently_disabled && (
-                <li>
-                  {t('info_alert.items.disability')}
-                  <Link variant="nav" href={'#disability'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
             </ul>
           </SummaryBoxContent>
         </SummaryBox>
@@ -357,32 +421,6 @@ const ScreenerRedirect: NextPage = () => {
               </Trans>
             </p>
             <p>{t('agent_contact.label.line1')}</p>
-          </div>
-        )}
-
-        {screener_currently_disabled && (
-          <div className={borderStyle}>
-            <h2 id="disability">{t('disability.heading')}</h2>
-            <p>{t('disability.label.line1')}</p>
-            <p>
-              <Trans t={t} i18nKey="disability.label.line2">
-                <a href={`tel:${DISABILITY_BENEFITS_AGENT_NUMBER}`}>
-                  {DISABILITY_BENEFITS_AGENT_NUMBER}
-                </a>
-              </Trans>
-            </p>
-            <p>
-              <Button
-                type="button"
-                onClick={() =>
-                  window.location.assign(
-                    'https://nj.gov/labor/myleavebenefits/worker/tdi/'
-                  )
-                }
-              >
-                {t('disability.label.button')}
-              </Button>
-            </p>
           </div>
         )}
       </PageWrapper>

@@ -47,6 +47,20 @@ describe('getScreenerScenario', () => {
     expect(scenario).toEqual('DISABILITY')
   })
 
+  it('determines eligibility if there is a disability and skipDisabilityScenario is true', () => {
+    const input: ScreenerInput = {
+      ...buildScreenerInput(),
+      screener_current_country_us: true,
+      screener_work_nj: 'nj',
+      screener_currently_disabled: true,
+    }
+    const scenario = getScreenerScenario(input, {
+      skipDisabilityScenario: true,
+    })
+
+    expect(scenario).toEqual('NEW_FORM')
+  })
+
   it('determines ineligibility if screener needs to call Canadian number', () => {
     const input: ScreenerInput = {
       ...buildScreenerInput(),
@@ -89,7 +103,7 @@ describe('getScreenerScenario', () => {
     expect(scenario).toEqual('MILITARY')
   })
 
-  it('determines elibility if screener is federal employee', () => {
+  it('determines eligibility if screener is federal employee', () => {
     const input: ScreenerInput = {
       ...buildScreenerInput(),
       screener_current_country_us: true,
@@ -103,7 +117,7 @@ describe('getScreenerScenario', () => {
     expect(scenario).toEqual('FEDERAL_STANDARD_FORM')
   })
 
-  it('determines elibility if screener is federal employee', () => {
+  it('determines eligibility if screener is federal employee', () => {
     const input: ScreenerInput = {
       ...buildScreenerInput(),
       screener_current_country_us: true,
