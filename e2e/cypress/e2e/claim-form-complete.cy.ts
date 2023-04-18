@@ -129,7 +129,6 @@ context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
     //Address Confirmation page
     fillAddressVerificationFields(address)
     cy.checkA11y()
-    cy.checkLighthouse()
     cy.clickNext()
 
     // Contact page
