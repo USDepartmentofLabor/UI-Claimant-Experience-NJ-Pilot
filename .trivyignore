@@ -16,6 +16,9 @@
 
 
 # Ignore CVE-2016-1000027 while we research the finding
+# https://github.com/newjersey/dol-ui-claimant-intake/issues/2130
+CVE-2023-20863
+# Ignore CVE-2016-1000027 while we research the finding
 # https://github.com/newjersey/dol-ui-claimant-intake/issues/1224
 CVE-2016-1000027
 # Ignore the following SnakeYAML vulnerabilities. The claimant intake
