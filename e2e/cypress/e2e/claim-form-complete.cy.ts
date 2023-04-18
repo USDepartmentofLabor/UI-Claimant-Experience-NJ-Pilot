@@ -20,6 +20,7 @@ import fillRecentEmployersFields from './formPageFilling/recent-employers'
 import { generateWhoAmI } from './utils/generateWhoAmI'
 import { fillEditEmployerFields } from './formPageFilling/edit-employer'
 import fillReviewEmployersFields from './formPageFilling/review-employers'
+import fillAddressVerificationFields from './formPageFilling/address-verification'
 
 context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
   it('saves completed claim (also checks a11y on each page)', () => {
@@ -101,13 +102,14 @@ context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     // Personal page
+    const address = '1 Street'
     fillPersonalFields(
       {
         alternate_names: [{ first_name: 'Tasha', last_name: 'McGee' }],
       },
       {
         residence_address: {
-          address: '1 Street',
+          address,
           city: 'City',
           state: 'CA',
           zipcode: '00000',
@@ -125,10 +127,9 @@ context('Claim Form Complete', { scrollBehavior: 'center' }, () => {
     cy.clickNext()
 
     //Address Confirmation page
-
+    fillAddressVerificationFields(address)
+    cy.checkA11y()
     cy.clickNext()
-    // TODO implement coverage for when the API returns a response
-    // in order to unblock current PRs we're allowing the default address to go through
 
     // Contact page
     fillContactFields()

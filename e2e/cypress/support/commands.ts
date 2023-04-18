@@ -109,7 +109,10 @@ Cypress.Commands.add('checkA11y', (options: Options = {}) => {
       hideElements: 'span[class*=nav_future]',
       runners: ['htmlcs'],
       standard: 'WCAG2AA',
-      actions: ['wait for element #page-loading to be hidden'],
+      actions: [
+        'wait for element #page-loading to be hidden',
+        'wait for element [data-testid="spinner"] to be hidden',
+      ],
       ...options,
     })
   }
