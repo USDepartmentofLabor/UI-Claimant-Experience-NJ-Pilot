@@ -11,6 +11,7 @@ function Spinner(props: {
       <img
         src="/spinner.svg"
         className="width-2 flex-align-self-center margin-right-1"
+        data-testid="spinner"
         aria-hidden
         alt=""
       />
