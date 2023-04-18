@@ -111,7 +111,6 @@ describe('Screener-redirect page', () => {
     })
 
     it('when worked in the military', async () => {
-      const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
         screener_current_country_us: true,
@@ -129,21 +128,10 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
-
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-
-      const militaryMvpButton = screen.getByText('military_mvp.label.button')
-
-      await user.click(militaryMvpButton)
-
-      expect(assignMock).toHaveBeenCalledTimes(1)
-      expect(assignMock).toHaveBeenCalledWith(
-        'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
-      )
     })
 
     it('when on disability', async () => {

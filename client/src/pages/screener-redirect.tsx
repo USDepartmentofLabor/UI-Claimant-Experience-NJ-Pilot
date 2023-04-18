@@ -142,10 +142,7 @@ const ScreenerRedirect: NextPage = () => {
   const { t } = useTranslation('redirect')
   const { screenerInput } = useContext(IntakeAppContext)
 
-  const {
-    screener_military_service_eighteen_months,
-    screener_currently_disabled,
-  } = screenerInput || {}
+  const { screener_currently_disabled } = screenerInput || {}
 
   const ipInUS = true // temporary until we pull IP addresses
   const ipInNJ = true // temporary until we pull IP addresses
@@ -180,7 +177,9 @@ const ScreenerRedirect: NextPage = () => {
             ),
           }}
         />
-        <p>{t('call_center_schedule')}</p>
+        <p>
+          {t('call_center_schedule')} {t('call_center_schedule_extended')}
+        </p>
       </DirectionalTemplate>
     )
   }
@@ -213,7 +212,9 @@ const ScreenerRedirect: NextPage = () => {
             ),
           }}
         />
-        <p>{t('call_center_schedule')}</p>
+        <p>
+          {t('call_center_schedule')} {t('call_center_schedule_extended')}
+        </p>
       </DirectionalTemplate>
     )
   }
@@ -238,6 +239,39 @@ const ScreenerRedirect: NextPage = () => {
             ),
           }}
         />
+      </DirectionalTemplate>
+    )
+  }
+
+  if (screenerScenario === 'MILITARY') {
+    return (
+      <DirectionalTemplate
+        title={t('title_apply_via_phone')}
+        warning={t('warning_military')}
+      >
+        <Trans
+          t={t}
+          i18nKey="instructions_call_within_us"
+          components={{
+            OUTSIDE_US_AGENT_NUMBER_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${OUTSIDE_US_AGENT_NUMBER}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_1_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_1}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_2_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_2}`} />
+            ),
+            CLAIMS_AGENT_NUMBER_3_LINK: (
+              // eslint-disable-next-line jsx-a11y/anchor-has-content
+              <a href={`tel:${CLAIMS_AGENT_NUMBER_3}`} />
+            ),
+          }}
+        />
+        <p>{t('call_center_schedule')}</p>
       </DirectionalTemplate>
     )
   }
@@ -272,14 +306,6 @@ const ScreenerRedirect: NextPage = () => {
                   </Link>
                 </li>
               )}
-              {screener_military_service_eighteen_months && (
-                <li>
-                  {t('info_alert.items.military_mvp')}
-                  <Link variant="nav" href={'#military_mvp'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
               {!ipInNJ && (
                 <li>
                   {t('info_alert.items.military_ip')}
@@ -304,26 +330,6 @@ const ScreenerRedirect: NextPage = () => {
           <div className={borderStyle}>
             <h2 id="ip_deny">{t('ip_deny.heading')}</h2>
             <p>{t('ip_deny.label')}</p>
-          </div>
-        )}
-
-        {screener_military_service_eighteen_months && (
-          <div className={borderStyle}>
-            <h2 id="military_mvp">{t('military_mvp.heading')}</h2>
-            <p>{t('military_mvp.label.line1')}</p>
-            <p>
-              <Button
-                type="button"
-                onClick={
-                  () =>
-                    window.location.assign(
-                      'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
-                    ) //TODO change this link
-                }
-              >
-                {t('military_mvp.label.button')}
-              </Button>
-            </p>
           </div>
         )}
 

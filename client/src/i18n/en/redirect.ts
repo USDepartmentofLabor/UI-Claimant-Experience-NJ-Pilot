@@ -16,10 +16,14 @@ const redirect = {
   warning_canada: 'Canadian residents need to apply over the phone.',
   warning_maritime:
     'People who had maritime employment in the last 18 months need to apply over the phone',
+  warning_military:
+    'People who had military employment in the last 18 months need to apply over the phone.',
   instructions_canada: `<p>Apply for unemployment insurance by calling <OUTSIDE_US_AGENT_NUMBER_LINK>${OUTSIDE_US_AGENT_NUMBER}</OUTSIDE_US_AGENT_NUMBER_LINK>. Canadian residents need to apply over the phone.</p>`,
   instructions_call_within_us: `<p>Apply for unemployment insurance by calling <CLAIMS_AGENT_NUMBER_1_LINK>${CLAIMS_AGENT_NUMBER_1}</CLAIMS_AGENT_NUMBER_1_LINK>, <CLAIMS_AGENT_NUMBER_2_LINK>${CLAIMS_AGENT_NUMBER_2}</CLAIMS_AGENT_NUMBER_2_LINK>, or <CLAIMS_AGENT_NUMBER_3_LINK>${CLAIMS_AGENT_NUMBER_3}</CLAIMS_AGENT_NUMBER_3_LINK>. If you have a non-New Jersey area code call <OUTSIDE_US_AGENT_NUMBER_LINK>${OUTSIDE_US_AGENT_NUMBER}</OUTSIDE_US_AGENT_NUMBER_LINK>.</p>`,
   call_center_schedule:
-    'Our contact center is open from 8:30 AM to 3 PM, Monday through Friday, excluding holidays. We recommend calling as close to 8 AM as possible.',
+    'Our contact center is open from 8:30 AM to 3 PM, Monday through Friday, excluding holidays.',
+  call_center_schedule_extended:
+    'We recommend calling as close to 8 AM as possible.',
   page_title: 'Let’s try another way',
   legacy: {
     apply_button: 'Go to application',
