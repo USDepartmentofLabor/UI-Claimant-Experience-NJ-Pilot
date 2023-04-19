@@ -141,7 +141,7 @@ const Contact: NextPageWithLayout = () => {
                     labelled-by="preferred_language.other"
                     name="preferred_language_other"
                     type="text"
-                    label={t('other_language')}
+                    label={t('other_language.label')}
                   />
                 )}
               </>

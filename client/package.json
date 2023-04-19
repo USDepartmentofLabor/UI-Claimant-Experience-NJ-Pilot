@@ -13,6 +13,7 @@
     "formik": "^2.2.9",
     "i18next": "^21.10.0",
     "i18next-browser-languagedetector": "^7.0.1",
+    "lodash": "^4.17.21",
     "next": "12.3.1",
     "next-auth": "^4.20.1",
     "next-i18next": "^12.1.0",
@@ -74,6 +75,8 @@
     "start": "next start",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "test:update": "jest --updateSnapshot",
+    "test:watch": "jest --watch",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

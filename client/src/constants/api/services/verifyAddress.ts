@@ -1,0 +1,5 @@
+export const VALID_ADDRESS = 'Valid address'
+export const CORRECTED_ADDRESS = 'Corrections applied'
+export const NO_ADDRESS_MATCH = 'Could not match address'
+export const NO_PARAMS_ERROR = 'ERROR: no parameters were sent with the request'
+export const NO_SESSION_ERROR = 'ERROR: the request session is invalid'

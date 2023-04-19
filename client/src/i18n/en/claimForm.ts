@@ -1,5 +1,3 @@
-import { EXTERNAL_CONTACT_EMAIL } from 'constants/routes'
-
 const claimForm = {
   step_progress: 'step {{step}} of {{totalSteps}}',
   pagination: {
@@ -59,12 +57,21 @@ const claimForm = {
   },
   personal: {
     heading: 'Personal information',
+    address_confirmation: 'Address confirmation',
     verified_legal_name: { label: 'Legal name' },
     residence_address: {
       label: 'Residence address',
     },
     mailing_address: {
       label: 'Mailing address',
+    },
+  },
+  address_verification: {
+    entered: 'You entered',
+    verified: 'U.S. Postal recommends',
+    legend: {
+      mailing: 'Which address do you want to use for your mailing address?',
+      residence: 'Which address do you want to use for your residence address?',
     },
   },
   demographics: {
@@ -755,7 +762,6 @@ const claimForm = {
   },
   occupation: {
     heading: 'Occupation information',
-    search: 'Search',
     choose_the_occupation:
       'If you have multiple occupations, choose your main one or the one you’re most comfortable with. We use your answer for your <0>reemployment profile</0> and for statistical purposes.',
     reemployment_profile_link:
@@ -765,10 +771,7 @@ const claimForm = {
       errors: {
         required: 'Occupation is required',
       },
-      min_length: 'Occupation must be at least three characters',
     },
-    hint: "If you're not sure, see our",
-    list_of_occupations: 'list of occupations',
     job_description: {
       label: 'Give a short description of your main occupation:',
       errors: {
@@ -777,10 +780,18 @@ const claimForm = {
           'Please shorten your occupation description to 255 characters or less (including spaces).',
       },
     },
-    bls_code: {
-      required: 'Please select the occupation that best matches your selection',
+    occucoder_code: {
+      label:
+        'Choose the occupation that best matches what you entered above. If nothing matches, please try another search.',
+      errors: {
+        required: 'Choose an occupation that best matches what you entered.',
+      },
     },
-    no_results: 'No results. Try another search.',
+    search_loading: 'Searching for matches',
+    search_results_count:
+      '{{count}} matches found for {{job_title}}. Search results appear below.',
+    search_no_matches_error: 'No results. Try another search.',
+    sr_search_help: 'Search results will appear below.',
   },
   disability: {
     heading: 'Disability',
@@ -955,10 +966,15 @@ const claimForm = {
       },
       errors: {
         required: 'Please specify the language you speak',
-        maxLength: 'Preferred language must be at most 32 characters',
+        maxLength: 'Preferred language must be at most 50 characters',
       },
     },
-    other_language: 'Enter the language you speak',
+    other_language: {
+      label: 'Enter the language you speak',
+      errors: {
+        alphabetical: `Sorry, we can't currently accept accent marks, numbers, or non-English characters. Please type your preferred contact language with only the letters A-Z`,
+      },
+    },
   },
   name: {
     legal_name: 'What is your legal name?',
@@ -1167,10 +1183,37 @@ const claimForm = {
     },
   },
   success: {
-    heading: 'Success!',
+    heading: 'We’re reviewing your application',
+    alert_heading: 'Application submitted',
     success_details:
-      'You have successfully submitted your claim for unemployment insurance. We will be in touch soon to confirm we have received your information.',
-    contact_details: `If you don't hear from us in two weeks, please email us at <0>${EXTERNAL_CONTACT_EMAIL}<0/>`,
+      'We received your application and are reviewing it to make sure you’re eligible for  payments.',
+    id_verification_heading: 'Verify your identity on ID.me',
+    id_verification_instructions:
+      'After submitting your application, go to ID.me and <IdMeProcessLink>verify your identity</IdMeProcessLink>. This helps us to make sure payments go to the right person.',
+    id_verification_requirements_lead: 'To verify your identity, you need:',
+    id_verification_requirement_gov_id:
+      'Your <IdMeDocTypesLink>government-issued ID</IdMeDocTypesLink>',
+    id_verification_requirement_id_copy:
+      'A smartphone or computer with a camera to take and upload a photo of your ID',
+    id_verification_requirement_ssn: 'Your Social Security Number',
+    id_verification_requirement_sms:
+      'A phone number where you can receive text messages',
+    id_verification_requirement_email: 'An email address',
+    id_verification_closing:
+      'When verifying with ID.me, use the same email you used to apply for unemployment ({{email}}).',
+    id_verification_button: 'Verify my identity',
+    expectations_heading: 'What to expect',
+    expect_comms_heading: 'Follow-up communication',
+    expect_comms:
+      'If we need more information from you we will email you or send you a letter in the mail. <strong>You must complete the forms or respond in a timely manner to receive payments. If you don’t respond, you may lose benefits.</strong>',
+    expect_certifying_heading: 'Certify your eligibility every week',
+    expect_certifying: `<p>Each week that you’re unemployed you need to <HowToCertifyLink>answer some questions in order to receive your unemployment insurance payments</HowToCertifyLink> for that week.</p>
+      <p>If your application is approved, you should start getting payments every week that you certify and remain eligible.</p>
+      <p><strong>Important: If you try to certify your eligibility and get an error saying your claim has expired, you may still have to complete your ID.me verification.</strong></p>`,
+    expect_certifying_button: 'Certify my eligibility',
+    privacy_heading: 'Data privacy and security',
+    privacy_statement: `<p>The information collected from your application for unemployment compensation is private data and cannot be released except when authorized by state or federal law, by a court order, or with your permission. The information you and/or your employer(s) provide may be used for New Jersey Department of Labor and Workforce Development purposes and may be used to provide income and eligibility verification between State Agencies administering programs under a plan approved under Title I, X, XIV, XVI as contained in Section 1137 (a)(6) of the Social Security Act. It may be shared with other state and/or federal agencies that determine eligibility for Medicaid, Food Stamps, Social Security, or other state and/or federal benefits and programs. Your Social Security Number will be validated with the Social Security Administration. If you are not a citizen of the United States, your work authorization in the United States will be verified with the Department of Homeland Security.</p>
+      <p>Precautions have been taken to ensure that the information provided by you in this application are kept private and secure. This online application uses a secure connection. Data submitted using this application is encrypted. You should be aware that by using a shared computer, others may be able to view your personal information.</p>`,
   },
 }
 

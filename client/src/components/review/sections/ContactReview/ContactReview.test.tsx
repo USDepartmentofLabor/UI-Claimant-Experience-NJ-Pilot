@@ -37,7 +37,7 @@ describe('ContactReview component', () => {
       name: 'contact.preferred_language.label',
     })
     const preferred_language_other = screen.queryByRole('group', {
-      name: 'contact.other_language',
+      name: 'contact.other_language.label',
       exact: false,
     })
 

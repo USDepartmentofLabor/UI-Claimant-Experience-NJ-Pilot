@@ -145,7 +145,9 @@ describe('Contact page', () => {
     expect(languageOther).not.toBeChecked()
 
     await user.click(languageOther)
-    expect(screen.queryByLabelText('other_language')).toHaveTextContent('')
+    expect(screen.queryByLabelText('other_language.label')).toHaveTextContent(
+      ''
+    )
   })
 
   describe('Verified fields', () => {

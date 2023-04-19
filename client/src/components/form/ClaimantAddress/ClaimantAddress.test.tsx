@@ -14,7 +14,6 @@ describe('ClaimantAddress component', () => {
         <ClaimantAddress />
       </Formik>
     )
-
     const residenceAddress = screen.queryByRole('group', {
       name: 'label.primary_address',
     })

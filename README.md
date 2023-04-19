@@ -27,6 +27,8 @@ and other development commands.
 
 - [Python (with PIP)](https://www.python.org/downloads/)
   - PIP is used to install [pre-commit](https://pre-commit.com/)
+- Zscaler - Installed as part of onboarding when you get a `.dol.nj.gov` email.
+  - This project integrates with services (e.g. Address Verification) that is only accessible when on the NJ state network. When running the app locally, Zscaler must be running and authorized. If not, you will see a 500 error.
 
 #### Client and Cypress (e2e)
 
@@ -208,6 +210,18 @@ To run the client server locally:
 ```
 make client-dev
 ```
+
+### Troubleshooting Local Web Client
+
+When running the above commands, you may encounter one of the following:
+
+#### 500 server error from `/partial-claim`
+
+Run `make docker-clean`
+
+#### Failed network requests for Address Verification or Occupations API
+
+These downstream services require running on the NJ network. Make sure Zscaler is running and your session still is active.
 
 ## Web server
 

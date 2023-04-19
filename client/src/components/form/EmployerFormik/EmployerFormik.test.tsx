@@ -22,9 +22,6 @@ jest.mock('utils/signout/cognitoSignOut', () => ({
   cognitoSignOut: () => mockCognitoSignOut(),
 }))
 
-const scrollIntoViewMock = jest.fn()
-window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
-
 describe('EmployerFormik component', () => {
   const values = {
     ...EMPLOYER_SKELETON,
