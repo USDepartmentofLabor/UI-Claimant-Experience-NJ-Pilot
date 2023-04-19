@@ -71,7 +71,6 @@ export const Review: NextPageWithLayout = () => {
   const [betaTestError, setBetaTestError] = useState<string | undefined>(
     undefined
   )
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const scrollToTop = () => {
     if (typeof window !== 'undefined') {
@@ -81,45 +80,6 @@ export const Review: NextPageWithLayout = () => {
 
   const valuesRef = useRef(claimFormValues)
   valuesRef.current = claimFormValues
-
-  const handleCompleteAndSubmit: FormEventHandler<
-    HTMLButtonElement
-  > = async () => {
-    // Make sure we're using the updated context value now that the formik form has been saved
-    const completeClaimValues = valuesRef.current
-    if (completeClaimValues !== undefined) {
-      setIsSubmitting(true)
-      saveCompleteClaim.mutate(completeClaimValues, {
-        onSuccess: async () => {
-          // Send HTML review artifact of review page to backend server
-          const betaTestReviewResult = await refetch()
-          if (betaTestReviewResult.data?.status === 200) {
-            submitClaim.mutate(completeClaimValues, {
-              onSuccess: async () => {
-                await router.push({
-                  pathname: Routes.CLAIM.SUCCESS,
-                })
-              },
-              onError: () => {
-                scrollToTop()
-                setIsSubmitting(false)
-              },
-            })
-          } else {
-            const { error } = betaTestReviewResult
-            if (error && isAxiosError(error))
-              setBetaTestError(error.response?.data || error.message)
-            scrollToTop()
-            setIsSubmitting(false)
-          }
-        },
-        onError: () => {
-          scrollToTop()
-          setIsSubmitting(false)
-        },
-      })
-    }
-  }
 
   const displayCompleteClaimErrors = (data: any) => {
     const response = data as ErrorResponse
@@ -141,7 +101,47 @@ export const Review: NextPageWithLayout = () => {
       heading={pageDefinition.heading}
       index={pageDefinitions.indexOf(pageDefinition)}
     >
-      {() => {
+      {({ isSubmitting, setSubmitting }) => {
+        const handleCompleteAndSubmit: FormEventHandler<
+          HTMLButtonElement
+        > = async () => {
+          // Make sure we're using the updated context value now that the formik form has been saved
+          const completeClaimValues = valuesRef.current
+          if (completeClaimValues !== undefined) {
+            setSubmitting(true)
+            saveCompleteClaim.mutate(completeClaimValues, {
+              onSuccess: async () => {
+                // Send HTML review artifact of review page to backend server
+                const betaTestReviewResult = await refetch()
+                if (betaTestReviewResult.data?.status === 200) {
+                  submitClaim.mutate(completeClaimValues, {
+                    onSuccess: async () => {
+                      await router.push({
+                        pathname: Routes.CLAIM.SUCCESS,
+                      })
+                      setSubmitting(false)
+                    },
+                    onError: () => {
+                      scrollToTop()
+                      setSubmitting(false)
+                    },
+                  })
+                } else {
+                  const { error } = betaTestReviewResult
+                  if (error && isAxiosError(error))
+                    setBetaTestError(error.response?.data || error.message)
+                  scrollToTop()
+                  setSubmitting(false)
+                }
+              },
+              onError: () => {
+                scrollToTop()
+                setSubmitting(false)
+              },
+            })
+          }
+        }
+
         return (
           <>
             {(saveCompleteClaim.isError ||
