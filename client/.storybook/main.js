@@ -1,4 +1,5 @@
 module.exports = {
+  staticDirs: ['../public'],
   stories: ['../src/**/*.stories.@(ts|tsx)'],
   addons: [
     '@storybook/addon-links',

@@ -68,7 +68,7 @@ public class RecentEmployersControllerTest {
         WagePotentialResponseEmployer employer1 =
                 new WagePotentialResponseEmployer(
                         null,
-                        "PEABODY MA",
+                        "ST LOUIS MA",
                         "P O BOX 6001",
                         "C/O TALX UC EXPRESS",
                         "DIRECT FUTURE MAIL",
@@ -98,8 +98,8 @@ public class RecentEmployersControllerTest {
         WagePotentialResponseEmployer employer3 =
                 new WagePotentialResponseEmployer(
                         null,
-                        "Metropolis KS",
                         null,
+                        "Metropolis KS",
                         "#7",
                         "123 Secret Identity Street",
                         "031143718000066",
@@ -135,7 +135,7 @@ public class RecentEmployersControllerTest {
                 .thenReturn(validRecentEmployerResponse);
         String expectedResponse =
                 """
-                        [{"employerAddressLine5":null,"employerAddressLine4":"PEABODY MA","employerAddressLine3":"P O BOX 6001","employerAddressLine2":"C/O TALX UC EXPRESS","employerAddressLine1":"DIRECT FUTURE MAIL","employerFein":"031143718000000","employerAddressZip":"01961","employerName":"EPIC COFFEE, INC","employerStatePayrollNumber":null,"employerTelephoneNumber":"6144151035","employerSequenceNumber":"001","wagePotentialMonLookupResponseEmpWageDtos":[{"year":"2022","quarterWages":14000.0,"quarterNumber":"1","quarterWeeksWorked":13,"nameControl":"\u0000\u0000"}]},{"employerAddressLine5":null,"employerAddressLine4":"WASHINGTON DC","employerAddressLine3":"SUITE #2","employerAddressLine2":"2212 superhero street","employerAddressLine1":"The Hall of Justice","employerFein":"031143718000011","employerAddressZip":"91121","employerName":"Justice for All","employerStatePayrollNumber":null,"employerTelephoneNumber":"5554151012","employerSequenceNumber":"001","wagePotentialMonLookupResponseEmpWageDtos":[{"year":"2022","quarterWages":14000.0,"quarterNumber":"1","quarterWeeksWorked":13,"nameControl":"\u0000\u0000"}]},{"employerAddressLine5":null,"employerAddressLine4":"Metropolis KS","employerAddressLine3":null,"employerAddressLine2":"#7","employerAddressLine1":"123 Secret Identity Street","employerFein":"031143718000066","employerAddressZip":"12345","employerName":"Daily Planet","employerStatePayrollNumber":null,"employerTelephoneNumber":"1114151035","employerSequenceNumber":"001","wagePotentialMonLookupResponseEmpWageDtos":[{"year":"2022","quarterWages":14000.0,"quarterNumber":"1","quarterWeeksWorked":13,"nameControl":"\u0000\u0000"}]}]"""
+                        [{"employerAddressLine5":null,"employerAddressLine4":"ST LOUIS MA","employerAddressLine3":"P O BOX 6001","employerAddressLine2":"C/O TALX UC EXPRESS","employerAddressLine1":"DIRECT FUTURE MAIL","employerFein":"031143718000000","employerAddressZip":"01961","employerName":"EPIC COFFEE, INC","employerStatePayrollNumber":null,"employerTelephoneNumber":"6144151035","employerSequenceNumber":"001","wagePotentialMonLookupResponseEmpWageDtos":[{"year":"2022","quarterWages":14000.0,"quarterNumber":"1","quarterWeeksWorked":13,"nameControl":"\u0000\u0000"}]},{"employerAddressLine5":null,"employerAddressLine4":"WASHINGTON DC","employerAddressLine3":"SUITE #2","employerAddressLine2":"2212 superhero street","employerAddressLine1":"The Hall of Justice","employerFein":"031143718000011","employerAddressZip":"91121","employerName":"Justice for All","employerStatePayrollNumber":null,"employerTelephoneNumber":"5554151012","employerSequenceNumber":"001","wagePotentialMonLookupResponseEmpWageDtos":[{"year":"2022","quarterWages":14000.0,"quarterNumber":"1","quarterWeeksWorked":13,"nameControl":"\u0000\u0000"}]},{"employerAddressLine5":null,"employerAddressLine4":null,"employerAddressLine3":"Metropolis KS","employerAddressLine2":"#7","employerAddressLine1":"123 Secret Identity Street","employerFein":"031143718000066","employerAddressZip":"12345","employerName":"Daily Planet","employerStatePayrollNumber":null,"employerTelephoneNumber":"1114151035","employerSequenceNumber":"001","wagePotentialMonLookupResponseEmpWageDtos":[{"year":"2022","quarterWages":14000.0,"quarterNumber":"1","quarterWeeksWorked":13,"nameControl":"\u0000\u0000"}]}]"""
                         .strip();
 
         this.mockMvc

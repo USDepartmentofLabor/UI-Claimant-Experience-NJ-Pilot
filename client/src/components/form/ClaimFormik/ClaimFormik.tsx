@@ -16,6 +16,7 @@ import { getClearFieldsFunctions } from 'hooks/useClearFields'
 import { pageDefinitions } from 'constants/pages/pageDefinitions'
 import { PageHeading } from 'components/form/ClaimFormHeading/PageHeading'
 import { useTranslation } from 'react-i18next'
+import { ErrorScroller } from 'hooks/useScrollToFirstError/useScrollToFirstError'
 
 type ClaimFormikChildrenFunctionProps<Values> = {
   clearField: ClearFieldFunction
@@ -131,22 +132,21 @@ export const ClaimFormik = <Values extends FormikValues = ClaimantInput>({
 
           return (
             <Form className={styles.claimForm}>
-              <>
-                {showErrorSummary && (
-                  <FormErrorSummary key={submitCount} errors={errors} />
+              <ErrorScroller />
+              {showErrorSummary && (
+                <FormErrorSummary key={submitCount} errors={errors} />
+              )}
+              {isFunction<Values>(children)
+                ? children(claimFormikProps)
+                : children}
+              <div className="margin-top-1 text-center">
+                {!isComplete && (
+                  <SaveAndExitLink
+                    disabled={isSubmitting}
+                    onClick={() => handleSaveAndExit(values)}
+                  />
                 )}
-                {isFunction<Values>(children)
-                  ? children(claimFormikProps)
-                  : children}
-                <div className="margin-top-1 text-center">
-                  {!isComplete && (
-                    <SaveAndExitLink
-                      disabled={isSubmitting}
-                      onClick={() => handleSaveAndExit(values)}
-                    />
-                  )}
-                </div>
-              </>
+              </div>
             </Form>
           )
         }}

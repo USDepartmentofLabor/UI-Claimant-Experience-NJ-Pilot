@@ -13,7 +13,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 env:
-  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
+  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.27.1-20230405184606
 
 jobs:
   dev-client-deploy:
@@ -62,8 +62,27 @@ jobs:
           db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
           otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
 
-  test-client-deploy:
+  dev-smoke-test:
     needs: [dev-client-deploy, dev-server-deploy]
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Run smoke test
+        uses: ./.github/actions/smoke-test/
+        id: run-dev-smoke-test
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+
+  test-client-deploy:
+    needs: [dev-smoke-test, dev-client-deploy, dev-server-deploy]
     runs-on: ubuntu-latest
     environment: test
 
@@ -84,7 +103,7 @@ jobs:
           app-env: test
 
   test-server-deploy:
-    needs: [dev-client-deploy, dev-server-deploy]
+    needs: [dev-smoke-test, dev-client-deploy, dev-server-deploy]
     runs-on: ubuntu-latest
     environment: test
     outputs:

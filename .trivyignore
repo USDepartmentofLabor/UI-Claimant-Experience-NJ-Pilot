@@ -1,15 +1,32 @@
+# List of vulnerabilities to ignore for the trivy scan
+#
+# When adding a vulnerability to the ignore list, please first create a github
+# issue in the claimant intake application's issue tracker with as much detail
+# and context about the vulnerability as possible: the reason for ignoring the
+# finding, links to documentation and/or discussions about the finding, etc.
+# This will help with tracking eventual remediation of the finding and provide
+# context for other team  members.
+#
+# Format for adding a vulnerbaility to the ignore list:
+#
+# # A note about the finding: At minimum, please include the package name here
+# # for easier reference later.
+# # (Link to github issue) https://github.com/newjersey/dol-ui-claimant-intake/issues/123
+# The-CVE-or-vuln-id
+
+
 # Ignore CVE-2016-1000027 while we research the finding
-# See https://github.com/newjersey/dol-ui-claimant-intake/issues/1224
+# https://github.com/newjersey/dol-ui-claimant-intake/issues/2130
+CVE-2023-20863
+# Ignore CVE-2016-1000027 while we research the finding
+# https://github.com/newjersey/dol-ui-claimant-intake/issues/1224
 CVE-2016-1000027
 # Ignore the following SnakeYAML vulnerabilities. The claimant intake
 # application does not use SnakeYAML to parse untrusted input.
 # See the discussion at https://github.com/spring-projects/spring-boot/issues/33457
+# https://github.com/newjersey/dol-ui-claimant-intake/issues/1708
 CVE-2022-1471
 # Ignore the following json-smart finding until the application has been updated
 # to include the patched version.
 # https://github.com/newjersey/dol-ui-claimant-intake/issues/1911
 CVE-2023-1370
-# Ignore the following spring-core finding until the application has been updated
-# to include the patched version.
-# https://github.com/newjersey/dol-ui-claimant-intake/issues/1911
-CVE-2023-20861

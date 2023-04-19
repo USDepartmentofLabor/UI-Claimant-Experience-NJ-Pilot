@@ -1,56 +1,32 @@
+jest.mock('next-auth/react')
+
 import { render, screen } from '@testing-library/react'
 import BetaSuccess from 'pages/claim/beta-success'
+import { useSession } from 'next-auth/react'
+
+const mockUseSession = useSession as jest.Mock
 
 describe('success page', () => {
-  const renderSuccessPage = () => {
+  beforeEach(() => {
+    mockUseSession.mockReturnValue({
+      data: {
+        user: {
+          email: 'mocked@example.com',
+        },
+      },
+    })
+  })
+
+  it('renders link to verify through ID.me, and certify', () => {
     render(<BetaSuccess />)
 
-    const heading = screen.getByRole('heading', { level: 1 })
-
-    const details = screen.queryByText('success_details')
-    const contactMsg = screen.queryByText('contact_details')
-    const signOutButton = screen.queryByRole('button', {
-      name: 'signout',
-    })
-
-    const updatePaymentButton = screen.queryByRole('button', {
-      name: 'update_payment_button',
-    })
-    const updateContactInfoButton = screen.queryByRole('button', {
-      name: 'update_contact_info_button',
-    })
-    const taxDocButton = screen.queryByRole('button', {
-      name: 'tax_doc_button',
-    })
-
-    return {
-      heading,
-      details,
-      contactMsg,
-      signOutButton,
-      taxDocButton,
-      updatePaymentButton,
-      updateContactInfoButton,
-    }
-  }
-  it('renders page', () => {
-    const {
-      heading,
-      details,
-      contactMsg,
-      signOutButton,
-      taxDocButton,
-      updatePaymentButton,
-      updateContactInfoButton,
-    } = renderSuccessPage()
-
-    expect(heading).toBeInTheDocument()
-    expect(heading).toHaveTextContent('heading')
-    expect(details).toBeInTheDocument()
-    expect(contactMsg).toBeInTheDocument()
-    expect(signOutButton).toBeInTheDocument()
-    expect(taxDocButton).toBeInTheDocument()
-    expect(updatePaymentButton).toBeInTheDocument()
-    expect(updateContactInfoButton).toBeInTheDocument()
+    expect(screen.getByTestId('id-me-link')).toHaveAttribute(
+      'href',
+      'https://hosted-pages.id.me/njdolverify'
+    )
+    expect(screen.getByTestId('certify-link')).toHaveAttribute(
+      'href',
+      'https://lwdlba.state.nj.us/CertQueueMini/employerVerifyForm.htm'
+    )
   })
 })

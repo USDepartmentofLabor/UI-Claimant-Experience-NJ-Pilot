@@ -18,7 +18,7 @@ import {
 } from 'constants/formOptions'
 describe('EmployerReview component', () => {
   const renderEmployerReview = (claimFormValues: ClaimantInput = {}) => {
-    render(
+    const { container } = render(
       <ClaimFormContext.Provider
         value={{ claimFormValues, setClaimFormValues: jest.fn }}
       >
@@ -40,13 +40,16 @@ describe('EmployerReview component', () => {
     })
 
     //your employer
-    const isFullTimePartTime = screen.queryByRole('group', {
+    const isFullTimePartTime = screen.queryAllByRole('group', {
       name: 'your_employer.is_full_time.label',
     })
 
     //work location
     const workedAtAddress = screen.queryAllByRole('group', {
       name: 'work_location.worked_at_employer_address.label',
+    })
+    const workedAtImportedAddress = screen.queryAllByRole('group', {
+      name: 'work_location.worked_at_employer_address.label_imported',
     })
     const altAddress = screen.queryAllByRole('group', {
       name: 'work_location.section_title',
@@ -128,12 +131,16 @@ describe('EmployerReview component', () => {
       name: 'total.reviewLabel',
     })
 
+    //horizontal line (rule)
+    const horizontalRules = container.getElementsByClassName('horizontalRule')
+
     return {
       employerAddress,
       phoneNumber,
       fein,
       isFullTimePartTime,
       workedAtAddress,
+      workedAtImportedAddress,
       altAddress,
       accuratePhoneNumber,
       altPhone,
@@ -158,6 +165,7 @@ describe('EmployerReview component', () => {
       datePayEnded,
       otherNote,
       totalOfPay,
+      horizontalRules,
     }
   }
 
@@ -204,7 +212,7 @@ describe('EmployerReview component', () => {
       phoneNumber,
       fein,
       isFullTimePartTime,
-      workedAtAddress,
+      workedAtImportedAddress,
       altAddress,
       accuratePhoneNumber,
       altPhone,
@@ -225,6 +233,7 @@ describe('EmployerReview component', () => {
       definiteRecallDate,
       isSeasonalWork,
       paymentsReceivedList,
+      horizontalRules,
     } = renderEmployerReview(values)
     //verified fields
     expect(employerAddress[0]).toHaveTextContent(
@@ -234,11 +243,11 @@ describe('EmployerReview component', () => {
     expect(phoneNumber[0]).toHaveTextContent('555-555-5555')
     expect(fein[0]).toHaveTextContent(values.employers[0].fein)
     //your employer
-    expect(isFullTimePartTime).toHaveTextContent(
+    expect(isFullTimePartTime[0]).toHaveTextContent(
       'your_employer.is_full_time.options.full_time'
     )
     //work location
-    expect(workedAtAddress[0]).toHaveTextContent('yes')
+    expect(workedAtImportedAddress[0]).toHaveTextContent('yes')
     expect(altAddress.length).toBe(0)
     expect(accuratePhoneNumber[0]).toHaveTextContent('yes')
     expect(altPhone.length).toBe(0)
@@ -271,6 +280,7 @@ describe('EmployerReview component', () => {
     expect(paymentsReceivedList[0]).toHaveTextContent(
       'payments_received.payments_received_detail.pay_type.options.none.label'
     )
+    expect(horizontalRules.length).toBe(1)
   })
 
   it('shows conditional values for Work location', () => {
@@ -284,8 +294,8 @@ describe('EmployerReview component', () => {
             employerAddressLine1: 'Building 1',
             employerAddressLine2: ' Really long name',
             employerAddressLine3: '123 main street',
-            employerAddressLine4: null,
-            employerAddressLine5: 'Smallville, KS',
+            employerAddressLine4: 'Smallville, KS',
+            employerAddressLine5: null,
             employerAddressZip: '12345',
           } as ImportedEmployerAddress,
           worked_for_imported_employer_in_last_18mo: true,
@@ -312,10 +322,14 @@ describe('EmployerReview component', () => {
       ],
     }
 
-    const { workedAtAddress, altAddress, accuratePhoneNumber, altPhone } =
-      renderEmployerReview(values)
+    const {
+      workedAtImportedAddress,
+      altAddress,
+      accuratePhoneNumber,
+      altPhone,
+    } = renderEmployerReview(values)
     //work location
-    expect(workedAtAddress[0]).toHaveTextContent('no')
+    expect(workedAtImportedAddress[0]).toHaveTextContent('no')
     expect(altAddress[0]).toHaveTextContent(
       `${values.employers[0].alternate_physical_work_address.city}, ${values.employers[0].alternate_physical_work_address.state} ${values.employers[0].alternate_physical_work_address.zipcode}`
     )
@@ -518,5 +532,53 @@ describe('EmployerReview component', () => {
     expect(reasonStillEmployed.length).toBe(0)
     expect(hoursReducedBy20Percent.length).toBe(0)
     expect(isSeasonalWork.length).toBe(0)
+  })
+
+  it('shows multiple employers with only one line between them', () => {
+    //create one imported and one manually added imported
+    const values = {
+      employers: [
+        {
+          employer_address: {
+            address: 'building 1',
+            address2: '123 main street',
+            address3: '',
+            city: 'smallville',
+            state: 'KS',
+            zipcode: '12345',
+          },
+
+          employer_name: 'Jamba Juice',
+          worked_at_employer_address: true,
+          worked_for_imported_employer_in_last_18mo: true,
+          is_imported: true,
+        } as Employer,
+        {
+          employer_address: {
+            address: 'building 2',
+            address2: '123 main street',
+            address3: '',
+            city: 'smallville',
+            state: 'KS',
+            zipcode: '12345',
+          },
+
+          employer_name: 'Starbucks',
+          worked_at_employer_address: true,
+          is_imported: false,
+        } as Employer,
+      ],
+    }
+
+    const { employerAddress, horizontalRules } = renderEmployerReview(values)
+
+    expect(employerAddress.length).toBe(2)
+    expect(employerAddress[0]).toHaveTextContent(
+      `building 1, 123 main street, smallville, KS 12345`
+    )
+    expect(employerAddress[1]).toHaveTextContent(
+      `building 2, 123 main street, smallville, KS 12345`
+    )
+    expect(horizontalRules.length).toBe(2)
   })
 })

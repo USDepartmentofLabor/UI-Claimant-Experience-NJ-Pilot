@@ -21,7 +21,7 @@ const PageHeadingForwardRef: ForwardRefRenderFunction<
       data-testid="claim-form-page-heading"
       ref={ref}
       tabIndex={-1}
-      className={`${styles.pageHeading}`}
+      className={`${styles.pageHeading} font-heading-xl line-height-heading-5`}
     >
       {children}
     </h1>

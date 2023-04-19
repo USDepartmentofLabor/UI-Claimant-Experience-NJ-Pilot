@@ -30,7 +30,7 @@ public class RdsIamHikariDataSource extends HikariDataSource {
     }
 
     private String getToken() {
-        logger.info("Generating RDS authentication token");
+        logger.debug("Generating RDS authentication token");
         var hostnamePort = getHostnamePort();
         var region = getRegion();
         var credentialsProvider = getDefaultCredentialsProvider();

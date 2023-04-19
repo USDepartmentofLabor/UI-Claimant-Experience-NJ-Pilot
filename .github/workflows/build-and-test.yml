@@ -13,7 +13,7 @@ concurrency:
 
 env:
   JAVA_VERSION: 17.0.6+10
-  NODE_VERSION: 16.19.1
+  NODE_VERSION: 16.20.0
 
 jobs:
   check-for-changes:
@@ -32,6 +32,7 @@ jobs:
               - .github/actions/lint-build-and-test/**
               - .github/workflows/build-and-test.yml
               - .github/workflows/image-scans.yml
+              - .github/actions/image-scan/**
               - client/**
               - e2e/**
               - nginx/**

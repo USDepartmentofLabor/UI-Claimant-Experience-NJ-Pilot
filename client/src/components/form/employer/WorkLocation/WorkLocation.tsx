@@ -9,7 +9,6 @@ import { useFormikContext } from 'formik'
 import { useClearFields } from 'hooks/useClearFields'
 import { ChangeEventHandler } from 'react'
 import { Trans } from 'react-i18next'
-import { parseCityAndStateFromImportedAddress } from 'utils/employer/employerUtils'
 import { formatStoredToDisplayPhone } from 'utils/phone/format'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
 
@@ -48,27 +47,43 @@ export const WorkLocation = () => {
     }
   }
 
-  const employerCityAndState =
-    values.is_imported && values.imported_address
-      ? parseCityAndStateFromImportedAddress(values.imported_address)
-      : {
-          city: values?.employer_address?.city,
-          state: values.employer_address?.state,
-        }
-
+  const hasImportedAddress = values.is_imported && values.imported_address
+  const importedAddrLastFilledLine =
+    values?.imported_address?.employerAddressLine5 ||
+    values?.imported_address?.employerAddressLine4 ||
+    values?.imported_address?.employerAddressLine3 ||
+    values?.imported_address?.employerAddressLine2 ||
+    values?.imported_address?.employerAddressLine1
   return (
     <>
       <Fieldset className="form-section" legend={<h2>{t('section_title')}</h2>}>
-        <YesNoQuestion
-          question={
-            <Trans t={t} i18nKey="worked_at_employer_address.label">
-              {employerCityAndState.city}
-              {employerCityAndState.state}
-            </Trans>
-          }
-          name={`worked_at_employer_address`}
-          onChange={handleEmployerWorkLocationChange}
-        />
+        {hasImportedAddress ? (
+          <YesNoQuestion
+            question={
+              <Trans t={t} i18nKey="worked_at_employer_address.label_imported">
+                {importedAddrLastFilledLine}
+              </Trans>
+            }
+            name={`worked_at_employer_address`}
+            onChange={handleEmployerWorkLocationChange}
+          />
+        ) : (
+          <YesNoQuestion
+            question={
+              values?.employer_address?.state &&
+              values?.employer_address?.city ? (
+                <Trans t={t} i18nKey="worked_at_employer_address.label">
+                  {values?.employer_address?.city}
+                  {values?.employer_address?.state}
+                </Trans>
+              ) : (
+                t('worked_at_employer_address.placeholder')
+              )
+            }
+            name={`worked_at_employer_address`}
+            onChange={handleEmployerWorkLocationChange}
+          />
+        )}
         {values.worked_at_employer_address === false && (
           <FormGroup>
             <TextField

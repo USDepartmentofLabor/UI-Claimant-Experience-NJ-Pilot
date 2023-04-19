@@ -56,7 +56,7 @@ export const ContactReview = () => {
         }
       />
       <ReviewElement
-        label={t('contact.other_language')}
+        label={t('contact.other_language.label')}
         value={claimFormValues?.preferred_language_other}
       />
     </ReviewSection>

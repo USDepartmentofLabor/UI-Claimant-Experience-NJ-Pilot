@@ -14,11 +14,14 @@ $asset-path: '~@uswds/uswds';
   $theme-type-scale-md: 7,
   $theme-h4-font-size: 'md',
   $theme-layout-grid-use-important: false,
+  // Allow utility classes to always override other styles, even when they're lower in specificity
+  $utilities-use-important: true,
 
   /* TYPOGRAPHY */ $theme-respect-user-font-size: false,
   $theme-root-font-size: 16px,
   $theme-font-path: '#{$asset-path}/fonts',
   $theme-font-type-sans: 'public-sans',
+  $theme-font-weight-heavy: 800,
   $theme-style-body-element: true,
 
   /* SPACING */ $theme-grid-container-max-width: 'desktop',

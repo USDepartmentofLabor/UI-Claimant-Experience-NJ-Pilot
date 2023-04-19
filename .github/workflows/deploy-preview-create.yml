@@ -15,8 +15,8 @@ concurrency:
 
 env:
   JAVA_VERSION: 17.0.6+10
-  NODE_VERSION: 16.19.1
-  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.26.0-20230214215406
+  NODE_VERSION: 16.20.0
+  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.27.1-20230405184606
 
 jobs:
   should-deploy-preview-run:
@@ -24,6 +24,8 @@ jobs:
     environment: dev
     outputs:
       run-deployment-preview: ${{ steps.preview-check.outputs.run-deployment-preview }}
+      server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+      preview-base-url-wo-https: ${{ steps.server-base-url.outputs.preview-base-url-wo-https }}
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -41,19 +43,36 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v6
 
-      - name: Comment preview will be created
-        uses: peter-evans/create-or-update-comment@v2
+      - name: Compose server base url
+        id: server-base-url
+        env:
+          GIT_BRANCH: ${{ steps.branch-name.outputs.current_branch }}
+          DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+        shell: bash
+        run: |
+          SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
+          SAFE_BRANCH="$(echo $GIT_BRANCH | tr "[:punct:]" "-")"
+          PREVIEW_BASE_URL_WITHOUT_HTTPS="${SAFE_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          SERVER_BASE_URL="https://${PREVIEW_BASE_URL_WITHOUT_HTTPS}"
+          echo "preview-base-url-wo-https=$PREVIEW_BASE_URL_WITHOUT_HTTPS" >> $GITHUB_OUTPUT
+          echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
+
+      - name: Find comment
+        uses: peter-evans/find-comment@v2
+        id: find_comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: Deployment Preview
+
+      - name: Comment preview will be created/updated
+        uses: peter-evans/create-or-update-comment@v3
         if: steps.preview-check.outputs.run-deployment-preview == 'true'
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body: Deployment Preview will be created for this PR, ${{ github.sha }}, at https://${{ steps.branch-name.outputs.current_branch }}.${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
-
-      - name: Comment preview will not be created
-        uses: peter-evans/create-or-update-comment@v2
-        if: steps.preview-check.outputs.run-deployment-preview == 'false'
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: Deployment Preview will not be created for this PR at ${{ github.sha }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          body: "Deployment Preview URL: ${{ steps.server-base-url.outputs.server-base-url }}"
+          edit-mode: replace
 
   build-lint-and-test:
     needs: [should-deploy-preview-run]
@@ -80,8 +99,6 @@ jobs:
     if: needs.should-deploy-preview-run.outputs.run-deployment-preview == 'true'
     runs-on: ubuntu-latest
     environment: dev
-    outputs:
-      server-base-url: ${{ steps.server-base-url.outputs.server-base-url }}
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -91,28 +108,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get branch names
-        id: branch-name
-        uses: tj-actions/branch-names@v6
-
-      - name: Compose server base url
-        id: server-base-url
-        env:
-          GIT_BRANCH: ${{ steps.branch-name.outputs.current_branch }}
-          DEV_SERVER_BASE_URL: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
-        shell: bash
-        run: |
-          SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
-          PREVIEW_BASE_URL_WITHOUT_HTTPS="${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
-          SERVER_BASE_URL="https://${PREVIEW_BASE_URL_WITHOUT_HTTPS}"
-          echo "preview-base-url-wo-https=$PREVIEW_BASE_URL_WITHOUT_HTTPS" >> $GITHUB_OUTPUT
-          echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
-
       - name: Create cognito urls
         uses: ./.github/actions/create-cognito-urls
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          base-url: ${{ needs.should-deploy-preview-run.outputs.server-base-url }}
           pr-number: ${{ github.event.pull_request.number }}
           cognito-client-id: ${{ secrets.COGNITO_CLIENT_ID }}
           cognito-user-pool-id: ${{ secrets.COGNITO_USER_POOL_ID }}
@@ -122,8 +122,8 @@ jobs:
         uses: ./.github/actions/create-preview-network
         with:
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          base-url-wo-https: ${{ steps.server-base-url.outputs.preview-base-url-wo-https }}
-          base-url: ${{ steps.server-base-url.outputs.server-base-url }}
+          base-url-wo-https: ${{ needs.should-deploy-preview-run.outputs.preview-base-url-wo-https }}
+          base-url: ${{ needs.should-deploy-preview-run.outputs.server-base-url }}
           pr-number: ${{ github.event.pull_request.number }}
 
   deploy-preview-client-service:
@@ -151,7 +151,7 @@ jobs:
         with:
           deploy-env: dev
           aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
-          server-base-url: ${{ needs.deploy-preview-auth-and-network.outputs.server-base-url }}
+          server-base-url: ${{ needs.should-deploy-preview-run.outputs.server-base-url }}
           app-env: development
           pr: ${{ github.event.pull_request.number }}
           ecs-client-security-group: ${{ secrets.ECS_CLIENT_SECURITY_GROUP_DEV }}

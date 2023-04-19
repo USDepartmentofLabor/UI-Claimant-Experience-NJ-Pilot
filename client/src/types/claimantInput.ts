@@ -206,6 +206,7 @@ export type PersonNameInput = {
 
 export type AddressInput = {
   address: string
+  address2: string
   city: string
   state: string
   zipcode: string
@@ -255,6 +256,11 @@ export type IdentityInput = {
 export type OccupationInput = {
   job_title: string
   job_description: string
+  occucoder_code: string | null
+  occucoder_job_title: string | null
+  occucoder_description: string | null
+  occucoder_score: number | null
+  LOCAL_is_occucoder_down: boolean
 }
 
 export type EducationAndTrainingInput = {

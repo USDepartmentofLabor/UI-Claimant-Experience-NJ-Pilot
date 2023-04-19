@@ -1,0 +1,64 @@
+name: Build cert generator image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ops/aws-pca-cert-generator/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@2f9f10ea3fa2eed41ac443fee8bfbd059af2d0a4
+
+      - name: Construct image tag
+        id: construct-image-tag
+        env:
+          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_COMMIT: ${{ github.sha }}
+        run: |
+          BRANCH_PREFIX="$GIT_BRANCH"
+          # use a generic prefix for all non-main branches
+          if [[ "$BRANCH_PREFIX" != "main" ]]; then
+            BRANCH_PREFIX="branch"
+          fi
+          BUILD_TIME=$(date '+%Y%m%d%H%M%S')
+          PYTHON_LAMBDA_VERSION=$(grep 'FROM public.ecr.aws/lambda/python' ops/aws-pca-cert-generator/Dockerfile | cut -d':' -f 2)
+          IMAGE_TAG="${BRANCH_PREFIX}-${PYTHON_LAMBDA_VERSION}-${GIT_COMMIT}-${BUILD_TIME}"
+          echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f03ac48505955848960e80bbb68046aa35c7b9e7
+        with:
+          version: v0.10.2
+          driver-opts: image=moby/buildkit:v0.11.2
+
+      - name: Build & Push cert generator image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          push: true
+          provenance: false
+          context: ops/aws-pca-cert-generator
+          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-acm-pca-cert-generator:${{ steps.construct-image-tag.outputs.image-tag }}

@@ -56,6 +56,7 @@ export const ClaimantAddress = () => {
       >
         <Address
           basename="residence_address"
+          optAddress2={true}
           onChange={handleResidenceAddressChange}
         />
       </Fieldset>
@@ -70,7 +71,7 @@ export const ClaimantAddress = () => {
           className="form-section"
           legend={<h2>{t('label.mailing_address')}</h2>}
         >
-          <Address basename="mailing_address" />
+          <Address basename="mailing_address" optAddress2={true} />
         </Fieldset>
       )}
     </>

@@ -43,7 +43,8 @@ jobs:
         shell: bash
         run: |
           SERVER_BASE_URL_WITHOUT_HTTPS="${DEV_SERVER_BASE_URL//https:\/\//}"
-          SERVER_BASE_URL="https://${GIT_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
+          SAFE_BRANCH="$(echo $GIT_BRANCH | tr "[:punct:]" "-")"
+          SERVER_BASE_URL="https://${SAFE_BRANCH}.${SERVER_BASE_URL_WITHOUT_HTTPS}"
           echo "server-base-url=$SERVER_BASE_URL" >> $GITHUB_OUTPUT
 
   cleanup-auth:

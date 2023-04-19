@@ -17,6 +17,7 @@ export const PHONE_SKELETON: PhoneInput = {
 
 export const ADDRESS_SKELETON: AddressInput = {
   address: '',
+  address2: '',
   city: '',
   state: EMPTY_DROPDOWN_OPTION,
   zipcode: '',

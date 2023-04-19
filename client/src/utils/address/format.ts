@@ -124,6 +124,6 @@ export const buildImportedEmployerAddress = (
 export const buildPersonalAddress = (
   personalAddress: AddressInput | undefined
 ) => {
-  const { address, state, city, zipcode } = personalAddress || {}
-  return combineAddresses([address, city], state, zipcode, ', ')
+  const { address, address2, state, city, zipcode } = personalAddress || {}
+  return combineAddresses([address, address2, city], state, zipcode, ', ')
 }

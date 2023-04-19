@@ -53,8 +53,8 @@ e2e-test-gui-docker-fast: ## Runs Cypress tests in browser running the app docke
 e2e-test-headless-local: ## Runs Cypress tests on the command line running the app on localhost
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=http://localhost:3000" --env SERVER_BASE_URL=http://localhost:8080
 
-e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized TODO: Don't skip lighthouse
-	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
+e2e-test-headless-docker: ## Runs Cypress tests on the command line running the app dockerized
+	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env SERVER_BASE_URL=https://sandbox-claimant-intake:8443
 
 e2e-test-headless-docker-fast: ## Runs Cypress tests on the command line running the app dockerized without lighthouse or a11y
 	cd e2e && yarn cypress run --headless --browser chrome --config "baseUrl=https://sandbox-claimant-intake:8443" --env "SKIP_A11Y=true,SKIP_LIGHTHOUSE=true,SERVER_BASE_URL=https://sandbox-claimant-intake:8443"
@@ -95,11 +95,8 @@ client-compile-check: ## check client for typescript compilation
 client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
 
-client-task-definition: ## Update the environment placeholders in the client ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/client-task-definition.json.tmpl --environment $(environment) --app $(app) --pr $(pr) > ops/ecs/client-task-definition.json
-
-client-task-definition-v2: ## Update the environment placeholders in the client ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/create-task-definition.py --app client --environment $(environment) --pr $(pr) > ops/ecs/client-task-definition-v2.json
+client-task-definition: ## Create the client ECS task definition
+	./scripts/create-task-definition.py --app client --environment $(environment) --pr $(pr) > ops/ecs-client-task-definition.json
 
 server-gradle-tasks: ## list the gradle tasks that can be run when invoking ./gradlew from the /server directory
 	cd server && ./gradlew tasks
@@ -155,17 +152,20 @@ server-migration-starter-file: ## Create a starter file for raw SQL migration
 server-clean: ## cleans the build output and incremental build "Up-to-date" checks
 	cd server && ./gradlew clean
 
-server-task-definition: ## Update the environment placeholders in the server ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/server-task-definition.json.tmpl --environment $(environment) --app $(app) --pr $(pr) > ops/ecs/server-task-definition.json
+server-task-definition: ## Create the server ECS task definition
+	./scripts/create-task-definition.py --app server --environment $(environment) --pr $(pr) --otel > ops/ecs-server-task-definition.json
 
-server-task-definition-v2: ## Update the environment placeholders in the server ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/create-task-definition.py --app server --environment $(environment) --pr $(pr) --otel > ops/ecs/server-task-definition-v2.json
+db-migrations-task-definition: ## Create the db migration ECS task definition
+	./scripts/create-task-definition.py --app db-migrate  --environment $(environment) > ops/ecs-db-migrations-task-definition.json
 
-db-migrations-task-definition: ## Update the environment placeholders in the db migration ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/render-task-definition --taskdef ops/ecs/db-migrations-task-definition.json.tmpl --environment $(environment) > ops/ecs/db-migrations-task-definition.json
+smoke-test-build: ## Create the smoke test deployment artifact
+	cd ./ops/synthetics/smoke-test && zip smoke-test.zip nodejs/node_modules/smoke-test.js
 
-db-migrations-task-definition-v2: ## Update the environment placeholders in the db migration ECS task definition, e.g., dev/test/prod (only used in CI)
-	./scripts/create-task-definition.py --app db-migrate  --environment $(environment) > ops/ecs/db-migrations-task-definition-v2.json
+smoke-test-push: ## Push the smoke test deployment artifact to S3
+	aws s3 cp ./ops/synthetics/smoke-test/smoke-test.zip s3://$(AWS_SYNTHETICS_SOURCE_BUCKET)/synthetics/smoke-test-$(SMOKE_TEST_VERSION).zip
+
+smoke-test-deploy: ## Update the smoke test canary with the new deployment artifact
+	python ./scripts/update-smoke-test-canary.py --bucket $(AWS_SYNTHETICS_SOURCE_BUCKET) --key synthetics/smoke-test-$(SMOKE_TEST_VERSION).zip
 
 wait-for-server: ## Wait for the server health check to return 200
 	./scripts/wait-for-url.py --url http://localhost:8080/intake-api/actuator/health
