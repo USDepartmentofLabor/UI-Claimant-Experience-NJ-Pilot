@@ -42,6 +42,7 @@ const PaymentsReceivedDetail = (props: {
         )}
         <CurrencyField
           name={`${name}.total`}
+          hint={t('payments_received.hint')}
           label={t('payments_received.payments_received_detail.total.label', {
             payType: lowerLabel,
           })}

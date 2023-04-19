@@ -80,9 +80,7 @@ describe('SubmitButton', () => {
     await user.click(button)
 
     expect(mockSubmitForm).toHaveBeenCalledTimes(1)
-    expect(mockSetSubmitting).toHaveBeenCalledTimes(2)
-    expect(mockSetSubmitting).toHaveBeenCalledWith(true)
-    expect(mockSetSubmitting).toHaveBeenCalledWith(false)
+    expect(mockSetSubmitting).toHaveBeenCalledTimes(0) // Async submit handler manages submission state
     expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 

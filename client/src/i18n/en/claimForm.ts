@@ -659,6 +659,7 @@ const claimForm = {
     },
     payments_received: {
       heading: 'Payments from this employer',
+      hint: 'Use the amount given before any taxes or deductions were made',
       payments_received_detail: {
         pay_type: {
           label:

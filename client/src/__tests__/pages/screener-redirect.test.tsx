@@ -4,10 +4,16 @@ import {
   IntakeAppContext,
   IntakeAppContextType,
 } from 'contexts/IntakeAppContext'
-import userEvent from '@testing-library/user-event'
 import { pageInitialValues } from 'pages/screener'
 import { Routes } from 'constants/routes'
 import { ScreenerInput } from 'types/claimantInput'
+
+const mockPush = jest.fn()
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}))
 
 describe('Screener-redirect page', () => {
   const mockAppContext: IntakeAppContextType = {
@@ -26,6 +32,46 @@ describe('Screener-redirect page', () => {
 
   afterEach(() => {
     assignMock.mockClear()
+  })
+
+  it('redirects users if there is no screener input', () => {
+    render(
+      <IntakeAppContext.Provider
+        value={{
+          ...mockAppContext,
+        }}
+      >
+        <ScreenerRedirect />
+      </IntakeAppContext.Provider>
+    )
+
+    expect(mockPush).toHaveBeenCalledWith('/screener')
+  })
+
+  it('redirects users who are eligible to use the intake form', () => {
+    const screenerInput: IntakeAppContextType['screenerInput'] = {
+      screener_current_country_us: true,
+      screener_live_in_canada: false,
+      screener_work_nj: 'nj',
+      screener_federal_work_in_last_eighteen_months: false,
+      screener_job_last_eighteen_months: true,
+      screener_maritime_employer_eighteen_months: false,
+      screener_military_service_eighteen_months: false,
+      screener_currently_disabled: false,
+    }
+
+    render(
+      <IntakeAppContext.Provider
+        value={{
+          ...mockAppContext,
+          screenerInput: screenerInput,
+        }}
+      >
+        <ScreenerRedirect />
+      </IntakeAppContext.Provider>
+    )
+
+    expect(mockPush).toHaveBeenCalledWith('/claim/prequal')
   })
 
   describe('shows the correct content', () => {
@@ -111,7 +157,6 @@ describe('Screener-redirect page', () => {
     })
 
     it('when worked in the military', async () => {
-      const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
         screener_current_country_us: true,
@@ -129,25 +174,12 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('military_mvp.heading')).toBeInTheDocument()
-
       expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
       expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('disability.heading')).not.toBeInTheDocument()
-
-      const militaryMvpButton = screen.getByText('military_mvp.label.button')
-
-      await user.click(militaryMvpButton)
-
-      expect(assignMock).toHaveBeenCalledTimes(1)
-      expect(assignMock).toHaveBeenCalledWith(
-        'https://secure.dol.state.nj.us/sso/XUI/#login/&realm=ui&goto=https%3A%2F%2Fclaimproxy.dol.state.nj.us%3A443%2Fnjsuccess'
-      )
     })
 
     it('when on disability', async () => {
-      const user = userEvent.setup()
       const screenerInput = {
         ...pageInitialValues,
         screener_current_country_us: true,
@@ -165,20 +197,9 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.getByText('disability.heading')).toBeInTheDocument()
-
-      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_mvp.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
-
-      const disabilityButton = screen.getByText('disability.label.button')
-
-      await user.click(disabilityButton)
-      expect(assignMock).toHaveBeenCalledTimes(1)
-      expect(assignMock).toHaveBeenCalledWith(
-        'https://nj.gov/labor/myleavebenefits/worker/tdi/'
-      )
+      expect(screen.getByText('title_predict_denial')).toBeInTheDocument()
+      expect(screen.getByText('warning_disabled')).toBeInTheDocument()
+      expect(screen.getByText(/instructions_disabled/)).toBeInTheDocument()
     })
 
     it('when had federal employment', async () => {

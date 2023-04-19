@@ -59,12 +59,8 @@ describe('PaymentsReceived', () => {
     }
   }
   it('renders properly', async () => {
-    await renderPaymentsReceived()
-    expect(
-      screen.getByRole('group', {
-        name: 'payments_received.payments_received_detail.pay_type.label',
-      })
-    ).toBeInTheDocument()
+    const { payTypeGroup } = await renderPaymentsReceived()
+    expect(payTypeGroup).toBeInTheDocument()
   })
 
   it('opens additional fields based on pay type selection', async () => {

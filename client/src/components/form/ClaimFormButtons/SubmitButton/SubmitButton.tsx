@@ -3,6 +3,7 @@ import {
   FunctionComponent,
   MouseEventHandler,
   useRef,
+  useState,
 } from 'react'
 import { Button } from '@trussworks/react-uswds'
 import { useTranslation } from 'next-i18next'
@@ -21,7 +22,8 @@ export const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
   ...remainingButtonProps
 }) => {
   const { t } = useTranslation('claimForm')
-  const { submitForm, isSubmitting, setSubmitting, isValid } =
+  const [isDisabled, setIsDisabled] = useState(false)
+  const { submitForm, isSubmitting, isValid } =
     useFormikContext<Partial<ClaimantInput>>()
 
   const validRef = useRef(isValid)
@@ -29,17 +31,17 @@ export const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault()
+    setIsDisabled(true)
     submitForm().then(async () => {
       // Make sure we're using the updated isValid value now that the formik form submission was attempted
       if (validRef.current && onSubmit) {
-        setSubmitting(true)
         await onSubmit(e)
-        setSubmitting(false)
       }
     })
     if (onClick) {
       onClick(e)
     }
+    setIsDisabled(false)
   }
 
   return (
@@ -47,7 +49,7 @@ export const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
       type="submit"
       className="width-auto"
       data-testid="submit-button"
-      disabled={isSubmitting || disabled}
+      disabled={isSubmitting || disabled || isDisabled}
       {...remainingButtonProps}
       onClick={handleClick}
     >
