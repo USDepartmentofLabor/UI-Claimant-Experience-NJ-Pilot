@@ -28,11 +28,11 @@ import { Accumail, AddressVerificationResponse } from 'services/Accumail'
     return res.status(400).send({ validationSummary: NO_PARAMS_ERROR })
   console.log('handler started') // TODO MRH remove
   const accumail = new Accumail({
-    baseUrl: process.env.ACCUMAIL_URL as string,
+    baseUrl: process.env.ACCUMAIL_VERIFY_URL as string,
   })
   console.log(
     'handler service address is: ',
-    process.env.ACCUMAIL_URL as string
+    process.env.ACCUMAIL_VERIFY_URL as string
   ) // TODO MRH remove
   try {
     console.log('handler service is executing') // TODO MRH remove
