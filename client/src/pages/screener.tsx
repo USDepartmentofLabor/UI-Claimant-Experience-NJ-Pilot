@@ -11,6 +11,7 @@ import {
   ReactNode,
   useContext,
   useRef,
+  useState,
 } from 'react'
 import { NextPageWithLayout } from 'pages/_app'
 import { IntakeAppLayout } from 'components/layouts/IntakeAppLayout/IntakeAppLayout'
@@ -48,6 +49,7 @@ const Screener: NextPageWithLayout = () => {
   const { ssnInput, setScreenerInput } = useContext(IntakeAppContext)
   const { data: partialClaim } = useGetPartialClaim()
   const { appendAndSaveClaimFormValues } = useSaveClaimFormValues()
+  const [disableButtons, setDisableButtons] = useState(false)
 
   const validationSchema = object().shape({
     screener_current_country_us: boolean()
@@ -217,6 +219,7 @@ const Screener: NextPageWithLayout = () => {
         const handleClickNext: MouseEventHandler<HTMLButtonElement> = (e) => {
           e.preventDefault()
           submitForm().then(async () => {
+            setDisableButtons(true)
             if (validRef.current) {
               const shouldRedirect = getIsRedirect()
               if (shouldRedirect) {
@@ -242,6 +245,7 @@ const Screener: NextPageWithLayout = () => {
                 await router.push(Routes.CLAIM.PREQUAL)
               }
             }
+            setDisableButtons(false)
           })
         }
 
@@ -301,6 +305,7 @@ const Screener: NextPageWithLayout = () => {
               <Button
                 type="button"
                 onClick={handleClickPrevious}
+                disabled={isSubmitting || disableButtons}
                 data-testid="back-button"
                 className="usa-button usa-button--outline width-auto"
               >
@@ -309,7 +314,7 @@ const Screener: NextPageWithLayout = () => {
               <Button
                 type="submit"
                 onClick={handleClickNext}
-                disabled={isSubmitting}
+                disabled={isSubmitting || disableButtons}
                 data-testid="next-button"
                 className="width-auto"
               >
