@@ -61,6 +61,7 @@ export class Accumail {
       Accept: 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
     }
+    console.log('Accumail getVerifiedAddress started') // TODO MRH remove
     const accumailResponse = await axios.get<AccumailResponse>(this.baseUrl, {
       headers,
       params: {
@@ -71,6 +72,7 @@ export class Accumail {
         zip: query.zipcode,
       },
     })
+    console.log('Accumail getVerifiedAddress get executed') // TODO MRH remove
     return this.summarizeValidationAndCreateResponseObject(
       accumailResponse.data
     )
