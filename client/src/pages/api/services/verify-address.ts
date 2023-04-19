@@ -28,7 +28,7 @@ import { Accumail, AddressVerificationResponse } from 'services/Accumail'
     return res.status(400).send({ validationSummary: NO_PARAMS_ERROR })
 
   const accumail = new Accumail({
-    baseUrl: process.env.ACCUMAIL_URL as string,
+    baseUrl: process.env.ACCUMAIL_VERIFY_URL as string,
   })
   try {
     const verifiedAddressResponse = await accumail.getVerifiedAddress(req.body)
