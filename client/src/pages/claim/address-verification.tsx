@@ -19,7 +19,7 @@ import { useFormikContext } from 'formik'
 import { useVerifiedAddress } from '../../queries/useVerifiedAddress'
 import Spinner from 'components/Spinner/Spinner'
 import { CORRECTED_ADDRESS } from '../../constants/api/services/verifyAddress'
-import { Alert, Card, CardGroup } from '@trussworks/react-uswds'
+import { Alert, Card, CardGroup, Link } from '@trussworks/react-uswds'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -187,7 +187,7 @@ function AddressVerificationFeedback() {
       <p>
         {values.LOCAL_mailing_address_same && (
           <Trans t={t} i18nKey={'address_verification.same_address.proceed'}>
-            <u>{''}</u>
+            <Link href={previousPage.path}>{''}</Link>
           </Trans>
         )}
         {!values.LOCAL_mailing_address_same && (
@@ -195,7 +195,7 @@ function AddressVerificationFeedback() {
             t={t}
             i18nKey={'address_verification.distinct_addresses.proceed'}
           >
-            <u>{''}</u>
+            <Link href={previousPage.path}>{''}</Link>
           </Trans>
         )}
       </p>
