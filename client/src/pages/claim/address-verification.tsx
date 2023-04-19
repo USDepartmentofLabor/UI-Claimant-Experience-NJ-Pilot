@@ -18,7 +18,10 @@ import { RadioField } from '../../components/form/fields/RadioField/RadioField'
 import { useFormikContext } from 'formik'
 import { useVerifiedAddress } from '../../queries/useVerifiedAddress'
 import Spinner from 'components/Spinner/Spinner'
-import { CORRECTED_ADDRESS } from '../../constants/api/services/verifyAddress'
+import {
+  CORRECTED_ADDRESS,
+  NO_ADDRESS_MATCH,
+} from '../../constants/api/services/verifyAddress'
 import { Alert, Card, CardGroup, Link } from '@trussworks/react-uswds'
 
 const pageDefinition = AddressVerificationPageDefinition
@@ -83,9 +86,9 @@ function AddressVerificationFeedback() {
     } // otherwise make no changes to preserve input from previous screen despite error here
   }
 
-  //not checking for error on either response as the default case is to use the entered address
   const {
     isLoading: isVerifiedResidenceAddressLoading,
+    isError: isVerifiedResidenceAddressError,
     data: verifiedResidenceAddressData,
   } = useVerifiedAddress(
     ENTERED_RESIDENTIAL_ADDRESS,
@@ -94,6 +97,7 @@ function AddressVerificationFeedback() {
   )
   const {
     isLoading: isVerifiedMailingAddressLoading,
+    isError: isVerifiedMailingAddressError,
     data: verifiedMailingAddressData,
   } = useVerifiedAddress(
     ENTERED_MAILING_ADDRESS,
@@ -126,26 +130,83 @@ function AddressVerificationFeedback() {
     },
   ] as const
 
+  const isMailingVerificationError =
+    isVerifiedMailingAddressError ||
+    verifiedMailingAddressData?.validationSummary === NO_ADDRESS_MATCH
+  const isResidenceVerificationError =
+    isVerifiedResidenceAddressError ||
+    verifiedResidenceAddressData?.validationSummary === NO_ADDRESS_MATCH
+  const pluralError =
+    !values.LOCAL_mailing_address_same &&
+    isResidenceVerificationError &&
+    isMailingVerificationError
+
+  const errorsInValidationOccurred = () => {
+    return (
+      <>
+        <Alert type={'warning'} headingLevel="h2" role="alert" slim>
+          {!pluralError && t('address_verification.same_address.no_match')}
+          {pluralError && t('address_verification.distinct_addresses.no_match')}
+        </Alert>
+        <p>
+          {!pluralError && t('address_verification.same_address.entered')}
+          {pluralError && t('address_verification.distinct_addresses.entered')}
+        </p>
+        <CardGroup
+          className="flex-column margin-top-105 margin-bottom-1"
+          data-testid="entered_addresses_card_group"
+        >
+          {isResidenceVerificationError && (
+            <Card className="margin-bottom-105">
+              {formattedAddress(ENTERED_RESIDENTIAL_ADDRESS, true)}
+            </Card>
+          )}
+          {isMailingVerificationError && !values.LOCAL_mailing_address_same && (
+            <Card className="margin-bottom-0">
+              {formattedAddress(ENTERED_MAILING_ADDRESS, true)}
+            </Card>
+          )}
+        </CardGroup>
+        <p>
+          {!pluralError && (
+            <Trans t={t} i18nKey={'address_verification.same_address.proceed'}>
+              <Link href={previousPage.path}>{''}</Link>
+            </Trans>
+          )}
+          {pluralError && (
+            <Trans
+              t={t}
+              i18nKey={'address_verification.distinct_addresses.proceed'}
+            >
+              <Link href={previousPage.path}>{''}</Link>
+            </Trans>
+          )}
+        </p>
+      </>
+    )
+  }
+
   if (isVerifiedResidenceAddressLoading || isVerifiedMailingAddressLoading) {
     return <Spinner data-testid={'address-verification-spinner'} />
   }
-  //only allow selecting an address if the residence and mailing are the same or both addresses have proposed corrections
-  // this directs the claimant to the default case below where one, the other, or both addresses need revision
-  if (
-    (verifiedResidenceAddressData?.validationSummary === CORRECTED_ADDRESS &&
-      values.LOCAL_mailing_address_same) ||
-    (verifiedResidenceAddressData?.validationSummary === CORRECTED_ADDRESS &&
-      verifiedMailingAddressData?.validationSummary === CORRECTED_ADDRESS)
-  ) {
-    return (
-      <>
+
+  return (
+    <>
+      {(isResidenceVerificationError || isMailingVerificationError) &&
+        errorsInValidationOccurred()}
+
+      {verifiedResidenceAddressData?.validationSummary ===
+        CORRECTED_ADDRESS && (
         <AddressSelector
           handleChangeAddress={handleResidenceAddressChange}
           name={'LOCAL_residence_address_verification_selection'}
           legend={t('address_verification.legend.residence')}
           options={residenceAddressOptions}
         />
-        {!values.LOCAL_mailing_address_same && (
+      )}
+
+      {verifiedMailingAddressData?.validationSummary === CORRECTED_ADDRESS &&
+        !values.LOCAL_mailing_address_same && (
           <AddressSelector
             handleChangeAddress={handleMailingAddressChange}
             name={'LOCAL_mailing_address_verification_selection'}
@@ -153,52 +214,6 @@ function AddressVerificationFeedback() {
             options={mailingAddressOptions}
           />
         )}
-      </>
-    )
-  }
-  //default state, covers if there is an error in either verification response, or if there were no matches from the verification check
-  return (
-    <>
-      <Alert type={'warning'} headingLevel="h2" role="alert" slim>
-        {values.LOCAL_mailing_address_same &&
-          t('address_verification.same_address.no_match')}
-        {!values.LOCAL_mailing_address_same &&
-          t('address_verification.distinct_addresses.no_match')}
-      </Alert>
-      <p>
-        {values.LOCAL_mailing_address_same &&
-          t('address_verification.same_address.entered')}
-        {!values.LOCAL_mailing_address_same &&
-          t('address_verification.distinct_addresses.entered')}
-      </p>
-      <CardGroup
-        className="flex-column margin-top-105 margin-bottom-1"
-        data-testid="entered_addresses_card_group"
-      >
-        <Card className="margin-bottom-105">
-          {formattedAddress(ENTERED_RESIDENTIAL_ADDRESS, true)}
-        </Card>
-        {!values.LOCAL_mailing_address_same && (
-          <Card className="margin-bottom-0">
-            {formattedAddress(ENTERED_MAILING_ADDRESS, true)}
-          </Card>
-        )}
-      </CardGroup>
-      <p>
-        {values.LOCAL_mailing_address_same && (
-          <Trans t={t} i18nKey={'address_verification.same_address.proceed'}>
-            <Link href={previousPage.path}>{''}</Link>
-          </Trans>
-        )}
-        {!values.LOCAL_mailing_address_same && (
-          <Trans
-            t={t}
-            i18nKey={'address_verification.distinct_addresses.proceed'}
-          >
-            <Link href={previousPage.path}>{''}</Link>
-          </Trans>
-        )}
-      </p>
     </>
   )
 }

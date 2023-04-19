@@ -26,18 +26,12 @@ import { Accumail, AddressVerificationResponse } from 'services/Accumail'
     return res.status(401).send({ validationSummary: NO_SESSION_ERROR })
   if (!Object.keys(req.body).length)
     return res.status(400).send({ validationSummary: NO_PARAMS_ERROR })
-  console.log('handler started') // TODO MRH remove
+
   const accumail = new Accumail({
     baseUrl: process.env.ACCUMAIL_VERIFY_URL as string,
   })
-  console.log(
-    'handler service address is: ',
-    process.env.ACCUMAIL_VERIFY_URL as string
-  ) // TODO MRH remove
   try {
-    console.log('handler service is executing') // TODO MRH remove
     const verifiedAddressResponse = await accumail.getVerifiedAddress(req.body)
-    console.log('handler service is executing') // TODO MRH remove
     res.status(200).json(verifiedAddressResponse)
   } catch (error) {
     const status = isAxiosError(error) ? error.response?.status : undefined

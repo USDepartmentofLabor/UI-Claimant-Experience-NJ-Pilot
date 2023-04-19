@@ -81,7 +81,7 @@ const claimForm = {
     },
     distinct_addresses: {
       no_match:
-        'We can’t match your residential or mailing address in the USPS database.',
+        'We can’t match your residential and mailing addresses in the USPS database.',
       entered: 'You entered the following addresses:',
       proceed:
         'If these are correct, proceed to the next step. If either of these are incorrect, <0>go back to the previous step</0> and update your address.',
