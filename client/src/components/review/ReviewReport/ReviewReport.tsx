@@ -16,9 +16,13 @@ import { OccupationReview } from '../sections/OccupationReview/OccupationReview'
 import { DisabilityReview } from '../sections/DisabilityReview/DisabilityReview'
 import { PaymentReview } from '../sections/PaymentReview/PaymentReview'
 import { useTranslation } from 'next-i18next'
+import { ReviewElement } from '../ReviewElement/ReviewElement'
 
 export const ReviewReportSections = (reviewValues: ClaimFormContextType) => {
   const { t } = useTranslation('claimForm')
+  // This is a staff-facing value, so isn't in the Claimant-facing Review components
+  const occucoder_code = reviewValues.claimFormValues?.occucoder_code
+
   return (
     <>
       <h1>{t('review.heading')}</h1>
@@ -31,6 +35,11 @@ export const ReviewReportSections = (reviewValues: ClaimFormContextType) => {
         <DemographicsReview />
         <EmployersReview />
         <OccupationReview />
+        {occucoder_code && (
+          // Staff-facing content doesn't need translated
+          <ReviewElement label="Occupation code" value={occucoder_code} />
+        )}
+
         <EducationAndTrainingReview />
         <UnionReview />
         <DisabilityReview />
@@ -53,6 +62,11 @@ const Document = ({ children }: DocumentProps) => (
   </html>
 )
 
+/**
+ * This is the markup that gets saved to S3 as an HTML file, which is the
+ * primary artifact that NJ staff are using during beta testing for manually
+ * inputting data into the claims system.
+ */
 export const ReviewReport = (reviewValues: ClaimFormContextType) => {
   return (
     <Document>
