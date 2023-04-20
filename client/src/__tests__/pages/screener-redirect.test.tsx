@@ -159,7 +159,7 @@ describe('Screener-redirect page', () => {
     it('when worked in the military', async () => {
       const screenerInput = {
         ...pageInitialValues,
-        screener_current_country_us: true,
+        screener_current_country_us: false,
         screener_military_service_eighteen_months: true,
       }
 
@@ -174,9 +174,9 @@ describe('Screener-redirect page', () => {
         </IntakeAppContext.Provider>
       )
 
-      expect(screen.queryByText('ip_deny.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('other_state.heading')).not.toBeInTheDocument()
-      expect(screen.queryByText('military_ip.heading')).not.toBeInTheDocument()
+      expect(screen.getByText('title_not_qualified')).toBeInTheDocument()
+      expect(screen.getByText('non_resident.warning')).toBeInTheDocument()
+      expect(screen.getByText('non_resident.instructions')).toBeInTheDocument()
     })
 
     it('when on disability', async () => {

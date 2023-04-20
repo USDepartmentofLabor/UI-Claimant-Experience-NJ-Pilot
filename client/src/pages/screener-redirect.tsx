@@ -4,9 +4,6 @@ import { useContext, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import {
   Button,
-  SummaryBoxHeading,
-  SummaryBox,
-  SummaryBoxContent,
   Link,
   Alert,
   IconList,
@@ -153,9 +150,6 @@ const ScreenerRedirect: NextPage = () => {
   const { screenerInput } = useContext(IntakeAppContext)
   const [skipDisabilityScenario, setSkipDisabilityScenario] = useState(false)
 
-  const ipInUS = true // temporary until we pull IP addresses
-  const ipInNJ = true // temporary until we pull IP addresses
-
   // Canada claims have one phone number, so this takes precedence over other scenarios that also require calling
   const screenerScenario = getScreenerScenario(screenerInput, {
     skipDisabilityScenario,
@@ -177,14 +171,6 @@ const ScreenerRedirect: NextPage = () => {
       router.push(Routes.SCREENER)
     }
   }, [router, screenerScenario, screenerInput])
-
-  if (screenerScenario === 'NEW_FORM') {
-    /**
-     * The effect above should prevent this from ever happening, but there may be
-     * a brief moment when the page re-renders while the user is redirected.
-     */
-    return <Link href={pageDefinitions[0].path}>{t('apply_now')}</Link>
-  }
 
   if (screenerScenario === 'DISABILITY') {
     return (
@@ -352,80 +338,8 @@ const ScreenerRedirect: NextPage = () => {
     return <ApplyOnLegacyApp />
   }
 
-  // TODO: As we update this page to use the new design, the following should be removed in
-  // favor of using <DirectionalTemplate>. Make sure to also remove any obsolete content strings.
-  const borderStyle = 'border-bottom-1px border-base-lighter padding-bottom-4'
-  return (
-    <>
-      <Head>
-        <title>{t('page_title')}</title>
-      </Head>
-
-      <PageWrapper>
-        <h1>{t('page_title')}</h1>
-
-        <SummaryBox>
-          <SummaryBoxHeading headingLevel="h2">
-            {t('info_alert.title')}
-          </SummaryBoxHeading>
-          <SummaryBoxContent>
-            <ul className="usa-list">
-              {!ipInUS && (
-                <li>
-                  {t('info_alert.items.ip_deny')}
-                  <Link variant="nav" href={'#ip_deny'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-              {!ipInNJ && (
-                <li>
-                  {t('info_alert.items.military_ip')}
-                  <Link variant="nav" href={'#military_ip'}>
-                    {t('read_more')}
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </SummaryBoxContent>
-        </SummaryBox>
-
-        {!ipInUS && (
-          <div className={borderStyle}>
-            <h2 id="ip_deny">{t('ip_deny.heading')}</h2>
-            <p>{t('ip_deny.label')}</p>
-          </div>
-        )}
-
-        {!ipInNJ && (
-          <div className={borderStyle}>
-            <h2 id="military_ip">{t('military_ip.heading')}</h2>
-            <p>{t('military_ip.label.line1')}</p>
-            <Trans t={t} i18nKey="military_ip.label.line2">
-              <a href={pageDefinitions[0].path}>
-                Continue without claiming military wages, only non-military NJ
-                wages
-              </a>
-            </Trans>
-            <p>
-              <Trans t={t} i18nKey="military_ip.label.line3">
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_1}`}>
-                  {CLAIMS_AGENT_NUMBER_1}
-                </a>
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_2}`}>
-                  {CLAIMS_AGENT_NUMBER_2}
-                </a>
-                <a href={`tel:${CLAIMS_AGENT_NUMBER_3}`}>
-                  {CLAIMS_AGENT_NUMBER_3}
-                </a>
-              </Trans>
-            </p>
-            <p>{t('agent_contact.label.line1')}</p>
-          </div>
-        )}
-      </PageWrapper>
-    </>
-  )
+  // Serves as the catch all for when previous screener scenarios are not met
+  return <Link href={pageDefinitions[0].path}>{t('apply_now')}</Link>
 }
 
 export default ScreenerRedirect
