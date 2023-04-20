@@ -351,6 +351,9 @@ aws s3api list-objects-v2 --endpoint-url http://localhost:4566 --bucket dol-ui-c
 
 # to download an object from a particular bucket, for example:
 aws s3api get-object --endpoint-url http://localhost:4566 --bucket dol-ui-claims --key "YOUR_OBJECT_KEY_HERE" "NAME_OF_OUTPUT_FILE"
+
+# to sync the entire bucket to a local directory, for example:
+aws s3 sync --endpoint-url http://localhost:4566 s3://dol-ui-claims tmp
 ```
 
 ### Nginx

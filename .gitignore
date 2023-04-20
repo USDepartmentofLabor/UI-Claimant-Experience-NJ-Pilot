@@ -27,3 +27,4 @@ ops/ecs/*-task-definition*.json
 ops/ecs*-task-definition*.json
 
 *.zip
+tmp
