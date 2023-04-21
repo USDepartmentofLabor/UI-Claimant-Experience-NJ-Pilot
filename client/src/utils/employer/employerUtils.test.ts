@@ -131,7 +131,7 @@ describe('employerUtils', () => {
         employerName: 'Hall of Justice',
         employerSequenceNumber: '001',
         employerStatePayrollNumber: null,
-        employerTelephoneNumber: '5554151012',
+        employerTelephoneNumber: '555-415-1012',
       }
       const expectedResult = {
         ...EMPLOYER_SKELETON,
@@ -147,7 +147,7 @@ describe('employerUtils', () => {
           employerAddressZip: '91121',
         },
         employer_phone: {
-          number: '5554151012',
+          number: '555-415-1012',
           sms: null,
         },
       }

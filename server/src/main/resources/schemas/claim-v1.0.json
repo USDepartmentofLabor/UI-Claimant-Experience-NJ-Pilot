@@ -144,9 +144,9 @@
       "properties": {
         "number": {
           "type": "string",
-          "minLength": 10,
-          "maxLength": 32,
-          "pattern": "^[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}$"
+          "minLength": 12,
+          "maxLength": 12,
+          "pattern": "^\\d{3}[-.]\\d{3}[-.]\\d{4}$"
         },
         "sms": {
           "type": "boolean"
@@ -160,10 +160,10 @@
       "properties": {
         "number": {
           "type": "string",
-          "minLength": 10,
-          "maxLength": 32,
+          "minLength": 12,
+          "maxLength": 12,
           "$comment": "We do not enforce ^$ anchors to allow for international prefix, extra space, extension, etc",
-          "pattern": "^[(]?\\d{3}[)]?[-\\s.]?\\d{3}[-\\s.]?\\d{4}$"
+          "pattern": "^\\d{3}[-.]\\d{3}[-.]\\d{4}$"
         },
         "sms": {
           "type": "boolean"

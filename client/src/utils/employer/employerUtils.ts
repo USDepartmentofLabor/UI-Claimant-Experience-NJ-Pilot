@@ -1,5 +1,6 @@
 import { Employer } from 'types/claimantInput'
 import { EMPLOYER_SKELETON } from 'components/form/EditEmployer/EditEmployer'
+import { formatStoredToDisplayPhone } from 'utils/phone/format'
 
 // Loops WGPM returns FEINs with 15 characters, left aligned and right-padded to 15 characters
 const FORMATTED_FEIN_LENGTH = 15
@@ -55,7 +56,8 @@ export const transformWgpmEmployer = (
     employerAddressZip: wgpmEmployer.employerAddressZip,
   },
   employer_phone: {
-    number: wgpmEmployer.employerTelephoneNumber || '',
+    number:
+      formatStoredToDisplayPhone(wgpmEmployer.employerTelephoneNumber) || '',
     sms: null,
   },
   payments_received: [],

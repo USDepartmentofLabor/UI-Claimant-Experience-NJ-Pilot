@@ -3,6 +3,7 @@ import { merge } from 'lodash'
 import { useWhoAmI } from 'hooks/useWhoAmI'
 import { ClaimantInput } from 'types/claimantInput'
 import { ClaimFormContext } from 'contexts/ClaimFormContext'
+import { formatStoredToDisplayPhone } from 'utils/phone/format'
 
 export const useInitialValues = (pageInitialValues: Partial<ClaimantInput>) => {
   const { claimFormValues } = useContext(ClaimFormContext)
@@ -39,7 +40,7 @@ export const useInitialValues = (pageInitialValues: Partial<ClaimantInput>) => {
         birthdate: whoAmI.birthdate,
         claimant_phone: {
           number: overwriteClaimantPhone
-            ? whoAmI.phone
+            ? formatStoredToDisplayPhone(whoAmI.phone)
             : previouslyEnteredPhone,
         },
       }
