@@ -13,11 +13,16 @@ import {
   pageDefinitions,
 } from 'constants/pages/pageDefinitions'
 import { ADDRESS_SKELETON } from 'constants/initialValues'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { RadioField } from '../../components/form/fields/RadioField/RadioField'
 import { useFormikContext } from 'formik'
 import { useVerifiedAddress } from '../../queries/useVerifiedAddress'
 import Spinner from 'components/Spinner/Spinner'
+import {
+  CORRECTED_ADDRESS,
+  NO_ADDRESS_MATCH,
+} from '../../constants/api/services/verifyAddress'
+import { Alert, Card, CardGroup, Link } from '@trussworks/react-uswds'
 
 const pageDefinition = AddressVerificationPageDefinition
 const nextPage = getNextPage(pageDefinition)
@@ -83,6 +88,7 @@ function AddressVerificationFeedback() {
 
   const {
     isLoading: isVerifiedResidenceAddressLoading,
+    isError: isVerifiedResidenceAddressError,
     data: verifiedResidenceAddressData,
   } = useVerifiedAddress(
     ENTERED_RESIDENTIAL_ADDRESS,
@@ -91,6 +97,7 @@ function AddressVerificationFeedback() {
   )
   const {
     isLoading: isVerifiedMailingAddressLoading,
+    isError: isVerifiedMailingAddressError,
     data: verifiedMailingAddressData,
   } = useVerifiedAddress(
     ENTERED_MAILING_ADDRESS,
@@ -101,51 +108,129 @@ function AddressVerificationFeedback() {
   const residenceAddressOptions = [
     {
       value: AS_ENTERED,
-      label: t('address_verification.entered'),
+      label: t('address_verification.label.entered'),
       address: ENTERED_RESIDENTIAL_ADDRESS,
     },
     {
       value: AS_VERIFIED,
-      label: t('address_verification.verified'),
+      label: t('address_verification.label.verified'),
       address: verifiedResidenceAddressData?.address,
     },
   ] as const
   const mailingAddressOptions = [
     {
       value: AS_ENTERED,
-      label: t('address_verification.entered'),
+      label: t('address_verification.label.entered'),
       address: ENTERED_MAILING_ADDRESS,
     },
     {
       value: AS_VERIFIED,
-      label: t('address_verification.verified'),
+      label: t('address_verification.label.verified'),
       address: verifiedMailingAddressData?.address,
     },
   ] as const
 
+  const isMailingVerificationError =
+    isVerifiedMailingAddressError ||
+    verifiedMailingAddressData?.validationSummary === NO_ADDRESS_MATCH
+  const isResidenceVerificationError =
+    isVerifiedResidenceAddressError ||
+    verifiedResidenceAddressData?.validationSummary === NO_ADDRESS_MATCH
+  const pluralError =
+    !values.LOCAL_mailing_address_same &&
+    isResidenceVerificationError &&
+    isMailingVerificationError
+
+  const errorsInValidationOccurred = () => {
+    return (
+      <>
+        <Alert type={'warning'} headingLevel="h2" role="alert" slim>
+          <Trans
+            t={t}
+            i18nKey={
+              pluralError
+                ? 'address_verification.no_match_plural'
+                : 'address_verification.no_match_singular'
+            }
+          />
+        </Alert>
+        <p>
+          <Trans
+            t={t}
+            i18nKey={
+              pluralError
+                ? 'address_verification.entered_plural'
+                : 'address_verification.entered_singular'
+            }
+          />
+        </p>
+        <CardGroup
+          className="flex-column margin-top-105 margin-bottom-1"
+          data-testid="entered_addresses_card_group"
+        >
+          {isResidenceVerificationError && (
+            <Card className="margin-bottom-105">
+              {formattedAddress(
+                t('address_verification.label.residence'),
+                ENTERED_RESIDENTIAL_ADDRESS,
+                true
+              )}
+            </Card>
+          )}
+          {isMailingVerificationError && !values.LOCAL_mailing_address_same && (
+            <Card className="margin-bottom-0">
+              {formattedAddress(
+                t('address_verification.label.mailing'),
+                ENTERED_MAILING_ADDRESS,
+                true
+              )}
+            </Card>
+          )}
+        </CardGroup>
+        <p>
+          <Trans
+            t={t}
+            i18nKey={
+              pluralError
+                ? 'address_verification.proceed_plural'
+                : 'address_verification.proceed_singular'
+            }
+          >
+            <Link href={previousPage.path}>{''}</Link>
+          </Trans>
+        </p>
+      </>
+    )
+  }
+
   if (isVerifiedResidenceAddressLoading || isVerifiedMailingAddressLoading) {
     return <Spinner data-testid={'address-verification-spinner'} />
   }
+
   return (
     <>
-      <AddressSelector
-        handleChangeAddress={handleResidenceAddressChange}
-        name={'LOCAL_residence_address_verification_selection'}
-        legend={t('address_verification.legend.residence')}
-        options={residenceAddressOptions}
-      />
-      {!values.LOCAL_mailing_address_same && (
+      {(isResidenceVerificationError || isMailingVerificationError) &&
+        errorsInValidationOccurred()}
+
+      {verifiedResidenceAddressData?.validationSummary ===
+        CORRECTED_ADDRESS && (
         <AddressSelector
-          handleChangeAddress={handleMailingAddressChange}
-          name={'LOCAL_mailing_address_verification_selection'}
-          legend={t('address_verification.legend.mailing')}
-          options={mailingAddressOptions}
+          handleChangeAddress={handleResidenceAddressChange}
+          name={'LOCAL_residence_address_verification_selection'}
+          legend={t('address_verification.legend.residence')}
+          options={residenceAddressOptions}
         />
       )}
-      <ClaimFormButtons nextStep={nextPage.heading}>
-        <BackButton previousPage={previousPage.path} />
-        <NextButton nextPage={nextPage.path} />
-      </ClaimFormButtons>
+
+      {verifiedMailingAddressData?.validationSummary === CORRECTED_ADDRESS &&
+        !values.LOCAL_mailing_address_same && (
+          <AddressSelector
+            handleChangeAddress={handleMailingAddressChange}
+            name={'LOCAL_mailing_address_verification_selection'}
+            legend={t('address_verification.legend.mailing')}
+            options={mailingAddressOptions}
+          />
+        )}
     </>
   )
 }
@@ -165,21 +250,31 @@ const AddressSelector = ({
       options={options.map((option) => {
         return {
           value: option.value,
-          label: option.label,
-          labelDescription: (
-            <>
-              <div>
-                <div>{option.address?.address}</div>
-                <div>
-                  {option.address?.city}, {option.address?.state}{' '}
-                  {option.address?.zipcode}
-                </div>
-              </div>
-            </>
-          ),
+          label: formattedAddress(option.label, option.address),
         }
       })}
     />
+  )
+}
+
+const formattedAddress = (
+  label: string,
+  address: AddressInput,
+  isCardContent?: boolean
+) => {
+  return (
+    <div
+      className={`${
+        isCardContent ? 'padding-bottom-105 padding-top-105 padding-left-3' : ''
+      }`}
+    >
+      <div className="padding-bottom-05">{label}</div>
+      <div>{address.address}</div>
+      {address.address2 && <div>{address.address2}</div>}
+      <div>
+        {address.city}, {address.state} {address.zipcode}
+      </div>
+    </div>
   )
 }
 
@@ -192,6 +287,10 @@ const AddressVerification: NextPageWithLayout = () => {
       index={pageDefinitions.indexOf(pageDefinition)}
     >
       <AddressVerificationFeedback />
+      <ClaimFormButtons nextStep={nextPage.heading}>
+        <BackButton previousPage={previousPage.path} />
+        <NextButton nextPage={nextPage.path} />
+      </ClaimFormButtons>
     </ClaimFormik>
   )
 }
