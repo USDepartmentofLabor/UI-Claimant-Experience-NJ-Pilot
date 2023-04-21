@@ -108,24 +108,24 @@ function AddressVerificationFeedback() {
   const residenceAddressOptions = [
     {
       value: AS_ENTERED,
-      label: t('address_verification.entered'),
+      label: t('address_verification.label.entered'),
       address: ENTERED_RESIDENTIAL_ADDRESS,
     },
     {
       value: AS_VERIFIED,
-      label: t('address_verification.verified'),
+      label: t('address_verification.label.verified'),
       address: verifiedResidenceAddressData?.address,
     },
   ] as const
   const mailingAddressOptions = [
     {
       value: AS_ENTERED,
-      label: t('address_verification.entered'),
+      label: t('address_verification.label.entered'),
       address: ENTERED_MAILING_ADDRESS,
     },
     {
       value: AS_VERIFIED,
-      label: t('address_verification.verified'),
+      label: t('address_verification.label.verified'),
       address: verifiedMailingAddressData?.address,
     },
   ] as const
@@ -145,12 +145,24 @@ function AddressVerificationFeedback() {
     return (
       <>
         <Alert type={'warning'} headingLevel="h2" role="alert" slim>
-          {!pluralError && t('address_verification.same_address.no_match')}
-          {pluralError && t('address_verification.distinct_addresses.no_match')}
+          <Trans
+            t={t}
+            i18nKey={
+              pluralError
+                ? 'address_verification.no_match_plural'
+                : 'address_verification.no_match_singular'
+            }
+          />
         </Alert>
         <p>
-          {!pluralError && t('address_verification.same_address.entered')}
-          {pluralError && t('address_verification.distinct_addresses.entered')}
+          <Trans
+            t={t}
+            i18nKey={
+              pluralError
+                ? 'address_verification.entered_plural'
+                : 'address_verification.entered_singular'
+            }
+          />
         </p>
         <CardGroup
           className="flex-column margin-top-105 margin-bottom-1"
@@ -158,29 +170,34 @@ function AddressVerificationFeedback() {
         >
           {isResidenceVerificationError && (
             <Card className="margin-bottom-105">
-              {formattedAddress(ENTERED_RESIDENTIAL_ADDRESS, true)}
+              {formattedAddress(
+                t('address_verification.label.residence'),
+                ENTERED_RESIDENTIAL_ADDRESS,
+                true
+              )}
             </Card>
           )}
           {isMailingVerificationError && !values.LOCAL_mailing_address_same && (
             <Card className="margin-bottom-0">
-              {formattedAddress(ENTERED_MAILING_ADDRESS, true)}
+              {formattedAddress(
+                t('address_verification.label.mailing'),
+                ENTERED_MAILING_ADDRESS,
+                true
+              )}
             </Card>
           )}
         </CardGroup>
         <p>
-          {!pluralError && (
-            <Trans t={t} i18nKey={'address_verification.same_address.proceed'}>
-              <Link href={previousPage.path}>{''}</Link>
-            </Trans>
-          )}
-          {pluralError && (
-            <Trans
-              t={t}
-              i18nKey={'address_verification.distinct_addresses.proceed'}
-            >
-              <Link href={previousPage.path}>{''}</Link>
-            </Trans>
-          )}
+          <Trans
+            t={t}
+            i18nKey={
+              pluralError
+                ? 'address_verification.proceed_plural'
+                : 'address_verification.proceed_singular'
+            }
+          >
+            <Link href={previousPage.path}>{''}</Link>
+          </Trans>
         </p>
       </>
     )
@@ -233,21 +250,25 @@ const AddressSelector = ({
       options={options.map((option) => {
         return {
           value: option.value,
-          label: option.label,
-          labelDescription: formattedAddress(option.address),
+          label: formattedAddress(option.label, option.address),
         }
       })}
     />
   )
 }
 
-const formattedAddress = (address: AddressInput, isCardContent?: boolean) => {
+const formattedAddress = (
+  label: string,
+  address: AddressInput,
+  isCardContent?: boolean
+) => {
   return (
     <div
       className={`${
         isCardContent ? 'padding-bottom-105 padding-top-105 padding-left-3' : ''
       }`}
     >
+      <div className="padding-bottom-05">{label}</div>
       <div>{address.address}</div>
       {address.address2 && <div>{address.address2}</div>}
       <div>

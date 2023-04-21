@@ -67,25 +67,25 @@ const claimForm = {
     },
   },
   address_verification: {
-    entered: 'You entered',
-    verified: 'U.S. Postal recommends',
+    label: {
+      entered: 'You entered:',
+      verified: 'U.S. Postal recommends:',
+      mailing: 'Mailing address:',
+      residence: 'Residence Address:',
+    },
     legend: {
       mailing: 'Which address do you want to use for your mailing address?',
       residence: 'Which address do you want to use for your residence address?',
     },
-    same_address: {
-      no_match: 'We can’t match your address in the USPS database.',
-      entered: 'You entered the following address:',
-      proceed:
-        'If this is correct, proceed to the next step. If this is incorrect, <0>go back to the previous step</0> and update your address.',
-    },
-    distinct_addresses: {
-      no_match:
-        'We can’t match your residential and mailing addresses in the USPS database.',
-      entered: 'You entered the following addresses:',
-      proceed:
-        'If these are correct, proceed to the next step. If either of these are incorrect, <0>go back to the previous step</0> and update your address.',
-    },
+    no_match_singular: 'We can’t match your address in the USPS database.',
+    entered_singular: 'You entered the following address:',
+    proceed_singular:
+      'If this is correct, proceed to the next step. If this is incorrect, <0>go back to the previous step</0> and update your address.',
+    no_match_plural:
+      'We can’t match your residential and mailing addresses in the USPS database.',
+    entered_plural: 'You entered the following addresses:',
+    proceed_plural:
+      'If these are correct, proceed to the next step. If either of these are incorrect, <0>go back to the previous step</0> and update your address.',
   },
   demographics: {
     heading: 'Demographics',

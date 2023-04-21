@@ -220,10 +220,10 @@ describe('Address Confirmation Page', () => {
     renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
     expect(
-      screen.getByText('address_verification.same_address.no_match')
+      screen.getByText('address_verification.no_match_singular')
     ).toBeInTheDocument()
     expect(
-      screen.queryByText('address_verification.same_address.proceed')
+      screen.queryByText('address_verification.proceed_singular')
     ).toBeInTheDocument()
   })
 
@@ -237,10 +237,10 @@ describe('Address Confirmation Page', () => {
     renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
     expect(
-      screen.getByText('address_verification.same_address.no_match')
+      screen.getByText('address_verification.no_match_singular')
     ).toBeInTheDocument()
     expect(
-      screen.queryByText('address_verification.same_address.proceed')
+      screen.queryByText('address_verification.proceed_singular')
     ).toBeInTheDocument()
   })
 
@@ -254,10 +254,10 @@ describe('Address Confirmation Page', () => {
     renderAddressVerification()
     expect(screen.getByText('Address confirmation')).toBeInTheDocument()
     expect(
-      screen.getByText('address_verification.distinct_addresses.no_match')
+      screen.getByText('address_verification.no_match_plural')
     ).toBeInTheDocument()
     expect(
-      screen.queryByText('address_verification.distinct_addresses.proceed')
+      screen.queryByText('address_verification.proceed_plural')
     ).toBeInTheDocument()
     //confirm address2 renders
     expect(screen.getByText('Unit 2B')).toBeInTheDocument()
