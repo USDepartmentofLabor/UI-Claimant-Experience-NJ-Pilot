@@ -58,6 +58,27 @@ jobs:
           JAVA_VERSION: ${{ env.JAVA_VERSION }}
           NODE_VERSION: ${{ env.NODE_VERSION }}
 
+  build-storybook:
+    name: Storybook build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Set up Node.js
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+          cache-dependency-path: "**/yarn.lock"
+
+      - name: Install client dependencies
+        run: make client-deps
+        shell: bash
+
+      - name: Build Storybook
+        run: make client-storybook-build
+
   e2e-tests:
     name: End-to-end tests
     runs-on: ubuntu-latest
