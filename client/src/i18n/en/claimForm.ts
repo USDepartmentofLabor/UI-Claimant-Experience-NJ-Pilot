@@ -476,7 +476,7 @@ const claimForm = {
       number: {
         label: 'Employer phone number',
         required: 'Employer phone number is a required field',
-        matches: 'Please enter a phone number like (555) 555-1234',
+        matches: 'Please enter a phone number like 123-456-7890',
       },
     },
     alt_employer_phone: 'Work location phone number',
@@ -938,7 +938,7 @@ const claimForm = {
     claimant_phone: {
       label: 'Phone number',
       errors: {
-        matches: 'Please enter a phone number like (555) 555-1234',
+        matches: 'Please enter a phone number like 123-456-7890',
         required: 'Phone number is required',
       },
     },

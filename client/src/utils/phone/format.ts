@@ -1,4 +1,4 @@
-export const formatStoredToDisplayPhone = (phone: string | undefined) => {
+export const formatStoredToDisplayPhone = (phone?: string | null) => {
   if (!phone) {
     return undefined
   }

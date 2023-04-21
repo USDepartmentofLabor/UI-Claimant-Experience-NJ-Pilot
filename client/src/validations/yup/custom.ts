@@ -170,11 +170,10 @@ export const yupName = object().shape({
 export const yupPhone = object().shape({
   number: string()
     .matches(
-      /^[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}$/,
+      /^\d{3}[-.]\d{3}[-.]\d{4}$/,
       i18n_claimForm.t('contact.claimant_phone.errors.matches')
     )
-    .min(10)
-    .max(13)
+    .max(12)
     .required(i18n_claimForm.t('contact.claimant_phone.errors.required')),
   sms: boolean().nullable(),
 })
@@ -182,11 +181,10 @@ export const yupPhone = object().shape({
 export const yupPhoneWithSMS = object().shape({
   number: string()
     .matches(
-      /^[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}$/,
+      /^\d{3}[-.]\d{3}[-.]\d{4}$/,
       i18n_claimForm.t('contact.claimant_phone.errors.matches')
     )
-    .min(10)
-    .max(13)
+    .max(12)
     .required(i18n_claimForm.t('contact.claimant_phone.errors.required')),
   sms: boolean()
     .nullable()
@@ -199,10 +197,9 @@ export const yupPhoneOptional = object().shape({
   number: string()
     .transform((number) => (!number ? undefined : number))
     .matches(
-      /^[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{4}$/,
+      /^\d{3}[-.]\d{3}[-.]\d{4}$/,
       i18n_claimForm.t('contact.claimant_phone.errors.matches')
     )
-    .min(10)
-    .max(13),
+    .max(12),
   sms: boolean().nullable(),
 })

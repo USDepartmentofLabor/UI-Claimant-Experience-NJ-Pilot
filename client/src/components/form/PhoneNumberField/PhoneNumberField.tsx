@@ -32,6 +32,9 @@ export const PhoneNumberField = ({
         label={label}
         type="tel"
         onChange={onChange}
+        inputMode="numeric"
+        placeholder="___-___-____"
+        maxLength={12}
       />
       {showSMS && (
         <YesNoQuestion
