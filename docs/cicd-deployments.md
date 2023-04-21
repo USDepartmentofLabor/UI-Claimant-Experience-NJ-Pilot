@@ -20,6 +20,7 @@ that the code is ready for deployment. These include:
 - Code formatting and other linting checks
 - Static analysis checks (e.g., ESLint, SpotBugs)
 - Unit tests
+- Builds Storybook
 - End-to-end tests (Cypress)
 - Accessibility tests (pa11y)
 - Lighthouse tests

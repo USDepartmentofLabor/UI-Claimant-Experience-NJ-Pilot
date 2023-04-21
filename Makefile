@@ -92,6 +92,9 @@ client-compile: ## compile client typescript
 client-compile-check: ## check client for typescript compilation
 	cd client && yarn tsc --noEmit
 
+client-storybook-build: ## Build storybook for the client application
+	cd client && yarn build-storybook
+
 client-storybook: ## run storybook for the client application
 	cd client && yarn storybook
 
