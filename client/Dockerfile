@@ -31,7 +31,7 @@ ARG NEXT_PUBLIC_APP_ENV
 RUN yarn build
 
 # Pin sha version of gcr.io/distroless/nodejs16-debian11:nonroot
-FROM gcr.io/distroless/nodejs16-debian11@sha256:05de938faf3bc7e55ca5a04181eb1c55f3ddb25bff4de47d038190ebd783a056 AS runner
+FROM gcr.io/distroless/nodejs16-debian11@sha256:221337292c9fcb2614697d135ff5d176d95fb22730bd6ea117ba593abdd5e491 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
