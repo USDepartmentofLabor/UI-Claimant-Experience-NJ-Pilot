@@ -1,0 +1,176 @@
+name: Test and Lint
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+# Cancel redundant builds on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: 17.0.6+10
+  NODE_VERSION: 16.20.0
+
+jobs:
+  check-for-changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      needs-e2e-testing: ${{ steps.filter.outputs.needs-e2e-testing }}
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
+        id: filter
+        with:
+          filters: |
+            needs-e2e-testing:
+              - .github/actions/lint-build-and-test/**
+              - .github/workflows/build-and-test.yml
+              - .github/workflows/image-scans.yml
+              - .github/actions/image-scan/**
+              - client/**
+              - e2e/**
+              - nginx/**
+              - scripts/**
+              - server/**
+              - wiremock/**
+              - .grype.yaml
+              - .trivyignore
+              - Makefile
+              - docker-compose.yml
+
+  lint-build-and-test:
+    name: Lint, build, and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Run lint, build, and test action
+        id: lint-build-test
+        uses: ./.github/actions/lint-build-and-test
+        with:
+          JAVA_VERSION: ${{ env.JAVA_VERSION }}
+          NODE_VERSION: ${{ env.NODE_VERSION }}
+
+  build-storybook:
+    name: Storybook build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Set up Node.js
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+          cache-dependency-path: "**/yarn.lock"
+
+      - name: Install client dependencies
+        run: make client-deps
+        shell: bash
+
+      - name: Build Storybook
+        run: make client-storybook-build
+
+  e2e-tests:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    needs: check-for-changes
+    if: needs.check-for-changes.outputs.needs-e2e-testing == 'true' || github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Set up Node.js
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+          cache-dependency-path: "**/yarn.lock"
+
+      - name: Install e2e dependencies
+        run: make e2e-deps
+
+      - name: Check e2e Typescript compilation
+        run: make e2e-compile-check
+
+      - name: Add /etc/hosts entry
+        run: echo '127.0.0.1  sandbox-claimant-intake' | sudo tee -a /etc/hosts
+
+      - name: Make nginx cert
+        run: make nginx-cert
+
+      - name: Create client/.env file
+        working-directory: ./client
+        env:
+          COGNITO_CLIENT_ID: ${{secrets.COGNITO_CLIENT_ID}}
+          COGNITO_CLIENT_SECRET: ${{secrets.COGNITO_CLIENT_SECRET}}
+          COGNITO_ISSUER: ${{secrets.COGNITO_ISSUER}}
+          COGNITO_DOMAIN: ${{secrets.COGNITO_DOMAIN}}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        run: |
+          echo "COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID" >> .env
+          echo "COGNITO_CLIENT_SECRET=$COGNITO_CLIENT_SECRET" >> .env
+          echo "COGNITO_ISSUER=$COGNITO_ISSUER" >> .env
+          echo "COGNITO_DOMAIN=$COGNITO_DOMAIN" >> .env
+          echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env
+
+      - name: Create server/.env file
+        working-directory: ./server
+        env:
+          COGNITO_ISSUER: ${{secrets.COGNITO_ISSUER}}
+        run: |
+          echo "COGNITO_ISSUER=$COGNITO_ISSUER" >> .env
+
+      - name: Start CI docker containers
+        run: make docker-e2e-up
+        env:
+          DOCKER_BUILDKIT: 1
+
+      - name: Wait for server container
+        run: make wait-for-server
+
+      - name: Run OWASP ZAP Baseline scan to find vulnerabilities
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: zaproxy/action-baseline@7cea08522cd386f6c675776d5e4296aecf61f33b
+        with:
+          target: https://sandbox-claimant-intake:8443
+          fail_action: false
+          allow_issue_writing: false
+
+      - name: Run Cypress tests
+        env:
+          CYPRESS_NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        run: make e2e-test-headless-docker
+
+      - name: Upload Cypress artifacts
+        if: failure()
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce
+        with:
+          name: cypress-artifacts
+          path: |
+            /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/cypress/screenshots/
+            /home/runner/work/dol-ui-claimant-intake/dol-ui-claimant-intake/e2e/cypress/videos/
+          retention-days: 1
+
+      - name: Stop CI docker containers
+        run: make docker-down
+
+      - name: Scan server image
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: ./.github/actions/image-scan
+        with:
+          image: dol-ui-server:latest
+
+      - name: Scan client image
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: ./.github/actions/image-scan
+        with:
+          image: dol-ui-client:latest

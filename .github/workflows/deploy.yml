@@ -1,0 +1,180 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows:
+      - Test and Lint
+    types:
+      - completed
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+env:
+  OTEL_COLLECTOR_IMAGE_URI: ${{ secrets.ECR_REGISTRY_DEV }}/dol-ui-claimant-intake-otel-collector:v0.27.1-20230405184606
+
+jobs:
+  dev-client-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Deploy client
+        uses: ./.github/actions/deploy-client
+        with:
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+          app-env: development
+
+  dev-server-deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: dev
+    outputs:
+      image-uri-without-aws-id: ${{ steps.deploy-dev-server.outputs.image-uri-without-aws-id }}
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Deploy server
+        uses: ./.github/actions/deploy-server
+        id: deploy-dev-server
+        with:
+          deploy-env: dev
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_DEV }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_DEV }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
+
+  dev-smoke-test:
+    needs: [dev-client-deploy, dev-server-deploy]
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Run smoke test
+        uses: ./.github/actions/smoke-test/
+        id: run-dev-smoke-test
+        with:
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+
+  test-client-deploy:
+    needs: [dev-smoke-test, dev-client-deploy, dev-server-deploy]
+    runs-on: ubuntu-latest
+    environment: test
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Deploy client
+        uses: ./.github/actions/deploy-client
+        with:
+          deploy-env: test
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_TEST }}
+          server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+          app-env: test
+
+  test-server-deploy:
+    needs: [dev-smoke-test, dev-client-deploy, dev-server-deploy]
+    runs-on: ubuntu-latest
+    environment: test
+    outputs:
+      image-uri-without-aws-id: ${{ needs.dev-server-deploy.outputs.image-uri-without-aws-id }}
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      # The server images do not need to be rebuilt in each environment. Instead,
+      # promote and reuse the server images from the dev environment.
+      # Server configurations that need to vary between environments can be set
+      # at runtime through environment variables and/or spring boot profiles.
+      - name: Deploy server
+        uses: ./.github/actions/deploy-server
+        with:
+          deploy-env: test
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_TEST }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_TEST }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_TEST }}
+          image-uri: ${{ secrets.ECR_REGISTRY_DEV }}${{ needs.dev-server-deploy.outputs.image-uri-without-aws-id }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}
+
+  prod-client-deploy:
+    needs: [test-client-deploy, test-server-deploy]
+    runs-on: ubuntu-latest
+    environment: prod
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Deploy client
+        uses: ./.github/actions/deploy-client
+        with:
+          deploy-env: prod
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
+          server-base-url: ${{ secrets.NEXT_PUBLIC_SERVER_BASE_URL }}
+          app-env: production
+
+  prod-server-deploy:
+    needs: [test-client-deploy, test-server-deploy]
+    runs-on: ubuntu-latest
+    environment: prod
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      # The server images do not need to be rebuilt in each environment. Instead,
+      # promote and reuse the server images from the dev environment.
+      # Server configurations that need to vary between environments can be set
+      # at runtime through environment variables and/or spring boot profiles.
+      - name: Deploy server
+        uses: ./.github/actions/deploy-server
+        with:
+          deploy-env: prod
+          aws-role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_PROD }}
+          db-migrations-subnet: ${{ secrets.DB_MIGRATIONS_SUBNET_PROD }}
+          db-migrations-security-group: ${{ secrets.DB_MIGRATIONS_SECURITY_GROUP_PROD }}
+          image-uri: ${{ secrets.ECR_REGISTRY_DEV }}${{ needs.test-server-deploy.outputs.image-uri-without-aws-id }}
+          otel-collector-image-uri: ${{ env.OTEL_COLLECTOR_IMAGE_URI }}

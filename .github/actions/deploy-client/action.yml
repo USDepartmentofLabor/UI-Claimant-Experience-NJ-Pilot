@@ -1,0 +1,148 @@
+name: Deploy Client
+description: Deploy the frontend client application
+inputs:
+  deploy-env:
+    description: The environment being deployed (e.g., dev, test, prod)
+    required: true
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  server-base-url:
+    description: The backend server base url
+    required: true
+  app-env:
+    description: The application environment (e.g., development, test, production)
+    required: true
+  pr:
+    description: The PR number for the pull request
+    default: "0"
+  ecs-client-security-group:
+    description: The aws security group for ECS client services used in deployment previews
+  ecs-client-subnet:
+    description: One subnet for ECS services used in deployment previews
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435
+      with:
+        python-version: "3.10"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Build, Push, and Scan Client Image
+      uses: ./.github/actions/build-client
+      id: build-client
+      with:
+        deploy-env: ${{ inputs.deploy-env }}
+        aws-role-to-assume: ${{ inputs.aws-role-to-assume }}
+        server-base-url: ${{ inputs.server-base-url }}
+        app-env: ${{ inputs.app-env }}
+
+    - name: Set environment name in ECS task definition template
+      shell: bash
+      run: |
+        make client-task-definition environment=${{ inputs.deploy-env }} pr=${{ inputs.pr }}
+
+    - name: Create ECS task definition container name
+      id: ecs-container-name
+      env:
+        GIT_PR: ${{ inputs.pr }}
+        DEPLOY_ENV: ${{ inputs.deploy-env }}
+      shell: bash
+      run: |
+        if [[ "$GIT_PR" == "0" ]]; then
+          CONTAINER_NAME="dol-ui-claimant-intake-client-${DEPLOY_ENV}"
+        else
+          CONTAINER_NAME="dol-ui-claimant-intake-client-${DEPLOY_ENV}-${GIT_PR}"
+        fi
+        echo "container-name=$CONTAINER_NAME" >> $GITHUB_OUTPUT
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
+      with:
+        task-definition: ops/ecs-client-task-definition.json
+        container-name: ${{ steps.ecs-container-name.outputs.container-name }}
+        image: ${{ steps.build-client.outputs.image-uri }}
+
+    - name: Create ECS service name
+      id: ecs-service
+      env:
+        GIT_PR: ${{ inputs.pr }}
+      shell: bash
+      run: |
+        if [[ "$GIT_PR" == "0" ]]; then
+          SERVICE_NAME="dol-ui-claimant-intake-client"
+        else
+          SERVICE_NAME="dol-ui-claimant-intake-client-${GIT_PR}"
+        fi
+        echo "service-name=$SERVICE_NAME" >> $GITHUB_OUTPUT
+
+    - name: Find existing deployment preview service
+      id: preview-service-exist
+      env:
+        SERVICE_NAME: ${{ steps.ecs-service.outputs.service-name }}
+        CLUSTER_NAME: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+      shell: bash
+      run: |
+        SERVICE_COUNT=$( aws ecs list-services \
+        --cluster "$CLUSTER_NAME" \
+        --query "length(serviceArns[?contains(@,'$SERVICE_NAME')])" )
+        echo $SERVICE_COUNT
+        echo "service-count=$SERVICE_COUNT" >> $GITHUB_OUTPUT
+
+    - name: Register task definition for deployment preview
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        TASK_DEF: ${{ steps.task-def.outputs.task-definition }}
+      shell: bash
+      run: |
+        aws ecs register-task-definition \
+        --cli-input-json "file://${TASK_DEF}"
+
+    - name: Get existing client target group ARN
+      id: get-client-tg
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        TG_NAME: ecs-client-dev-${{ inputs.pr }}
+      shell: bash
+      run: |
+        CLIENT_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "client-tg-arn=$CLIENT_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Create ECS service for deployment preview
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        SERVICE_NAME: ${{ steps.ecs-service.outputs.service-name }}
+        CLUSTER_NAME: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        CONTAINER_NAME: dol-ui-claimant-intake-client-${{ inputs.deploy-env }}-${{ inputs.pr }}
+        SUBNET: ${{ inputs.ecs-client-subnet }}
+        SECURITY_GROUP: ${{ inputs.ecs-client-security-group }}
+        TG_ARN: ${{ steps.get-client-tg.outputs.client-tg-arn }}
+      shell: bash
+      run: |
+        aws ecs create-service \
+        --region us-east-1 \
+        --cluster $CLUSTER_NAME \
+        --service-name $SERVICE_NAME \
+        --task-definition $CONTAINER_NAME \
+        --desired-count 1 \
+        --launch-type "FARGATE" \
+        --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
+        --load-balancers targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=3000
+
+    - name: Deploy Amazon ECS task definition
+      if: steps.preview-service-exist.outputs.service-count != '0'
+      uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ steps.ecs-service.outputs.service-name }}
+        cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        wait-for-service-stability: true

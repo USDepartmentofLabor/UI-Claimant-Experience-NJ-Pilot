@@ -1,0 +1,65 @@
+$asset-path: '~@uswds/uswds';
+/*
+  Manually adding NJWDS theme here by using this file:
+  https://github.com/newjersey/njwds/blob/main/src/sass/_uswds-theme.scss
+  TODO: Load NJ theme once this issue is addressed:
+  https://github.com/newjersey/njwds/issues/26
+*/
+@use 'uswds-core' with (
+  /* GENERAL */ $theme-show-notifications: false,
+  $theme-image-path: '#{$asset-path}/img',
+  $theme-global-paragraph-styles: true,
+  $theme-global-link-styles: true,
+  $theme-font-role-heading: 'sans',
+  $theme-type-scale-md: 7,
+  $theme-h4-font-size: 'md',
+  $theme-layout-grid-use-important: false,
+  // Allow utility classes to always override other styles, even when they're lower in specificity
+  $utilities-use-important: true,
+
+  /* TYPOGRAPHY */ $theme-respect-user-font-size: false,
+  $theme-root-font-size: 16px,
+  $theme-font-path: '#{$asset-path}/fonts',
+  $theme-font-type-sans: 'public-sans',
+  $theme-font-weight-heavy: 800,
+  $theme-style-body-element: true,
+
+  /* SPACING */ $theme-grid-container-max-width: 'desktop',
+  $theme-link-color: 'primary',
+
+  /* COLORS */ // Base colors
+  $theme-color-base-family: 'gray',
+  $theme-color-base-lighter: 'gray-10',
+  $theme-color-base-light: 'gray-30',
+  $theme-color-base: 'gray-50',
+  $theme-color-base-dark: 'gray-60',
+  $theme-color-base-darker: 'gray-80',
+
+  // Accent warm colors
+  $theme-color-accent-warm-family: 'gold-vivid',
+  $theme-color-accent-warm-lighter: 'gold-10v',
+  $theme-color-accent-warm-light: 'gold-30v',
+  $theme-color-accent-warm: 'gold-50v',
+  $theme-color-accent-warm-dark: 'gold-60v',
+  $theme-color-accent-warm-darker: 'gold-70v',
+
+  // Accent cool colors
+  $theme-color-accent-cool-lighter: 'blue-10',
+  $theme-color-accent-cool-light: 'blue-20',
+  $theme-color-accent-cool: 'blue-30',
+  $theme-color-accent-cool-dark: 'blue-40',
+  $theme-color-accent-cool-darker: 'blue-60',
+
+  // Success colors
+  $theme-color-success-dark: 'green-cool-50',
+  $theme-color-success-darker: 'green-cool-60',
+
+  // Links
+  $theme-link-visited-color: 'primary',
+
+  // Banner
+  $theme-banner-background-color: 'base-darkest',
+
+  // Focus Styles
+  $theme-focus-color: 'primary'
+);

@@ -1,0 +1,12 @@
+.beta-banner {
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  margin: auto;
+  max-width: 64rem;
+}
+
+@media (min-width: 1024px) {
+  .beta-banner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}

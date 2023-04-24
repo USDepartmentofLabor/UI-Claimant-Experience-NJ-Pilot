@@ -1,0 +1,38 @@
+name: Image Scans
+
+on:
+  schedule:
+    - cron: "0 13 * * *"
+
+jobs:
+  server-image-scan:
+    name: server-image-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Build server image
+        env:
+          DOCKER_BUILDKIT: 1
+        run: make server-image-build
+
+      - name: Scan server image
+        uses: ./.github/actions/image-scan
+        with:
+          image: dol-ui-server:latest
+
+  client-image-scan:
+    name: client-image-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Build client image
+        env:
+          DOCKER_BUILDKIT: 1
+        run: make client-image-build
+
+      - name: Scan client image
+        uses: ./.github/actions/image-scan
+        with:
+          image: dol-ui-client:latest

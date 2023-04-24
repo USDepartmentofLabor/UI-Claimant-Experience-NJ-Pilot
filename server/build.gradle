@@ -1,0 +1,191 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.Instant
+
+plugins {
+    id 'org.springframework.boot' version '2.7.10'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+    id 'idea'
+    id "com.diffplug.spotless" version "6.17.0"
+    id "com.github.spotbugs" version "5.0.14"
+    id "org.liquibase.gradle" version "2.1.1"
+    id "jacoco"
+}
+
+group = 'nj.lwd.ui'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+
+    runtimeOnly 'org.postgresql:postgresql:42.5.4'
+
+    // Liquibase
+    implementation 'org.liquibase:liquibase-core:4.19.0'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.19.0'
+    liquibaseRuntime 'org.liquibase.ext:liquibase-hibernate5:4.19.0'
+    liquibaseRuntime 'org.postgresql:postgresql:42.5.4'
+    liquibaseRuntime 'org.springframework.boot:spring-boot-starter-data-jpa'
+    liquibaseRuntime 'info.picocli:picocli:4.7.1'
+    liquibaseRuntime sourceSets.main.output
+
+    // AWS
+    implementation platform('software.amazon.awssdk:bom:2.20.31')
+    implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:rds'
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+
+    // Environment Configuration
+    implementation 'me.paulschwarz:spring-dotenv:3.0.0'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
+
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.12.0'
+
+    implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.78');
+
+    // --- begin overrides of spring boot managed versions
+    implementation 'org.yaml:snakeyaml:1.33'
+    // --- end overrides of spring boot managed versions
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80
+            }
+        }
+    }
+}
+
+configurations {
+    spotless {
+        format 'misc', {
+            // define the files to apply `misc` to
+            target '*.gradle'
+
+            // define the steps to apply to those files
+            trimTrailingWhitespace()
+            indentWithSpaces()
+            endWithNewline()
+        }
+        java {
+            googleJavaFormat('1.15.0').aosp().reflowLongStrings()
+        }
+    }
+}
+
+liquibaseDiff.dependsOn assemble
+liquibaseDiffChangeLog.dependsOn assemble
+liquibaseGenerateChangelog.dependsOn assemble
+liquibaseUpdate.dependsOn assemble
+
+// Liquibase plugin properties. These apply when devs invoke liquibase commands through the CLI. (We use make shorthands)
+// When migrations are applied via Spring Boot (such as on startup), the Spring Boot app's DB connection is used.
+liquibase {
+    def liquibaseChangeLogFile = 'src/main/resources/db/changelog/changelog.yaml'
+    def liquibaseReferenceUrl = 'hibernate:spring:nj.lwd.ui.claimantintake.model?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy'
+    def dbHost = System.getenv("DB_HOST") ?: 'localhost'
+    def dbPort = System.getenv("DB_PORT") ?: '5432'
+    def dbName = System.getenv("DB_NAME") ?: 'localdev-postgres'
+    def dbUrl = "jdbc:postgresql://${dbHost}:${dbPort}/${dbName}"
+    def dbUser = System.getenv("DB_USER") ?: "localdev-postgres"
+    def dbPassword = System.getenv("DB_PASSWORD") ?: "localdev-postgres"
+
+    activities {
+        doFirst {
+            project.ext.runList = project.findProperty('runList') ?: "main"
+        }
+        // For most liquibase operations, the main changelog file is used
+        main {
+            changeLogFile liquibaseChangeLogFile
+            referenceUrl liquibaseReferenceUrl
+            url dbUrl
+            username dbUser
+            password dbPassword
+        }
+        // When generating diffs from Entities, we want to create an isolated changelog file which the main changelog includes
+        diffChangeLog {
+            def utcTimestamp = DateTimeFormatter.ofPattern('yyyyMMddHHmmss').withZone(ZoneOffset.UTC).format(Instant.now())
+            def description = project.findProperty('migrationDescription')?.toLowerCase()?.replace(' ', '_') ?: 'generated'
+            def newMigrationFile = "src/main/resources/db/changelog/changes/" + utcTimestamp + '_' + description + '_changelog.yaml'
+
+            changeLogFile newMigrationFile
+            referenceUrl liquibaseReferenceUrl
+            url dbUrl
+            username dbUser
+            password dbPassword
+        }
+    }
+
+    runList = project.ext.runList
+}
+
+spotbugs {
+    excludeFilter = file('./spotbugs/exclude.xml')
+}
+
+tasks.withType(Test) {
+    testLogging {
+        // set options for log level LIFECYCLE
+        events TestLogEvent.FAILED,
+            TestLogEvent.PASSED,
+            TestLogEvent.SKIPPED,
+            TestLogEvent.STANDARD_OUT
+        exceptionFormat TestExceptionFormat.FULL
+        showExceptions true
+        showCauses true
+        showStackTraces true
+
+        // set options for log level DEBUG and INFO
+        debug.events TestLogEvent.STARTED,
+                TestLogEvent.FAILED,
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.STANDARD_ERROR,
+                TestLogEvent.STANDARD_OUT
+        debug.exceptionFormat TestExceptionFormat.FULL
+
+        info.events = debug.events
+        info.exceptionFormat = debug.exceptionFormat
+
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
+}

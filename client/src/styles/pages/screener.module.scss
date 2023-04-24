@@ -1,0 +1,6 @@
+@use 'uswds-core' as *;
+
+.screenerForm > :first-child,
+.screenerForm > :first-child legend {
+  @include u-margin-top(0);
+}

@@ -1,0 +1,142 @@
+@use 'uswds-core' as *;
+
+// -------------------------------------
+// global style overrides
+
+.form-section > .usa-legend:first-child {
+  margin: 0;
+  h2,
+  h3 {
+    margin: 0;
+    @include u-padding-top(4);
+    font-size: inherit;
+  }
+}
+.yesno-fieldset .usa-legend {
+  margin-top: 0;
+}
+
+.yesno-fieldset .usa-form-group {
+  clear: both;
+}
+
+.yesno-fieldset.usa-form-group--error .usa-legend {
+  font-weight: bold;
+}
+
+.yesno-fieldset.usa-form-group--error .usa-form-group--error {
+  border: none;
+  margin-top: 1.5rem;
+  padding-left: 0;
+}
+
+@media all and (min-width: 1024px) {
+  .yesno-fieldset.usa-form-group--error .usa-form-group--error {
+    padding-left: 1.25rem;
+  }
+}
+
+.dol-claims-actions {
+  a {
+    margin-right: 1rem;
+  }
+}
+
+.usa-link svg {
+  margin-left: 2px;
+  vertical-align: middle;
+}
+
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.usa-input-prefix,
+.usa-input-suffix {
+  color: #757575;
+  line-height: 0;
+  padding: 0 0.5rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.usa-step-indicator__header {
+  display: none;
+}
+
+.claim-id {
+  display: block;
+  font-weight: bold;
+}
+
+.usa-step-indicator__segment-label {
+  display: none;
+}
+.usa-step-indicator {
+  margin-bottom: units(1);
+}
+
+@media all and (min-width: units('desktop')) {
+  .usa-step-indicator {
+    display: none;
+  }
+}
+
+/**
+ * NJ typography styles
+ */
+.nj-heading--display {
+  font-size: size('heading', '3xl');
+  font-weight: font-weight('heavy');
+  line-height: line-height('heading', 2);
+}
+
+h1,
+.nj-h1 {
+  font-size: size('heading', '2xl');
+  font-weight: font-weight('bold');
+  line-height: 1.12;
+}
+
+h2,
+.nj-h2 {
+  font-size: size('heading', 'xl');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 2);
+}
+
+h3,
+.nj-h3 {
+  font-size: size('heading', 'lg');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 3);
+}
+
+h4,
+.nj-h4 {
+  font-size: size('heading', 'sm');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 4);
+}
+
+h5,
+.nj-h5 {
+  font-size: size('heading', 'xs');
+  font-weight: font-weight('bold');
+  line-height: line-height('heading', 5);
+}
+
+h6,
+.nj-h6 {
+  font-size: size('heading', '3xs');
+  font-weight: font-weight('normal');
+  line-height: line-height('heading', 3);
+  text-transform: uppercase;
+}

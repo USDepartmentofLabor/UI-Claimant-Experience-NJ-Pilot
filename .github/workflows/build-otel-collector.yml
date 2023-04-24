@@ -1,0 +1,57 @@
+name: Build ADOT Collector Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ops/otel/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@2f9f10ea3fa2eed41ac443fee8bfbd059af2d0a4
+
+      - name: Construct image tag
+        id: construct-image-tag
+        shell: bash
+        run: |
+          BUILD_TIME=$(date '+%Y%m%d%H%M%S')
+          OTEL_COLLECTOR_VERSION=$(grep 'FROM public.ecr.aws/aws-observability/aws-otel-collector' ops/otel/Dockerfile | cut -d':' -f 2)
+          IMAGE_TAG="${OTEL_COLLECTOR_VERSION}-${BUILD_TIME}"
+          echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4b4e9c3e2d4531116a6f8ba8e71fc6e2cb6e6c8c
+        with:
+          version: v0.10.2
+          driver-opts: image=moby/buildkit:v0.11.2
+
+      - name: Build & Push ADOT collector
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          push: true
+          provenance: false
+          context: ops/otel
+          tags: ${{ steps.login-ecr.outputs.registry }}/dol-ui-claimant-intake-otel-collector:${{ steps.construct-image-tag.outputs.image-tag }}

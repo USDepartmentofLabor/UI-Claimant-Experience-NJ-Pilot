@@ -1,0 +1,96 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-ast
+      - id: check-json
+      - id: check-symlinks
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: debug-statements
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: fix-encoding-pragma
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/trussworks/pre-commit-hooks
+    rev: v1.1.1
+    hooks:
+      - id: gen-docs
+        args: ["docs/adr"]
+
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.16
+    hooks:
+      - id: mdformat
+        additional_dependencies:
+          - mdformat-gfm
+          - mdformat-toc
+        exclude: >
+          (?x)^(
+            .github/ISSUE_TEMPLATE/.*.md|
+          )$
+
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint-docker
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.7.1
+    hooks:
+      - id: prettier
+        exclude: >
+          (?x)^(
+            .github/ISSUE_TEMPLATE/.*.md|
+            ops/synthetics/smoke-test/nodejs/node_modules/.*.js
+          )$
+
+  - repo: local
+    hooks:
+      - id: eslint-client
+        name: eslint-client
+        entry: yarn --cwd client lint
+        language: node
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: false
+      - id: eslint-e2e
+        name: eslint-e2e
+        entry: yarn --cwd e2e lint
+        language: node
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: false
+      - id: server-spotless
+        name: server-spotless
+        entry: bash -c 'cd server && ./gradlew :spotlessApply'
+        language: system
+
+  - repo: https://github.com/sirosen/check-jsonschema
+    rev: 0.21.0
+    hooks:
+      - id: check-github-workflows
+      - id: check-jsonschema
+        name: "Check UI schema"
+        language: python
+        files: ^server/src/main/resources/schemas/.*\.json$
+        args: ["--schemafile", "https://json-schema.org/draft/2019-09/schema"]
+
+  - repo: https://github.com/ambv/black
+    rev: 22.12.0
+    hooks:
+      - id: black
+        language_version: python3
+
+  - repo: https://github.com/pycqa/flake8.git
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/detailyang/pre-commit-shell
+    rev: v1.0.6
+    hooks:
+      - id: shell-lint
+        exclude: server/gradlew
+        args: [--format=json]

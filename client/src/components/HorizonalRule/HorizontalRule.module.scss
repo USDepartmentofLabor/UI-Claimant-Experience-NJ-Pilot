@@ -1,0 +1,6 @@
+@use 'uswds-core' as *;
+
+.horizontalRule {
+  margin-top: units(3);
+  border-color: color('base-light');
+}

@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1662161479690-8
+      author: brandonlenz (generated)
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: idp_id
+                  type: varchar(255)
+            tableName: claimant
+  - changeSet:
+      id: 1662161479690-1
+      author: brandonlenz (generated)
+      changes:
+        - addNotNullConstraint:
+            columnDataType: varchar(255)
+            columnName: category
+            tableName: claim_event
+            validate: true
+  - changeSet:
+      id: 1662161479690-2
+      author: brandonlenz (generated)
+      changes:
+        - addNotNullConstraint:
+            columnDataType: timestamp
+            columnName: created_at
+            tableName: claim
+            validate: true
+  - changeSet:
+      id: 1662161479690-3
+      author: brandonlenz (generated)
+      changes:
+        - addNotNullConstraint:
+            columnDataType: timestamp
+            columnName: created_at
+            tableName: claim_event
+            validate: true
+  - changeSet:
+      id: 1662161479690-4
+      author: brandonlenz (generated)
+      changes:
+        - addNotNullConstraint:
+            columnDataType: timestamp
+            columnName: created_at
+            tableName: claimant
+            validate: true
+  - changeSet:
+      id: 1662161479690-5
+      author: brandonlenz (generated)
+      changes:
+        - addNotNullConstraint:
+            columnDataType: timestamp
+            columnName: updated_at
+            tableName: claim
+            validate: true
+  - changeSet:
+      id: 1662161479690-6
+      author: brandonlenz (generated)
+      changes:
+        - addNotNullConstraint:
+            columnDataType: timestamp
+            columnName: updated_at
+            tableName: claim_event
+            validate: true
+  - changeSet:
+      id: 1662161479690-7
+      author: brandonlenz (generated)
+      changes:
+        - addNotNullConstraint:
+            columnDataType: timestamp
+            columnName: updated_at
+            tableName: claimant
+            validate: true

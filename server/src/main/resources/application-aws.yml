@@ -1,0 +1,11 @@
+---
+spring:
+  # Configuration for using RDS IAM authentication in deployed environments
+  datasource:
+    # Verify the SSL/TLS connection using the RDS root CA certificate
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=verify-full&sslrootcert=/app/certs/us-east-1-bundle.pem
+    # Use a database user that has been granted the rds_iam PostgreSQL role
+    username: app_user
+    # Use a custom HikariDataSource that generates short-term authentication
+    # tokens for RDS IAM authentication rather than using a long-lived password
+    type: nj.lwd.ui.claimantintake.configuration.RdsIamHikariDataSource

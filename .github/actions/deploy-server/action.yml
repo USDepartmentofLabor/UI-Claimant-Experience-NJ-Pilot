@@ -1,0 +1,219 @@
+name: Deploy Server
+description: Deploy the backend server application
+inputs:
+  deploy-env:
+    description: The environment being deployed (e.g., dev, test, prod)
+    required: true
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  db-migrations-subnet:
+    description: The subnet to run db migrations in
+    required: true
+  db-migrations-security-group:
+    description: The security group for use by db migration tasks
+    required: true
+  image-uri:
+    description: Image uri if provided by workflow
+  otel-collector-image-uri:
+    description: Image uri for otel collector
+  pr:
+    description: The PR number for the pull request
+    default: "0"
+  ecs-server-security-group:
+    description: The aws security group for ECS server services used in deployment previews
+  ecs-server-subnet:
+    description: One subnet for ECS services used in deployment previews
+outputs:
+  image-uri-without-aws-id:
+    description: The uri for the server image pushed to AWS ECR without the AWS ID
+    value: ${{ steps.build-server.outputs.image-uri-without-aws-id }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435
+      with:
+        python-version: "3.10"
+
+    - name: Install python dependencies
+      shell: bash
+      run: pip install -r requirements-ci.txt
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@2f9f10ea3fa2eed41ac443fee8bfbd059af2d0a4
+
+    - name: Build, Push, and Scan Server Image
+      if: ${{ inputs.image-uri == '' }}
+      uses: ./.github/actions/build-server
+      id: build-server
+      with:
+        deploy-env: ${{ inputs.deploy-env }}
+        aws-role-to-assume: ${{ inputs.aws-role-to-assume }}
+
+    - name: Set environment name in ECS task definition template (migrations)
+      shell: bash
+      run: |
+        make db-migrations-task-definition environment=${{ inputs.deploy-env }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition (migrations)
+      id: task-def-migrations
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
+      with:
+        task-definition: ops/ecs-db-migrations-task-definition.json
+        container-name: dol-ui-claimant-intake-db-migrate-${{ inputs.deploy-env }}
+        image: ${{ inputs.image-uri == '' && steps.build-server.outputs.image-uri || inputs.image-uri }}
+        # If not provided image, create it
+
+    - name: Deploy Amazon ECS task definition (migrations)
+      id: deploy-task-def-migrations
+      uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+      with:
+        task-definition: ${{ steps.task-def-migrations.outputs.task-definition }}
+        cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+
+    - name: Snapshot RDS
+      shell: bash
+      env:
+        RDS_INSTANCE: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        scripts/snapshot-rds.sh
+
+    - name: Run DB migrations ECS task
+      env:
+        TASK_DEFINITION: ${{ steps.deploy-task-def-migrations.outputs.task-definition-arn }}
+        SUBNET: ${{ inputs.db-migrations-subnet }}
+        SECURITY_GROUP: ${{ inputs.db-migrations-security-group }}
+      shell: bash
+      run: |
+        python scripts/run-db-migrations-task.py \
+          --taskdef "$TASK_DEFINITION" \
+          --cluster dol-ui-claimant-intake-${{ inputs.deploy-env }} \
+          --subnet "$SUBNET" \
+          --sg "$SECURITY_GROUP"
+
+    - name: Set environment name in ECS task definition template (server)
+      shell: bash
+      run: |
+        make server-task-definition environment=${{ inputs.deploy-env }} pr=${{ inputs.pr }}
+
+    - name: Create ECS task definition container name
+      id: ecs-container-name
+      env:
+        GIT_PR: ${{ inputs.pr }}
+        DEPLOY_ENV: ${{ inputs.deploy-env }}
+      shell: bash
+      run: |
+        if [[ "$GIT_PR" == "0" ]]; then
+          CONTAINER_NAME="dol-ui-claimant-intake-server-${DEPLOY_ENV}"
+        else
+          CONTAINER_NAME="dol-ui-claimant-intake-server-${DEPLOY_ENV}-${GIT_PR}"
+        fi
+        echo "container-name=$CONTAINER_NAME" >> $GITHUB_OUTPUT
+
+    # The otel collector image is built as needed by the
+    # build-otel-collector.yml workflow. Upgrading to a new otel collector
+    # image is a two-part process:
+    #  1. (automated) Run the build-otel-collector.yml workflow to create a new image
+    #  2. (manual)    Update this step to use the new image tag
+    - name: Fill in the image ID in the Amazon ECS task definition (otel collector)
+      id: task-def-collector
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
+      with:
+        task-definition: ops/ecs-server-task-definition.json
+        container-name: aws-otel-collector
+        image: ${{ inputs.otel-collector-image-uri }}
+
+    - name: Fill in the new image ID in the Amazon ECS task definition (server)
+      id: task-def-server
+      uses: aws-actions/amazon-ecs-render-task-definition@61b0c00c3743b70987a73a1faf577f0d167d1574
+      with:
+        task-definition: ${{ steps.task-def-collector.outputs.task-definition }}
+        container-name: ${{ steps.ecs-container-name.outputs.container-name }}
+        image:
+          ${{ inputs.image-uri == '' && steps.build-server.outputs.image-uri || inputs.image-uri }}
+          # If not provided image, create it
+
+    - name: Create ECS service name
+      id: ecs-service
+      env:
+        GIT_PR: ${{ inputs.pr }}
+      shell: bash
+      run: |
+        if [[ "$GIT_PR" == "0" ]]; then
+          SERVICE_NAME="dol-ui-claimant-intake-server"
+        else
+          SERVICE_NAME="dol-ui-claimant-intake-server-${GIT_PR}"
+        fi
+        echo "service-name=$SERVICE_NAME" >> $GITHUB_OUTPUT
+
+    - name: Find existing deployment preview service
+      id: preview-service-exist
+      env:
+        SERVICE_NAME: ${{ steps.ecs-service.outputs.service-name }}
+        CLUSTER_NAME: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+      shell: bash
+      run: |
+        SERVICE_COUNT=$( aws ecs list-services \
+        --cluster $CLUSTER_NAME \
+        --query "length(serviceArns[?contains(@,'$SERVICE_NAME')])" )
+        echo $SERVICE_COUNT
+        echo "service-count=$SERVICE_COUNT" >> $GITHUB_OUTPUT
+
+    - name: Register task definition for deployment preview
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        TASK_DEF: ${{ steps.task-def-server.outputs.task-definition }}
+      shell: bash
+      run: |
+        aws ecs register-task-definition \
+        --cli-input-json "file://${TASK_DEF}"
+
+    - name: Get existing server target group ARN
+      id: get-server-tg
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        TG_NAME: ecs-server-dev-${{ inputs.pr }}
+      shell: bash
+      run: |
+        SERVER_TG_ARN=$( aws elbv2 describe-target-groups \
+        --query "TargetGroups[?TargetGroupName == '$TG_NAME'].TargetGroupArn" \
+        --output text )
+        echo "server-tg-arn=$SERVER_TG_ARN" >> $GITHUB_OUTPUT
+
+    - name: Create ECS service for deployment preview
+      if: steps.preview-service-exist.outputs.service-count == '0'
+      env:
+        SERVICE_NAME: ${{ steps.ecs-service.outputs.service-name }}
+        CLUSTER_NAME: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        CONTAINER_NAME: dol-ui-claimant-intake-server-${{ inputs.deploy-env }}-${{ inputs.pr }}
+        SUBNET: ${{ inputs.ecs-server-subnet }}
+        SECURITY_GROUP: ${{ inputs.ecs-server-security-group }}
+        TG_ARN: ${{ steps.get-server-tg.outputs.server-tg-arn }}
+      shell: bash
+      run: |
+        aws ecs create-service \
+        --region us-east-1 \
+        --cluster $CLUSTER_NAME \
+        --service-name $SERVICE_NAME \
+        --task-definition $CONTAINER_NAME \
+        --desired-count 1 \
+        --launch-type "FARGATE" \
+        --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
+        --load-balancers targetGroupArn=$TG_ARN,containerName=$CONTAINER_NAME,containerPort=8080
+
+    - name: Deploy Amazon ECS task definition (server)
+      if: steps.preview-service-exist.outputs.service-count != '0'
+      uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+      with:
+        task-definition: ${{ steps.task-def-server.outputs.task-definition }}
+        service: ${{ steps.ecs-service.outputs.service-name }}
+        cluster: dol-ui-claimant-intake-${{ inputs.deploy-env }}
+        wait-for-service-stability: true

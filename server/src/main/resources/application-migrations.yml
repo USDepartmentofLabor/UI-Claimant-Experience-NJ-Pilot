@@ -1,0 +1,10 @@
+---
+spring:
+  liquibase:
+    enabled: true
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=verify-full&sslrootcert=/app/certs/us-east-1-bundle.pem
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  main:
+    web-application-type: none

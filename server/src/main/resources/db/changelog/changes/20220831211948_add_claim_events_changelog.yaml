@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1661980791884-1
+      author: brandonlenz (generated)
+      changes:
+        - createSequence:
+            incrementBy: 50
+            sequenceName: claim_event_sequence
+            startValue: 1
+  - changeSet:
+      id: 1661980791884-2
+      author: brandonlenz (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: claim_eventPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: claim_id
+                  type: UUID
+            tableName: claim_event
+  - changeSet:
+      id: 1661980791884-3
+      author: brandonlenz (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: claim_id
+            baseTableName: claim_event
+            constraintName: FKj806unu3lkjsy9dj8q6ipfyu5
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: claim
+            validate: true

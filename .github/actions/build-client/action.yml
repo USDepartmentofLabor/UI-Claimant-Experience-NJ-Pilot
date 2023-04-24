@@ -1,0 +1,78 @@
+name: Build Client Image
+description: Build a docker image for the frontend client, tag the image, and upload it to AWS ECR
+inputs:
+  deploy-env:
+    description: The environment being deployed (e.g., dev, test, prod)
+    required: true
+  aws-role-to-assume:
+    description: The AWS role to assume
+    required: true
+  server-base-url:
+    description: The backend server base url
+    required: true
+  app-env:
+    description: The application environment (e.g., development, test, production)
+    required: true
+outputs:
+  image-uri:
+    description: The uri for the client image pushed to AWS ECR
+    value: ${{ steps.construct-image-uri.outputs.image-uri }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435
+      with:
+        python-version: "3.10"
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+      with:
+        role-to-assume: ${{ inputs.aws-role-to-assume }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@2f9f10ea3fa2eed41ac443fee8bfbd059af2d0a4
+
+    - name: Construct image URI
+      id: construct-image-uri
+      env:
+        GIT_BRANCH: ${{ github.ref_name }}
+        GIT_COMMIT: ${{ github.sha }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        DEPLOY_ENV: ${{ inputs.deploy-env }}
+      shell: bash
+      run: |
+        BRANCH_PREFIX="$GIT_BRANCH"
+        # use a generic prefix for all non-main branches
+        if [[ "$BRANCH_PREFIX" != "main" ]]; then
+          BRANCH_PREFIX="branch"
+        fi
+        BUILD_TIME=$(date '+%Y%m%d%H%M%S')
+        IMAGE_TAG="${BRANCH_PREFIX}-${GIT_COMMIT}-${BUILD_TIME}"
+        IMAGE_URI="${ECR_REGISTRY}/dol-ui-claimant-intake-client-${DEPLOY_ENV}:${IMAGE_TAG}"
+        echo "image-uri=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@4b4e9c3e2d4531116a6f8ba8e71fc6e2cb6e6c8c
+      with:
+        version: v0.10.2
+        driver-opts: image=moby/buildkit:v0.11.2
+
+    - name: Build & Push image
+      id: build-image
+      uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+      with:
+        push: true
+        provenance: false
+        context: client
+        tags: ${{ steps.construct-image-uri.outputs.image-uri }}
+        build-args: |
+          NEXT_PUBLIC_SERVER_BASE_URL=${{ inputs.server-base-url }}
+          NEXT_PUBLIC_APP_ENV=${{ inputs.app-env }}
+
+    - name: Scan client image
+      uses: ./.github/actions/image-scan
+      with:
+        image: ${{ steps.construct-image-uri.outputs.image-uri }}

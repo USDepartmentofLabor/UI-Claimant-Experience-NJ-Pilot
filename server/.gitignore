@@ -1,0 +1,8 @@
+# Project build files
+/build
+/bin
+
+# Cached gradle install from using the gradle wrapper
+.gradle
+
+derby.log

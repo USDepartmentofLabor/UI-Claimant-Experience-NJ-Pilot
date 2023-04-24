@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://unemployment.nj.gov/schemas/claim-v1.0.json",
+  "title": "UI Claimant Intake Form",
+  "description": "NJ Unemployment Insurance claimant application form schema",
+  "type": "object",
+  "definitions": {
+    "person_name": {
+      "$id": "/definitions/person_name",
+      "type": "object",
+      "properties": {
+        "first_name": { "type": "string", "maxLength": 28 },
+        "last_name": { "type": "string", "maxLength": 28 }
+      },
+      "required": ["first_name", "last_name"]
+    }
+  },
+  "properties": {
+    "claimant_name": {
+      "$ref": "#/definitions/person_name"
+    }
+  }
+}

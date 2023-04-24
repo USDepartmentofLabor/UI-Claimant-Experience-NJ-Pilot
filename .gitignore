@@ -1,0 +1,30 @@
+# local env files
+.env
+.env*.local
+
+# Keys and certificates
+*.pem
+*.crt
+*.key
+certs/
+
+# IDE
+.idea
+*.iml
+.vscode
+
+# Yarn - Accidentally running `yarn` in the repo root creates files we do not want to add to the repo
+/node_modules
+/yarn.lock
+
+.DS_Store
+
+# Cypress test artifacts
+e2e/cypress/videos
+e2e/cypress/screenshots
+
+ops/ecs/*-task-definition*.json
+ops/ecs*-task-definition*.json
+
+*.zip
+tmp

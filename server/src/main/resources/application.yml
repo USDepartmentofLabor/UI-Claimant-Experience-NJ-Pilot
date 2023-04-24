@@ -1,0 +1,33 @@
+---
+management:
+  endpoint:
+    health:
+      enabled: true
+  endpoints:
+    enabled-by-default: false
+    web:
+      discovery:
+        enabled: false
+      exposure:
+        include: health
+server:
+  servlet:
+    context-path: /intake-api
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COGNITO_ISSUER}
+    self-signed-access-tokens-enabled: false
+  liquibase:
+    change-log: "classpath:/db/changelog/changelog.yaml"
+    enabled: false
+
+aws:
+  s3:
+    claims-bucket: ${S3_CLAIMS_BUCKET:dol-ui-claims}
+    claims-bucket-kms-key: ${S3_CLAIMS_BUCKET_KMS_KEY:localdev-mock-kms-key}
+loops:
+  url: ${WGPM_HOST:http://localhost:9090}${WGPM_PATH:/wgpm}

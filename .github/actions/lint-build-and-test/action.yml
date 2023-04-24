@@ -1,0 +1,76 @@
+name: Lint, Build, and Test
+description: Lint and run unit tests
+inputs:
+  JAVA_VERSION:
+    description: The java version of the codebase
+    required: true
+  NODE_VERSION:
+    description: The java version of the codebase
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+
+    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+      with:
+        key: v1-pre-commit-dot-cache-${{ hashFiles('.pre-commit-config.yaml') }}
+        path: ~/.cache/pre-commit
+
+    - name: Install pre-commit
+      run: pip install pre-commit
+      shell: bash
+
+    - name: Set up Node.js
+      uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
+      with:
+        node-version: ${{ inputs.NODE_VERSION }}
+        cache: "yarn"
+        cache-dependency-path: "**/yarn.lock"
+
+    - name: Install client dependencies
+      run: make client-deps
+      shell: bash
+
+    - name: Install e2e dependencies
+      run: make e2e-deps
+      shell: bash
+
+    - name: Set up Java
+      uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2
+      with:
+        java-version: ${{ inputs.JAVA_VERSION }}
+        distribution: "temurin"
+
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@8d49e559aae34d3e0eb16cde532684bc9702762b
+
+    - name: Install server dependencies
+      run: make server-deps
+      shell: bash
+
+    - name: Lint
+      run: make lint
+      shell: bash
+
+    - name: Run JUnit tests
+      run: make server-test
+      shell: bash
+
+    - name: Verify server test coverage
+      run: make server-test-coverage-check
+      shell: bash
+
+    - name: Run server checks
+      run: make server-check
+      shell: bash
+
+    - name: Check client Typescript compilation
+      run: make client-compile-check
+      shell: bash
+
+    - name: Run Jest tests
+      run: make client-test-coverage
+      shell: bash
