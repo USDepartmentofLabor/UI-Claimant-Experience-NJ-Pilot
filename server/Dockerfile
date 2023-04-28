@@ -1,5 +1,5 @@
 # Use a jdk image to build the application jar file
-FROM eclipse-temurin:17.0.6_10-jdk AS builder
+FROM eclipse-temurin:17.0.7_7-jdk AS builder
 
 WORKDIR /app
 
@@ -26,7 +26,7 @@ RUN ./gradlew assemble
 
 # Use a jre image as the source from which to copy a java runtime
 # into the final docker stage
-FROM eclipse-temurin:17.0.6_10-jre AS jre
+FROM eclipse-temurin:17.0.7_7-jre AS jre
 
 # Use a distroless image as the base image for deployed environments.
 # Copy the application jar file and other needed dependencies from earlier
