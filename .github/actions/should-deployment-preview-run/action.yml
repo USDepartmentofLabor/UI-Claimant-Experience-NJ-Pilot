@@ -16,7 +16,7 @@ runs:
 
     - name: Get DB schema file change
       id: db-schema-file
-      uses: tj-actions/changed-files@v35
+      uses: tj-actions/changed-files@v36
       with:
         files: server/src/main/resources/db/**
 
