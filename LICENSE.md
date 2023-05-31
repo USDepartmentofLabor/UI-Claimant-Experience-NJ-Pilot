@@ -1,4 +1,4 @@
-### GNU GENERAL PUBLIC LICENSE
+### CC0 1.0 Universal Summary license
 
 Version 3, 29 June 2007
 
