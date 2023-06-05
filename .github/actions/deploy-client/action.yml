@@ -29,7 +29,7 @@ runs:
         python-version: "3.10"
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
+      uses: aws-actions/configure-aws-credentials@5727f247b64f324ec403ac56ae05e220fd02b65f
       with:
         role-to-assume: ${{ inputs.aws-role-to-assume }}
         aws-region: us-east-1
