@@ -49,7 +49,7 @@ jobs:
           driver-opts: image=moby/buildkit:v0.11.2
 
       - name: Build & Push ADOT collector
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825
         with:
           push: true
           provenance: false
