@@ -20,7 +20,7 @@ runs:
         vuln-type: "os,library"
         scanners: "vuln,secret"
     - name: Run Anchore vulnerability scan
-      uses: anchore/scan-action@4be3c24559b430723e51858969965e163b196957
+      uses: anchore/scan-action@24fd7c9060f3c96848dd1929fac8d796fb5ae4b4
       with:
         image: ${{inputs.image}}
         severity-cutoff: "negligible"
