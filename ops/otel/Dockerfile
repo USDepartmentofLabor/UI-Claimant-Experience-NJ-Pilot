@@ -2,7 +2,7 @@
 # deployed environments. In order to use public AWS ECR images, do the image
 # pull in the CI pipeline and push it to a private ECR repository within the
 # environment.
-FROM public.ecr.aws/aws-observability/aws-otel-collector:v0.28.0
+FROM public.ecr.aws/aws-observability/aws-otel-collector:v0.31.0
 
 # Add an arbitrary version label. Updating the base image tag in the FROM line
 # above will cause CI to build and push a new image to ECR. If needing to build
