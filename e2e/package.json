@@ -5,7 +5,7 @@
     "@cypress-audit/lighthouse": "^1.4.2",
     "@cypress-audit/pa11y": "^1.4.2",
     "@faker-js/faker": "^7.6.0",
-    "@panva/hkdf": "^1.0.2",
+    "@panva/hkdf": "^1.1.1",
     "@testing-library/cypress": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
