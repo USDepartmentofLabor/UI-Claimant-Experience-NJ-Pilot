@@ -65,7 +65,7 @@ dependencies {
     implementation (group: 'com.networknt', name: 'json-schema-validator', version: '1.0.78');
 
     // --- begin overrides of spring boot managed versions
-    implementation 'org.yaml:snakeyaml:1.33'
+    implementation 'org.yaml:snakeyaml:2.0'
     // --- end overrides of spring boot managed versions
 }
 
